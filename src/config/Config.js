@@ -1,0 +1,42 @@
+let routes = {
+    //base: 'http://192.168.0.136:3500',
+    base: 'http://13.126.203.242:3500',
+    loginRoute: '/v1/user/login',
+    communitiesRoute: '/v1/user/communities',
+    otpRoute: '/v1/user/forgot',
+    setPasswordRoute: '/v1/user/reset',
+    signUpRoute: '/v1/user/sign-up',
+    verifyOtpRoute: '/v1/user/verify',
+    basketRoute: '/v1/user/baskets',
+    addressRoute: '/v1/user/save/address',
+    orderOtpRoute: '/v1/user/order/otp/generate', // send otp to client
+    verifyMobileRoute: '/v1/user/order/otp/verify', // verify otp of client
+    addGuestUserData: '/v1/user/order/capture',
+    saveRazorPayDetails: '/v1/user/order/razorpay/capture',
+    savePaytmDetails: '/v1/user/order/paytm/capture',
+    getOrderDetails: '/v1/user/order/fetch', // get orders in start subscription
+    cancelOrders: '/v1/user/order/cancel',
+    locationRoute: '/v1/user/verify/location/',
+    enquiryRoute: '/v1/user/enquiries/save',
+
+    fetchRoute: '/v1/user/order/fetch',
+    getSearchLocations: '/v1/user/communities/fetch', // to fetch maps
+    getBasketsAll: '/v1/user/baskets/all', // to fetch all basket types: small,medium...
+    getBasketItems: '/v1/user/products/', // get items for selected tab
+
+    updateRoute: '/v1/user/order/update',
+    updateOrderDetails: '/v1/user/order/update',
+    updateOrderPauseDates: '/v1/user/order/pause',
+    signOtpVerifyRoute: '/v1/user/signin/otp/verify',
+    bannersFetch: '/v1/user/banners/fetch',
+
+};
+
+let limiters = {
+    userNameLength: 4,
+    mobileLength: 10,
+    passwordLength: 8,
+    otpLength: 6
+};
+
+export default {routes, limiters};

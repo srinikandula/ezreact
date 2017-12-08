@@ -31,7 +31,7 @@ class Login extends Component{
     }
 
     onBackAndroid() {
-        Actions.exitApp();
+     Actions.pop();
     }
 
      onSignIn() {
@@ -102,6 +102,7 @@ class Login extends Component{
         const namelabelStyle = {
                   position: 'absolute',
                   left: 0,
+                  fontFamily:'gothamlight',
                   top: ! this.state.userNamelbl ? 18 : 0,
                   fontSize: ! this.state.userNamelbl ? 20 : 14,
                   color: ! this.state.userNamelbl ? '#aaa' : '#000',
@@ -112,6 +113,7 @@ class Login extends Component{
         const passwordlabelStyle = {
                   position: 'absolute',
                   left: 0,
+                  fontFamily:'gothamlight',
                   top: ! this.state.passwordlbl ? 18 : 0,
                   fontSize: ! this.state.passwordlbl ? 20 : 14,
                   color: ! this.state.passwordlbl ? '#aaa' : '#000',
@@ -122,17 +124,13 @@ class Login extends Component{
         const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
+                  fontFamily:'gothamlight',
                   top: ! this.state.phoneNumberlbl ? 18 : 0,
                   fontSize: ! this.state.phoneNumberlbl ? 20 : 14,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
                 }                
-
-
-
-
-
 
 
         return (
@@ -301,6 +299,7 @@ const styles = {
         paddingTop: 2
     },
     inputStyle: {
+        fontFamily:'gothamlight',
         marginTop:3,
         backgroundColor: 'transparent'
     },
@@ -310,6 +309,7 @@ const styles = {
     },
     text: {
         flex:1,
+        fontFamily:'gothamlight',
         alignItems:'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',

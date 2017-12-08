@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View,Image,Text,CheckBox,TouchableOpacity,ToastAndroid,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,ToastAndroid} from 'react-native';
 import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import {Actions} from 'react-native-router-flux';
 
-class ForgotPin extends Component{
+class OtpVerification extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
            passwordlbl:false,rememberme:false};
@@ -17,41 +17,38 @@ class ForgotPin extends Component{
              passwordlbl:false,
         };
     }
-
+ 
     componentWillMount() {
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
     componentWillUnmount(){
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
-        Actions.pop();
     }
 
     onBackAndroid() {
      Actions.pop();
     }
 
-    
-
-     onSignIn() {
+     onVerifyOTP() {
         
-         if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
-            this.setState({message: 'Enter a valid Mobile Number'}, () => {
+         if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {
+            this.setState({message: 'Enter a 6 digits OTP Number'}, () => {
                 ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
 
             });
         } else {
-             if(this.state.phoneNumber.length == 10){
-                this.setState({message: 'Message has been sent to mobile number'});
+            if(this.state.phoneNumber == 123456){
+                this.setState({message: 'OTP verification done'});
                     ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-                    Actions.pop();
+                   
+                    Actions.tab1();
             }else{
-                this.setState({message: ' Please enter Mobile nmuber'});
+                this.setState({message: ' OTP does not match'});
                 ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
             }
         }
     }
-
-    
+   
 
  render() {
         const {
@@ -60,10 +57,9 @@ class ForgotPin extends Component{
             signInButtonStyle,
             containerStyle,
             sendTextStyle,
-            cancelTextStyle,
             inputStyle,
             imageStyle,
-            text,
+            massagetext,
             backgroundImage,
             actionStyle,
             checkForgotStyle,
@@ -73,6 +69,7 @@ class ForgotPin extends Component{
          const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
+                   fontFamily:'gothamlight',
                   top: ! this.state.phoneNumberlbl ? 18 : 0,
                   fontSize: ! this.state.phoneNumberlbl ? 20 : 14,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
@@ -81,19 +78,18 @@ class ForgotPin extends Component{
         return (
             <CommonBackground>
                 <View style={viewStyle}>
-
-                    <CustomText style={text}>
-                               Forgot Password ?
-                            </CustomText>
                  
-                    <View style={{flex:1,alignSelf:'stretch',justifyContent:'center'}}>
+                    <View style={{flex:1,alignSelf:'stretch',alignItems:'center',justifyContent:'center'}}>
+                    <CustomText style={massagetext}>
+                               OTP sent to your mobile number
+                            </CustomText>
                          <View style={containerStyle}>
-                             <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
+                             <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'center',justifyContent:'center'}}>
                                 <Text style={phonelabelStyle} >
-                                    Mobile Number
+                                    Enter Code
                                 </Text>  
                                 <CustomEditText
-                                    maxLength={Config.limiters.mobileLength}
+                                    maxLength={Config.limiters.otpLength}
                                     keyboardType='numeric'
                                     inputTextStyle={inputStyle}
                                     value={this.state.phoneNumber}
@@ -102,25 +98,21 @@ class ForgotPin extends Component{
                                                 }}
                                 />
                             </View>
-                            <View style={checkForgotStyle}>
-                               
-                                     <TouchableOpacity style={actionStyle}  onPress={() => {
-                                                                Keyboard.dismiss();
-                                                                Actions.pop();
-                                                            }}>
-                                        <CustomText customTextStyle={cancelTextStyle}>
-                                            CANCEL
-                                        </CustomText>   
-                                     </TouchableOpacity> 
+                            <View style={checkForgotStyle}>                                   
                                    
-                                    <TouchableOpacity style={actionStyle} onPress={() => {
-                                                                Keyboard.dismiss();
-                                                                Actions.OtpVerification();
-                                                            }}>
-                                        <CustomText customTextStyle={sendTextStyle}>
-                                            SEND
-                                        </CustomText>   
-                                     </TouchableOpacity>
+                                     <CustomButton
+                                            customButtonStyle={signInButtonStyle}
+                                            onPress={() => {
+                                                Keyboard.dismiss();
+                                                this.onVerifyOTP()
+                                            }}
+                                        >
+                                            <CustomText
+                                                customTextStyle={sendTextStyle}
+                                            >
+                                                VERIFY
+                                            </CustomText>
+                                        </CustomButton>
                                    
                             </View>
                         </View>
@@ -141,22 +133,22 @@ const styles = {
     viewStyle: {
         flex:1,
         alignItems:'stretch',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         flexDirection:'column',
         alignItems:'center',
-        paddingBottom:10,
+        paddingBottom:10
         
     },
     containerStyle: {
         backgroundColor: '#ffffff',
-        marginTop: 60,
+        marginTop:5,
         marginBottom: 50,
         marginLeft: 20,
         marginRight: 20,
         paddingLeft:10,
         paddingRight:10,
-        justifyContent: 'space-around',
-        alignItems:'flex-start',
+        justifyContent: 'center',
+        alignItems:'center',
         alignSelf:'stretch'
 
     },
@@ -171,48 +163,43 @@ const styles = {
         marginTop:1
     },
 
-
-    forgotTextStyle: {
-        textAlign: 'right',
-        color: '#1e4495',
-        paddingTop: 2
-    },
-    cancelTextStyle :{
-        textAlign: 'right',
-        color: '#1e4495',
-        padding: 5
-    },
-
     sendTextStyle :{
-        textAlign: 'right',
+         fontFamily:'gothamlight',
+        textAlign: 'center',
         color: '#e83a13',
         padding: 5
     },
 
 
     inputStyle: {
+         fontFamily:'gothamlight',
+        justifyContent:'center',
         marginTop:3,
         backgroundColor: 'transparent'
     },
-    text: {
+    massagetext: {
         flex:1,
         alignItems:'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 32
+         fontFamily:'gothamlight',
+        fontSize: 32,
+        margin:10
     },
 
     actionStyle:{
+        alignSelf:'stretch',
+        alignItems:'center',
         paddingLeft:5,
 
     },
     checkForgotStyle:{
-        alignItems:'stretch',
+        alignItems:'center',
         flexDirection: 'row',
         marginTop:10,
         marginBottom:20,
-        alignSelf:'flex-end',
-        justifyContent:'space-between'
+        alignSelf:'stretch',
+        justifyContent:'center'
     },
     checkboxStyle:{
         color: '#3B3B3B',
@@ -220,4 +207,4 @@ const styles = {
 
 };
 
-export default ForgotPin;
+export default OtpVerification;

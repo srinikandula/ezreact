@@ -4,17 +4,16 @@ import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackgr
 import Config from '../config/Config';
 import {Actions} from 'react-native-router-flux';
 
-class OtpVerification extends Component{
-     state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
-           phoneNumberlbl:false,isFocused: false,
+class ResetPassword extends Component{
+     state = {password: '',cpassword: '', message: '',userNamelbl:false,
+           cpasswordlbl:false,isFocused: false,
            passwordlbl:false,rememberme:false};
 
     constructor(props) {
         super(props);
         this.state = {
-            userNamelbl: false,
-             phoneNumberlbl:false,
              passwordlbl:false,
+             cpasswordlbl:false,
         };
     }
  
@@ -31,21 +30,37 @@ class OtpVerification extends Component{
 
      onVerifyOTP() {
         
-         if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {
-            this.setState({message: 'Enter a 6 digits OTP Number'}, () => {
+         if (!this.state.password || isNaN(this.state.password) || this.state.password.length !== Config.limiters.otpLength) 
+         {
+            this.setState({message: 'Enter Password'}, () => {
                 ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
 
             });
-        } else {
-            if(this.state.phoneNumber == 123456){
-                this.setState({message: 'OTP verification done'});
+        } else
+         { 
+            this.setState({message: ''});
+            console.log("confirm",!this.state.cpassword, '== ' + isNaN(this.state.cpassword) + ' -- ' );
+            if(this.state.cpassword)
+                console.log(this.state.cpassword.length !== Config.limiters.otpLength);
+            if (!this.state.cpassword || isNaN(this.state.cpassword) || this.state.cpassword.length !== Config.limiters.otpLength) 
+            {
+                this.setState({message: 'Enter Confirm Password'}, () => {
                     ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-                   
-                    Actions.ResetPassword();
-            }else{
-                this.setState({message: ' OTP does not match'});
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-            }
+
+                });
+            }else
+            {
+                this.setState({message: ''});
+                if(this.state.password == this.state.cpassword){
+                    this.setState({message: 'Password reset'});
+                        
+                       
+                        Actions.tab1();
+                }else{
+                    this.setState({message: ' Password does not match'});
+                    ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+                }
+             }   
         }
     }
    
@@ -66,35 +81,62 @@ class OtpVerification extends Component{
             checkboxStyle
         } = styles;
 
-         const phonelabelStyle = {
+         const passwordlabelStyle = {
                   position: 'absolute',
                   left: 0,
                    fontFamily:'gothamlight',
-                  top: ! this.state.phoneNumberlbl ? 18 : 0,
-                  fontSize: ! this.state.phoneNumberlbl ? 20 : 14,
-                  color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
+                  top: ! this.state.passwordlbl ? 18 : 0,
+                  fontSize: ! this.state.passwordlbl ? 20 : 14,
+                  color: ! this.state.passwordlbl ? '#aaa' : '#000',
                   padding:3
-                }   
+                }  
+
+         const cpasswordlabelStyle = {
+                  position: 'absolute',
+                  left: 0,
+                   fontFamily:'gothamlight',
+                  top: ! this.state.cpasswordlbl ? 18 : 0,
+                  fontSize: ! this.state.cpasswordlbl ? 20 : 14,
+                  color: ! this.state.cpasswordlbl ? '#aaa' : '#000',
+                  padding:3
+                }       
+
+
+                 
         return (
             <CommonBackground>
                 <View style={viewStyle}>
                  
                     <View style={{flex:1,alignSelf:'stretch',alignItems:'center',justifyContent:'center'}}>
                     <CustomText style={massagetext}>
-                               OTP sent to your mobile number
+                               Reset Password
                             </CustomText>
                          <View style={containerStyle}>
                              <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'center',justifyContent:'center'}}>
-                                <Text style={phonelabelStyle} >
-                                    Enter Code
+                                <Text style={passwordlabelStyle} >
+                                    password
                                 </Text>  
                                 <CustomEditText
                                     maxLength={Config.limiters.otpLength}
                                     keyboardType='numeric'
                                     inputTextStyle={inputStyle}
-                                    value={this.state.phoneNumber}
+                                    value={this.state.password}
                                     onChangeText={(value) => {
-                                                    this.setState({phoneNumber: value,phoneNumberlbl:true})
+                                                    this.setState({password: value,passwordlbl:true})
+                                                }}
+                                />
+                            </View>
+                            <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'center',justifyContent:'center'}}>
+                                <Text style={cpasswordlabelStyle} >
+                                    Confirm Password
+                                </Text>  
+                                <CustomEditText
+                                    maxLength={Config.limiters.otpLength}
+                                    keyboardType='numeric'
+                                    inputTextStyle={inputStyle}
+                                    value={this.state.cpassword}
+                                    onChangeText={(value) => {
+                                                    this.setState({cpassword: value,cpasswordlbl:true})
                                                 }}
                                 />
                             </View>
@@ -110,7 +152,7 @@ class OtpVerification extends Component{
                                             <CustomText
                                                 customTextStyle={sendTextStyle}
                                             >
-                                                VERIFY
+                                                RESET
                                             </CustomText>
                                         </CustomButton>
                                    
@@ -194,12 +236,12 @@ const styles = {
 
     },
     checkForgotStyle:{
-        alignItems:'center',
+        alignItems:'flex-end',
         flexDirection: 'row',
         marginTop:10,
         marginBottom:20,
         alignSelf:'stretch',
-        justifyContent:'center'
+        justifyContent:'flex-end'
     },
     checkboxStyle:{
         color: '#3B3B3B',
@@ -207,4 +249,4 @@ const styles = {
 
 };
 
-export default OtpVerification;
+export default ResetPassword;

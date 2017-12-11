@@ -6,18 +6,14 @@ import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import {Actions,Reducer} from 'react-native-router-flux';
 
-class Profile extends Component{
-     state = {userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
-           phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false};
+class GpsSetting extends Component{
+     state = {};
 
     constructor(props) {
         super(props);
         this.state = {
-            userNamelbl: true,
-             phoneNumberlbl:true,
-             passwordlbl:false,
-             cpasswordlbl:false,
-             userName: 'Riyazuddin ',phoneNumber: '8801715086',emailId:'Riyaz@Mtwlabs.com',grups:'My Groups -60'
+            mstop: ' ',OverSpeed: '',interval:'',stopTime:'', source: '',destination:'', message: '',
+            mstoplbl: false,OverSpeedlbl: false,intervallbl:false,stopTimelbl:false, sourcelbl: false,destinationlbl:false
         };
     }
 
@@ -60,78 +56,98 @@ class Profile extends Component{
             checkboxStyle
         } = styles;
 
-
-        const namelabelStyle = {
+        const miniStoplabelStyle = {
                   position: 'absolute',
                   left: 0,
                   fontFamily:'gothamlight',
-                  top: ! this.state.userNamelbl ? 6 : 0,
-                  fontSize: ! this.state.userNamelbl ? 14 : 10,
-                  color: ! this.state.userNamelbl ? '#aaa' : '#000',
+                  top: ! this.state.mstoplbl ? 16 : 0,
+                  fontSize: ! this.state.mstoplbl ? 16 : 14,
+                  color: ! this.state.mstoplbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:1,
                   height:30,
                 }
 
-        const passwordlabelStyle = {
+        const overSpeedlabelStyle = {
                   position: 'absolute',
                   left: 0,
                   fontFamily:'gothamlight',
-                  top: ! this.state.passwordlbl ? 16 : 0,
-                  fontSize: ! this.state.passwordlbl ? 18 : 14,
-                  color: ! this.state.passwordlbl ? '#aaa' : '#000',
+                  top: ! this.state.OverSpeedlbl ? 16 : 0,
+                  fontSize: ! this.state.OverSpeedlbl ? 16 : 14,
+                  color: ! this.state.OverSpeedlbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
                 }
 
 
-        const confirmpasswordlbl= {
+        const intervallbl= {
                   position: 'absolute',
                   left: 0,
                   fontFamily:'gothamlight',
-                  top: ! this.state.cpasswordlbl ? 16 : 0,
-                  fontSize: ! this.state.cpasswordlbl ? 18 : 14,
-                  color: ! this.state.cpasswordlbl ? '#aaa' : '#000',
+                  top: ! this.state.intervallbl ? 16 : 0,
+                  fontSize: ! this.state.intervallbl ? 16 : 14,
+                  color: ! this.state.intervallbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
                 }
         
-        const phonelabelStyle = {
+        const stoplabelStyle = {
                   position: 'absolute',
                   left: 0,
                   fontFamily:'gothamlight',
-                  top: ! this.state.phoneNumberlbl ? 16 : 0,
-                  fontSize: ! this.state.phoneNumberlbl ? 14 : 12,
-                  color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
+                  top: ! this.state.stopTimelbl ? 16 : 0,
+                  fontSize: ! this.state.stopTimelbl ? 16 : 14,
+                  color: ! this.state.stopTimelbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
-                }                
+                }
+                
+        const sourcelabelStyle = {
+            position: 'absolute',
+            left: 0,
+            fontFamily:'gothamlight',
+            top: ! this.state.sourcelbl ? 16 : 0,
+            fontSize: ! this.state.sourcelbl ? 16 : 14,
+            color: ! this.state.sourcelbl ? '#aaa' : '#000',
+            fontFamily:'gothamlight',
+            padding:3
+        }    
+        const destlabelStyle = {
+            position: 'absolute',
+            left: 0,
+            fontFamily:'gothamlight',
+            top: ! this.state.destinationlbl ? 16 : 0,
+            fontSize: ! this.state.destinationlbl ? 16 : 14,
+            color: ! this.state.destinationlbl ? '#aaa' : '#000',
+            fontFamily:'gothamlight',
+            padding:3
+        }        
+        
 
 
         return (
-            <View style={viewStyle}>
-                <View style={headerStyle}>
-                    <Image source={require('../images/eg_profile.png')} style= {backgroundImage}/>
-                </View>            
+            <View style={viewStyle}>            
                 
                     <ScrollView style={{alignSelf:'stretch',flex:1,marginBottom:10}}>
                     <View style={containerStyle}>                        
                        <Card>
                             <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', paddingTop:3,marginTop:5}}>
-                                <Text style={namelabelStyle} >
-                                        UserName
+                                <Text style={miniStoplabelStyle} >
+                                        Minimum stop duration
                                 </Text>
                                 <CustomEditText
-                                    maxLength={Config.limiters.mobileLength}
-                                    keyboardType='default'                                    
+                                    keyboardType='numeric'                                    
                                     inputContainerStyle={inputContainerStyle}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.userName}
+                                    value={this.state.mstop}
+                                    onChangeText={(value) => {
+                                        this.setState({mstop: value,mstoplbl:true})
+                                    }}
                                 />
                             </View>
                             <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={namelabelStyle} >
-                                        Phone Number
+                                <Text style={overSpeedlabelStyle} >
+                                        OverSpeed Limit Km ph
                                 </Text>
                             
                                 <CustomEditText
@@ -139,32 +155,40 @@ class Profile extends Component{
                                     keyboardType='numeric'
                                     inputContainerStyle={inputContainerStyle}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.phoneNumber}
+                                    value={this.state.OverSpeed}
+                                    onChangeText={(value) => {
+                                        this.setState({OverSpeed: value,OverSpeedlbl:true})
+                                    }}
                                 />
                             </View>
                             <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={namelabelStyle} >
-                                        Email
+                                <Text style={intervallbl} >
+                                        Route Notification interval
                                 </Text>
                             
                                 <CustomEditText
-                                    keyboardType='email-address'
+                                    keyboardType='numeric'
                                     inputContainerStyle={inputContainerStyle}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.emailId}
+                                    value={this.state.interval}
+                                    onChangeText={(value) => {
+                                        this.setState({interval: value,intervallbl:true})
+                                    }}
                                 />
                             </View>
-
+        
                             <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                               <Text style={namelabelStyle} >
-                                Number OF members
+                               <Text style={stoplabelStyle} >
+                                    Stop Alert Time
                                 </Text>                     
                                 <CustomEditText
-                                    keyboardType='default'
+                                    keyboardType='numeric'
                                     inputContainerStyle={inputContainerStyle}
-                                    editable = {false}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.grups}
+                                    value={this.state.stopTime}
+                                    onChangeText={(value) => {
+                                        this.setState({stopTime: value,stopTimelbl:true})
+                                    }}
                                 />
                             </View>
                        </Card>
@@ -172,38 +196,50 @@ class Profile extends Component{
                        <Card>
                            <View >
                                 <Text style={text}>
-                                    Reset Password
+                                   Set operating Routes
                                 </Text>
                             </View>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={passwordlabelStyle} >
-                                       New Password
-                                </Text>
                             
+                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
+                                <Text style={sourcelabelStyle} >
+                                       Source
+                                </Text>
                                 <CustomEditText
                                     keyboardType='numeric'
                                     inputContainerStyle={inputContainerStyle}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.password}
+                                    value={this.state.source}
+                                    onChangeText={(value) => {
+                                        this.setState({source: value,sourcelbl:true})
+                                    }}
                                 />
                             </View>
                             <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={confirmpasswordlbl} >
-                                        Retype Password
+                                <Text style={destlabelStyle} >
+                                    Destination
                                 </Text>
                             
                                 <CustomEditText
                                     keyboardType='numeric'
                                     inputContainerStyle={inputContainerStyle}
                                     inputTextStyle={inputStyle}
-                                    value={this.state.confpassword}
+                                    value={this.state.destination}
+                                    onChangeText={(value) => {
+                                        this.setState({destination: value,destinationlbl:true})
+                                    }}
                                 />
                             </View>
 
                             <View style={checkForgotStyle}>
+
+                                     <TouchableOpacity style={actionStyle} >
+                                        <CustomText customTextStyle={sendTextStyle}>
+                                            Clear
+                                        </CustomText>   
+                                     </TouchableOpacity>
                                     <TouchableOpacity style={actionStyle} >
                                         <CustomText customTextStyle={sendTextStyle}>
-                                            RESET
+                                            Submit
                                         </CustomText>   
                                      </TouchableOpacity>
                                    
@@ -213,19 +249,7 @@ class Profile extends Component{
 
                     </View>
                </ScrollView>
-                <View  style={profileImageStyle}>
-                    <Image source={require('../images/eg_user.png')} style= {{height:100,width:110,resizeMode: 'contain'}}/>
-                </View>
-                <View  style={editProfileImageStyle}>
-                    <Image source={require('../images/eg_edit.png')} style= {{height:20,width:30,resizeMode: 'contain'}}/>
-                </View>
-
-                <View style={addGroupImageStyle}>
-                     <View style={styles.circle} >
-                        <Image source={require('../images/eg_addgroup.png')} style= {{height:30,width:30,resizeMode: 'contain'}}/>
-                     </View>
-
-                </View>
+                
                     
              </View>   
         );
@@ -326,7 +350,8 @@ const styles = {
         flex:1,
         fontFamily:'gothamlight',
         color: '#000000',
-        fontSize: 18
+        fontSize: 18,
+        paddingLeft:10
     },
     rememberTextStyle:{
         textAlign: 'center',
@@ -344,11 +369,11 @@ const styles = {
     },
     checkForgotStyle:{
         flex: 1,
-        alignSelf:'stretch',
+        alignItems:'flex-end',
         flexDirection: 'row',
         marginTop:10,
         marginBottom:20,
-        justifyContent: 'flex-end',
+        justifyContent: 'space-around',
        
     },
     checkboxStyle:{
@@ -357,4 +382,4 @@ const styles = {
 
 };
 
-export default Profile;
+export default GpsSetting;

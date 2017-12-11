@@ -30,7 +30,6 @@ class OtpVerification extends Component{
     }
 
      onVerifyOTP() {
-        
          if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {
             this.setState({message: 'Enter a 6 digits OTP Number'}, () => {
                 ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
@@ -40,7 +39,6 @@ class OtpVerification extends Component{
             if(this.state.phoneNumber == 123456){
                 this.setState({message: 'OTP verification done'});
                     ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-                   
                     Actions.ResetPassword();
             }else{
                 this.setState({message: ' OTP does not match'});

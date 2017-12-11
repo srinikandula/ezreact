@@ -5,15 +5,14 @@ import Config from '../config/Config';
 import {Actions} from 'react-native-router-flux';
 
 class ResetPassword extends Component{
-     state = {password: '',cpassword: '', message: '',userNamelbl:false,
-           cpasswordlbl:false,isFocused: false,
-           passwordlbl:false,rememberme:false};
+     state = {};
 
     constructor(props) {
         super(props);
         this.state = {
-             passwordlbl:false,
-             cpasswordlbl:false,
+            password: '',cpassword: '', message: '',userNamelbl:false,
+            cpasswordlbl:false,isFocused: false,
+            passwordlbl:false,rememberme:false
         };
     }
  
@@ -30,35 +29,21 @@ class ResetPassword extends Component{
 
      onVerifyOTP() {
         
-         if (!this.state.password || isNaN(this.state.password) || this.state.password.length !== Config.limiters.otpLength) 
+         if (this.state.password.length !== Config.limiters.otpLength) 
          {
-            this.setState({message: 'Enter Password'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+            ToastAndroid.show('Enter Password', ToastAndroid.SHORT);
 
-            });
         } else
-         { 
-            this.setState({message: ''});
-            console.log("confirm",!this.state.cpassword, '== ' + isNaN(this.state.cpassword) + ' -- ' );
-            if(this.state.cpassword)
-                console.log(this.state.cpassword.length !== Config.limiters.otpLength);
-            if (!this.state.cpassword || isNaN(this.state.cpassword) || this.state.cpassword.length !== Config.limiters.otpLength) 
+         {            
+            if (this.state.cpassword.length !== Config.limiters.otpLength) 
             {
-                this.setState({message: 'Enter Confirm Password'}, () => {
-                    ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-                });
+                    ToastAndroid.show('Enter Confirm Password', ToastAndroid.SHORT);
             }else
             {
-                this.setState({message: ''});
                 if(this.state.password == this.state.cpassword){
-                    this.setState({message: 'Password reset'});
-                        
-                       
                         Actions.tab1();
                 }else{
-                    this.setState({message: ' Password does not match'});
-                    ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+                    ToastAndroid.show(' Password does not match', ToastAndroid.SHORT);
                 }
              }   
         }

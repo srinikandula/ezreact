@@ -9,7 +9,9 @@ import Login from './components/Login';
 import ForgotPin from './components/ForgotPin';
 import OtpVerification from './components/OtpVerification';
 import Profile from './components/Profile';
+
 import ResetPassword from './components/ResetPassword';
+import GpsSetting from './components/GpsSetting';
 import SplashScreen from 'react-native-splash-screen';
 
 
@@ -22,6 +24,7 @@ class TabIcon extends Component {
 	      <View style={{flex:1, flexDirection:'column', alignItems:'center', alignSelf:'center', justifyContent: 'center'}}>
 	        <Image 
 	        	cosource={require('./images/logo_icon.png')} style= {{resizeMode: 'contain'}}/>
+						<Text> {this.props.title}</Text>
 	      </View>
 	    );
 	  }
@@ -47,7 +50,7 @@ export default class Navigation extends Component{
 	                    <Scene key="Login"
 	                           component={Login}
 	                           hideNavBar={true}
-	                           initial= {true} 
+														 
 	                    />
 
 	                    <Scene key="ForgotPin"
@@ -61,16 +64,27 @@ export default class Navigation extends Component{
 	                    <Scene key="ResetPassword"
 	                           component={ResetPassword}
 	                           hideNavBar={true}
-	                           
+	                           initial= {true}   
 	                    />
 
 
-	                    <Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" tabBarPosition='bottom'swipeEnabled={false}>
-						    <Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' component={Login} icon={TabIcon} />
-						    <Scene key='tab2' activeTintColor='red' showIcon={true} hideNavBar title='Settings' component={ForgotPin} icon={TabIcon}/>
-						    <Scene key='tab3' activeTintColor='cyan'  hideNavBar title='Profile' component={Profile} icon={TabIcon}/>
-						    <Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
-						  </Scene>
+											<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
+																tabBarPosition='bottom' swipeEnabled={false}>
+												<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
+																																	component={Login} icon={TabIcon} />
+											
+													<Scene key='tab2' tabs={true}   tabBarStyle={styles.tabGPSBar} default="gps" 
+																													tabBarPosition='top' swipeEnabled={true}>
+														<Scene key='gps'  activeTintColor='red'  hideNavBar title='Setting' titleStyle={{color:'blue'}}
+																						component={GpsSetting} icon={TabIcon}/>
+														<Scene key='reports' activeTintColor='red'  hideNavBar title='Profile' titleStyle={{color:'blue'}}
+																					component={Login} icon={TabIcon}/>
+													</Scene>
+
+													<Scene key='tab3' activeTintColor='cyan'  hideNavBar title='Profile' 
+																					component={Profile} icon={TabIcon}/>
+												<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
+											</Scene>
 	                </Scene>
                 </Router>
 			);
@@ -93,5 +107,13 @@ const styles = StyleSheet.create({
   },
   navigationBarTitleStyle: {
     color:'white',
+	},
+	tabGPSBar: {
+    borderTopColor: 'red',
+    borderTopWidth: 1 / PixelRatio.get(),
+    backgroundColor: 'ghostwhite',
+    opacity: 0.98
   },
+
+
 });

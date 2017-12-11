@@ -40,20 +40,12 @@ class Login extends Component{
 
         if (!this.state.userName || isNaN(this.state.userName) || this.state.userName.length >= Config.limiters.userNameLength)
          {
-            this.setState({message: 'Enter a UserName'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-            });
+                ToastAndroid.show('Enter a UserName', ToastAndroid.SHORT);
         }else if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
-            this.setState({message: 'Enter a valid Mobile Number'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-            });
+            
+                ToastAndroid.show('Enter a valid Mobile Number', ToastAndroid.SHORT);
         } else if (!this.state.password) {
-            this.setState({message: 'Enter valid password'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-            });
+                ToastAndroid.show('Enter valid password', ToastAndroid.SHORT);
         } else {
             Axios({
                 method: 'post',
@@ -104,7 +96,7 @@ class Login extends Component{
                   left: 0,
                   fontFamily:'gothamlight',
                   top: ! this.state.userNamelbl ? 18 : 0,
-                  fontSize: ! this.state.userNamelbl ? 20 : 14,
+                  fontSize: ! this.state.userNamelbl ? 16 : 14,
                   color: ! this.state.userNamelbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
@@ -115,7 +107,7 @@ class Login extends Component{
                   left: 0,
                   fontFamily:'gothamlight',
                   top: ! this.state.passwordlbl ? 18 : 0,
-                  fontSize: ! this.state.passwordlbl ? 20 : 14,
+                  fontSize: ! this.state.passwordlbl ? 16 : 14,
                   color: ! this.state.passwordlbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
@@ -126,7 +118,7 @@ class Login extends Component{
                   left: 0,
                   fontFamily:'gothamlight',
                   top: ! this.state.phoneNumberlbl ? 18 : 0,
-                  fontSize: ! this.state.phoneNumberlbl ? 20 : 14,
+                  fontSize: ! this.state.phoneNumberlbl ? 16 : 14,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
                   fontFamily:'gothamlight',
                   padding:3
@@ -172,8 +164,6 @@ class Login extends Component{
                                     value={this.state.password}
                                     onChangeText={(value) => {
                                         this.setState({password: value}, ()=>{
-                                            console.log(value.length);
-                                            console.log(value.length);
                                             if(value.lenght != 0 )
                                                 { 
                                                     this.setState({passwordlbl:true});
@@ -202,7 +192,6 @@ class Login extends Component{
                             </View>
                             <View style={checkForgotStyle}>
                                 <View >
-                                    
                                      <CheckBox 
                                           label='remember Me'
                                           checked= {true}
@@ -239,7 +228,6 @@ class Login extends Component{
                         </View>   
                     </View>
                 </ScrollView>
-                    
                  </View>   
              </CommonBackground>   
         );
@@ -288,6 +276,7 @@ const styles = {
          alignSelf:'stretch',
         textAlign: 'center',
          color: '#e83a13',
+         fontFamily:'gothamlight',
         fontSize: 14,
         padding: 10,
         backgroundColor:'#ffffff'
@@ -300,6 +289,7 @@ const styles = {
     },
     inputStyle: {
         fontFamily:'gothamlight',
+        fontSize: 16,
         marginTop:3,
         backgroundColor: 'transparent'
     },

@@ -1,7 +1,7 @@
 let routes = {
-    //base: 'http://192.168.0.136:3500',
-    base: 'http://13.126.203.242:3500',
-    loginRoute: '/v1/user/login',
+    base: 'http://demo.easygaadi.com/v1',
+    //base: 'http://erp.easygaadi.com',
+    loginRoute: '/group/login',
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

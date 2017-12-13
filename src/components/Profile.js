@@ -286,7 +286,7 @@ const styles = {
         zIndex: 1 
     },
     inputContainerStyle:{
-        margiTop:10,
+        marginTop:10,
         marginBottom:0
     },
     inputStyle: {

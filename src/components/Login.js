@@ -1,7 +1,20 @@
 import React, {Component} from 'react';
-import {View,Image,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import { View,
+    Image,
+    Text,
+    ToastAndroid,
+    TouchableOpacity,
+    ScrollView,
+    Keyboard,
+    Dimensions,
+    BackHandler } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
+import {CustomInput,
+    renderIf,
+    CustomEditText,
+    CustomButton,
+    CustomText,
+    CommonBackground } from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import {Actions,Reducer} from 'react-native-router-flux';

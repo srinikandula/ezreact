@@ -1,8 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+
+
+// Not using this app.js File
+
+
 
 import React, { Component } from 'react';
 import {

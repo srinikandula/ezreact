@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+	Button,
 	AsyncStorage,
 	Icon,
 	ToastAndroid,
@@ -7,7 +8,9 @@ import {
 	Text, Image,
 	View,
 	StyleSheet,
-	PixelRatio
+	PixelRatio,
+	ScrollView,
+	ViewPagerAndroid
 } from 'react-native';
 import { Router, Stack, Scene } from 'react-native-router-flux';
 import Login from './components/Login';
@@ -33,6 +36,21 @@ class TabIcon extends Component {
 	}
 }
 
+class customTabBar extends Component {
+	render() {
+		return (
+			<ScrollView>
+			<View>
+				<Text>First page</Text>
+			</View>
+			<View>
+				<Text>Second page</Text>
+			</View>
+			</ScrollView>
+		);
+	}
+}
+
 export default class Navigation extends Component {
 
 	componentWillMount() {
@@ -41,6 +59,7 @@ export default class Navigation extends Component {
 
 	render() {
 		return (
+			<View style={{flex:1}}>
 			<Router>
 				<Scene key="root">
 					<Scene key="Login"
@@ -79,7 +98,7 @@ export default class Navigation extends Component {
 						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Login} icon={TabIcon} />
 					</Scene>
 					
-					<Scene key = 'root' headerMode="screen" wrap={false} tabs={true} default="trucks" tabBarPosition="top" swipeEnabled={true} >
+					<Scene key = 'root' title='ErpHome' headerMode="screen" wrap={true} tabs={true} default="trucks" tabBarPosition="top" swipeEnabled={true} >
 						<Scene key='ErpHome' title='ErpHome' headerMode="screen" component={ErpHome}/>
 						<Scene key='Drivers'title='Drivers' headerMode="screen" component={Trucks}/>
 						<Scene key='Partys'title='Partys'  headerMode="screen" component={Trucks}/>
@@ -90,6 +109,10 @@ export default class Navigation extends Component {
 
 				</Scene>
 			</Router>
+<View style={{justifyContent: 'flex-end'}}>
+	<Button onPress={()=> {}} title="flex-end"/>
+</View>
+			</View>
 		);
 	}
 
@@ -116,5 +139,5 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1 / PixelRatio.get(),
 		backgroundColor: 'ghostwhite',
 		opacity: 0.98
-	},
+	}
 });

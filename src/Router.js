@@ -88,8 +88,8 @@ export default class Navigation extends Component{
 			return null;
 	}
 		return(
-				 <Router>
-	                <Scene key="root">
+				 <Router >
+	                <Stack key="root">
 	                    <Scene key="Login"
 	                           component={Login}
 	                           hideNavBar={true}
@@ -116,19 +116,19 @@ export default class Navigation extends Component{
 												<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
 																																	component={Login} icon={TabIcon} />
 											
-													<Scene key='tab2' tabs={true}   tabBarStyle={styles.tabGPSBar} default="gps" 
+													<Scene key='tab2' tabs={true} title='Setting'  tabBarStyle={styles.settingtabBar} 
+																												titleStyle={styles.titleStyle} default="gps" 
 																													tabBarPosition='top' swipeEnabled={true}>
-														<Scene key='gps'  activeTintColor='red'  hideNavBar title='Setting' titleStyle={{color:'blue'}}
-																						component={GpsSetting} icon={TabIcon}/>
-														<Scene key='reports' activeTintColor='red'  hideNavBar title='Profile' titleStyle={{color:'blue'}}
-																					component={Login} icon={TabIcon}/>
+														<Scene key='gps'title='Setting'  component={GpsSetting} />
+														<Scene key='reports'   hideNavBar title='Reports' 
+																									component={Login} />
 													</Scene>
 
 													<Scene key='tab3' activeTintColor='cyan'  hideNavBar title='Profile' 
 																					component={Profile} icon={TabIcon}/>
 												<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
 											</Scene>
-	                </Scene>
+	                </Stack>
                 </Router>
 			);
 	}
@@ -145,12 +145,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'ghostwhite',
     opacity: 0.98
   },
-  navigationBarStyle: {
+  settingtabBar: {
     backgroundColor: 'red',
-  },
+	},
+	
   navigationBarTitleStyle: {
     color:'white',
 	},
+	navBar: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'red', // changing navbar color
+  },
+	navTitle: {
+    color: 'black', // changing navbar title color
+  },
 	tabGPSBar: {
     borderTopColor: 'red',
     borderTopWidth: 1 / PixelRatio.get(),

@@ -45,13 +45,6 @@ export default class Navigation extends Component{
 		};
 
 		async getCredentailsData() {
-			/*var value = await this.getCache('credientails');
-			if (value !== null){
-				this.setState({logged: true});
-			}else{
-				console.log('0000','5465000');
-			}*/
-
 			this.getCache((value) => {
 						if (value !== null) {
 								this.setState({logged: true,loading: false});
@@ -59,9 +52,7 @@ export default class Navigation extends Component{
 								this.setState({loading: false})
 						}
 				}
-		);
-
-
+			);
 		 }
 		
 		async getCache(callback){
@@ -80,8 +71,7 @@ export default class Navigation extends Component{
 					console.log('caught error', e);
 					// Handle exceptions
 			}
-	
-	}
+	    }
 	
 
     
@@ -114,7 +104,8 @@ export default class Navigation extends Component{
 
 
 						<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
-											tabBarPosition='bottom' swipeEnabled={false} initial={this.state.logged}>
+														tabBarPosition='bottom' swipeEnabled={false} 
+														>
 							<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
 																												component={Login} icon={TabIcon} />
 						
@@ -141,7 +132,7 @@ export default class Navigation extends Component{
 							<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
 						</Scene>
 						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
-									 tabBarPosition="top" swipeEnabled={true} >
+									 tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
 							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
 							<Scene key='Drivers'title='Drivers' headerMode="float" component={Trucks}/>
 							<Scene key='Partys'title='Partys'  headerMode="float" component={Trucks}/>

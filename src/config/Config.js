@@ -2,6 +2,11 @@ let routes = {
     base: 'http://demo.easygaadi.com/v1',
     //base: 'http://erp.easygaadi.com',
     loginRoute: '/group/login',
+    easygaadiDashBroad: '/admin/erpDashboard',
+
+
+
+
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

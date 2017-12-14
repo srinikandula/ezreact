@@ -145,12 +145,12 @@ class Login extends Component{
     async  storeData(data){
         console.log('in store data',data);
         var easyGaadi = {
-            token:JSON.stringify(data.token),
-        userName : JSON.stringify(data.userName),
-        gpsEnabled: JSON.stringify(data.gpsEnabled),
-        erpEnabled : JSON.stringify(data.erpEnabled),
-        loadEnabled : JSON.stringify(data.loadEnabled),
-        editAccounts : JSON.stringify(data.editAccounts)
+            token:data.token,
+        userName : data.userName,
+        gpsEnabled:data.gpsEnabled,
+        erpEnabled : data.erpEnabled,
+        loadEnabled : data.loadEnabled,
+        editAccounts :data.editAccounts
         }
         try {
             await AsyncStorage.setItem('credientails',JSON.stringify(easyGaadi));

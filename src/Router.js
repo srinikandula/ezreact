@@ -112,7 +112,7 @@ export default class Navigation extends Component{
 
 
 											<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
-																tabBarPosition='bottom' swipeEnabled={false} initial={!this.state.logged}>
+																tabBarPosition='bottom' swipeEnabled={false} initial={this.state.logged}>
 												<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
 																																	component={Login} icon={TabIcon} />
 											

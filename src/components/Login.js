@@ -139,6 +139,7 @@ class Login extends Component{
     async  storeData(data){
         console.log('in store data',data);
         var easyGaadi = {
+            token:JSON.stringify(data.token),
         userName : JSON.stringify(data.userName),
         gpsEnabled: JSON.stringify(data.gpsEnabled),
         erpEnabled : JSON.stringify(data.erpEnabled),

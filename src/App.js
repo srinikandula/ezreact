@@ -1,25 +1,20 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+// from index.js this is where you land
 
 import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
 import Router from './Router';
+import HomeScreen from './components/HomeScreen';
 
-
-
-export default class App extends Component<{}> {
-
+export default class App extends Component {
   render() {
     return (
-       <Router/>
+      <Router/>
     );
   }
 }

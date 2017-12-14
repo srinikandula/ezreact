@@ -1,34 +1,37 @@
-import React, {Component} from 'react';
-import {AsyncStorage,Icon, ToastAndroid, StatusBar,
-  Text,Image,
-  View,
-  StyleSheet,
-  PixelRatio} from 'react-native';
-import {Router, Stack, Scene} from 'react-native-router-flux';
+import React, { Component } from 'react';
+import {
+	AsyncStorage,
+	Icon,
+	ToastAndroid,
+	StatusBar,
+	Text, Image,
+	View,
+	StyleSheet,
+	PixelRatio
+} from 'react-native';
+import { Router, Stack, Scene } from 'react-native-router-flux';
 import Login from './components/Login';
 import ForgotPin from './components/ForgotPin';
 import OtpVerification from './components/OtpVerification';
 import Profile from './components/Profile';
-
 import ResetPassword from './components/ResetPassword';
 import GpsSetting from './components/GpsSetting';
 import SplashScreen from 'react-native-splash-screen';
-
-
+import HomeScreen from './components/HomeScreen';
+import Trucks from './components/Trucks';
+import ErpHome from './components/ErpHome';
 
 class TabIcon extends Component {
-	  render() {
-	    var color = this.props.selected ? 'red' : 'black';
-
-	    return (
-	      <View style={{flex:1, flexDirection:'column', alignItems:'center', alignSelf:'center', justifyContent: 'center'}}>
-	        <Image 
-	        	cosource={require('./images/logo_icon.png')} style= {{resizeMode: 'contain'}}/>
-						<Text> {this.props.title}</Text>
-	      </View>
-	    );
-	  }
+	render() {
+		var color = this.props.selected ? 'red' : 'black';
+		return (
+			<View style={{ flex: 1}}>
+				
+				{/* <Text> {this.props.title}</Text> */}
+			</View>
+		);
 	}
+}
 
 
 
@@ -92,8 +95,7 @@ export default class Navigation extends Component{
 	                <Stack key="root">
 	                    <Scene key="Login"
 	                           component={Login}
-	                           hideNavBar={true}
-														 initial={!this.state.logged}
+	                           hideNavBar={true} initial={!this.state.logged}
 	                    />
 
 	                    <Scene key="ForgotPin"
@@ -111,23 +113,41 @@ export default class Navigation extends Component{
 	                    />
 
 
-											<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
-																tabBarPosition='bottom' swipeEnabled={false} initial={this.state.logged}>
-												<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
-																																	component={Login} icon={TabIcon} />
-											
-													<Scene key='tab2' tabs={true} title='Setting'  tabBarStyle={styles.settingtabBar} 
-																												titleStyle={styles.titleStyle} default="gps" 
-																													tabBarPosition='top' swipeEnabled={true}>
-														<Scene key='gps'title='Setting'  component={GpsSetting} />
-														<Scene key='reports'   hideNavBar title='Reports' 
-																									component={Login} />
-													</Scene>
+						<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
+											tabBarPosition='bottom' swipeEnabled={false} initial={this.state.logged}>
+							<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
+																												component={Login} icon={TabIcon} />
+						
+								<Scene key='tab2' headerMode="float" tabs={true} title='Setting' 
+																	indicatorStyle={styles.indicatorStyle} 
+																	tabBarStyle={styles.settingtabBar} 
+																	titleStyle={styles.navTitle} 
+																	default="gps" 
+																	activeTintColor="#000000"
+																	inactiveTintColor="#000000"
+																	tabBarPosition='top' 
+																	swipeEnabled={true}
+																	>
+									<Scene key='gps' headerMode="float" duration={1} 
+																		title='Setting'  
+																		component={GpsSetting} />
+									<Scene key='reports' headerMode="float" duration={1} 
+																			hideNavBar title='Reports' 
+																			component={Login} />
+								</Scene>
 
-													<Scene key='tab3' activeTintColor='cyan'  hideNavBar title='Profile' 
-																					component={Profile} icon={TabIcon}/>
-												<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
-											</Scene>
+								<Scene key='tab3' activeTintColor='cyan'  hideNavBar title='Profile' 
+																component={Profile} icon={TabIcon}/>
+							<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
+						</Scene>
+						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
+									 tabBarPosition="top" swipeEnabled={true} >
+							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
+							<Scene key='Drivers'title='Drivers' headerMode="float" component={Trucks}/>
+							<Scene key='Partys'title='Partys'  headerMode="float" component={Trucks}/>
+							<Scene key='Payments'title='Payments'  headerMode="float" component={Trucks}/>
+							<Scene key='Loads'title='Loads'  headerMode="float" component={Trucks}/>
+						</Scene>
 	                </Stack>
                 </Router>
 			);
@@ -146,28 +166,29 @@ const styles = StyleSheet.create({
     opacity: 0.98
   },
   settingtabBar: {
-    backgroundColor: 'red',
+    borderTopColor: 'darkgrey',
+    borderTopWidth: 1 / PixelRatio.get(),
+    backgroundColor: 'ghostwhite',
+	opacity: 0.98,
+	tintColor: 'blue', 
 	},
-	
+	indicatorStyle:{
+		backgroundColor:'#000000'
+	  },
   navigationBarTitleStyle: {
     color:'white',
-	},
-	navBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red', // changing navbar color
   },
+	
+	navigationBarStyle: {
+		backgroundColor: 'red',
+	},
 	navTitle: {
     color: 'black', // changing navbar title color
   },
 	tabGPSBar: {
-    borderTopColor: 'red',
-    borderTopWidth: 1 / PixelRatio.get(),
-    backgroundColor: 'ghostwhite',
-    opacity: 0.98
-  },
-
-
+		borderTopColor: 'red',
+		borderTopWidth: 1 / PixelRatio.get(),
+		backgroundColor: 'ghostwhite',
+		opacity: 0.98
+	},
 });

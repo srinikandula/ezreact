@@ -1,13 +1,6 @@
 import React, {Component} from 'react';
-import { View,
-    Image,
-    Text,
-    ToastAndroid,
-    TouchableOpacity,
-    ScrollView,
-    Keyboard,
-    Dimensions,
-    BackHandler } from 'react-native';
+import {View,Image,AsyncStorage,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,
     renderIf,
@@ -18,25 +11,24 @@ import {CustomInput,
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import {Actions,Reducer} from 'react-native-router-flux';
+import Axios from 'axios';
 
 class Login extends Component{
-     state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
-           phoneNumberlbl:false,isFocused: false,passwordlbl:false,rememberme:false};
-
+     state = {};
+    
     constructor(props) {
         super(props);
         this.state = {
-            userNamelbl: false,
-             phoneNumberlbl:false,
-             passwordlbl:false,
+            userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
+            phoneNumberlbl:false,isFocused: false,passwordlbl:false,rememberme:false
         };
     }
 
-
+ 
     componentWillMount() {
       // do stuff while splash screen is shown
         // After having done stuff (such as async tasks) hide the splash screen
-       SplashScreen.hide();
+       SplashScreen.hide();   
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
     componentWillUnmount(){
@@ -45,44 +37,130 @@ class Login extends Component{
 
     onBackAndroid() {
      Actions.pop();
+     //var value = await this.getCache('credientails');
     }
 
+
+    async getCache(key){
+        try{
+            console.log('riyaz',key);
+            var value = await AsyncStorage.getItem('credientails');
+            console.log('credientails',key);
+            if (value !== null){
+               console.log('riyaz',value)
+              } else {
+                console.log('value',value)
+              }
+
+            return value.json();
+        }
+        catch(e){
+            console.log('riyaz');
+            console.log('caught error', e);
+            // Handle exceptions
+        }
+    
+    }
+
+    
      onSignIn() {
-        
-
-
-        if (!this.state.userName || isNaN(this.state.userName) || this.state.userName.length >= Config.limiters.userNameLength)
+        const self = this;
+        if (this.state.userName.length < Config.limiters.userNameLength)
          {
-                ToastAndroid.show('Enter a UserName', ToastAndroid.SHORT);
-        }else if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
+               return ToastAndroid.show('Enter a UserName', ToastAndroid.SHORT);
+        }
+         if (this.state.phoneNumber.length < Config.limiters.mobileLength) {
             
-                ToastAndroid.show('Enter a valid Mobile Number', ToastAndroid.SHORT);
-        } else if (!this.state.password) {
-                ToastAndroid.show('Enter valid password', ToastAndroid.SHORT);
-        } else {
+            return ToastAndroid.show('Enter a valid Mobile Number', ToastAndroid.SHORT);
+        }  
+        if (this.state.password.length < 4) {
+              return  ToastAndroid.show('Enter valid password', ToastAndroid.SHORT);
+        } 
+
+        console.log("url--->"+ ""+ this.state.userName+','+ this.state.phoneNumber+","
+            +"sdfasd--"+this.state.password
+        );
             Axios({
                 method: 'post',
                 url: Config.routes.base + Config.routes.loginRoute,
                 data: {
-                    userName: Number(this.state.userName),
-                     phone: Number(this.state.phoneNumber),
-                    password: this.state.password
+                    userName: this.state.userName,
+                    password: this.state.password,
+                    contactPhone: this.state.phoneNumber
                 }
             }).then((response) => {
+                console.log("response",response);
                 if (response.data.status) {
-                    this.storeNumber(this.state.phoneNumber);
+                    //console.log("response.data",response.data);
+                    this.storeData(response.data);
+                   
 
-                    Actions.currentorder();
+                    Actions.root();
                 } else {
-                    this.setState({message: response.data.message}, () => {
-                        ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        
+                        message = message+current_value;
+                        //a b c
                     });
+                    console.log(message);
+                   /* for(let i = 0; i < response.data.messages; i++){
+                        message= response.data.messages[i]; 
+                    
+                    }*/
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                  
                 }
             }).catch((error) => {
                 console.log('login post error--->', error)
             })
+        
+    }
+
+    getUserToken() {
+        ToastAndroid.show('wrong', ToastAndroid.SHORT);
+        
+        AsyncStorage.getItem('advaitha:usertoken', (err, token) => {
+            console.log('asdfasdfasdfgad',err,token);
+            if (err) {
+                ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Some', ToastAndroid.SHORT);
+                
+                callback(token);
+            }
+        });
+    }
+
+    storeUserToken(token, callback){
+        try {
+            AsyncStorage.setItem("advaitha:usertoken", token);
+            callback(token);
+        } catch (error) {
+            ToastAndroid.show('something went wrong', ToastAndroid.SHORT);
         }
     }
+
+    async  storeData(data){
+        console.log('in store data',data);
+        var easyGaadi = {
+            token:JSON.stringify(data.token),
+        userName : JSON.stringify(data.userName),
+        gpsEnabled: JSON.stringify(data.gpsEnabled),
+        erpEnabled : JSON.stringify(data.erpEnabled),
+        loadEnabled : JSON.stringify(data.loadEnabled),
+        editAccounts : JSON.stringify(data.editAccounts)
+        }
+        try {
+            await AsyncStorage.setItem('credientails',JSON.stringify(easyGaadi));
+            console.log('easyGaadi',);
+        } catch (error) {
+            console.log('something went wrong');
+        }
+    }
+
+    
    
 
  render() {
@@ -168,28 +246,6 @@ class Login extends Component{
                             />
                             </View>
                             <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
-                                <Text style={passwordlabelStyle} >
-                                    Password
-                                </Text> 
-                                <CustomEditText
-                                    secureTextEntry
-                                    inputTextStyle={inputStyle}
-                                    value={this.state.password}
-                                    onChangeText={(value) => {
-                                        this.setState({password: value}, ()=>{
-                                            if(value.lenght != 0 )
-                                                { 
-                                                    this.setState({passwordlbl:true});
-                                                }else{
-                                                    this.setState({passwordlbl: false});
-                                                }
-                                        })
-
-                                    }}
-                                />
-                            </View>
-
-                             <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
                                 </Text>  
@@ -203,6 +259,21 @@ class Login extends Component{
                                                 }}
                                 />
                             </View>
+                            <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
+                                <Text style={passwordlabelStyle} >
+                                    Password
+                                </Text> 
+                                <CustomEditText
+                                    secureTextEntry
+                                    inputTextStyle={inputStyle}
+                                    value={this.state.password}
+                                    onChangeText={(value) => {
+                                        this.setState({password: value,passwordlbl:true})
+                                    }}
+                                />
+                            </View>
+
+                             
                             <View style={checkForgotStyle}>
                                 <View >
                                      <CheckBox 

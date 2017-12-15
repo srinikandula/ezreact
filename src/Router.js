@@ -20,6 +20,7 @@ import SplashScreen from 'react-native-splash-screen';
 import HomeScreen from './components/HomeScreen';
 import Trucks from './components/Trucks';
 import ErpHome from './components/ErpHome';
+import ERPCategory from './components/ERPCategory';
 
 class TabIcon extends Component {
 	render() {
@@ -139,6 +140,8 @@ export default class Navigation extends Component{
 							<Scene key='Payments'title='Payments'  headerMode="float" component={Trucks}/>
 							<Scene key='Loads'title='Loads'  headerMode="float" component={Trucks}/>
 						</Scene>
+
+						<Scene key='category' component={ERPCategory} hideNavBar={true}/>
 	                </Stack>
                 </Router>
 			);

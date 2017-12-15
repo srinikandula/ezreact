@@ -3,7 +3,7 @@ let routes = {
     //base: 'http://erp.easygaadi.com',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
-
+    totalRevenueByVechicle:'/trips/find/revenueByVehicle',
 
 
 

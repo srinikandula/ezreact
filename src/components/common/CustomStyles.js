@@ -21,7 +21,6 @@ justifyContent: 'center',
 paddingLeft: 40
 },
 Category: {
-
     flexDirection: 'row',
     //justifyContent: 'space-around',
     alignItems: 'center',
@@ -55,7 +54,35 @@ expiryDateView:{flexDirection:'row', justifyContent:'space-around'},
 expiryMainContainer:{alignSelf:'stretch',padding:2 },
 expirySubContainer:{justifyContent:'space-around',height:60,alignSelf:'stretch',padding:3,borderWidth:0.5,flex:1},
 expiryCount:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:16,color:'blue',flex:1},
-expiryLabel:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:12,flex:1}
+expiryLabel:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:12,flex:1},
+headText: {
+        flex:1,
+        fontFamily:'gothamlight',
+        alignItems:'center',
+        color: 'black',
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize: 16
+        },
+    erpCategory:{
+        flexDirection: 'column',
+        //justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#ffffff'},
+    erpText:{
+        flex:1,
+        fontFamily:'gothamlight',
+        alignItems:'center',
+        color: 'black',
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize: 16
+    },
+    erpCategoryItems:{
+        flexDirection: 'row',
+        //justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#ffffff'},
 };
 
 export default CustomStyles;

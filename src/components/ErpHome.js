@@ -5,6 +5,7 @@ import { View, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 're
 import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';
+import {Actions,Reducer} from 'react-native-router-flux';
 import Axios from 'axios';
 const category = [
     {
@@ -15,14 +16,11 @@ const category = [
     }]
 
 export default class ErpHome extends Component {
-    state = { categoryBgColor: false, erpDashBroadData: {},expirydetails:[] ,update:false};
+    state = { categoryBgColor: false,token:'', erpDashBroadData: {},expirydetails:[] ,update:false};
 
     componentWillMount() {
         this.setState({ order: this.props.order });
         this.getCredentailsData();
-       
-        
-
     }
 
    
@@ -32,8 +30,7 @@ export default class ErpHome extends Component {
             if (value !== null) {
                 var egObj = {};
                 egObj = JSON.parse(value);
-                console.log('rock ==>', Config.routes.base + Config.routes.easygaadiDashBroad);
-                console.log('token ==>', "" + egObj.token.toString());
+                this.setState({token:egObj.token});
                 Axios({
                     method: 'get',
                     headers: { 'token': egObj.token },
@@ -108,10 +105,31 @@ export default class ErpHome extends Component {
 
     getExpiryDateView(){
         return this.state.expirydetails.map((expirydetail, i) => {
-           console.log("sadasd",expirydetail.count,expirydetail.label);
+         
             return   <ExpiryDateItems key={i} style={{flex:1}}  count={expirydetail.count} label={expirydetail.label}  />
             
        });
+    }
+
+    callcategoryScreen(data){
+        switch(data) {
+            case "Revenue":
+               Actions.category({
+                token: this.state.token,
+                Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
+                label:'Total Revenue Details'
+                });
+
+                break;
+            case "Expense":
+            console.log("Expense",data);
+                break;
+            case "Payments":
+            console.log("Expense",data);
+                break;
+            default:
+                text = "I have never heard of that fruit...";
+        }
     }
 
     render() {
@@ -120,7 +138,7 @@ export default class ErpHome extends Component {
             <View style={CustomStyles.ViewStyle}>
             <ScrollView>
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Revenue') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -143,7 +161,7 @@ export default class ErpHome extends Component {
                 </TouchableOpacity>
                 {/* this.renderCategories() */}
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Expense') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -165,7 +183,7 @@ export default class ErpHome extends Component {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Payments') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -181,10 +199,11 @@ export default class ErpHome extends Component {
                                 From all vehicles
                         </Text>
                             <Text style={CustomStyles.amountColor}>
-                                {`payables       ₹${this.state.erpDashBroadData.pendingDue}`}
+                            {`payables   ₹0`}
                             </Text>
                             <Text style={CustomStyles.amountColor}>
-                                {`Receivables  ₹1,20,000`}
+                                
+                                {`Receivables      ₹${this.state.erpDashBroadData.pendingDue}`}
                             </Text>
                         </View>
                     </View>

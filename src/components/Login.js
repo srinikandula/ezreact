@@ -76,10 +76,6 @@ class Login extends Component{
         if (this.state.password.length < 4) {
               return  ToastAndroid.show('Enter valid password', ToastAndroid.SHORT);
         } 
-
-        console.log("url--->"+ ""+ this.state.userName+','+ this.state.phoneNumber+","
-            +"sdfasd--"+this.state.password
-        );
             Axios({
                 method: 'post',
                 url: Config.routes.base + Config.routes.loginRoute,
@@ -93,22 +89,12 @@ class Login extends Component{
                 if (response.data.status) {
                     //console.log("response.data",response.data);
                     this.storeData(response.data);
-                   
-
                     Actions.root();
                 } else {
-
                     let message ="";
                     response.data.messages.forEach(function(current_value) {
-                        
                         message = message+current_value;
-                        //a b c
                     });
-                    console.log(message);
-                   /* for(let i = 0; i < response.data.messages; i++){
-                        message= response.data.messages[i]; 
-                    
-                    }*/
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                   
                 }

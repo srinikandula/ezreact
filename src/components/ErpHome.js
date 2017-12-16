@@ -1,9 +1,12 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-
+import {ExpiryDateItems} from  './common';
+import Config from '../config/Config';
+import {Actions,Reducer} from 'react-native-router-flux';
+import Axios from 'axios';
 const category = [
     {
         'name': 'Revenue',
@@ -13,36 +16,129 @@ const category = [
     }]
 
 export default class ErpHome extends Component {
-    state = { categoryBgColor: false };
+    state = { categoryBgColor: false,token:'', erpDashBroadData: {},expirydetails:[] ,update:false};
 
-    renderCategories() {
-        return category.map((category, i) => {
-            <View key={i} style={CustomStyles.Category}>
-                <Image
-                    style={CustomStyles.imageDimensions}
-                    resizeMode="contain"
-                    source={require('../images/revenue.png')}
-                />
-                <View style={CustomStyles.textContainer}>
-                    <Text style={CustomStyles.headingTextColor}>
-                        {category.name}
-                    </Text>
-                    <Text style={CustomStyles.subHeadingTextColor}>
-                        {category.subname}
-                    </Text>
-                    <Text style={CustomStyles.amountColor}>
-                        {category.amount}
-                    </Text>
-                </View>
-            </View>
-        });
+    componentWillMount() {
+        this.setState({ order: this.props.order });
+        this.getCredentailsData();
+    }
+
+   
+
+    async getCredentailsData() {
+        this.getCache((value) => {
+            if (value !== null) {
+                var egObj = {};
+                egObj = JSON.parse(value);
+                this.setState({token:egObj.token});
+                Axios({
+                    method: 'get',
+                    headers: { 'token': egObj.token },
+                    url: Config.routes.base + Config.routes.easygaadiDashBroad
+                })
+                    .then((response) => {
+                        //result{expensesTotal: 236497, pendingDue: 599461, totalRevenue: 1114081, expiring: {…}}
+
+                        if (response.data.status) {
+                            console.log('baskets ==>', response.data);
+                            
+                            //Object.values()== array convetion
+                            var temp =response.data.result.expiring;
+                            var Aarr =[];
+                            var tempObj ={label:"",count:""};
+                            
+                            tempObj.label="   Permit   ";
+                            tempObj.count = temp.permitExpiryCount;
+                            Aarr.push(tempObj);
+                             tempObj ={label:"",count:""};
+                            tempObj.label="Insurance";
+                            tempObj.count = temp.insuranceExpiryCount;
+                            Aarr.push(tempObj);
+                             tempObj ={label:"",count:""};
+                            tempObj.label="  Fitness  ";
+                            tempObj.count = temp.fitnessExpiryCount;
+                            Aarr.push(tempObj);
+                             tempObj ={label:"",count:""};
+                            tempObj.label="Pollution";
+                            tempObj.count = temp.pollutionExpiryCount;
+                            Aarr.push(tempObj);
+                             tempObj ={label:"",count:""};
+                            tempObj.label="     Tax      ";
+                            tempObj.count = temp.taxExpiryCount;
+                            Aarr.push(tempObj);
+                            //this.onChange();
+                            this.setState({ erpDashBroadData: response.data.result,expirydetails:Aarr });
+                            console.log('expiry ==>', this.state.expirydetails);
+
+
+                        } else {
+                            console.log('error in baskets ==>', response);
+                        }
+
+                    }).catch((error) => {
+                        console.log('error in baskets ==>', error);
+                    })
+            } else {
+                this.setState({ loading: false })
+            }
+        }
+        );
+    }
+    async getCache(callback) {
+        try {
+            var value = await AsyncStorage.getItem('credientails');
+            console.log('credientails', value);
+            if (value !== null) {
+                console.log('riyaz', value);
+            } else {
+                console.log('value', value);
+            }
+            callback(value);
+        }
+        catch (e) {
+            console.log('caught error', e);
+            // Handle exceptions
+        }
+    }
+
+    
+
+    getExpiryDateView(){
+        return this.state.expirydetails.map((expirydetail, i) => {
+         
+            return   <ExpiryDateItems key={i} style={{flex:1}}  count={expirydetail.count} label={expirydetail.label}  />
+            
+       });
+    }
+
+    callcategoryScreen(data){
+        switch(data) {
+            case "Revenue":
+               Actions.category({
+                token: this.state.token,
+                Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
+                label:'Total Revenue Details'
+                });
+
+                break;
+            case "Expense":
+            console.log("Expense",data);
+                break;
+            case "Payments":
+            console.log("Expense",data);
+                break;
+            default:
+                text = "I have never heard of that fruit...";
+        }
     }
 
     render() {
         return (
+            
             <View style={CustomStyles.ViewStyle}>
+            <ScrollView>
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Revenue') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -58,14 +154,14 @@ export default class ErpHome extends Component {
                                 From all vehicles
                         </Text>
                             <Text style={CustomStyles.amountColor}>
-                                10000000
-                        </Text>
+                            {`₹${this.state.erpDashBroadData.totalRevenue}`}
+                            </Text>
                         </View>
                     </View>
                 </TouchableOpacity>
                 {/* this.renderCategories() */}
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Expense') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -81,13 +177,13 @@ export default class ErpHome extends Component {
                                 From all vehicles
                         </Text>
                             <Text style={CustomStyles.amountColor}>
-                                2000000
-                        </Text>
+                                {`₹${this.state.erpDashBroadData.expensesTotal}`}
+                            </Text>
                         </View>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Payments') }}
                 >
                     <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                         <Image
@@ -97,42 +193,44 @@ export default class ErpHome extends Component {
                         />
                         <View style={CustomStyles.textContainer}>
                             <Text style={CustomStyles.headingTextColor}>
-                            payments
+                                payments
                         </Text>
                             <Text style={CustomStyles.subHeadingTextColor}>
                                 From all vehicles
                         </Text>
                             <Text style={CustomStyles.amountColor}>
-                               {`payables       ₹2,50,000`}
-                        </Text>
-                        <Text style={CustomStyles.amountColor}>
-                               {`Receivables  ₹1,20,000`}
-                        </Text>
+                            {`payables   ₹0`}
+                            </Text>
+                            <Text style={CustomStyles.amountColor}>
+                                
+                                {`Receivables      ₹${this.state.erpDashBroadData.pendingDue}`}
+                            </Text>
                         </View>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }) }}
-                >
-                    <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                
+                    <View style={[CustomStyles.ECategory,]}>
                         <Image
                             style={CustomStyles.imageDimensions}
                             resizeMode="contain"
                             source={require('../images/expirydetails.png')}
                         />
-                        <View style={CustomStyles.textContainer}>
+                        <View style={CustomStyles.EtextContainer}>
                             <Text style={CustomStyles.headingTextColor}>
                                 Expiry Details
-                        </Text>
+                            </Text>
                             <Text style={CustomStyles.subHeadingTextColor}>
                                 From all vehicles
-                        </Text>
-                            <Text style={CustomStyles.amountColor}>
-                                1000000
-                        </Text>
+                            </Text>
+                            <ScrollView horizontal={true}>
+                            {/* <View style={{alignSelf: 'stretch',alignItems: 'stretch',  flexDirection:'row',padding:2}}> */}
+                                <View style={CustomStyles.expiryDateView}>
+                                    {this.getExpiryDateView()}
+                                </View>
+                            </ScrollView>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </ScrollView>
             </View>
         );
     }

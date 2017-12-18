@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View,BackHandler, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';
@@ -21,8 +21,16 @@ export default class ErpHome extends Component {
     componentWillMount() {
         this.setState({ order: this.props.order });
         this.getCredentailsData();
+        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+    }
+    componentWillUnmount(){
+     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
 
+    onBackAndroid() {
+        //Actions.pop();
+        //var value = await this.getCache('credientails');
+       }
    
 
     async getCredentailsData() {
@@ -114,15 +122,21 @@ export default class ErpHome extends Component {
     callcategoryScreen(data){
         switch(data) {
             case "Revenue":
-               Actions.category({
+               Actions.erpcategory({
                 token: this.state.token,
                 Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
+                mode:data,
                 label:'Total Revenue Details'
                 });
 
                 break;
             case "Expense":
-            console.log("Expense",data);
+            Actions.erpcategory({
+                token: this.state.token,
+                Url: Config.routes.base + Config.routes.totalExpensesForAllVehicles,
+                mode:data,
+                label:'Total Expenses Details'
+                });
                 break;
             case "Payments":
             console.log("Expense",data);

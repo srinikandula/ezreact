@@ -4,6 +4,9 @@ let routes = {
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle',
+    detailsRevenueFromVechicle:'/party/vehiclePayments/',
+    totalExpensesForAllVehicles:'/expense/groupByVehicle',
+    detailsExpensesForAllVehicles:'/expense/vehicleExpense/:',
 
 
 

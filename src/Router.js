@@ -21,6 +21,7 @@ import HomeScreen from './components/HomeScreen';
 import Trucks from './components/Trucks';
 import ErpHome from './components/ErpHome';
 import ERPCategory from './components/ERPCategory';
+import ERPSubCategory from './components/ERPSubCategory';
 
 class TabIcon extends Component {
 	render() {
@@ -83,7 +84,7 @@ export default class Navigation extends Component{
 	}
 		return(
 				 <Router >
-	                <Stack key="root">
+	                <Scene key="root">
 	                    <Scene key="Login"
 	                           component={Login}
 	                           hideNavBar={true} initial={!this.state.logged}
@@ -140,9 +141,13 @@ export default class Navigation extends Component{
 							<Scene key='Payments'title='Payments'  headerMode="float" component={Trucks}/>
 							<Scene key='Loads'title='Loads'  headerMode="float" component={Trucks}/>
 						</Scene>
-
-						<Scene key='category' component={ERPCategory} hideNavBar={true}/>
-	                </Stack>
+						<Scene key = 'erpcategory'>
+							<Scene key='category' component={ERPCategory} hideNavBar={false}/>
+						</Scene>
+						<Scene key = 'erpsubcategory'>
+							<Scene key='subcategory' component={ERPSubCategory} hideNavBar={false}/>
+						</Scene>
+	                </Scene>
                 </Router>
 			);
 	}

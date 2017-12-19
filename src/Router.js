@@ -22,6 +22,7 @@ import Trucks from './components/Trucks';
 import ErpHome from './components/ErpHome';
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
+import ExpiryDate from './components/ExpiryDate';
 
 class TabIcon extends Component {
 	render() {
@@ -134,7 +135,7 @@ export default class Navigation extends Component{
 							<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
 						</Scene>
 						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
-									 tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
+									 tabBarPosition="top" swipeEnabled={true} >
 							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
 							<Scene key='Drivers'title='Drivers' headerMode="float" component={Trucks}/>
 							<Scene key='Partys'title='Partys'  headerMode="float" component={Trucks}/>
@@ -146,6 +147,9 @@ export default class Navigation extends Component{
 						</Scene>
 						<Scene key = 'erpsubcategory'>
 							<Scene key='subcategory' component={ERPSubCategory} hideNavBar={false}/>
+						</Scene>
+						<Scene key = 'erpExpiryDate' initial={this.state.logged}>
+							<Scene key='erpExpiryDate' component={ExpiryDate} hideNavBar={false}/>
 						</Scene>
 	                </Scene>
                 </Router>

@@ -80,7 +80,7 @@ headText: {
     },
     erpHeaderText:{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        fontFamily:'gothammedium',
         alignItems:'center',
         color: '#1e4495',
         fontSize: 16,
@@ -148,26 +148,59 @@ headText: {
 
     erpSubCatHeaderText:{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        fontFamily:'gothammedium',
         alignItems:'center',
         color: '#1e4495',
         fontSize: 15,
         padding:2,
         borderWidth:0,
         borderBottomWidth :0,
-        borderBottomColor:'black'
+        borderBottomColor:'black',
+        padding:2
     },
     erpSubCatText:{
         alignSelf:'stretch',
         fontFamily:'gothamlight',
         alignItems:'center',
         color: '#727272',
-        fontSize: 12,
+        fontSize: 14,
         padding:2,
         borderWidth:0,
         borderBottomWidth :0,
         borderBottomColor:'black'
     },
+    epiryButtons: {
+        width:100,
+        fontFamily:'gothamlight',
+        justifyContent:'center',
+            alignSelf:'center',
+            alignItems:'center',
+            textAlign:'center',
+           margin:5,
+           padding:15,
+           color:'black',
+           backgroundColor:'#ffffff',
+           borderRadius:25,
+           borderWidth: 1,
+           borderColor: 'black',
+           height:45
+         },
+         epirySelectedButtons: {
+            width:100,
+            fontFamily:'gothamlight',
+            justifyContent:'center',
+            alignSelf:'center',
+            alignItems:'center',
+            textAlign:'center',
+            margin:5,
+            padding:15,
+            color:'white',
+            backgroundColor:'#1e4495',
+            borderRadius:25,
+            borderWidth: 1,
+            borderColor: 'transparent',
+            height:45
+            },    
 
 };
 

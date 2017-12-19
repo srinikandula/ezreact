@@ -81,6 +81,7 @@ export default class ErpHome extends Component {
 
                         } else {
                             console.log('error in baskets ==>', response);
+                            this.setState({ erpDashBroadData: [],expirydetails:[] });
                         }
 
                     }).catch((error) => {
@@ -139,7 +140,13 @@ export default class ErpHome extends Component {
                 });
                 break;
             case "Payments":
-            console.log("Expense",data);
+                console.log("Expense",data);
+                Actions.erpcategory({
+                    token: this.state.token,
+                    Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                    mode:data,
+                    label:'Total Payments Details'
+                });
                 break;
             default:
                 text = "I have never heard of that fruit...";

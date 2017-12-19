@@ -14,6 +14,7 @@ export default class ERPCategory extends Component {
         categoryBgColor: false,
         recordsList: [], 
         expenses: [], 
+        paymentsParties: [], 
         totalExpenses:{
             totalDieselExpense: 0,
             totaltollExpense: 0,
@@ -24,6 +25,11 @@ export default class ERPCategory extends Component {
             grossFreight: 0,
             grossExpenses: 0,
             grossRevenue: 0
+        },
+        paymentsGrossAmounts: {
+            grossFreight: 0,
+            grossExpenses: 0,
+            grossDue: 0
         },
         dechileID:''
     };
@@ -43,6 +49,8 @@ export default class ERPCategory extends Component {
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                     }else if(self.props.mode == 'Revenue'){
                         self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
+                    }else if(self.props.mode == 'Payments'){
+                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                     }
                     
                 } else {
@@ -66,19 +74,24 @@ export default class ERPCategory extends Component {
     constructor() {
         super();
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.state = {
+        State = {
             categoryBgColor: false,
             grossAmounts: {
-                grossFreight: 0,
-                grossExpenses: 0,
-                grossRevenue: 0
-            },
-            totalExpenses:{
-                totalDieselExpense: 0,
-                totaltollExpense: 0,
-                totalmExpense: 0,
-                totalmisc: 0
+                    grossFreight: 0,
+                    grossExpenses: 0,
+                    grossRevenue: 0
                 },
+            totalExpenses:{
+                    totalDieselExpense: 0,
+                    totaltollExpense: 0,
+                    totalmExpense: 0,
+                    totalmisc: 0
+                },
+            paymentsGrossAmounts: {
+                    grossFreight: 0,
+                    grossExpenses: 0,
+                    grossDue: 0
+                },     
             dataSource: ds.cloneWithRows(['row 1', 'row 2']),
         };
     }
@@ -99,7 +112,7 @@ export default class ERPCategory extends Component {
                Actions.erpsubcategory({
                 token: self.props.token,
                 Url: Config.routes.base + Config.routes.detailsRevenueFromVechicle+truckID,
-                label:'Total Revenue From '  +truckNum +""+ truckAmount,
+                label:'Total Revenue From '  +truckNum +":  "+ truckAmount,
                 mode:self.props.mode
                 });
 
@@ -109,12 +122,18 @@ export default class ERPCategory extends Component {
             Actions.erpsubcategory({
                 token: self.props.token,
                 Url: Config.routes.base + Config.routes.detailsExpensesForAllVehicles+truckID,
-                label:'Total Revenue From '  +truckNum +""+ truckAmount,
+                label:'Total Expense From '  +truckNum +"  "+ truckAmount,
                 mode:self.props.mode
                 });
                 break;
             case "Payments":
-            console.log("Expense",data);
+            console.log("Payments","data");
+                Actions.erpsubcategory({
+                    token: self.props.token,
+                    Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
+                    label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
+                    mode:self.props.mode
+                    });
                 break;
             default:
                 text = "I have never heard of that fruit...";
@@ -160,7 +179,7 @@ export default class ERPCategory extends Component {
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={CustomStyles.erpText}>{item.attrs.truckName}</Text>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.attrs.truckName}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.totalFreight}</Text>
@@ -204,13 +223,16 @@ export default class ERPCategory extends Component {
                                 <Text style={CustomStyles.erpHeaderText}>V.No</Text>
                             </View>
                             <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>Freight</Text>
+                                <Text style={CustomStyles.erpHeaderText}>Diesel</Text>
                             </View>
                             <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>Expense</Text>
+                                <Text style={CustomStyles.erpHeaderText}>Toll</Text>
                             </View>
                             <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>Revenue</Text>
+                                <Text style={CustomStyles.erpHeaderText}>Maint..</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpHeaderText}>miscel..</Text>
                             </View>
                         </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
@@ -225,10 +247,13 @@ export default class ERPCategory extends Component {
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={CustomStyles.erpText}>{item.regNumber}</Text>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.regNumber}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.exps[0].dieselExpense}</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpText}>{item.exps[0].tollExpense}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.exps[0].mExpense}</Text>
@@ -245,18 +270,85 @@ export default class ERPCategory extends Component {
                                 <Text style={CustomStyles.erpFooterText}>Total</Text>
                             </View>
                             <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpFooterText}>{this.state.grossAmounts.totaltollExpense}</Text>
-                            </View>
-                           <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpFooterText}>{this.state.grossAmounts.totalmExpense}</Text>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalDieselExpense}</Text>
                             </View>
                             <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpFooterText}>{this.state.grossAmounts.totalmisc}</Text>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totaltollExpense}</Text>
+                            </View>
+                           <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmExpense}</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmisc}</Text>
                             </View> 
                         </View>
                     </View>
                 </View>
             );
+                break;
+            case "Payments":
+                return (
+                    <View style={CustomStyles.viewStyle}>
+                        <View style={CustomStyles.erpCategory}>
+                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <View style={CustomStyles.erpCategoryHeaderItems}>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpHeaderText}>Party</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpHeaderText}>Freight</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpHeaderText}>Paid</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpHeaderText}>Due</Text>
+                                </View>
+                            </View>
+                            <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
+                                data={this.state.paymentsParties}
+                                renderItem={({ item }) =>
+                                <TouchableOpacity
+                                    onPress={() => { this.setState({
+                                                        categoryBgColor: !this.state.categoryBgColor
+                                                        });
+                                                        this.callSubCategoryScreen(item.attrs.partyName,'',item.id) }}
+                                >
+                            
+                                    <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.attrs.partyName}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpText}>{item.totalFright}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpText}>{item.totalPayment}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpText}>{item.totalDue}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                }
+                                keyExtractor={item => item.id} />
+                            <View style={CustomStyles.erpCategoryFooterItems}>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>Total</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.paymentsGrossAmounts.grossFreight}</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.paymentsGrossAmounts.grossExpenses}</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.paymentsGrossAmounts.grossDue}</Text>
+                                </View> 
+                            </View>
+                        </View>
+                    </View>
+                );
                 break;
             
         }

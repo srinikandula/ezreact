@@ -13,7 +13,9 @@ export default class ERPSubCategory extends Component {
     state = {
         trips: [], 
         expenses:[],
+        payementsResults:[],
         totalExpenses:{},
+        totalPendingPayments:{},
         totalRevenue: {
         }
     };
@@ -26,16 +28,20 @@ export default class ERPSubCategory extends Component {
             url: self.props.Url
         })
             .then((response) => {
-                console.log('sub expenses ==>', response.data.expenses);
-                console.log('sub totalExpenses expenses ==>', response.data.totalExpenses);
+               
 
                 if (response.data.status) {
                     if(self.props.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                     }else if(self.props.mode == 'Revenue'){
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
-                    }
-                       
+                    
+                    }else if(self.props.mode == 'Payments'){
+                        console.log('.props.Url ==>', self.props.Url);
+                        console.log('sub payementsResults ==>', response.data.results);
+                        console.log('sub tpayementsResults  ==>', response.data.totalPendingPayments);
+                        self.setState({payementsResults:response.data.results,totalPendingPayments: response.data.totalPendingPayments});
+                    }                       
                 } else {
                     console.log('error in baskets ==>', response);
                 }
@@ -65,6 +71,10 @@ export default class ERPSubCategory extends Component {
                 totaltollExpense: 0,
                 totalmExpense: 0,
                 totalmisc: 0
+            },
+            totalPendingPayments: {
+                totalFreight: 0,
+                totalPaid: 0
             },
             dataSource: ds.cloneWithRows(['row 1', 'row 2']),
         };
@@ -99,25 +109,57 @@ export default class ERPSubCategory extends Component {
         return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString();
       }
 
-      getExpenseFromData(expenseType,expenseCost){
-          console.log('--->>',expenseType,expenseCost)
+      getExpenseFromData(expenseType,expenseCost,num){
           var data='';
-        if(expenseType == 'Diesel' || expenseType == 'Toll' || expenseType == 'Maintence' ){
+        if(expenseType == 'Diesel' || expenseType == 'Toll' || expenseType == 'Maintenance' ){
             data = '-';
         }else{
-            data = cost;
+            data = expenseCost;
+        }
+        return data;        
+      }
+
+
+      getExpenseDieselData(expenseType,expenseCost){
+        var data='';
+        if(expenseType == 'Diesel'){
+            data = expenseCost;
+        }else{
+            data = '-';
+        }
+        return data;
         }
 
+    getExpenseTollData(expenseType,expenseCost){
+        var data='';
+        if(expenseType == 'Toll'){
+            data = expenseCost;
+        }else{
+            data = '-';
+        }
         return data;
-        /* else if(expenseType == 'Diesel'){
-            return cost;
-        }else  if(expenseType == 'Toll'){
-            return cost;
-        }else  if(expenseType == 'Maintence'){
-            return cost;
-        } */
-        
-      }
+    }
+    getExpenseMaintenanceData(expenseType,expenseCost){
+        var data='';
+        if(expenseType == 'Maintenance'){
+            data = expenseCost;
+        }else{
+            data = '-';
+        }
+        return data;
+    }
+
+    //item.attrs.truckName
+    getTruck(item){
+        var data ='-';
+        if(item.hasOwnProperty("attrs")){
+            data = item.attrs.truckName;
+        }else{
+            data =  '-';
+        }
+        return data;
+
+    }
 
     render() {
         const self=this;
@@ -133,7 +175,7 @@ export default class ERPSubCategory extends Component {
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpHeaderText}>Trip ID</Text>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Trip ID</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Party Name</Text>
@@ -155,7 +197,7 @@ export default class ERPSubCategory extends Component {
                                                                                 }</Text>
                                         </View>
                                          <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{item.tripId}</Text>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.tripId}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
                                             <Text style={CustomStyles.erpSubCatText}>{item.attrs.partyName}</Text>
@@ -200,7 +242,7 @@ export default class ERPSubCategory extends Component {
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpHeaderText}>Diesel</Text>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Diesel</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Toll</Text>
@@ -222,16 +264,16 @@ export default class ERPSubCategory extends Component {
                                                                                 }</Text>
                                         </View>
                                          <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>item.tripId</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseDieselData(item.attrs.expenseName,item.cost)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>item.attrs.partyName</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseTollData(item.attrs.expenseName,item.cost)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>item.freightAmount</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseMaintenanceData(item.attrs.expenseName,item.cost)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>'this.getExpenseFromData(item.attrs.expenseName,item.cost)'</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseFromData(item.attrs.expenseName,item.cost)}</Text>
                                         </View> 
                                     </View>
                                 }
@@ -257,7 +299,71 @@ export default class ERPSubCategory extends Component {
                 );
                 break;
             case "Payments":
-                console.log("Expense", );
+                console.log("Payments",'Payments' );
+                return (
+                    <View style={CustomStyles.viewStyle}>
+                        <View style={CustomStyles.erpCategory}>
+                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <View style={CustomStyles.erpCategoryHeaderItems}>
+                            <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Trip ID</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>V.no</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Freight</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Paid</Text>
+                                </View>
+                            </View>
+                            <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
+                                data={this.state.payementsResults}
+                                renderItem={({ item }) =>
+                                
+                                    <View style={CustomStyles.erpCategoryItems}>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getParsedDate(item.date)
+                                                                                }</Text>
+                                        </View>
+                                         <View style={CustomStyles.erpTextView}>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.tripId}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getTruck(item)}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.freightAmount}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.amount}</Text>
+                                        </View> 
+                                    </View>
+                                }
+                                keyExtractor={item => item._id} />
+                            <View style={CustomStyles.erpCategoryFooterItems}>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>Total</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
+                                </View><View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
+                                </View>
+                               <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPendingPayments.totalFreight}</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPendingPayments.totalPaid}</Text>
+                                </View> 
+                            </View>
+                        </View>
+                    </View>
+                );
                 break;
             default:
                 text = "I have never heard of that fruit...";

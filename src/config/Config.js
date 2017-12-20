@@ -10,6 +10,14 @@ let routes = {
     totalPaymentFromParty: '/payments/getDuesByParty/',
     totalPaymentByParty: '/party/tripsPayments/',
 
+    //expiry
+
+    permitExpiryTrucks: '/trucks/permitExpiryTrucks/',
+    insuranceExpiryTrucks: '/trucks/insuranceExpiryTrucks/',
+    pollutionExpiryTrucks: '/trucks/pollutionExpiryTrucks/',
+    taxExpiryTrucks: '/trucks/taxExpiryTrucks/',
+    fitnessExpiryTrucks: '/trucks/fitnessExpiryTrucks/',
+
 
 
     communitiesRoute: '/v1/user/communities',

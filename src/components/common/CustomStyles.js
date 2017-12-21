@@ -169,38 +169,53 @@ headText: {
         borderBottomWidth :0,
         borderBottomColor:'black'
     },
+    erpexpiryCategory:{
+        //flex:1,
+        alignSelf:'stretch',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        padding: 10
+        //backgroundColor: '#ff00ff'
+    },
     epiryButtons: {
+    width:100,
+    fontFamily:'gothamlight',
+    justifyContent:'center',
+        alignSelf:'center',
+        alignItems:'center',
+        textAlign:'center',
+        margin:5,
+        padding:15,
+        color:'black',
+        backgroundColor:'#ffffff',
+        borderRadius:25,
+        borderWidth: 1,
+        borderColor: 'black',
+        height:45
+        },
+    epirySelectedButtons: {
         width:100,
         fontFamily:'gothamlight',
         justifyContent:'center',
-            alignSelf:'center',
-            alignItems:'center',
-            textAlign:'center',
-           margin:5,
-           padding:15,
-           color:'black',
-           backgroundColor:'#ffffff',
-           borderRadius:25,
-           borderWidth: 1,
-           borderColor: 'black',
-           height:45
-         },
-         epirySelectedButtons: {
-            width:100,
-            fontFamily:'gothamlight',
-            justifyContent:'center',
-            alignSelf:'center',
-            alignItems:'center',
-            textAlign:'center',
-            margin:5,
-            padding:15,
-            color:'white',
-            backgroundColor:'#1e4495',
-            borderRadius:25,
-            borderWidth: 1,
-            borderColor: 'transparent',
-            height:45
-            },    
+        alignSelf:'center',
+        alignItems:'center',
+        textAlign:'center',
+        margin:5,
+        padding:15,
+        color:'white',
+        backgroundColor:'#1e4495',
+        borderRadius:25,
+        borderWidth: 1,
+        borderColor: 'transparent',
+        height:45
+    },    
+    separator: {
+        height: 0.5,
+        width: "80%",
+        alignSelf: 'center',
+        backgroundColor: "#555"
+        }
 
 };
 

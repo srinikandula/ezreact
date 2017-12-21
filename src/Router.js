@@ -150,7 +150,7 @@ export default class Navigation extends Component{
 							<Scene key='tab4' activeTintColor='cyan'  hideNavBar title='Notifications' component={Login} icon={TabIcon}/>
 						</Scene>
 						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
-									 tabBarPosition="top" swipeEnabled={true} >
+									 tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
 							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
 							<Scene key='Drivers'title='Drivers' headerMode="float" component={Trucks}/>
 							<Scene key='Partys'title='Partys'  headerMode="float" component={Trucks}/>
@@ -163,7 +163,7 @@ export default class Navigation extends Component{
 						<Scene key = 'erpsubcategory'>
 							<Scene key='subcategory' component={ERPSubCategory} hideNavBar={false}/>
 						</Scene>
-						<Scene key = 'erpExpiryDate' initial={this.state.logged}>
+						<Scene key = 'erpExpiryDate' >
 							<Scene key='erpExpiryDate' component={ExpiryDate} hideNavBar={false}/>
 						</Scene>
 	                </Scene>

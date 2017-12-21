@@ -148,6 +148,16 @@ export default class ErpHome extends Component {
                     label:'Total Payments Details'
                 });
                 break;
+            case "Expiry":
+                console.log("Expiry",data);
+                Actions.erpExpiryDate({
+                    token: this.state.token,
+                    Url: Config.routes.base + Config.routes.permitExpiryTrucks,
+                    mode:data,
+                    baseExpiry:'Permit',
+                    label:'Permit Details'
+                });
+                break;
             default:
                 text = "I have never heard of that fruit...";
         }
@@ -229,7 +239,9 @@ export default class ErpHome extends Component {
                         </View>
                     </View>
                 </TouchableOpacity>
-                
+                <TouchableOpacity
+                    onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Expiry') }}
+                >
                     <View style={[CustomStyles.ECategory,]}>
                         <Image
                             style={CustomStyles.imageDimensions}
@@ -251,6 +263,7 @@ export default class ErpHome extends Component {
                             </ScrollView>
                         </View>
                     </View>
+                </TouchableOpacity>
                 </ScrollView>
             </View>
         );

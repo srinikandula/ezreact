@@ -1,9 +1,14 @@
 let routes = {
     base: 'http://demo.easygaadi.com/v1',
-    //base: 'http://erp.easygaadi.com',
+    //base: 'http://erp.easygaadi.com/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle',
+    detailsRevenueFromVechicle:'/party/vehiclePayments/',
+    totalExpensesForAllVehicles:'/expense/groupByVehicle',
+    detailsExpensesForAllVehicles:'/expense/vehicleExpense/',
+    totalPaymentFromParty: '/payments/getDuesByParty/',
+    totalPaymentByParty: '/party/tripsPayments/',
 
 
 

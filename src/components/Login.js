@@ -85,13 +85,15 @@ class Login extends Component{
                     contactPhone: this.state.phoneNumber
                 }
             }).then((response) => {
-                console.log("response",response);
+                console.log("messages",response.data.messages);
+                console.log("response",response.data);
                 if (response.data.status) {
                     //console.log("response.data",response.data);
                     this.storeData(response.data);
                     Actions.root();
                 } else {
                     let message ="";
+                    if(response.data)
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });

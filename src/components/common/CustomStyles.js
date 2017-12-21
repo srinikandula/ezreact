@@ -215,7 +215,58 @@ headText: {
         width: "80%",
         alignSelf: 'center',
         backgroundColor: "#555"
-        }
+    },
+    erpDriverItems:{
+        flex:1,
+        alignSelf:'stretch',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        //justifyContent: 'flex-start',
+       // backgroundColor: '#00ffff'
+       borderWidth:0,
+       borderBottomWidth :0,
+       borderBottomColor:'black'
+    },
+    imageViewContainer: {
+        width: '40%',
+        height: 40 ,
+        margin: 5,
+        borderRadius : 20
+    },
+    drivervEditIcons:{
+        width: 18,
+        height: 16 ,
+        padding: 5,
+        margin: 5,
+    },
+    drivervCallIcons:{
+        width: 30,
+        height: 32 ,
+        padding: 5,
+    },
+    separator: {
+        flex: 1,
+       // height: StyleSheet.hairlineWidth,
+        height: 0.6,
+        backgroundColor: '#d6d6d6',
+      },
+      addGroupImageStyle:{
+        padding:5,
+        backgroundColor: 'transparent',
+        position:'absolute',
+        bottom:30,
+        right:40,
+        zIndex: 1 
+    },
+    addImage:{
+        height:60,
+        width:60,
+        resizeMode: 'contain'
+    }
+
+
+
+
 
 };
 

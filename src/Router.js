@@ -23,6 +23,8 @@ import ErpHome from './components/ErpHome';
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
+import DriverList from './components/DriverList';
+import PartyList from './components/PartyList';
 
 class TabIcon extends Component {
 	render() {
@@ -40,7 +42,7 @@ class TabIcon extends Component {
 
 
 export default class Navigation extends Component{
-	state = {logged: false,loading: true};
+	state = {logged: false,loading: true,value:{}};
 
 	componentWillMount() {
 		this.getCredentailsData();
@@ -50,7 +52,7 @@ export default class Navigation extends Component{
 		async getCredentailsData() {
 			this.getCache((value) => {
 						if (value !== null) {
-								this.setState({logged: true,loading: false});
+								this.setState({logged: true,loading: false,value:value});
 						} else {
 								this.setState({loading: false})
 						}
@@ -61,7 +63,6 @@ export default class Navigation extends Component{
 		async getCache(callback){
 			try{
 					var value = await AsyncStorage.getItem('credientails');
-					console.log('credientails',value);
 					if (value !== null){
 						 console.log('riyaz',value);
 						} else {
@@ -77,12 +78,11 @@ export default class Navigation extends Component{
 	    }
 	
 
-    
 
 	render(){
 		if (this.state.loading) {
 			return null;
-	}
+		}
 		return(
 				 <Router >
 	                <Scene key="root">
@@ -137,8 +137,11 @@ export default class Navigation extends Component{
 						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
 									 tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
 							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
-							<Scene key='Drivers'title='Drivers' headerMode="float" component={Trucks}/>
-							<Scene key='Partys'title='Partys'  headerMode="float" component={Trucks}/>
+							<Scene key='Trucks'title='Trucks' headerMode="float" component={Trucks}
+																/>
+							<Scene key='Drivers'title='Drivers' headerMode="float" component={DriverList}
+																screenProps={this.state.value}/>
+							<Scene key='Partys'title='Partys'  headerMode="float" component={PartyList}/>
 							<Scene key='Payments'title='Payments'  headerMode="float" component={Trucks}/>
 							<Scene key='Loads'title='Loads'  headerMode="float" component={Trucks}/>
 						</Scene>

@@ -76,9 +76,7 @@ export default class ErpHome extends Component {
                             Aarr.push(tempObj);
                             //this.onChange();
                             this.setState({ erpDashBroadData: response.data.result,expirydetails:Aarr });
-                            console.log('expiry ==>', this.state.expirydetails);
-
-
+                            //console.log('expiry ==>', this.state.expirydetails);
                         } else {
                             console.log('error in baskets ==>', response);
                             this.setState({ erpDashBroadData: [],expirydetails:[] });

@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View,BackHandler, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View,BackHandler,NetInfo, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';

@@ -20,6 +20,8 @@ let routes = {
     //Driver Module
     driverList : '/drivers/account/drivers',
     partyList : '/party/get/all',
+    trucksList : '/trucks/groupTrucks',
+    paymentList : '/payments/getPayments',
 
 
     communitiesRoute: '/v1/user/communities',

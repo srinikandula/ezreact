@@ -263,7 +263,7 @@ class Login extends Component{
 
                              
                             <View style={checkForgotStyle}>
-                                <View >
+                                <View>
                                      <CheckBox 
                                           label='remember Me'
                                           checked= {true}

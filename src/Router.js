@@ -25,6 +25,8 @@ import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
 import DriverList from './components/DriverList';
 import PartyList from './components/PartyList';
+import TruckList from './components/TruckList';
+import PaymentList from './components/PaymentList';
 
 class TabIcon extends Component {
 	render() {
@@ -107,10 +109,9 @@ export default class Navigation extends Component{
 
 
 						<Scene key='root' tabs={true}   tabBarStyle={styles.tabBar} default="tab3" 
-														tabBarPosition='bottom' swipeEnabled={false} 
-														>
+														tabBarPosition='bottom' swipeEnabled={false}>
 							<Scene key='tab1' activeTintColor='red'  showIcon={true} hideNavBar title='Home' 
-																												component={Login} icon={TabIcon} />
+								component={Login} icon={TabIcon} />
 						
 								<Scene key='tab2' headerMode="float" tabs={true} title='Setting' 
 																	indicatorStyle={styles.indicatorStyle} 
@@ -120,8 +121,7 @@ export default class Navigation extends Component{
 																	activeTintColor="#000000"
 																	inactiveTintColor="#000000"
 																	tabBarPosition='top' 
-																	swipeEnabled={true}
-																	>
+																	swipeEnabled={true}>
 									<Scene key='gps' headerMode="float" duration={1} 
 																		title='Setting'  
 																		component={GpsSetting} />
@@ -137,12 +137,12 @@ export default class Navigation extends Component{
 						<Scene key = 'erp' headerMode="float" wrap={false} tabs={true} default="trucks"
 									 tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
 							<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome}/>
-							<Scene key='Trucks'title='Trucks' headerMode="float" component={Trucks}
+							<Scene key='Trucks'title='Trucks' headerMode="float" component={TruckList}
 																/>
 							<Scene key='Drivers'title='Drivers' headerMode="float" component={DriverList}
 																screenProps={this.state.value}/>
 							<Scene key='Partys'title='Partys'  headerMode="float" component={PartyList}/>
-							<Scene key='Payments'title='Payments'  headerMode="float" component={Trucks}/>
+							<Scene key='Payments'title='Payments'  headerMode="float" component={PaymentList}/>
 							<Scene key='Loads'title='Loads'  headerMode="float" component={Trucks}/>
 						</Scene>
 						<Scene key = 'erpcategory'>

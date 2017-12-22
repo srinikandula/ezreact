@@ -158,7 +158,6 @@ export default class ERPSubCategory extends Component {
             data =  '-';
         }
         return data;
-
     }
 
     render() {

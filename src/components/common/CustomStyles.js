@@ -233,6 +233,12 @@ headText: {
         margin: 5,
         borderRadius : 20
     },
+    imageWithoutradiusViewContainer: {
+        width: '40%',
+        height: 40 ,
+        margin: 5,
+        borderRadius : 0
+    },
     drivervEditIcons:{
         width: 18,
         height: 16 ,
@@ -262,7 +268,43 @@ headText: {
         height:60,
         width:60,
         resizeMode: 'contain'
-    }
+    },
+    redcircle: {
+        width: 10,
+        height:10,
+        borderRadius: 100/2,
+        backgroundColor: 'red'
+    },
+    orangecircle: {
+        width: 10,
+        height: 10,
+        borderRadius: 100/2,
+        backgroundColor: 'orange'
+    },
+    greencircle: {
+        width: 10,
+        height:10,
+        borderRadius: 100/2,
+        backgroundColor: 'green'
+    },
+    erpCategoryCardItems:{
+        flex:1,
+        alignSelf:'stretch',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        //justifyContent: 'flex-start',
+       // backgroundColor: '#00ffff'
+       borderWidth: 1,
+       borderRadius: 2,
+       borderColor: '#ddd',
+       borderBottomWidth: 0,
+       shadowColor: '#000',
+       shadowOffset: { width: 0, height: 2 },
+       shadowOpacity: 0.8,
+       shadowRadius: 2,
+       elevation: 1,
+       margin:5
+    },
 
 
 

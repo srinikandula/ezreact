@@ -34,7 +34,6 @@ import DriverList from './components/DriverList';
 import PartyList from './components/PartyList';
 import TruckList from './components/TruckList';
 import PaymentList from './components/PaymentList';
-import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view';
 
 class TabIcon extends Component {
 	render() {

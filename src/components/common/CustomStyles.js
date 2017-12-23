@@ -1,63 +1,143 @@
-const CustomStyles = {
-    viewStyle: {
+const CustomStyles={
+    backgroundImage: {
         flex: 1,
-        backgroundColor: '#ffffff'
+        width: null,
+        height: null
     },
-    headingTextColor: {
-        fontFamily: 'gothamlight',
-        color: '#494949'
+    loginViewStyle: {
+        flex:1,
+        justifyContent: 'space-between',
+        flexDirection:'column',
+        alignItems:'center',
+        paddingBottom:10 
     },
-    subHeadingTextColor: {
-        fontFamily: 'gothamlight',
-        color: '#404040'
+    logintext: {
+        flex:1,
+        fontFamily:'gothamlight',
+        alignItems:'center',
+        color: 'white',
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize: 32
     },
-    amountColor: {
-        fontFamily: 'gothamlight',
-        color: '#1e4495',
-        marginTop: 10
-    },
-    textContainer: {
+    loginContainerStyle: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        marginTop: 60,
+        marginBottom: 50,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingLeft:10,
+        paddingRight:10,
         justifyContent: 'center',
-        paddingLeft: 40
-    },
-    Category: {
-        flexDirection: 'row',
-        //justifyContent: 'space-around',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#ffffff'
-    },
-    headingTextColor: {
-        alignSelf: 'stretch',
-        fontFamily: 'gothamlight',
-        color: '#494949'
-    },
-    EtextContainer: {
-        alignSelf: 'stretch',
-        flex: 1,
-        //justifyContent: 'center',
-        paddingLeft: 40
-    },
-    ECategory: {
+        alignItems:'flex-start',
 
-        alignSelf: 'stretch',
+    },
+    loginInputStyle: {
+        fontFamily:'gothamlight',
+        fontSize: 16,
+        marginTop:3,
+        backgroundColor: 'transparent'
+    },
+    loginlogoStyle:{
+        padding:20,
+    },
+    loginInputbox: {
+        flexDirection:'column',
+        alignSelf:'stretch',
+        alignItems:'flex-start',
+        padding:3
+    },
+    loginForgotTextStyle: {
+        fontFamily:'gothamlight',
+        textAlign: 'right',
+        color: '#1e4495',
+        paddingTop: 2
+    },
+    loginCheckForgotStyle:{
+        flex: 1,
+        alignSelf:'stretch',
         flexDirection: 'row',
-        //justifyContent: 'space-around',
-        alignItems: 'flex-start',
-        padding: 10,
+        marginTop:10,
+        marginBottom:20,
+        justifyContent: 'space-between'
     },
-    imageDimensions: {
-        width: 100,
-        height: 100
+    loginbuttonStyle:{
+        alignSelf:'stretch',
+        backgroundColor: '#d9d9d9',
     },
-    expiryDateView: { flexDirection: 'row', justifyContent: 'space-around' },
-    expiryMainContainer: { alignSelf: 'stretch', padding: 2 },
-    expirySubContainer: { justifyContent: 'space-around', height: 60, alignSelf: 'stretch', padding: 3, borderWidth: 0.5, flex: 1 },
-    expiryCount: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 16, color: 'blue', flex: 1 },
-    expiryLabel: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 12, flex: 1 },
-    headText: {
-        fontFamily: 'gothamlight',
-        alignItems: 'center',
+   loginInbutton: {
+        alignSelf:'stretch',
+        backgroundColor: '#ffffff',
+        marginTop:1
+    }, 
+    loginInbuttonText: {
+        alignSelf:'stretch',
+       textAlign: 'center',
+        color: '#e83a13',
+        fontFamily:'gothamlight',
+       fontSize: 14,
+       padding: 10,
+       backgroundColor:'#ffffff'
+   },   
+viewStyle: {
+    flex: 1,
+    backgroundColor: '#ffffff'
+},
+headingTextColor: {
+    fontFamily:'gothamlight',
+    color: '#494949'
+},
+subHeadingTextColor: {
+    fontFamily:'gothamlight',
+    color: '#404040'
+},
+amountColor: {
+    fontFamily:'gothamlight',
+    color: '#1e4495',
+    marginTop: 10
+},
+textContainer: {
+justifyContent: 'center',
+paddingLeft: 40
+},
+Category: {
+    flexDirection: 'row',
+    //justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#ffffff'
+},
+headingTextColor: {
+    alignSelf:'stretch',
+    fontFamily:'gothamlight',
+    color: '#494949'
+},
+EtextContainer: {
+    alignSelf:'stretch',
+    flex:1,
+    //justifyContent: 'center',
+    paddingLeft: 40
+    },
+ECategory: {
+    
+    alignSelf:'stretch',
+    flexDirection: 'row',
+    //justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    padding: 10,
+},
+imageDimensions: {
+    width: 100,
+    height: 100
+},
+expiryDateView:{flexDirection:'row', justifyContent:'space-around'},
+expiryMainContainer:{alignSelf:'stretch',padding:2 },
+expirySubContainer:{justifyContent:'space-around',height:60,alignSelf:'stretch',padding:3,borderWidth:0.5,flex:1},
+expiryCount:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:16,color:'blue',flex:1},
+expiryLabel:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:12,flex:1},
+headText: {
+        fontFamily:'gothamlight',
+        alignItems:'center',
         color: 'black',
         backgroundColor: 'rgba(0,0,0,0)',
         fontSize: 16

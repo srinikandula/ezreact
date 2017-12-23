@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View,BackHandler, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View,BackHandler,NetInfo, ScrollView,Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';
@@ -76,9 +76,7 @@ export default class ErpHome extends Component {
                             Aarr.push(tempObj);
                             //this.onChange();
                             this.setState({ erpDashBroadData: response.data.result,expirydetails:Aarr });
-                            console.log('expiry ==>', this.state.expirydetails);
-
-
+                            //console.log('expiry ==>', this.state.expirydetails);
                         } else {
                             console.log('error in baskets ==>', response);
                             this.setState({ erpDashBroadData: [],expirydetails:[] });

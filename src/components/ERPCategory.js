@@ -179,7 +179,7 @@ export default class ERPCategory extends Component {
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.attrs.truckName}</Text>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{item.attrs.truckName}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.totalFreight}</Text>
@@ -247,7 +247,7 @@ export default class ERPCategory extends Component {
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.regNumber}</Text>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{item.regNumber}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.exps[0].dieselExpense}</Text>
@@ -317,7 +317,7 @@ export default class ERPCategory extends Component {
                             
                                     <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.attrs.partyName}</Text>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{item.attrs.partyName}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
                                             <Text style={CustomStyles.erpText}>{item.totalFright}</Text>

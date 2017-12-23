@@ -11,13 +11,17 @@ let routes = {
     totalPaymentByParty: '/party/tripsPayments/',
 
     //expiry
-
     permitExpiryTrucks: '/trucks/permitExpiryTrucks/',
     insuranceExpiryTrucks: '/trucks/insuranceExpiryTrucks/',
     pollutionExpiryTrucks: '/trucks/pollutionExpiryTrucks/',
     taxExpiryTrucks: '/trucks/taxExpiryTrucks/',
     fitnessExpiryTrucks: '/trucks/fitnessExpiryTrucks/',
 
+    //Driver Module
+    driverList : '/drivers/account/drivers',
+    partyList : '/party/get/all',
+    trucksList : '/trucks/groupTrucks',
+    paymentList : '/payments/getPayments',
 
 
     communitiesRoute: '/v1/user/communities',

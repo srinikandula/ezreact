@@ -30,7 +30,23 @@ import Notifications from './components/Notifications';
 import ExpiryDate from './components/ExpiryDate';
 import Sample from './components/Sample';
 import CustomStyles from './components/common/CustomStyles';
+import DriverList from './components/DriverList';
+import PartyList from './components/PartyList';
+import TruckList from './components/TruckList';
+import PaymentList from './components/PaymentList';
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view';
+
+class TabIcon extends Component {
+	render() {
+		var color = this.props.selected ? 'red' : 'black';
+		return (
+			<View style={{ flex: 1 }}>
+
+				{/* <Text> {this.props.title}</Text> */}
+			</View>
+		);
+	}
+}
 
 export default class Navigation extends Component {
 	state = {
@@ -41,7 +57,8 @@ export default class Navigation extends Component {
 			settTab: false,
 			homeTab: false
 		}
-		, headerTitle: 'ErpHome'
+		, headerTitle: 'ErpHome',
+		value: {}
 	};
 
 	componentWillMount() {
@@ -162,7 +179,6 @@ export default class Navigation extends Component {
 		if (this.state.loading) {
 			return null;
 		}
-
 		return (
 			<View style={{ flex: 1 }}>
 				<View style={{ display: this.state.headerTitle === 'ErpHome' ? 'none' : 'flex', height: 50, backgroundColor: '#1e4495', justifyContent: 'center' }}>
@@ -176,100 +192,107 @@ export default class Navigation extends Component {
 							component={Login}
 							hideNavBar={true} initial={!this.state.logged}
 						/>
-						<Scene key="sample"
-							component={Sample}
-							hideNavBar={true}
-						/>
-						<Scene key="ForgotPin"
-							component={ForgotPin}
-							hideNavBar={true}
-						/>
-						<Scene key="OtpVerification"
-							component={OtpVerification}
-							hideNavBar={true}
-						/>
-						<Scene key="ResetPassword"
-							component={ResetPassword}
-							hideNavBar={true}
-						/>
-						<Scene key='tab2' headerMode="float" tabs={true} title='Setting'
-							indicatorStyle={styles.indicatorStyle}
-							tabBarStyle={styles.settingtabBar}
-							titleStyle={styles.navTitle}
-							default="gps"
-							activeTintColor="#000000"
-							inactiveTintColor="#000000"
-							tabBarPosition='top'
-							swipeEnabled={true}
-						>
-							<Scene key='gps'
-								headerMode="float"
-								duration={1}
-								title='Setting'
-								component={GpsSetting} />
-							<Scene key='reports'
-								headerMode="float"
-								duration={1}
-								hideNavBar title='Reports'
-								component={Login} />
-						</Scene>
-						<Scene key='tab1'
-							activeTintColor='red'
-							showIcon={true}
-							hideNavBar
-							title='Home'
-							component={Login} />
-						<Scene key='tab3'
-							activeTintColor='cyan'
-							hideNavBar
-							title='Profile'
-							component={Profile} />
-						<Scene key='tab4'
-							activeTintColor='cyan'
-							hideNavBar
-							title='Notifications'
-							component={Notifications} />
-						<Scene key='erp'
-							navigationBarStyle={{ backgroundColor: '#1e4495' }}
-							tabBarStyle={{ backgroundColor: '#ffffff' }}
-							labelStyle={{ color: '#1e4495' }}
-							wrap={false}
-							tabStyle={{ width: 100 }}
-							tabs={true}
-							tabBarPosition="top"
-							swipeEnabled={true}
-							initial={this.state.logged}>
-							<Scene
-								key='ErpHome'
-								title='ErpHome'
-								headerMode="none"
-								component={ErpHome}
+							<Scene key="ForgotPin"
+								component={ForgotPin}
+								hideNavBar={true}
 							/>
-							<Scene key='Drivers' title='Drivers' headerMode="none" component={Trucks} />
-							<Scene key='Partys' title='Partys' headerMode="none" component={Trucks} />
-							<Scene key='Payments' title='Payments' headerMode="none" component={Trucks} />
-							<Scene key='Loads' title='Loads' headerMode="none" component={Trucks} />
-						</Scene>
-						
-						<Scene key='erpcategory' hideNavBar={false} headerMode="none">
-							<Scene key='category' component={ERPCategory} headerMode="none" />
-						</Scene>
-						<Scene key='erpsubcategory' hideNavBar={false} headerMode="none">
-							<Scene key='subcategory' component={ERPSubCategory} headerMode="none" />
-						</Scene>
-						<Scene key='erpExpiryDate' hideNavBar={false} headerMode="none">
-							<Scene key='erpExpiryDate' component={ExpiryDate} headerMode="none" />
-						</Scene>
-					</Scene>
+							<Scene key="OtpVerification"
+								component={OtpVerification}
+								hideNavBar={true}
+							/>
+							<Scene key="ResetPassword"
+								component={ResetPassword}
+								hideNavBar={true}
+							/>
+							<Scene key='tab2' headerMode="float" tabs={true} title='Setting'
+								indicatorStyle={styles.indicatorStyle}
+								tabBarStyle={styles.settingtabBar}
+								titleStyle={styles.navTitle}
+								default="gps"
+								activeTintColor="#000000"
+								inactiveTintColor="#000000"
+								tabBarPosition='top'
+								swipeEnabled={true}
+							>
+								<Scene key='gps'
+									headerMode="float"
+									duration={1}
+									title='Setting'
+									component={GpsSetting} />
+								<Scene key='reports'
+									headerMode="float"
+									duration={1}
+									hideNavBar title='Reports'
+									component={Login} />
+							</Scene>
+							<Scene key='tab1'
+								activeTintColor='red'
+								showIcon={true}
+								hideNavBar
+								title='Home'
+								component={Login} />
+							<Scene key='tab3'
+								activeTintColor='cyan'
+								hideNavBar
+								title='Profile'
+								component={Profile} />
+							<Scene key='tab4'
+								activeTintColor='cyan'
+								hideNavBar
+								title='Notifications'
+								component={Notifications} />
+							<Scene key='erp'
+								navigationBarStyle={{ backgroundColor: '#1e4495' }}
+								tabBarStyle={{ backgroundColor: '#ffffff' }}
+								labelStyle={{ color: '#1e4495' }}
+								wrap={false}
+								tabStyle={{ width: 100 }}
+								tabs={true}
+								tabBarPosition="top"
+								swipeEnabled={true}
+								initial={this.state.logged}>
+								<Scene
+									key='ErpHome'
+									title='ErpHome'
+									headerMode="none"
+									component={ErpHome}
+								/>
+								<Scene key='Drivers' title='Drivers' headerMode="none" component={Trucks} />
+								<Scene key='Partys' title='Partys' headerMode="none" component={Trucks} />
+								<Scene key='Payments' title='Payments' headerMode="none" component={Trucks} />
+								<Scene key='Loads' title='Loads' headerMode="none" component={Trucks} />
+								<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="trucks"
+									tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
+									<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />
+									<Scene key='Trucks' title='Trucks' headerMode="float" component={TruckList}
+									/>
+									<Scene key='Drivers' title='Drivers' headerMode="float" component={DriverList}
+										screenProps={this.state.value} />
+									<Scene key='Partys' title='Partys' headerMode="float" component={PartyList} />
+									<Scene key='Payments' title='Payments' headerMode="float" component={PaymentList} />
+									<Scene key='Loads' title='Loads' headerMode="float" component={Trucks} />
+								</Scene>
+
+								<Scene key='erpcategory' hideNavBar={false} headerMode="none">
+									<Scene key='category' component={ERPCategory} headerMode="none" />
+								</Scene>
+								<Scene key='erpsubcategory' hideNavBar={false} headerMode="none">
+									<Scene key='subcategory' component={ERPSubCategory} headerMode="none" />
+								</Scene>
+								<Scene key='erpExpiryDate' hideNavBar={false} headerMode="none">
+									<Scene key='erpExpiryDate' component={ExpiryDate} headerMode="none" />
+								</Scene>
+								</Scene>
+							</Scene>
 				</Router>
-				<View style={{
-					display: this.state.logged ? 'flex' : 'none',
-					justifyContent: 'flex-end'
-				}}>
-					{this.renderGlobalTabs()}
-				</View>
-			</View>
-		);
+			<View style={{
+				display: this.state.logged ? 'flex' : 'none',
+				justifyContent: 'flex-end'
+			}}>
+				{this.renderGlobalTabs()}
+			</View> 
+			</View >
+					);
 	}
 }
 

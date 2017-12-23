@@ -246,7 +246,100 @@ const CustomStyles = {
     nTextRowOne: {
         flexDirection: 'row',
         justifyContent: 'space-between'
-    }
+    },
+    erpDriverItems:{
+        flex:1,
+        alignSelf:'stretch',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        //justifyContent: 'flex-start',
+       // backgroundColor: '#00ffff'
+       borderWidth:0,
+       borderBottomWidth :0,
+       borderBottomColor:'black'
+    },
+    imageViewContainer: {
+        width: '40%',
+        height: 40 ,
+        margin: 5,
+        borderRadius : 20
+    },
+    imageWithoutradiusViewContainer: {
+        width: '40%',
+        height: 40 ,
+        margin: 5,
+        borderRadius : 0
+    },
+    drivervEditIcons:{
+        width: 18,
+        height: 16 ,
+        padding: 5,
+        margin: 5,
+    },
+    drivervCallIcons:{
+        width: 30,
+        height: 32 ,
+        padding: 5,
+    },
+    separator: {
+        flex: 1,
+       // height: StyleSheet.hairlineWidth,
+        height: 0.6,
+        backgroundColor: '#d6d6d6',
+      },
+      addGroupImageStyle:{
+        padding:5,
+        backgroundColor: 'transparent',
+        position:'absolute',
+        bottom:30,
+        right:40,
+        zIndex: 1 
+    },
+    addImage:{
+        height:60,
+        width:60,
+        resizeMode: 'contain'
+    },
+    redcircle: {
+        width: 10,
+        height:10,
+        borderRadius: 100/2,
+        backgroundColor: 'red'
+    },
+    orangecircle: {
+        width: 10,
+        height: 10,
+        borderRadius: 100/2,
+        backgroundColor: 'orange'
+    },
+    greencircle: {
+        width: 10,
+        height:10,
+        borderRadius: 100/2,
+        backgroundColor: 'green'
+    },
+    erpCategoryCardItems:{
+        flex:1,
+        alignSelf:'stretch',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        //justifyContent: 'flex-start',
+       // backgroundColor: '#00ffff'
+       borderWidth: 1,
+       borderRadius: 2,
+       borderColor: '#ddd',
+       borderBottomWidth: 0,
+       shadowColor: '#000',
+       shadowOffset: { width: 0, height: 2 },
+       shadowOpacity: 0.8,
+       shadowRadius: 2,
+       elevation: 1,
+       margin:5
+    },
+
+
+
+
 
 };
 

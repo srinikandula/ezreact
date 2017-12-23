@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View,Image,AsyncStorage,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
-
+import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,
     renderIf,
@@ -29,7 +29,9 @@ class Login extends Component{
       // do stuff while splash screen is shown
         // After having done stuff (such as async tasks) hide the splash screen
        SplashScreen.hide();   
+       this.checkOutForRememberme();
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+       
     }
     componentWillUnmount(){
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -40,14 +42,20 @@ class Login extends Component{
      //var value = await this.getCache('credientails');
     }
 
+    async checkOutForRememberme(){
+       await this.getCache('credientails');
+    }
+
 
     async getCache(key){
         try{
-            console.log('riyaz',key);
+            console.log('login-riyaz',key);
             var value = await AsyncStorage.getItem('credientails');
             console.log('credientails',key);
             if (value !== null){
-               console.log('riyaz',value)
+                var egObj = {};
+                egObj = JSON.parse(value);
+               this.setState({userName:egObj.userName,userNamelbl:true,rememberme:true});
               } else {
                 console.log('value',value)
               }
@@ -121,14 +129,6 @@ class Login extends Component{
         });
     }
 
-    storeUserToken(token, callback){
-        try {
-            AsyncStorage.setItem("advaitha:usertoken", token);
-            callback(token);
-        } catch (error) {
-            ToastAndroid.show('something went wrong', ToastAndroid.SHORT);
-        }
-    }
 
     async  storeData(data){
         console.log('in store data',data);
@@ -153,20 +153,8 @@ class Login extends Component{
 
  render() {
         const {
-            viewStyle,
-            loginbuttonStyle,
-            signInButtonStyle,
-            containerStyle,
             signInTextStyle,
-            forgotTextStyle,
-            rememberTextStyle,
-            inputStyle,
-            imageStyle,
-            text,
-            backgroundImage,
-            logoStyle,
-            checkForgotStyle,
-            checkboxStyle
+            loginlogoImage,
         } = styles;
 
 
@@ -206,19 +194,19 @@ class Login extends Component{
 
         return (
             <CommonBackground>
-                <View style={viewStyle}>
+                <View style={CustomStyles.loginViewStyle}>
 
-                    <CustomText style={text}>
+                    <CustomText style={CustomStyles.logintext}>
                                Login
                             </CustomText>
                  <ScrollView >
-                    <View style={containerStyle}>
+                    <View style={CustomStyles.loginContainerStyle}>
                     
-                        <View style={logoStyle}>
-                            <Image source={require('../images/logo_icon.png')} style= {backgroundImage}/>
+                        <View style={CustomStyles.loginlogoStyle}>
+                            <Image source={require('../images/logo_icon.png')} style= {loginlogoImage}/>
                         </View>
                          
-                         <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
+                         <View style={CustomStyles.loginInputbox}>
                                 <Text style={namelabelStyle} >
                                         UserName
                                 </Text>
@@ -226,34 +214,34 @@ class Login extends Component{
                             <CustomEditText
                                 maxLength={Config.limiters.mobileLength}
                                 keyboardType='default'
-                                inputTextStyle={inputStyle}
+                                inputTextStyle={CustomStyles.loginInputStyle}
                                 value={this.state.userName}
                                 onChangeText={(value) => {
                                                 this.setState({userName: value,userNamelbl:true})
                                             }}
                             />
                             </View>
-                            <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
+                            <View style={CustomStyles.loginInputbox}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
                                 </Text>  
                                 <CustomEditText
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='numeric'
-                                    inputTextStyle={inputStyle}
+                                    inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.phoneNumber}
                                     onChangeText={(value) => {
                                                     this.setState({phoneNumber: value,phoneNumberlbl:true})
                                                 }}
                                 />
                             </View>
-                            <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
+                            <View style={CustomStyles.loginInputbox}>
                                 <Text style={passwordlabelStyle} >
                                     Password
                                 </Text> 
                                 <CustomEditText
                                     secureTextEntry
-                                    inputTextStyle={inputStyle}
+                                    inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.password}
                                     onChangeText={(value) => {
                                         this.setState({password: value,passwordlbl:true})
@@ -262,11 +250,10 @@ class Login extends Component{
                             </View>
 
                              
-                            <View style={checkForgotStyle}>
+                            <View style={CustomStyles.loginCheckForgotStyle}>
                                 <View>
                                      <CheckBox 
-                                          label='remember Me'
-                                          checked= {true}
+                                          label='Remember Me'
                                            color={'#000000'}
                                           checked={this.state.rememberme}
                                             onChange={() => this.setState({ rememberme: !this.state.rememberme })}
@@ -277,22 +264,22 @@ class Login extends Component{
                                                                 Keyboard.dismiss();
                                                                 Actions.ForgotPin();
                                                             }}>
-                                        <CustomText customTextStyle={forgotTextStyle}>
+                                        <CustomText customTextStyle={CustomStyles.loginForgotTextStyle}>
                                             Forgot Password?
                                         </CustomText>   
                                      </TouchableOpacity>
                                 </View>     
                         </View>
-                         <View style={loginbuttonStyle}>   
+                         <View style={CustomStyles.loginbuttonStyle}>   
                             <CustomButton
-                                customButtonStyle={signInButtonStyle}
+                                customButtonStyle={CustomStyles.loginInbutton}
                                 onPress={() => {
                                     Keyboard.dismiss();
                                     this.onSignIn()
                                 }}
                             >
                                 <CustomText
-                                    customTextStyle={signInTextStyle}
+                                    customTextStyle={CustomStyles.loginInbuttonText}
                                 >
                                     LOGIN
                                 </CustomText>
@@ -308,95 +295,11 @@ class Login extends Component{
 const winW = Dimensions.get('window').width;
 const winH = Dimensions.get('window').width;
 const styles = {
-    backgroundImage: {
-         width:winW - 100,
-         height:50,
-         resizeMode: 'contain'
-    },
-    viewStyle: {
-        flex:1,
-        justifyContent: 'space-between',
-        flexDirection:'column',
-        alignItems:'center',
-        paddingBottom:10
-        
-    },
-    containerStyle: {
-        flex: 1,
-        backgroundColor: '#ffffff',
-        marginTop: 60,
-        marginBottom: 50,
-        marginLeft: 20,
-        marginRight: 20,
-        paddingLeft:10,
-        paddingRight:10,
-        justifyContent: 'center',
-        alignItems:'flex-start',
-
-    },
-    loginbuttonStyle:{
-        alignSelf:'stretch',
-        backgroundColor: '#d9d9d9',
-        
-    },
-    signInButtonStyle: {
-        alignSelf:'stretch',
-        backgroundColor: '#ffffff',
-        marginTop:1
-    },
-    signInTextStyle: {
-         alignSelf:'stretch',
-        textAlign: 'center',
-         color: '#e83a13',
-         fontFamily:'gothamlight',
-        fontSize: 14,
-        padding: 10,
-        backgroundColor:'#ffffff'
-    },
-    forgotTextStyle: {
-        fontFamily:'gothamlight',
-        textAlign: 'right',
-        color: '#1e4495',
-        paddingTop: 2
-    },
-    inputStyle: {
-        fontFamily:'gothamlight',
-        fontSize: 16,
-        marginTop:3,
-        backgroundColor: 'transparent'
-    },
-    imageStyle: {
-        width: 25,
-        height: 30
-    },
-    text: {
-        flex:1,
-        fontFamily:'gothamlight',
-        alignItems:'center',
-        color: 'white',
-        backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 32
-    },
-    rememberTextStyle:{
-        textAlign: 'center',
-        color: '#3B3B3B',
-        paddingTop: 2
-    },
-    logoStyle:{
-        padding:20,
-    },
-    checkForgotStyle:{
-        flex: 1,
-        alignSelf:'stretch',
-        flexDirection: 'row',
-        marginTop:10,
-        marginBottom:20,
-        justifyContent: 'space-between'
-    },
-    checkboxStyle:{
-        color:'#000000'
-    }  
-
+    loginlogoImage: {
+        width:winW - 100,
+        height:50,
+        resizeMode: 'contain'
+   }
 };
 
 export default Login;

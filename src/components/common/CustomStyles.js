@@ -79,6 +79,290 @@ const CustomStyles={
        padding: 10,
        backgroundColor:'#ffffff'
    },   
+   //forgotscreen -css
+   forgotviewStyle: {
+        flex:1,
+        alignItems:'stretch',
+        justifyContent: 'flex-start',
+        flexDirection:'column',
+        alignItems:'center',
+        paddingBottom:10,
+    },
+    forgotcontainerStyle: {
+        backgroundColor: '#ffffff',
+        marginTop: 60,
+        marginBottom: 50,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingLeft:10,
+        paddingRight:10,
+        justifyContent: 'space-around',
+        alignItems:'flex-start',
+        alignSelf:'stretch'
+
+    },
+    forgotInputBox:{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start',marginTop:20},
+    forgotInputStyle: {
+        marginTop:3,
+        backgroundColor: 'transparent'
+    },
+    forgotActionView:{
+        alignItems:'stretch',
+        flexDirection: 'row',
+        marginTop:10,
+        marginBottom:20,
+        alignSelf:'flex-end',
+        justifyContent:'space-between'
+    },
+    forgottext: {
+        flex:1,
+        fontFamily:'gothamlight',
+        alignItems:'center',
+        color: 'white',
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize: 32
+    },
+    forgotMainContainer:{flex:1,alignSelf:'stretch',justifyContent:'center'},
+    forgotcancelTextStyle :{
+        fontFamily:'gothamlight',
+        textAlign: 'right',
+        color: '#1e4495',
+        padding: 5
+    },
+    forgotsendTextStyle :{
+        fontFamily:'gothamlight',
+        textAlign: 'right',
+        color: '#e83a13',
+        padding: 5
+    },
+    forgotActionpadding:{
+        paddingLeft:5
+    },
+    //OTP Verification Screen
+    otpViewStyle: {
+        flex:1,
+        alignItems:'stretch',
+        justifyContent: 'center',
+        flexDirection:'column',
+        alignItems:'center'
+    },
+    otpMainContainer:{
+        flex:1,
+        alignSelf:'stretch',
+        alignItems:'center',
+        justifyContent:'center',
+        flexDirection:'column'
+    },
+        otpMessagetext: {
+        flex:1,
+        alignItems:'center',
+        color: 'white',
+        backgroundColor: 'rgba(0,0,0,0)',//rgba(0,0,0,0)
+         fontFamily:'gothamlight',
+        fontSize: 32,
+        margin:10
+    },    
+    otpContainerStyle: {
+        backgroundColor: 'white',
+        flexDirection:'column',
+        marginTop:10,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingTop:10,
+        justifyContent: 'flex-start',
+        alignItems:'flex-start',
+        alignSelf:'stretch'
+    },    
+    otpInputBox:{
+        backgroundColor: 'transparent',
+        flexDirection:'column',
+        alignSelf:'stretch',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    otpInputStyle: {
+        alignSelf:'stretch',
+        fontFamily:'gothamlight',
+       justifyContent:'center',
+       marginTop:3,
+       backgroundColor: 'transparent'
+   },
+   otpButtonStyle: {
+       flex:1,
+       alignSelf:'stretch',
+       backgroundColor: '#ffffff',
+       marginTop:1
+   },
+   otpVerifyTextStyle :{
+        alignSelf:'stretch',
+        fontFamily:'gothamlight',
+        textAlign: 'center',
+        color: '#e83a13',
+        padding: 5
+    },   
+//ResetPassword
+resetPasswordviewStyle: {
+    flex:1,
+    alignItems:'stretch',
+    justifyContent: 'center',
+    flexDirection:'column',
+    alignItems:'center',
+    paddingBottom:10
+},
+resetPasswordconatiner:{
+    flex:1,
+    alignSelf:'stretch',
+    alignItems:'center',
+    justifyContent:'center'
+},    
+resetPasswordLabel: {
+    flex:1,
+    alignItems:'center',
+    color: 'white',
+    backgroundColor: 'rgba(0,0,0,0)',
+     fontFamily:'gothamlight',
+    fontSize: 32,
+    margin:10
+},
+resetPasswordSubcontainer: {
+        backgroundColor: '#ffffff',
+        marginTop:10,
+        marginBottom: 10,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingLeft:10,
+        paddingRight:10,
+        justifyContent: 'center',
+        alignItems:'center',
+        alignSelf:'stretch'
+    },
+resetPasswordInputBox:{
+    marginTop:10,
+    flexDirection:'column',
+    alignSelf:'stretch',
+    alignItems:'center',
+    justifyContent:'center'
+},    
+resetPasswordinputStyle: {
+    fontFamily:'gothamlight',
+   justifyContent:'center',
+   marginTop:3,
+   backgroundColor: 'transparent'
+},
+resetPasswordActionView:{
+    alignItems:'flex-end',
+    flexDirection: 'row',
+    marginTop:10,
+    marginBottom:20,
+    alignSelf:'stretch',
+    justifyContent:'flex-end'
+},
+resetPasswordButtonStyle: {
+    alignSelf:'stretch',
+    backgroundColor: '#ffffff',
+    marginTop:1
+},
+resetPasswordButtonTextStyle :{
+    fontFamily:'gothamlight',
+   textAlign: 'center',
+   color: '#e83a13',
+   padding: 5
+}, 
+//Profile-css
+profileviewStyle: {
+    flex:1,
+    justifyContent: 'flex-start',
+    flexDirection:'column',
+    alignItems:'center',
+    paddingBottom:10
+},
+profileheaderStyle:{
+    alignSelf:'stretch',
+    alignItems:'flex-end',
+    height:60,
+    paddingTop:5,
+    paddingRight:10,
+    backgroundColor:'#1e4495',
+    position:'relative'
+},
+profileUserImage: {
+    width:20,
+    height:30,
+    resizeMode: 'contain'
+},
+profileScroll:{
+    alignSelf:'stretch',
+    flex:1,
+    marginBottom:10
+},
+profileScrollcontainerStyle: {
+    flex: 1,
+    alignSelf:'stretch',
+    backgroundColor: 'transparent',
+    alignItems:'flex-start',
+    marginTop:40,
+    marginRight:10,
+    marginLeft:10
+
+},
+profileInputBox:{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', paddingTop:3,marginTop:5},
+profileInputContainerStyle:{
+    marginTop:10,
+    marginBottom:0
+},
+profileInputStyle: {
+    fontFamily:'gothamlight',
+    fontSize: 14,
+    marginTop:6,
+    backgroundColor: 'transparent',
+    height:35
+},
+profileaAddGroupImageStyle:{
+    padding:5,
+    backgroundColor: 'transparent',
+    position:'absolute',
+    bottom:70,
+    right:20,
+    zIndex: 1 
+},
+profileResettext: {
+    flex:1,
+    fontFamily:'gothamlight',
+    color: '#000000',
+    fontSize: 18
+},
+profileCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 100/2,
+    backgroundColor:'#e22b0b',
+    paddingLeft:15,
+    justifyContent:'center',
+},
+profileImageStyle:{
+    position:'absolute',
+    top:20
+},
+profileViewActionStyle:{
+    flex: 1,
+    alignSelf:'stretch',
+    flexDirection: 'row',
+    marginTop:10,
+    marginBottom:20,
+    justifyContent: 'flex-end',
+    marginRight:10
+},
+profileactionStyle:{
+    paddingLeft:5,
+     backgroundColor:'#1e4495'
+},
+profileButtonTextStyle :{
+    fontFamily:'gothamlight',
+    textAlign: 'right',
+    color: '#ffffff',
+    padding: 5
+},
+
 viewStyle: {
     flex: 1,
     backgroundColor: '#ffffff'

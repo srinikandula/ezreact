@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View,Image,Text,CheckBox,TouchableOpacity,ToastAndroid,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
+import CustomStyles from './common/CustomStyles';
 import {Actions} from 'react-native-router-flux';
 
 class ForgotPin extends Component{
@@ -54,22 +55,7 @@ class ForgotPin extends Component{
     
 
  render() {
-        const {
-            viewStyle,
-            loginbuttonStyle,
-            signInButtonStyle,
-            containerStyle,
-            sendTextStyle,
-            cancelTextStyle,
-            inputStyle,
-            imageStyle,
-            text,
-            backgroundImage,
-            actionStyle,
-            checkForgotStyle,
-            checkboxStyle
-        } = styles;
-
+        
          const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
@@ -80,44 +66,44 @@ class ForgotPin extends Component{
                 }   
         return (
             <CommonBackground>
-                <View style={viewStyle}>
+                <View style={CustomStyles.forgotviewStyle}>
 
-                    <CustomText style={text}>
+                    <CustomText style={CustomStyles.forgottext}>
                                Forgot Password ?
                             </CustomText>
                  
-                    <View style={{flex:1,alignSelf:'stretch',justifyContent:'center'}}>
-                         <View style={containerStyle}>
-                             <View style={{flexDirection:'column',alignSelf:'stretch',alignItems:'flex-start'}}>
+                    <View style={CustomStyles.forgotMainContainer}>
+                         <View style={CustomStyles.forgotcontainerStyle}>
+                             <View style={CustomStyles.forgotInputBox}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
                                 </Text>  
                                 <CustomEditText
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='numeric'
-                                    inputTextStyle={inputStyle}
+                                    inputTextStyle={CustomStyles.forgotInputStyle}
                                     value={this.state.phoneNumber}
                                     onChangeText={(value) => {
                                                     this.setState({phoneNumber: value,phoneNumberlbl:true})
                                                 }}
                                 />
                             </View>
-                            <View style={checkForgotStyle}>
+                            <View style={CustomStyles.forgotActionView}>
                                
-                                     <TouchableOpacity style={actionStyle}  onPress={() => {
+                                     <TouchableOpacity style={CustomStyles.forgotActionpadding}  onPress={() => {
                                                                 Keyboard.dismiss();
                                                                 Actions.pop();
                                                             }}>
-                                        <CustomText customTextStyle={cancelTextStyle}>
+                                        <CustomText customTextStyle={CustomStyles.forgotcancelTextStyle}>
                                             CANCEL
                                         </CustomText>   
                                      </TouchableOpacity> 
                                    
-                                    <TouchableOpacity style={actionStyle} onPress={() => {
+                                    <TouchableOpacity style={CustomStyles.forgotActionpadding} onPress={() => {
                                                                 Keyboard.dismiss();
                                                                 Actions.OtpVerification();
                                                             }}>
-                                        <CustomText customTextStyle={sendTextStyle}>
+                                        <CustomText customTextStyle={CustomStyles.forgotsendTextStyle}>
                                             SEND
                                         </CustomText>   
                                      </TouchableOpacity>
@@ -130,94 +116,7 @@ class ForgotPin extends Component{
         );
     }
 }
-const winW = Dimensions.get('window').width;
-const winH = Dimensions.get('window').width;
-const styles = {
-    backgroundImage: {
-         width:winW - 100,
-         height:50,
-         resizeMode: 'contain'
-    },
-    viewStyle: {
-        flex:1,
-        alignItems:'stretch',
-        justifyContent: 'flex-start',
-        flexDirection:'column',
-        alignItems:'center',
-        paddingBottom:10,
-        
-    },
-    containerStyle: {
-        backgroundColor: '#ffffff',
-        marginTop: 60,
-        marginBottom: 50,
-        marginLeft: 20,
-        marginRight: 20,
-        paddingLeft:10,
-        paddingRight:10,
-        justifyContent: 'space-around',
-        alignItems:'flex-start',
-        alignSelf:'stretch'
-
-    },
-    loginbuttonStyle:{
-        alignSelf:'stretch',
-        backgroundColor: '#d9d9d9',
-        
-    },
-    signInButtonStyle: {
-        alignSelf:'stretch',
-        backgroundColor: '#ffffff',
-        marginTop:1
-    },
 
 
-    forgotTextStyle: {
-        textAlign: 'right',
-        color: '#1e4495',
-        paddingTop: 2
-    },
-    cancelTextStyle :{
-        textAlign: 'right',
-        color: '#1e4495',
-        padding: 5
-    },
-
-    sendTextStyle :{
-        textAlign: 'right',
-        color: '#e83a13',
-        padding: 5
-    },
-
-
-    inputStyle: {
-        marginTop:3,
-        backgroundColor: 'transparent'
-    },
-    text: {
-        flex:1,
-        alignItems:'center',
-        color: 'white',
-        backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 32
-    },
-
-    actionStyle:{
-        paddingLeft:5,
-
-    },
-    checkForgotStyle:{
-        alignItems:'stretch',
-        flexDirection: 'row',
-        marginTop:10,
-        marginBottom:20,
-        alignSelf:'flex-end',
-        justifyContent:'space-between'
-    },
-    checkboxStyle:{
-        color: '#3B3B3B',
-    }  
-
-};
 
 export default ForgotPin;

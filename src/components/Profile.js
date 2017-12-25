@@ -5,6 +5,7 @@ import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import {Actions,Reducer} from 'react-native-router-flux';
+import CustomStyles from './common/CustomStyles';
 
 class Profile extends Component{
      state = {userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
@@ -40,24 +41,7 @@ class Profile extends Component{
 
  render() {
         const {
-            viewStyle,
-            loginbuttonStyle,
-            containerStyle,
-            profileImageStyle,
-            editProfileImageStyle,
-            actionStyle,
-            addGroupImageStyle,
-            sendTextStyle,
-            forgotTextStyle,
-            rememberTextStyle,
-            inputStyle,
-            imageStyle,
-            inputContainerStyle,
-            text,
-            backgroundImage,
-            headerStyle,
-            checkForgotStyle,
-            checkboxStyle
+            editProfileImageStyle
         } = styles;
 
 
@@ -109,23 +93,23 @@ class Profile extends Component{
 
 
         return (
-            <View style={viewStyle}>
-                <View style={headerStyle}>
-                    <Image source={require('../images/eg_profile.png')} style= {backgroundImage}/>
+            <View style={CustomStyles.profileviewStyle}>
+                <View style={CustomStyles.profileheaderStyle}>
+                    <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
                 </View>            
                 
-                    <ScrollView style={{alignSelf:'stretch',flex:1,marginBottom:10}}>
-                    <View style={containerStyle}>                        
-                       <Card>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', paddingTop:3,marginTop:5}}>
+                <ScrollView style={CustomStyles.profileScroll}>
+                    <View style={CustomStyles.profileScrollcontainerStyle}>                        
+                       <Card styles={{paddingLeft:10}}>
+                            <View style={CustomStyles.profileInputBox}>
                                 <Text style={namelabelStyle} >
                                         UserName
                                 </Text>
                                 <CustomEditText
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='default'                                    
-                                    inputContainerStyle={inputContainerStyle}
-                                    inputTextStyle={inputStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.userName}
                                 />
                             </View>
@@ -137,8 +121,8 @@ class Profile extends Component{
                                 <CustomEditText
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='numeric'
-                                    inputContainerStyle={inputContainerStyle}
-                                    inputTextStyle={inputStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.phoneNumber}
                                 />
                             </View>
@@ -149,8 +133,8 @@ class Profile extends Component{
                             
                                 <CustomEditText
                                     keyboardType='email-address'
-                                    inputContainerStyle={inputContainerStyle}
-                                    inputTextStyle={inputStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.emailId}
                                 />
                             </View>
@@ -161,17 +145,17 @@ class Profile extends Component{
                                 </Text>                     
                                 <CustomEditText
                                     keyboardType='default'
-                                    inputContainerStyle={inputContainerStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                     editable = {false}
-                                    inputTextStyle={inputStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.grups}
                                 />
                             </View>
                        </Card>
 
-                       <Card>
+                       <Card styles={{paddingLeft:10}}>
                            <View >
-                                <Text style={text}>
+                                <Text style={CustomStyles.profileResettext}>
                                     Reset Password
                                 </Text>
                             </View>
@@ -182,8 +166,8 @@ class Profile extends Component{
                             
                                 <CustomEditText
                                     keyboardType='numeric'
-                                    inputContainerStyle={inputContainerStyle}
-                                    inputTextStyle={inputStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.password}
                                 />
                             </View>
@@ -194,15 +178,15 @@ class Profile extends Component{
                             
                                 <CustomEditText
                                     keyboardType='numeric'
-                                    inputContainerStyle={inputContainerStyle}
-                                    inputTextStyle={inputStyle}
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    inputTextStyle={CustomStyles.profileInputStyle}
                                     value={this.state.confpassword}
                                 />
                             </View>
 
-                            <View style={checkForgotStyle}>
-                                    <TouchableOpacity style={actionStyle} >
-                                        <CustomText customTextStyle={sendTextStyle}>
+                            <View style={CustomStyles.profileViewActionStyle}>
+                                    <TouchableOpacity style={CustomStyles.profileactionStyle} >
+                                        <CustomText customTextStyle={CustomStyles.profileButtonTextStyle}>
                                             RESET
                                         </CustomText>   
                                      </TouchableOpacity>
@@ -213,18 +197,20 @@ class Profile extends Component{
 
                     </View>
                </ScrollView>
-                <View  style={profileImageStyle}>
-                    <Image source={require('../images/eg_user.png')} style= {{height:100,width:110,resizeMode: 'contain'}}/>
+                <View  style={CustomStyles.profileImageStyle}>
+                    <Image source={require('../images/eg_user.png')} 
+                        style= {{height:100,width:110,resizeMode: 'contain'}}/>
                 </View>
                 <View  style={editProfileImageStyle}>
-                    <Image source={require('../images/eg_edit.png')} style= {{height:20,width:30,resizeMode: 'contain'}}/>
+                    <Image source={require('../images/eg_edit.png')} 
+                        style= {{height:20,width:30,resizeMode: 'contain'}}/>
                 </View>
 
-                <View style={addGroupImageStyle}>
-                     <View style={styles.circle} >
-                        <Image source={require('../images/eg_addgroup.png')} style= {{height:30,width:30,resizeMode: 'contain'}}/>
+                <View style={CustomStyles.profileaAddGroupImageStyle}>
+                     <View style={CustomStyles.profileCircle} >
+                        <Image source={require('../images/eg_addgroup.png')} 
+                            style= {{height:30,width:30,resizeMode: 'contain'}}/>
                      </View>
-
                 </View>
                     
              </View>   
@@ -234,126 +220,16 @@ class Profile extends Component{
 const winW = Dimensions.get('window').width;
 const winH = Dimensions.get('window').width;
 const styles = {
-    circle: {
-        width: 60,
-        height: 60,
-        borderRadius: 100/2,
-        backgroundColor:'#e22b0b',
-        paddingLeft:15,
-        justifyContent:'center',
-    },
-    backgroundImage: {
-         width:20,
-         height:30,
-         resizeMode: 'contain'
-    },
-    viewStyle: {
-        flex:1,
-        justifyContent: 'flex-start',
-        flexDirection:'column',
-        alignItems:'center',
-        paddingBottom:10
-        
-    },
-    containerStyle: {
-        flex: 1,
-        alignSelf:'stretch',
-        backgroundColor: 'transparent',
-        alignItems:'flex-start',
-        marginTop:40,
-        marginRight:10,
-        marginLeft:10
-
-    },
-    profileImageStyle:{
-        position:'absolute',
-        top:20
-    },
+    //important as calculation width
     editProfileImageStyle:{
         padding:5,
         borderRadius: 5,
         backgroundColor: '#a7a4a4',
         position:'absolute',
-        top:40,
-        right:winW-250
+        top:30,
+        right:winW/2 -65
     },
-    addGroupImageStyle:{
-        padding:5,
-        backgroundColor: 'transparent',
-        position:'absolute',
-        bottom:70,
-        right:20,
-        zIndex: 1 
-    },
-    inputContainerStyle:{
-        marginTop:10,
-        marginBottom:0
-    },
-    inputStyle: {
-        fontFamily:'gothamlight',
-        fontSize: 14,
-        marginTop:6,
-        backgroundColor: 'transparent',
-        height:35
-    },
-    sendTextStyle :{
-        fontFamily:'gothamlight',
-        textAlign: 'right',
-        color: '#ffffff',
-        padding: 5
-    },
-    signInButtonStyle: {
-        alignSelf:'stretch',
-        backgroundColor: '#ffffff',
-        marginTop:1
-    },
-    actionStyle:{
-        paddingLeft:5,
-         backgroundColor:'#1e4495'
-    },
-    forgotTextStyle: {
-        fontFamily:'gothamlight',
-        textAlign: 'right',
-        color: '#1e4495',
-        paddingTop: 2
-    },
-    
-    imageStyle: {
-        width: 25,
-        height: 30
-    },
-    text: {
-        flex:1,
-        fontFamily:'gothamlight',
-        color: '#000000',
-        fontSize: 18
-    },
-    rememberTextStyle:{
-        textAlign: 'center',
-        color: '#3B3B3B',
-        paddingTop: 2
-    },
-    headerStyle:{
-        alignSelf:'stretch',
-        alignItems:'flex-end',
-        height:60,
-        paddingTop:5,
-        paddingRight:10,
-        backgroundColor:'#1e4495',
-        position:'relative'
-    },
-    checkForgotStyle:{
-        flex: 1,
-        alignSelf:'stretch',
-        flexDirection: 'row',
-        marginTop:10,
-        marginBottom:20,
-        justifyContent: 'flex-end',
-       
-    },
-    checkboxStyle:{
-        color:'#000000'
-    }  
+   
 
 };
 

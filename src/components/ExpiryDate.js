@@ -12,36 +12,11 @@ export default class ExpiryDate extends Component {
 
     state = {
         categoryBgColor: false,
+        itemIndex:0,
         lookFor:'',
         label:'',
         spinnerBool: false,
-        data: [
-            {
-                id:'1',
-                selectedItem: true,
-                title: "Permit"
-            },
-            {
-                id:'2',
-                selectedItem: false,
-                title: "Tax"
-            },
-            {
-                id:'3',
-                selectedItem: false,
-                title: "Insurance"
-            },
-            {
-                id:'4',
-                selectedItem: false,
-                title: "Pollution"
-            },
-            {
-                id:'5',
-                selectedItem: false,
-                title: "Fittness"
-            }
-        ],
+        data: [ ],
         trucks: [],
         count: 0
     };
@@ -114,7 +89,34 @@ export default class ExpiryDate extends Component {
                     console.log('error in baskets ==>', response);
                     self.setState({ spinnerBool:false });
                 }
-
+                var datad= [
+                    {
+                        id:'1',
+                        selectedItem: true,
+                        title: "Permit"
+                    },
+                    {
+                        id:'2',
+                        selectedItem: false,
+                        title: "Tax"
+                    },
+                    {
+                        id:'3',
+                        selectedItem: false,
+                        title: "Insurance"
+                    },
+                    {
+                        id:'4',
+                        selectedItem: false,
+                        title: "Pollution"
+                    },
+                    {
+                        id:'5',
+                        selectedItem: false,
+                        title: "Fittness"
+                    }
+                ];
+                this.setState({data:datad});
             }).catch((error) => {
                 console.log('error in baskets ==>', error);
             })
@@ -124,43 +126,34 @@ export default class ExpiryDate extends Component {
     callSubCategoryScreen(item) {
         console.log(item, ' --->');
         var data = this.state.data;
-        console.log(data, '==> main data')
         for (var i = 0; i < data.length; i++) {
             if (data[i].id == item.id) {
                 data[i].selectedItem = true;
                 this.callExpiryAPI( data[i].title);
-                //console.log(data[i].selectedItem, " making true", this.state.data[i].selectedItem);
             } else {
                 data[i].selectedItem = false;
-                //console.log(data[i].selectedItem, " making false", this.state.data[i].selectedItem);
             }
-            this.setState({ data: data });
-            this.renderItem(this.state.data[this.state.data.indexOf(item)]);
         }
-        /* this.setState({ data: data });
-        console.log(data, " ==", this.state.data);
-        this.renderItem(this.state.data[this.state.data.indexOf(item)]); */
-
+        var data = this.state.data;
+        this.setState({itemIndex:this.state.data.indexOf(item),data:data});
     }
 
 
-
-
     renderItem(item) {
-        console.log(item);
-        if (item.selectedItem) {
-            console.log('in if', item.title);
+        console.log(this.state.itemIndex);
+        if (this.state.data.indexOf(item) == this.state.itemIndex) {
+            //console.log('in if', item.title);
             return (
                 <TouchableOpacity onPress={() => this.callSubCategoryScreen(item)}>
-                    <View style={{ backgroundColor: '#e1e1e1', flexDirection: 'row', padding: 5 }}>
-                        <Text style={!item.selectedItem ? CustomStyles.epiryButtons : CustomStyles.epirySelectedButtons}>
+                    <View style={{flexDirection: 'row', padding: 5 }}>
+                        <Text style={CustomStyles.epirySelectedButtons}>
                             {item.title}
                         </Text>
                     </View>
                 </TouchableOpacity>
             );
         } else {
-            console.log('in else', item.title);
+            //console.log('in else', item.title);
             return (
                 <TouchableOpacity onPress={() => this.callSubCategoryScreen(item)}>
                     <View style={{ alignItems: 'center', flexDirection: 'row', padding: 5 }}>
@@ -175,9 +168,8 @@ export default class ExpiryDate extends Component {
 
     getParsedDate(item) {
         var date = item[this.state.lookFor];
-        console.log('date-riyaz',date,item[this.state.lookFor]);
+        //console.log('date-riyaz',date,item[this.state.lookFor]);
         var formattedDate = new Date(date);
-        //this.functiona(formattedDate) < 15
         if (true) {
             return (
                 <Text style={[CustomStyles.erpSubCatText, { color: 'red' }]}>

@@ -22,6 +22,8 @@ let routes = {
     partyList : '/party/get/all',
     trucksList : '/trucks/groupTrucks',
     paymentList : '/payments/getPayments',
+    ExpensesList : '/expense/getAllExpenses',
+    tripsList : '/trips/getAllAccountTrips',
 
 
     communitiesRoute: '/v1/user/communities',

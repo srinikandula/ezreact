@@ -304,21 +304,21 @@ export default class ERPSubCategory extends Component {
                         <View style={CustomStyles.erpCategory}>
                             <Text style={CustomStyles.headText}>{this.props.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
-                            <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
-                                </View>
-                                <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Trip ID</Text>
-                                </View>
-                                <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>V.no</Text>
-                                </View>
-                                <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Freight</Text>
-                                </View>
-                                <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Paid</Text>
-                                </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpSubCatHeaderText}>Trip ID</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpSubCatHeaderText}>V.no</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpSubCatHeaderText}>Freight</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpSubCatHeaderText}>Paid</Text>
+                                    </View>
                             </View>
                             <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                                 data={this.state.payementsResults}
@@ -339,7 +339,7 @@ export default class ERPSubCategory extends Component {
                                             <Text style={CustomStyles.erpSubCatText}>{item.freightAmount}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{item.amount}</Text>
+                                            <Text style={[CustomStyles.erpSubCatText,{}]}>{item.amount}</Text>
                                         </View> 
                                     </View>
                                 }

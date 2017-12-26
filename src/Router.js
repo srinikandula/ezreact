@@ -28,6 +28,8 @@ import PartyList from './components/PartyList';
 import TruckList from './components/TruckList';
 import AddDriver from './components/AddDriver';
 import PaymentList from './components/PaymentList';
+import ExpenseList from './components/ExpenseList';
+import TripList from './components/TripList';
 
 class TabIcon extends Component {
 	render() {
@@ -140,8 +142,8 @@ export default class Navigation extends Component {
 							component={Profile} icon={TabIcon} />
 						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Login} icon={TabIcon} />
 					</Scene>
-					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="trucks"
-						tabBarPosition="top"  swipeEnabled={true} /* initial={this.state.logged} */>
+					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="Trips"
+						tabBarPosition="top"  swipeEnabled={true}  initial={this.state.logged}>
 						<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />
 						<Scene key='Trucks' title='Trucks' headerMode="float" component={TruckList}
 						/>
@@ -149,7 +151,8 @@ export default class Navigation extends Component {
 							screenProps={this.state.value} />
 						<Scene key='Partys' title='Partys' headerMode="float" component={PartyList} />
 						<Scene key='Payments' title='Payments' headerMode="float" component={PaymentList} />
-						<Scene key='Loads' title='Loads' headerMode="float" component={Trucks} />
+						<Scene key='Expenses' title='Expenses' headerMode="float" component={ExpenseList} />
+						<Scene key='Trips' title='Trips' headerMode="float" component={TripList} />
 					</Scene>
 					<Scene key='erpcategory'>
 						<Scene key='category' component={ERPCategory} hideNavBar={false} />

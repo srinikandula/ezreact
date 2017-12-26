@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,ToastAndroid} from 'react-native';
-import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
+import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import {Actions} from 'react-native-router-flux';
 import CustomStyles from './common/CustomStyles';
+import Axios from 'axios';
 
 class OtpVerification extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
-           passwordlbl:false,rememberme:false};
+           passwordlbl:false,rememberme:false,
+           spinnerBool: false};
 
     constructor(props) {
         super(props);
@@ -16,7 +18,9 @@ class OtpVerification extends Component{
             userNamelbl: false,
              phoneNumberlbl:false,
              passwordlbl:false,
+             spinnerBool: false
         };
+        console.log(this.props,'props');
     }
  
     componentWillMount() {
@@ -30,23 +34,59 @@ class OtpVerification extends Component{
      Actions.pop();
     }
 
-     onVerifyOTP() {
-         if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {
-            this.setState({message: 'Enter a 6 digits OTP Number'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-            });
+    onVerifyOTP() {
+            if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {       
+                ToastAndroid.show('Enter a 6 digits OTP Number', ToastAndroid.SHORT);
         } else {
-            if(this.state.phoneNumber == 123456){
-                this.setState({message: 'OTP verification done'});
-                    ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-                    Actions.ResetPassword();
+            if(this.state.phoneNumber.length == Config.limiters.otpLength){
+                this.callOtpVerfiyAPI(Config.routes.base + Config.routes.OtpVerfication,this.state.phoneNumber);
+                    //Actions.POP();-OtpVerfication
             }else{
-                this.setState({message: ' OTP does not match'});
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+                ToastAndroid.show('Enter a 6 digits OTP Number', ToastAndroid.SHORT);
             }
         }
     }
+
+    callOtpVerfiyAPI(Url,otpNumber){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        Axios({
+            method: 'post',
+            url: 'http://192.168.1.41:3100/v1/group/verify-otp',//Url,
+            data: {
+                contactPhone: this.props.mobile,
+                otp:otpNumber
+            }
+        })
+            .then((response) => {
+                console.log(Url,'<--verify-otp ==>', response.data);
+                if (response.data.status) {
+                    
+                    self.setState({ spinnerBool:false });
+                    Actions.pop({ refresh: { close: true }})
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                } else {
+                    console.log('fail in verify-otp ==>', response);
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in verify-otp ==>', error);
+            })
+    }
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
+    }    
    
  render() {
 
@@ -64,6 +104,7 @@ class OtpVerification extends Component{
             <CommonBackground>
                 <View style={CustomStyles.otpViewStyle}>
                     <View style={CustomStyles.otpMainContainer}>
+                    {this.spinnerLoad()}
                         <CustomText style={CustomStyles.otpMessagetext}>
                             OTP sent to your mobile number
                         </CustomText>

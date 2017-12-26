@@ -1,6 +1,6 @@
 let routes = {
-    base: 'http://demo.easygaadi.com/v1',
-    //base: 'http://erp.easygaadi.com/v1',
+    //base: 'http://demo.easygaadi.com/v1',
+    base: 'http://erp.easygaadi.com/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle',
@@ -25,7 +25,9 @@ let routes = {
     paymentList : '/payments/getPayments',
     ExpensesList : '/expense/getAllExpenses',
     tripsList : '/trips/getAllAccountTrips',
-
+    //Forgot-password
+    //otp vERIFICATION
+    OtpVerfication:'v1/group/verify-otp',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

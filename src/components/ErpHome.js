@@ -94,12 +94,6 @@ export default class ErpHome extends Component {
     async getCache(callback) {
         try {
             var value = await AsyncStorage.getItem('credientails');
-            console.log('credientails', value);
-            if (value !== null) {
-                console.log('riyaz', value);
-            } else {
-                console.log('value', value);
-            }
             callback(value);
         }
         catch (e) {
@@ -112,7 +106,6 @@ export default class ErpHome extends Component {
 
     getExpiryDateView(){
         return this.state.expirydetails.map((expirydetail, i) => {
-         
             return   <ExpiryDateItems key={i} style={{flex:1}}  count={expirydetail.count} label={expirydetail.label}  />
             
        });

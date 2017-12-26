@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 import {View,Image,Text,CheckBox,TouchableOpacity,ToastAndroid,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
-import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
+import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
 import {Actions} from 'react-native-router-flux';
+import Axios from 'axios';
 
 class ForgotPin extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
-           passwordlbl:false,rememberme:false};
+           passwordlbl:false,rememberme:false,
+           spinnerBool: false};
 
     constructor(props) {
         super(props);
@@ -16,10 +18,12 @@ class ForgotPin extends Component{
             userNamelbl: false,
              phoneNumberlbl:false,
              passwordlbl:false,
+             spinnerBool: false
         };
     }
 
     componentWillMount() {
+        
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
     componentWillUnmount(){
@@ -27,33 +31,71 @@ class ForgotPin extends Component{
         Actions.pop();
     }
 
+    callForgotPasswordAPI(Url,mobile){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        Axios({
+            method: 'post',
+            url: 'http://192.168.1.41:3100/v1/group/forgot-password',//Url,
+            data: {
+                contactPhone: this.state.phoneNumber
+            }
+        })
+            .then((response) => {
+                console.log(Url,'<--forgotPassword ==>', response.data);
+                if (response.data.status) {
+                    
+                    self.setState({ spinnerBool:false });
+                    Actions.OtpVerification({
+                        mobile:this.state.phoneNumber
+                    });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                } else {
+                   // console.log('fail in forgotPassword ==>', response);
+                    self.setState({ spinnerBool:false });
+                    ToastAndroid.show(response.data.messages, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in forgotPassword ==>', error);
+            })
+    }
     onBackAndroid() {
      Actions.pop();
     }
 
     
 
-     onSignIn() {
-        
+    getOtpNUmber() {
          if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
-            this.setState({message: 'Enter a valid Mobile Number'}, () => {
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-
-            });
+                ToastAndroid.show('Please Enter  Mobile Number', ToastAndroid.SHORT);
         } else {
              if(this.state.phoneNumber.length == 10){
-                this.setState({message: 'Message has been sent to mobile number'});
-                    ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
-                    Actions.pop();
+                 //Actions.OtpVerification
+                    ToastAndroid.show(this.state.phoneNumber, ToastAndroid.SHORT);
+                    this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
             }else{
-                this.setState({message: ' Please enter Mobile nmuber'});
+                this.setState({message: ' Please Enter 10 digits Mobile nmuber'});
                 ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
             }
         }
     }
 
-    
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
+    }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.close){
+            Actions.pop();
+        }
+    }
  render() {
         
          const phonelabelStyle = {
@@ -67,13 +109,15 @@ class ForgotPin extends Component{
         return (
             <CommonBackground>
                 <View style={CustomStyles.forgotviewStyle}>
-
+                
                     <CustomText style={CustomStyles.forgottext}>
                                Forgot Password ?
                             </CustomText>
-                 
+                            {this.spinnerLoad()}
                     <View style={CustomStyles.forgotMainContainer}>
                          <View style={CustomStyles.forgotcontainerStyle}>
+
+                         
                              <View style={CustomStyles.forgotInputBox}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
@@ -101,7 +145,7 @@ class ForgotPin extends Component{
                                    
                                     <TouchableOpacity style={CustomStyles.forgotActionpadding} onPress={() => {
                                                                 Keyboard.dismiss();
-                                                                Actions.OtpVerification();
+                                                                this.getOtpNUmber();
                                                             }}>
                                         <CustomText customTextStyle={CustomStyles.forgotsendTextStyle}>
                                             SEND

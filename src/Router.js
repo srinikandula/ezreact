@@ -30,6 +30,7 @@ import AddDriver from './components/AddDriver';
 import PaymentList from './components/PaymentList';
 import ExpenseList from './components/ExpenseList';
 import TripList from './components/TripList';
+import AddParty from './components/AddParty';
 
 class TabIcon extends Component {
 	render() {
@@ -68,11 +69,6 @@ export default class Navigation extends Component {
 	async getCache(callback) {
 		try {
 			var value = await AsyncStorage.getItem('credientails');
-			if (value !== null) {
-				console.log('riyaz', value);
-			} else {
-				console.log('value', value);
-			}
 			callback(value);
 		}
 		catch (e) {
@@ -112,10 +108,16 @@ export default class Navigation extends Component {
 					<Scene key="AddDriver"
 						component={AddDriver}
 						title="Add Driver"
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+					/>
+
+					<Scene key="AddParty"
+						component={AddParty}
+						title="Add Party"
 						initial
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
-
 					/>
+
 					<Scene key='root' tabs={true} tabBarStyle={styles.tabBar} default="tab3"
 						tabBarPosition='bottom' swipeEnabled={false}>
 						<Scene key='tab1' activeTintColor='red' showIcon={true} hideNavBar title='Home'

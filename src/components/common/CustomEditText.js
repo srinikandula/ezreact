@@ -2,6 +2,7 @@ import React from 'react';
 import {TextInput, View, Image} from 'react-native';
 
 const CustomEditText = ({
+    underlineColorAndroid,
                          maxLength,
                          keyboardType,
                          inputContainerStyle,
@@ -18,6 +19,8 @@ const CustomEditText = ({
     return (
         <View style={[containerStyle, inputContainerStyle]}>
             <TextInput
+            underlineColorAndroid={underlineColorAndroid}
+            
                 editable={editable}
                 maxLength={maxLength}
                 keyboardType={keyboardType}
@@ -55,7 +58,8 @@ const styles = {
         lineHeight: 23,
         height: 48,
         paddingLeft: 5,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        
     }
 };
 

@@ -240,7 +240,7 @@ export default class ErpHome extends Component {
                 <TouchableOpacity
                     onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor });this.callcategoryScreen('Expiry') }}
                 >
-                    <View style={[CustomStyles.ECategory,, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                    <View style={[CustomStyles.ECategory,]}>
                         <Image
                             style={CustomStyles.imageDimensions}
                             resizeMode="contain"

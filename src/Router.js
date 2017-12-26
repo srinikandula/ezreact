@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-	Button,
 	AsyncStorage,
 	Icon,
 	ToastAndroid,
@@ -8,12 +7,9 @@ import {
 	Text, Image,
 	View,
 	StyleSheet,
-	PixelRatio,
-	ScrollView,
-	TouchableOpacity,
-	ViewPagerAndroid
+	PixelRatio
 } from 'react-native';
-import { Actions, Router, Stack, Scene } from 'react-native-router-flux';
+import { Router, Stack, Scene } from 'react-native-router-flux';
 import Login from './components/Login';
 import ForgotPin from './components/ForgotPin';
 import OtpVerification from './components/OtpVerification';
@@ -26,13 +22,11 @@ import Trucks from './components/Trucks';
 import ErpHome from './components/ErpHome';
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
-import Notifications from './components/Notifications';
 import ExpiryDate from './components/ExpiryDate';
-import Sample from './components/Sample';
-import CustomStyles from './components/common/CustomStyles';
 import DriverList from './components/DriverList';
 import PartyList from './components/PartyList';
 import TruckList from './components/TruckList';
+import AddDriver from './components/AddDriver';
 import PaymentList from './components/PaymentList';
 
 class TabIcon extends Component {
@@ -47,18 +41,11 @@ class TabIcon extends Component {
 	}
 }
 
+
+
+
 export default class Navigation extends Component {
-	state = {
-		logged: false, loading: true,
-		selectedTab: {
-			noteTab: false,
-			profTab: false,
-			settTab: false,
-			homeTab: false
-		}
-		, headerTitle: 'ErpHome',
-		value: {}
-	};
+	state = { logged: false, loading: true, value: {} };
 
 	componentWillMount() {
 		this.getCredentailsData();
@@ -68,9 +55,9 @@ export default class Navigation extends Component {
 	async getCredentailsData() {
 		this.getCache((value) => {
 			if (value !== null) {
-				this.setState({ logged: true, loading: false });
+				this.setState({ logged: true, loading: false, value: value });
 			} else {
-				this.setState({ logged: false, loading: false })
+				this.setState({ loading: false })
 			}
 		}
 		);
@@ -79,220 +66,105 @@ export default class Navigation extends Component {
 	async getCache(callback) {
 		try {
 			var value = await AsyncStorage.getItem('credientails');
+			if (value !== null) {
+				console.log('riyaz', value);
+			} else {
+				console.log('value', value);
+			}
 			callback(value);
 		}
 		catch (e) {
+			console.log('riyaz');
 			console.log('caught error', e);
+			// Handle exceptions
 		}
 	}
 
-	tabStatus(tab, headerTitle) {
-		let selectedTab = this.state.selectedTab;
-		for (key in selectedTab) {
-			if (key === tab) {
-				selectedTab[key] = true;
-			} else {
-				selectedTab[key] = false;
-			}
-		}
-		console.log('selectedTab', selectedTab)
-		this.setState({ selectedTab, headerTitle });
-	}
 
-	renderGlobalTabs() {
-		return (
-			<View style={CustomStyles.globalTabs}>
-				<TouchableOpacity
-					onPress={() => {
-						this.tabStatus("homeTab", 'ErpHome');
-						Actions.ErpHome();
-					}}
-				>
-					<View style={CustomStyles.homeButtonContainer}>
-						<Image
-							resizeMode="contain"
-							style={CustomStyles.globalTabsIcon}
-							source={require('./images/homeButton.png')}
-						/>
-						<Text style={{ color: this.state.selectedTab.homeTab ? '#e6412e' : '#4a4a4a' }}>
-							Home
-				</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						this.tabStatus("settTab", 'Settings');
-						Actions.tab2();
-					}}
-				>
-					<View style={CustomStyles.homeButtonContainer}>
-						<Image
-							resizeMode="contain"
-							style={CustomStyles.globalTabsIcon}
-							source={require('./images/settingsButton.png')}
-						/>
-						<Text style={{ color: this.state.selectedTab.settTab ? '#e6412e' : '#4a4a4a' }}>
-							Settings
-				</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						this.tabStatus("profTab", 'Profile');
-						Actions.tab3()
-					}}
-				>
-					<View style={CustomStyles.homeButtonContainer}>
-						<Image
-							resizeMode="contain"
-							style={CustomStyles.globalTabsIcon}
-							source={require('./images/profileButton.png')}
-						/>
-						<Text style={{ color: this.state.selectedTab.profTab ? '#e6412e' : '#4a4a4a' }} >
-							Profile
-				</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						this.tabStatus("noteTab", "Notifications");
-						Actions.tab4()
-					}}
-				>
-					<View style={CustomStyles.homeButtonContainer}>
-						<Image
-							resizeMode="contain"
-							style={CustomStyles.globalTabsIcon}
-							source={require('./images/notificationButton.png')}
-						/>
-						<Text style={{ color: this.state.selectedTab.noteTab ? '#e6412e' : '#4a4a4a' }}>
-							Notifications
-				</Text>
-					</View>
-				</TouchableOpacity>
-			</View>
-		);
-	}
 
 	render() {
 		if (this.state.loading) {
 			return null;
 		}
 		return (
-			<View style={{ flex: 1 }}>
-				<View style={{ display: this.state.headerTitle === 'ErpHome' ? 'none' : 'flex', height: 50, backgroundColor: '#1e4495', justifyContent: 'center' }}>
-					<Text style={{ alignSelf: 'center', color: '#ffffff', fontSize: 18 }}>
-						{this.state.headerTitle}
-					</Text>
-				</View>
-				<Router >
-					<Scene key="root">
-						<Scene key="Login"
-							component={Login}
-							hideNavBar={true} initial={!this.state.logged}
-						/>
-							<Scene key="ForgotPin"
-								component={ForgotPin}
-								hideNavBar={true}
-							/>
-							<Scene key="OtpVerification"
-								component={OtpVerification}
-								hideNavBar={true}
-							/>
-							<Scene key="ResetPassword"
-								component={ResetPassword}
-								hideNavBar={true}
-							/>
-							<Scene key='tab2' headerMode="float" tabs={true} title='Setting'
-								indicatorStyle={styles.indicatorStyle}
-								tabBarStyle={styles.settingtabBar}
-								titleStyle={styles.navTitle}
-								default="gps"
-								activeTintColor="#000000"
-								inactiveTintColor="#000000"
-								tabBarPosition='top'
-								swipeEnabled={true}
-							>
-								<Scene key='gps'
-									headerMode="float"
-									duration={1}
-									title='Setting'
-									component={GpsSetting} />
-								<Scene key='reports'
-									headerMode="float"
-									duration={1}
-									hideNavBar title='Reports'
-									component={Login} />
-							</Scene>
-							<Scene key='tab1'
-								activeTintColor='red'
-								showIcon={true}
-								hideNavBar
-								title='Home'
-								component={Login} />
-							<Scene key='tab3'
-								activeTintColor='cyan'
-								hideNavBar
-								title='Profile'
-								component={Profile} />
-							<Scene key='tab4'
-								activeTintColor='cyan'
-								hideNavBar
-								title='Notifications'
-								component={Notifications} />
-							<Scene key='erp'
-								navigationBarStyle={{ backgroundColor: '#1e4495' }}
-								tabBarStyle={{ backgroundColor: '#ffffff' }}
-								labelStyle={{ color: '#1e4495' }}
-								wrap={false}
-								tabStyle={{ width: 100 }}
-								tabs={true}
-								tabBarPosition="top"
-								swipeEnabled={true}
-								initial={this.state.logged}>
-								<Scene
-									key='ErpHome'
-									title='ErpHome'
-									headerMode="none"
-									component={ErpHome}
-								/>
-								<Scene key='Drivers' title='Drivers' headerMode="none" component={Trucks} />
-								<Scene key='Partys' title='Partys' headerMode="none" component={Trucks} />
-								<Scene key='Payments' title='Payments' headerMode="none" component={Trucks} />
-								<Scene key='Loads' title='Loads' headerMode="none" component={Trucks} />
-								<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="trucks"
-									tabBarPosition="top" swipeEnabled={true} initial={this.state.logged}>
-									<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />
-									<Scene key='Trucks' title='Trucks' headerMode="float" component={TruckList}
-									/>
-									<Scene key='Drivers' title='Drivers' headerMode="float" component={DriverList}
-										screenProps={this.state.value} />
-									<Scene key='Partys' title='Partys' headerMode="float" component={PartyList} />
-									<Scene key='Payments' title='Payments' headerMode="float" component={PaymentList} />
-									<Scene key='Loads' title='Loads' headerMode="float" component={Trucks} />
-								</Scene>
+			<Router >
+				<Scene key="root">
+					<Scene key="Login"
+						component={Login}
+						hideNavBar={true} initial={!this.state.logged}
+					/>
 
-								<Scene key='erpcategory' hideNavBar={false} headerMode="none">
-									<Scene key='category' component={ERPCategory} headerMode="none" />
-								</Scene>
-								<Scene key='erpsubcategory' hideNavBar={false} headerMode="none">
-									<Scene key='subcategory' component={ERPSubCategory} headerMode="none" />
-								</Scene>
-								<Scene key='erpExpiryDate' hideNavBar={false} headerMode="none">
-									<Scene key='erpExpiryDate' component={ExpiryDate} headerMode="none" />
-								</Scene>
-								</Scene>
-							</Scene>
-				</Router>
-			<View style={{
-				display: this.state.logged ? 'flex' : 'none',
-				justifyContent: 'flex-end'
-			}}>
-				{this.renderGlobalTabs()}
-			</View> 
-			</View >
-					);
+					<Scene key="ForgotPin"
+						component={ForgotPin}
+						hideNavBar={true}
+					/>
+					<Scene key="OtpVerification"
+						component={OtpVerification}
+						hideNavBar={true}
+					/>
+					<Scene key="ResetPassword"
+						component={ResetPassword}
+						hideNavBar={true}
+
+					/>
+					<Scene key="AddDriver"
+						component={AddDriver}
+						title="Add Driver"
+						initial
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+
+					/>
+					<Scene key='root' tabs={true} tabBarStyle={styles.tabBar} default="tab3"
+						tabBarPosition='bottom' swipeEnabled={false}>
+						<Scene key='tab1' activeTintColor='red' showIcon={true} hideNavBar title='Home'
+							component={Login} icon={TabIcon} />
+
+						<Scene key='tab2' headerMode="float" tabs={true} title='Setting'
+							indicatorStyle={styles.indicatorStyle}
+							tabBarStyle={styles.settingtabBar}
+							titleStyle={styles.navTitle}
+							default="gps"
+							activeTintColor="#000000"
+							inactiveTintColor="#000000"
+							tabBarPosition='top'
+							swipeEnabled={true}>
+							<Scene key='gps' headerMode="float" duration={1}
+								title='Setting'
+								component={GpsSetting} />
+							<Scene key='reports' headerMode="float" duration={1}
+								hideNavBar title='Reports'
+								component={Login} />
+						</Scene>
+
+						<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'
+							component={Profile} icon={TabIcon} />
+						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Login} icon={TabIcon} />
+					</Scene>
+					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="trucks"
+						tabBarPosition="top"  swipeEnabled={true} /* initial={this.state.logged} */>
+						<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />
+						<Scene key='Trucks' title='Trucks' headerMode="float" component={TruckList}
+						/>
+						<Scene key='Drivers' title='Drivers' headerMode="float" component={DriverList}
+							screenProps={this.state.value} />
+						<Scene key='Partys' title='Partys' headerMode="float" component={PartyList} />
+						<Scene key='Payments' title='Payments' headerMode="float" component={PaymentList} />
+						<Scene key='Loads' title='Loads' headerMode="float" component={Trucks} />
+					</Scene>
+					<Scene key='erpcategory'>
+						<Scene key='category' component={ERPCategory} hideNavBar={false} />
+					</Scene>
+					<Scene key='erpsubcategory'>
+						<Scene key='subcategory' component={ERPSubCategory} hideNavBar={false} />
+					</Scene>
+					<Scene key='erpExpiryDate' >
+						<Scene key='erpExpiryDate' component={ExpiryDate} hideNavBar={false} />
+					</Scene>
+				</Scene>
+			</Router>
+		);
 	}
+
 }
 
 const styles = StyleSheet.create({
@@ -310,6 +182,7 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1 / PixelRatio.get(),
 		backgroundColor: 'ghostwhite',
 		opacity: 0.98,
+		tintColor: 'blue',
 	},
 	indicatorStyle: {
 		backgroundColor: '#000000'
@@ -329,5 +202,5 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1 / PixelRatio.get(),
 		backgroundColor: 'ghostwhite',
 		opacity: 0.98
-	}
+	},
 });

@@ -18,6 +18,7 @@ let routes = {
     fitnessExpiryTrucks: '/trucks/fitnessExpiryTrucks/',
 
     //Driver Module
+    addDriver: '/drivers',
     driverList : '/drivers/account/drivers',
     partyList : '/party/get/all',
     trucksList : '/trucks/groupTrucks',

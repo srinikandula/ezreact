@@ -12,19 +12,50 @@ import { Actions } from 'react-native-router-flux';
 export default class AddDriver extends Component {
     state = {
         selectedName: '',
-        licenseValidityDate: {
-            day: '',
-            month: '',
-            year: ''
-        },
+        licenseValidityDate: "",
+        trucks:[],
+        name: '',
+        mobile:'',
+        licenseNo:'',
+        salaryPM:'',
+        selectedTruckId: ''
 
     };
-    componentWillMount() {
 
+    componentWillMount() {
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.token},
+            url: Config.routes.base + Config.routes.trucksList
+        })
+        .then((response) => {
+            if (response.data.status) {
+                console.log('driver ==>', response.data);
+                this.setState({ trucks: response.data.trucks })
+            } else {
+                console.log('error in driver ==>', response);
+                this.setState({ erpDashBroadData: [], expirydetails: [] });
+            }
+
+        }).catch((error) => {
+            console.log('error in baskets ==>', error);
+        })
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        if(id===0){
+            this.setState({ ['field' + id]: { bottom: 50 }, name: value });            
+        }
+        if(id===1){
+            this.setState({ ['field' + id]: { bottom: 50 }, mobile: value });            
+        }
+        if(id===2){
+            this.setState({ ['field' + id]: { bottom: 50 }, licenseNo: value });            
+        }
+        if(id===4){
+            this.setState({ ['field' + id]: { bottom: 50 }, salaryPM: value });            
+        }
+        //console.log(this.state.name, this.state.mobile,this.state.licenseNo,this.state.licenseValidityDate, this.state.selectedTruckId,this.state.salaryPM );
     }
 
     onPickdate() {
@@ -36,12 +67,15 @@ export default class AddDriver extends Component {
                 minDate: new Date(),
             }).then((response) => {
                 if (response.action === "dateSetAction") {
-                    let licenseValidityDate = {
-                        day: response.day,
-                        month: response.month + 1,
-                        year: response.year
-                    };
-                    this.setState({ licenseValidityDate });
+                    let licenseValidityDate =
+                        response.day + "/" + (response.month + 1) + "/" + response.year
+                        ;
+                    this.setState({
+                        licenseValidityDate,
+
+                        ['field' + 3]: { bottom: 50 }, selectedName: licenseValidityDate
+                    });
+
                 }
             }).catch((error) => {
                 console.log(error);
@@ -52,7 +86,20 @@ export default class AddDriver extends Component {
 
     }
     onSubmitDriverDetails() {
+        if(!this.state.name||!this.state.mobile||!this.state.licenseNo||!this.state.salaryPM){
+            ToastAndroid.show('Please provide all details', ToastAndroid.SHORT)
 
+        }
+
+    }
+    renderTrucksRegNo(){
+        return this.state.trucks.map((truckItem, i) =>
+                                    <Picker.Item
+                                        key={i}
+                                        label={truckItem.registrationNo}
+                                        value={truckItem._id}
+                                    />
+                                );
     }
 
 
@@ -60,56 +107,62 @@ export default class AddDriver extends Component {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
                 <View>
-                    <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
-                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                    <ScrollView>
+                        <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>Full Name</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.name}
-                                onChangeText={(name) => this.moveInputLabelUp(0, name)} />
-                        </View>
-                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>Full Name</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.name}
+                                    onChangeText={(name) => this.moveInputLabelUp(0, name)} />
+                            </View>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>Contact Number</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.mobile}
-                                onChangeText={(mobile) => this.moveInputLabelUp(1, mobile)} />
-                        </View>
-                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>License Number</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.licenseNo}
-                                onChangeText={(licenseNo) => this.moveInputLabelUp(2, licenseNo)} />
-                        </View>
-                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{ flex: 5 }}>
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>License Validity</CustomText>
-                                    <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={`${this.state.licenseValidityDate.day}/${this.state.licenseValidityDate.month}/${this.state.licenseValidityDate.year}`}
-                                        onChangeText={(licenseValidityDate) => this.moveInputLabelUp(3, licenseValidityDate)} />
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>Contact Number</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.mobile}
+                                    onChangeText={(mobile) => this.moveInputLabelUp(1, mobile)} />
+                            </View>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>License Number</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.licenseNo}
+                                    onChangeText={(licenseNo) => this.moveInputLabelUp(2, licenseNo)} />
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => { this.onPickdate() }}
+                            >
+                                <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={{ flex: 5 }}>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>License Validity</CustomText>
+                                            <CustomEditText editable={false} underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.licenseValidityDate}
+                                                onChangeText={(licenseValidityDate) => this.moveInputLabelUp(3, licenseValidityDate)} />
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+                                            <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} source={require('../images/calanderLogo.png')} />
+
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.onPickdate() }}
-                                    >
-                                        <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} source={require('../images/calanderLogo.png')} />
-                                    </TouchableOpacity>
-                                </View>
+                            </TouchableOpacity>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <Picker
+                                    style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    selectedValue={this.state.selectedTruckId}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                     <Picker.Item label="Select Truck" value="Select Truck" />
+                                    {this.renderTrucksRegNo()}
+                                </Picker>
+                            </View>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Salary Per Month</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.salaryPM}
+                                    onChangeText={(salaryPM) => this.moveInputLabelUp(4, salaryPM)} />
                             </View>
                         </View>
-                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                            <Picker
-                                style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                selectedValue={this.state.language}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ language: itemValue })}>
-                                <Picker.Item label="Java" value="java" />
-                                <Picker.Item label="JavaScript" value="js" />
-                            </Picker>
-                        </View>
-                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Salary Per Month</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.salaryPM}
-                                onChangeText={(salaryPM) => this.moveInputLabelUp(4, salaryPM)} />
-                        </View>
-                    </View>
+                    </ScrollView>
+
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity

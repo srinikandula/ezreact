@@ -149,14 +149,12 @@ export default class PaymentList extends Component {
                                                 categoryBgColor: !this.state.categoryBgColor
                                                  });}}
                             >
-                        
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
                                         <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
                                             <Image resizeMode="contain"
                                                     source={require('../images/truck_icon.png')}
                                                     style={[CustomStyles.imageViewContainer,{borderRadius:0}]} />    
-                                            
                                         </View>
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                            
@@ -170,7 +168,7 @@ export default class PaymentList extends Component {
                                                 
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
-                                            <TouchableOpacity onPress={() => {}}>
+                                            <TouchableOpacity onPress={() => {Actions.AddPayment({token:this.state.token,id:item._id,edit:true})}}>
                                                 <Image resizeMode="contain"
                                                         source={require('../images/form_edit.png')} 
                                                             style={CustomStyles.drivervEditIcons} />    
@@ -186,8 +184,12 @@ export default class PaymentList extends Component {
                         
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
-                            <Image source={require('../images/eg_payments.png')} 
-                            style= {CustomStyles.addImage}/>
+                            <TouchableOpacity
+                                onPress={() => { Actions.AddPayment({token:this.state.token,edit:false})}}
+                            >
+                                <Image source={require('../images/eg_payments.png')} 
+                                        style= {CustomStyles.addImage}/>
+                            </TouchableOpacity>
                         </View>
                 </View>
                 

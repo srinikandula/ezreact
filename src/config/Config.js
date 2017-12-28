@@ -34,6 +34,10 @@ let routes = {
     editPayment:'/payments/getPaymentsRecord/',
     updatePayment:'/payments/updatePayments/',
 
+    //trucks api
+    addtrucksList : '/trucks/',
+
+
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

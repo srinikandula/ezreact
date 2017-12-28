@@ -9,7 +9,6 @@ import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
-import call from 'react-native-phone-call'
 
 
 export default class TruckList extends Component {
@@ -44,15 +43,15 @@ export default class TruckList extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('driver ==>', response.data);
+                                console.log('trucksList ==>', response.data);
                                 this.setState({trucks:response.data.trucks})
                             } else {
-                                console.log('error in driver ==>', response);
+                                console.log('error in trucksList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
                             }
     
                         }).catch((error) => {
-                            console.log('error in baskets ==>', error);
+                            console.log('error in trucksList ==>', error);
                         })
                 } else {
                     this.setState({ loading: false })
@@ -209,7 +208,7 @@ export default class TruckList extends Component {
                                                 </View>
                                                 <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
                                                     <TouchableOpacity onPress={() => 
-                                                                            {this.callSubCategoryScreen(item.mobile) }
+                                                                           {Actions.AddTruck({token:this.state.token,id:item._id,edit:true}) }
                                                                         }>
                                                         <Image resizeMode="contain"
                                                                 source={require('../images/form_edit.png')} 

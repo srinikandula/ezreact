@@ -38,11 +38,10 @@ export default class AddPayment extends Component {
                tempPArtList.unshift({_id:"Select Party", name:"Select Party"})
                //tempPArtList.concat(response.data.parties);
                this.setState({ partyList: tempPArtList },()=> {
-console.log('array is ', this.state.partyList);
+                console.log('array is ', this.state.partyList);
                })
                 if(this.props.edit){
                     this.getPaymentDetails(this.props.id);
-                    
                 }
             } else {
                 console.log('error in partyList ==>', response);
@@ -105,8 +104,6 @@ console.log('array is ', this.state.partyList);
             url=Config.routes.updatePayment;
             postdata._id = self.props.id;
         }
-
-
         Axios({
             method: methodType,
             headers: { 'token': self.props.token },
@@ -214,7 +211,7 @@ console.log('array is ', this.state.partyList);
                     ToastAndroid.show('Please Enter Amount ', ToastAndroid.SHORT);
                 }
             }else{
-                ToastAndroid.show('Please Enter Party Name', ToastAndroid.SHORT);
+                ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
             }
         }else{
             ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);

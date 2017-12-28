@@ -9,7 +9,6 @@ import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
-import call from 'react-native-phone-call'
 
 
 export default class PartyList extends Component {

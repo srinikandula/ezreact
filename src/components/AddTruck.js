@@ -7,17 +7,28 @@ import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-//import { Actions } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 
 export default class AddTruck extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   
     state = {
         selectedName: '',
-        date: "",
-        passdate:'',
-        paymentType:"paymenttype",
-        selectedPartyId:'',
+        truckNumber: '',
+        trucktonnage: '',
+        truckmodel: '',
+        trucktype: '',
+        TaxDueDate:'',
+        PermitDate:'',
+        FitnessDate:'',
+        PollutionDate:'',
+        InsuranceDate:'',
+        taxpassdate:'',
+        permitpassdate:'',
+        fitnesspassdate:'',
+        pollpassdate:'',
+        insurpassdate:'',
+        selectedDriverId:'',
         Amount:'',
         paymentref:'',
         remark:'',
@@ -33,39 +44,37 @@ export default class AddTruck extends Component {
         })
         .then((response) => {
             if (response.data.status) {
-                console.log('driversList ==>', response.data);
-                this.setState({ drivers: response.data.drivers })
+                console.log('driversList from add Truck ==>', response.data);
+                this.setState({ drivers: response.data.drivers });
+                if(this.props.edit){
+                    this.getPaymentDetails(this.props.id);
+                }
             } else {
-                console.log('error in drivers ==>', response);
+                console.log('error in DriverList from add Truck ==>', response);
                 this.setState({ drivers: [], expirydetails: [] });
             }
 
         }).catch((error) => {
-            console.log('error in add drivers ==>', error);
+            console.log('error in add drivers from add Truck ==>', error);
         })
     }
 
-    callAddPaymentAPI(postdata){
+
+    getPaymentDetails(paymentID){
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
-            method: 'post',
+            method: 'get',
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.addPayment,
-            data: postdata
+            url: Config.routes.base + Config.routes.editPayment+paymentID,
+            
         })
             .then((response) => {
-                console.log(postdata,'<--callAddPaymentAPI ==>', response.data);
-                if (response.data.status) {
-                    
-                    self.setState({ spinnerBool:false });
-                    Actions.pop();
-                    let message ="";
-                    if(response.data)
-                    response.data.messages.forEach(function(current_value) {
-                        message = message+current_value;
-                    });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                console.log(paymentID+'<--editPaymentAPI ==>', response.data);
+                if (response.data.status) {    
+                   self.setState({spinnerBool:false});
+                    this.updateViewdate(response.data.paymentsDetails);
+                   
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
@@ -77,7 +86,42 @@ export default class AddTruck extends Component {
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 }
             }).catch((error) => {
-                console.log('error in callAddPaymentAPI ==>', error);
+                console.log('error in editPaymentAPI ==>', error);
+            })
+    }
+
+    callAddPaymentAPI(postdata){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        Axios({
+            method: 'post',
+            headers: { 'token': self.props.token },
+            url: Config.routes.base + Config.routes.addtrucksList,
+            data: postdata
+        })
+            .then((response) => {
+                console.log(Config.routes.base + Config.routes.addtrucksList,"URL");
+                console.log(postdata,'<--addtrucksList ==>', response.data);
+                if (response.data.status) {                    
+                    self.setState({ spinnerBool:false });
+                    Actions.pop();
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                } else {
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in addtrucksList ==>', error);
             })
     }
     onBackAndroid() {
@@ -100,24 +144,26 @@ export default class AddTruck extends Component {
                 if (response.action === "dateSetAction") {
                 var month = response.month + 1
                 let date =  response.day+"/"+month+"/"+ response.year;
+                var pdate = new Date(month+"/"+response.day+"/"+ response.year);
                     if(look==='TaxDue'){
-                        this.setState({ TaxDueDate:date,passdate:month+"/"+response.day+"/"+ response.year });
+                       
+                        this.setState({ TaxDueDate:date,taxpassdate: pdate});
                         this.moveInputLabelUp(4, date)
                          console.log(date);
                          }else if(look==='Permit'){
-                            this.setState({ PermitDate:date,passdate:month+"/"+response.day+"/"+ response.year });
+                            this.setState({ PermitDate:date,permitpassdate:pdate });
                             this.moveInputLabelUp(5, date)
                              console.log(date);
                             }else if(look==='Fitness'){
-                                this.setState({ FitnessDate:date,passdate:month+"/"+response.day+"/"+ response.year });
+                                this.setState({ FitnessDate:date,fitnesspassdate:pdate });
                                 this.moveInputLabelUp(6, date)
                                  console.log(date);
                                 }else if(look==='Pollution'){
-                                   this.setState({ PollutionDate:date,passdate:month+"/"+response.day+"/"+ response.year });
+                                   this.setState({ PollutionDate:date,pollpassdate:pdate });
                                     this.moveInputLabelUp(7, date)
                                      console.log(date);
                                     }else if(look==='Insurance'){
-                                       this.setState({ InsuranceDate:date,passdate:month+"/"+response.day+"/"+ response.year });
+                                       this.setState({ InsuranceDate:date,insurpassdate:pdate });
                                         this.moveInputLabelUp(8, date)
                                          console.log(date);
                                          }return false;
@@ -129,71 +175,62 @@ export default class AddTruck extends Component {
             console.warn('Cannot open date picker', message);
         }
     }
-    onSubmitPartyDetails() {
-        if(this.state.date.includes('/')){
-            if(!this.state.selectedPartyId.includes('Select Party')){
-                if(this.state.Amount.length > 0 ){
-                    if(!this.state.paymentType.includes("paymenttype") ){
-                        var date = new Date(this.state.passdate);
-                        console.log(date.toISOString());
-                        if(this.state.paymentType.includes("cash")){
-                            ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
-                            var postData= {
-                                'amount':this.state.Amount,
-                                'date':date.toISOString(),
-                                'description':this.state.remark,
-                                'partyId':this.state.selectedPartyId,
-                                'paymentRefNo':this.state.paymentref,
-                                'paymentType':this.state.paymentType
-                                };
-                            this.callAddPaymentAPI(postData);
-                        }else{
-                            if(this.state.paymentref.length>0){
-                                ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
-                                var postData= {
-                                    amount:this.state.Amount,
-                                    'date':date.toISOString(),
-                                    description:this.state.remark,
-                                    partyId:this.state.selectedPartyId,
-                                    paymentRefNo:this.state.paymentref,
-                                    paymentType:this.state.paymentType
-                                    };
-                                this.callAddPaymentAPI(postData);
+    onSubmitTruckDetails() {
+        //if(this.state.date.includes('/')){
+        if(this.state.truckNumber.length > 0){
+            if(this.state.trucktonnage.length > 0){
+                if(this.state.truckmodel.length > 0){
+                    if(this.state.trucktype.length > 0){
+                        if(this.state.TaxDueDate.includes('/')){
+                            if(this.state.PermitDate.includes('/')){
+                                if(this.state.FitnessDate.includes('/')){
+                                    if(this.state.PollutionDate.includes('/')){
+                                        if(this.state.InsuranceDate.includes('/')){
+                                            var postData= {
+                                                'registrationNo' :this.state.truckNumber,
+                                                'truckType':this.state.trucktype,
+                                                'modelAndYear':this.state.truckmodel,
+                                                'tonnage':this.state.trucktonnage,
+                                                'fitnessExpiry':this.state.fitnesspassdate.toISOString(),
+                                                'insuranceExpiry':this.state.insurpassdate.toISOString(),
+                                                'permitExpiry':this.state.permitpassdate.toISOString(),
+                                                'pollutionExpiry':this.state.pollpassdate.toISOString(),
+                                                'taxDueDate':this.state.taxpassdate.toISOString(),
+                                                'driverId':this.state.selectedDriverId,
+                                                };
+
+                                            this.callAddPaymentAPI(postData);
+                                        }else{
+                                            ToastAndroid.show('Please Enter Insurance Date', ToastAndroid.SHORT);
+                                        }
+                                    }else{
+                                        ToastAndroid.show('Please Enter Pollution Date', ToastAndroid.SHORT);
+                                    }
+                                }else{
+                                    ToastAndroid.show('Please Enter Fitness Date', ToastAndroid.SHORT);
+                                }
                             }else{
-                                ToastAndroid.show('Please Enter Reference Number to '+ this.state.paymentType, ToastAndroid.SHORT);
-                            } 
-                        }  
+                                ToastAndroid.show('Please Enter Permit Date', ToastAndroid.SHORT);
+                            }
+                        }else{
+                            ToastAndroid.show('Please Enter TaxDue Date', ToastAndroid.SHORT);
+                        }
                     }else{
-                        ToastAndroid.show('Please Select Payment Type ', ToastAndroid.SHORT);
-                    }                    
+                        ToastAndroid.show('Please Enter Truck Type', ToastAndroid.SHORT);
+                    }                      
                 }else{
-                    ToastAndroid.show('Please Enter Amount ', ToastAndroid.SHORT);
-                }
+                    ToastAndroid.show('Please Enter Truck model', ToastAndroid.SHORT);
+                }                  
             }else{
-                ToastAndroid.show('Please Enter Party Name', ToastAndroid.SHORT);
-            }
+                ToastAndroid.show('Please Enter Truck Tonnage', ToastAndroid.SHORT);
+            }            
         }else{
-            ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
+            ToastAndroid.show('Please Enter Truck Number', ToastAndroid.SHORT);
         }
     }
 
-    getPaymentreferenceView(){
-        let placeholderstr='References no  ' +this.state.paymentType;
-        if(this.state.paymentType.includes('cash')){
-            return ;
-        }else if(!this.state.paymentType.includes('paymenttype') ){
-            return   <View style={{ backgroundColor: '#ffffff', margin: 10, marginHorizontal: 5, borderWidth: 1, 
-                            borderColor: '#000' }}>
-                                        <CustomEditText underlineColorAndroid='transparent' 
-                                        inputTextStyle={{ marginHorizontal: 16 }} 
-                                        placeholder ={placeholderstr}
-                                        value={this.state.paymentref}
-                                        onChangeText={(paymentref) => {this.moveInputLabelUp(10, paymentref), this.setState({paymentref:paymentref})}} />
-                                    </View>
-        }else{
-            return ;
-        }
-    }
+    
+    
 
     spinnerLoad() {
         if (this.state.spinnerBool)
@@ -214,42 +251,50 @@ export default class AddTruck extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-               <ScrollView>
+               <ScrollView style={{marginbottom:25,paddingBottom:10}}>
                 <View>
                     
                     <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
-                    {this.spinnerLoad()}
+                        {this.spinnerLoad()}
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>Truck Number*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.Number}
-                                onChangeText={(Number) => {this.moveInputLabelUp(0, Number), this.setState({Number:Number})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>
+                                        Truck Number*</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.truckNumber}
+                                            onChangeText={(truckNumber) => {this.moveInputLabelUp(0, truckNumber), this.setState({truckNumber:truckNumber})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>Tonnage*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.Tonnage}
-                                onChangeText={(Tonnage) => {this.moveInputLabelUp(1, Tonnage), this.setState({Tonnage:Tonnage})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>
+                                        Tonnage*</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.trucktonnage}
+                                            onChangeText={(trucktonnage) => {this.moveInputLabelUp(1, trucktonnage), this.setState({trucktonnage:trucktonnage})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>Model*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.Model}
-                                onChangeText={(Model) => {this.moveInputLabelUp(2, Model), this.setState({Model:Model})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>
+                                        Model*</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.truckmodel}
+                                            onChangeText={(truckmodel) => {this.moveInputLabelUp(2, truckmodel), this.setState({truckmodel:truckmodel})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>Truck type*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.salaryPM}
-                                onChangeText={(Type) => {this.moveInputLabelUp(3, Type), this.setState({Type:Type})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>
+                                        Truck type*</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.trucktype}
+                                            onChangeText={(trucktype) => {this.moveInputLabelUp(3, trucktype), this.setState({trucktype:trucktype})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                selectedValue={this.state.selectedPartyId}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectedPartyId: itemValue })}>
+                                selectedValue={this.state.selectedDriverId}
+                                onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
                                  <Picker.Item label="Select Driver" value="Select Driver" />
                                 {this.renderPartyList()}
                             </Picker>
@@ -266,13 +311,12 @@ export default class AddTruck extends Component {
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.TaxDueDate} >
                                             {this.state.TaxDueDate}
-                                        </CustomEditText>
-                                            
+                                        </CustomEditText>                                            
                                     </View>
                                 
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                             <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} 
-                                            source={require('../images/calanderLogo.png')} />
+                                                source={require('../images/calanderLogo.png')} />
                                     </View>
                                 </View>
                             </View>
@@ -300,7 +344,7 @@ export default class AddTruck extends Component {
                             </View>
                         </TouchableOpacity> 
                         <TouchableOpacity
-                                        onPress={() => { this.onPickdate('/index.htm/index.htm') }}
+                                        onPress={() => { this.onPickdate('Fitness') }}
                                     >
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
@@ -310,8 +354,8 @@ export default class AddTruck extends Component {
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.FitnessDate}
-                                             >{this.state.FitnessDate} </CustomEditText>
-                                            
+                                             >{this.state.FitnessDate} 
+                                        </CustomEditText> 
                                     </View>
                                  
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -365,11 +409,12 @@ export default class AddTruck extends Component {
                                 </View>
                             </View>
                         </TouchableOpacity>                       
-                    </View>
-                    
-                </View>
-               
-                <View style={{ flexDirection: 'row' }}>
+                    </View>                    
+                </View>                
+             </ScrollView>
+
+
+             <View style={{ flexDirection: 'row',bottom:0, position:'absolute',zIndex: 1  }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
                         onPress={() => { Actions.Drivers() }}
@@ -382,7 +427,7 @@ export default class AddTruck extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#1e4495", alignSelf: 'stretch' }}
-                        onPress={() => { this.onSubmitPartyDetails() }}>
+                        onPress={() => { this.onSubmitTruckDetails() }}>
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ color: '#fff', padding: 15, alignSelf: 'center' }}>
                                 SUBMIT
@@ -391,7 +436,6 @@ export default class AddTruck extends Component {
                     </TouchableOpacity>
 
                 </View>
-             </ScrollView>
             </View>
 
         );

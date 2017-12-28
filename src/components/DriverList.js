@@ -9,7 +9,6 @@ import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
-import call from 'react-native-phone-call'
 
 
 export default class DriverList extends Component {
@@ -169,12 +168,12 @@ export default class DriverList extends Component {
 
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
-                <TouchableOpacity
-                onPress={()=> Actions.AddDriver({token:this.state.token})}
-                >
-                    <Image source={require('../images/eg_driver.png')}
+                    <TouchableOpacity
+                    onPress={()=> Actions.AddDriver({token:this.state.token})}
+                    >
+                        <Image source={require('../images/eg_driver.png')}
                         style={CustomStyles.addImage} />
-                        </TouchableOpacity>
+                    </TouchableOpacity>
                 </View>
             </View>
 

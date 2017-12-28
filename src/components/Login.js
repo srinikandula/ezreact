@@ -39,18 +39,17 @@ class Login extends Component{
 
     onBackAndroid() {
      Actions.pop();
-     //var value = await this.getCache('credientails');
     }
 
-    async checkOutForRememberme(){
-       await this.getCache('credientails');
+    checkOutForRememberme(){
+        this.getCache('credientails');
     }
 
 
-    async getCache(key){
+    getCache(key){
         try{
             //console.log('login-riyaz',key);
-            var value = await AsyncStorage.getItem('credientails');
+            var value = AsyncStorage.getItem('credientails');
             //console.log('credientails',key);
             if (value !== null){
                 var egObj = {};
@@ -98,7 +97,7 @@ class Login extends Component{
                 if (response.data.status) {
                     //console.log("response.data",response.data);
                     this.storeData(response.data);
-                    Actions.root();
+                    Actions.ErpHome();
                 } else {
                     let message ="";
                     if(response.data)
@@ -130,7 +129,7 @@ class Login extends Component{
     }
 
 
-    async  storeData(data){
+     storeData(data){
         console.log('in store data',data);
         var easyGaadi = {
             token:data.token,
@@ -141,7 +140,7 @@ class Login extends Component{
         editAccounts :data.editAccounts
         }
         try {
-            await AsyncStorage.setItem('credientails',JSON.stringify(easyGaadi));
+            AsyncStorage.setItem('credientails',JSON.stringify(easyGaadi));
             console.log('easyGaadi',);
         } catch (error) {
             console.log('something went wrong');
@@ -161,33 +160,33 @@ class Login extends Component{
         const namelabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.userNamelbl ? 18 : 0,
                   fontSize: ! this.state.userNamelbl ? 16 : 14,
                   color: ! this.state.userNamelbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
 
         const passwordlabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.passwordlbl ? 18 : 0,
                   fontSize: ! this.state.passwordlbl ? 16 : 14,
                   color: ! this.state.passwordlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
         
         const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.phoneNumberlbl ? 18 : 0,
                   fontSize: ! this.state.phoneNumberlbl ? 16 : 14,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }                
 

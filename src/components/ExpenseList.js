@@ -5,6 +5,8 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+
 import call from 'react-native-phone-call'
 
 
@@ -134,12 +136,12 @@ export default class ExpenseList extends Component {
                                         </View>
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                            
-                                                <Text style={[CustomStyles.erpText,{fontFamily:'gothammedium',fontSize: 16,}]}>
+                                                <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',fontSize: 16,}]}>
                                                         {this.getExpenseName(item)}</Text>
                                                 <Text style={CustomStyles.erpText}>  {item.description}</Text>
                                            
                                                 <Text style={CustomStyles.erpText}>{this.getParsedDate(item.date)}</Text>
-                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'gothammedium',fontSize: 16}]}>Amount : {item.cost}</Text>
+                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'Gotham-Medium',fontSize: 16}]}>Amount : {item.cost}</Text>
                                                 
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>

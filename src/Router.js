@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
 	AsyncStorage,
 	Icon,
+	TouchableOpacity,
 	ToastAndroid,
 	StatusBar,
 	Text, Image,
@@ -9,8 +10,9 @@ import {
 	StyleSheet,
 	PixelRatio
 } from 'react-native';
-import { Router, Stack, Scene } from 'react-native-router-flux';
+import { Actions,Router, Stack, Scene } from 'react-native-router-flux';
 import Login from './components/Login';
+import Notifications from './components/Notifications';
 import ForgotPin from './components/ForgotPin';
 import OtpVerification from './components/OtpVerification';
 import Profile from './components/Profile';
@@ -20,6 +22,7 @@ import SplashScreen from 'react-native-splash-screen';
 import HomeScreen from './components/HomeScreen';
 import Trucks from './components/Trucks';
 import ErpHome from './components/ErpHome';
+import CustomStyles from './components/common/CustomStyles';
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
@@ -50,7 +53,14 @@ class TabIcon extends Component {
 
 
 export default class Navigation extends Component {
-	state = { logged: false, loading: true, value: {} };
+	state = { logged: false, loading: true, value: {},
+	selectedTab: {
+		noteTab: false,
+		profTab: false,
+		settTab: false,
+		homeTab: false
+	}
+	, headerTitle: 'ErpHome', };
 
 	componentWillMount() {
 		this.getCredentailsData();
@@ -80,13 +90,105 @@ export default class Navigation extends Component {
 		}
 	}
 
+	tabStatus(tab, headerTitle) {
+		let selectedTab = this.state.selectedTab;
+		for (key in selectedTab) {
+			if (key === tab) {
+				selectedTab[key] = true;
+			} else {
+				selectedTab[key] = false;
+			}
+		}
+		console.log('selectedTab', selectedTab)
+		this.setState({ selectedTab, headerTitle });
+	}
 
+	renderGlobalTabs() {
+		return (
+			<View style={CustomStyles.globalTabs}>
+				<TouchableOpacity
+					onPress={() => {
+						this.tabStatus("homeTab", 'ErpHome');
+						Actions.ErpHome();
+					}}
+				>
+					<View style={CustomStyles.homeButtonContainer}>
+						<Image
+							resizeMode="contain"
+							style={CustomStyles.globalTabsIcon}
+							source={require('./images/homeButton.png')}
+						/>
+						<Text style={{ color: this.state.selectedTab.homeTab ? '#e6412e' : '#4a4a4a' }}>
+							Home
+				</Text>
+					</View>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						this.tabStatus("settTab", 'Settings');
+						Actions.tab2();
+					}}
+				>
+					<View style={CustomStyles.homeButtonContainer}>
+						<Image
+							resizeMode="contain"
+							style={CustomStyles.globalTabsIcon}
+							source={require('./images/settingsButton.png')}
+						/>
+						<Text style={{ color: this.state.selectedTab.settTab ? '#e6412e' : '#4a4a4a' }}>
+							Settings
+				</Text>
+					</View>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						this.tabStatus("profTab", 'Profile');
+						Actions.tab3()
+					}}
+				>
+					<View style={CustomStyles.homeButtonContainer}>
+						<Image
+							resizeMode="contain"
+							style={CustomStyles.globalTabsIcon}
+							source={require('./images/profileButton.png')}
+						/>
+						<Text style={{ color: this.state.selectedTab.profTab ? '#e6412e' : '#4a4a4a' }} >
+							Profile
+				</Text>
+					</View>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						this.tabStatus("noteTab", "Notifications");
+						Actions.tab4()
+					}}
+				>
+					<View style={CustomStyles.homeButtonContainer}>
+						<Image
+							resizeMode="contain"
+							style={CustomStyles.globalTabsIcon}
+							source={require('./images/notificationButton.png')}
+						/>
+						<Text style={{ color: this.state.selectedTab.noteTab ? '#e6412e' : '#4a4a4a' }}>
+							Notifications
+				</Text>
+					</View>
+				</TouchableOpacity>
+			</View>
+		);
+	}
 
 	render() {
 		if (this.state.loading) {
 			return null;
 		}
 		return (
+			<View style={{ flex: 1 }}>
+			<View style={{ display: this.state.headerTitle === 'ErpHome' ? 'none' : 'flex', height: 50, backgroundColor: '#1e4495', justifyContent: 'center' }}>
+				<Text style={{ alignSelf: 'center', color: '#ffffff', fontSize: 18 }}>
+					{this.state.headerTitle}
+				</Text>
+			</View>
 			<Router >
 				<Scene key="root">
 					<Scene key="Login"
@@ -116,6 +218,7 @@ export default class Navigation extends Component {
 					<Scene key="AddDriver"
 						component={AddDriver}
 						title="Add Driver"
+						
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
 
@@ -130,8 +233,10 @@ export default class Navigation extends Component {
 						title="Add Payment"
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
+					<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'
+							component={Profile} />
+						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Notifications} />
 					
-
 					<Scene key='root' tabs={true} tabBarStyle={styles.tabBar} default="tab3"
 						tabBarPosition='bottom' swipeEnabled={false}>
 						<Scene key='tab1' activeTintColor='red' showIcon={true} hideNavBar title='Home'
@@ -154,9 +259,7 @@ export default class Navigation extends Component {
 								component={Login} />
 						</Scene>
 
-						<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'
-							component={Profile} icon={TabIcon} />
-						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Login} icon={TabIcon} />
+						
 					</Scene>
 					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="Trips"
 						tabBarPosition="top"  swipeEnabled={true}  initial={this.state.logged}>
@@ -181,6 +284,13 @@ export default class Navigation extends Component {
 					</Scene>
 				</Scene>
 			</Router>
+			<View style={{
+				display: this.state.logged ? 'flex' : 'none',
+				justifyContent: 'flex-end'
+			}}>
+				{this.renderGlobalTabs()}
+			</View> 
+			</View >
 		);
 	}
 
@@ -201,7 +311,6 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1 / PixelRatio.get(),
 		backgroundColor: 'ghostwhite',
 		opacity: 0.98,
-		tintColor: 'blue',
 	},
 	indicatorStyle: {
 		backgroundColor: '#000000'

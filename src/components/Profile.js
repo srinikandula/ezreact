@@ -48,11 +48,11 @@ class Profile extends Component{
         const namelabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                  //fontFamily:'Gotham-Light',
                   top: ! this.state.userNamelbl ? 6 : 0,
                   fontSize: ! this.state.userNamelbl ? 14 : 10,
                   color: ! this.state.userNamelbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                  //fontFamily:'Gotham-Light',
                   padding:1,
                   height:30,
                 }
@@ -60,11 +60,11 @@ class Profile extends Component{
         const passwordlabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.passwordlbl ? 16 : 0,
                   fontSize: ! this.state.passwordlbl ? 18 : 14,
                   color: ! this.state.passwordlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
 
@@ -72,22 +72,22 @@ class Profile extends Component{
         const confirmpasswordlbl= {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.cpasswordlbl ? 16 : 0,
                   fontSize: ! this.state.cpasswordlbl ? 18 : 14,
                   color: ! this.state.cpasswordlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
         
         const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.phoneNumberlbl ? 16 : 0,
                   fontSize: ! this.state.phoneNumberlbl ? 14 : 12,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }                
 

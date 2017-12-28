@@ -56,7 +56,7 @@ class ResetPassword extends Component{
          const passwordlabelStyle = {
                   position: 'absolute',
                   left: 0,
-                   fontFamily:'gothamlight',
+                 //  fontFamily:'Gotham-Light',
                   top: ! this.state.passwordlbl ? 18 : 0,
                   fontSize: ! this.state.passwordlbl ? 20 : 14,
                   color: ! this.state.passwordlbl ? '#aaa' : '#000',
@@ -66,7 +66,7 @@ class ResetPassword extends Component{
          const cpasswordlabelStyle = {
                   position: 'absolute',
                   left: 0,
-                   fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.cpasswordlbl ? 18 : 0,
                   fontSize: ! this.state.cpasswordlbl ? 20 : 14,
                   color: ! this.state.cpasswordlbl ? '#aaa' : '#000',

@@ -94,12 +94,12 @@ export default class AddDriver extends Component {
     }
     renderTrucksRegNo(){
         return this.state.trucks.map((truckItem, i) =>
-                                    <Picker.Item
-                                        key={i}
-                                        label={truckItem.registrationNo}
-                                        value={truckItem._id}
-                                    />
-                                );
+        <Picker.Item
+            key={i}
+            label={truckItem.registrationNo}
+            value={truckItem._id}
+        />
+    );
     }
 
 

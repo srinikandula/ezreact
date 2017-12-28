@@ -7,6 +7,8 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+
 import call from 'react-native-phone-call'
 
 
@@ -77,7 +79,9 @@ export default class PaymentList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        const self = this;
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        
+       /*  const self = this;
         const args = {
             number: ''+truckContactNum, // String value with the number to call
             prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -85,7 +89,7 @@ export default class PaymentList extends Component {
 
          call(args)
          .catch(
-             console.error)  
+             console.error)   */
         
     }
 
@@ -128,7 +132,7 @@ export default class PaymentList extends Component {
     getTripLanes(arrLanes){
         return arrLanes.map((party, i) => {
                 if(party.name)
-                    return ( <Text style={[CustomStyles.erpText,{fontFamily:'gothammedium',color:'#1e4495',fontWeight:'bold',flex:1}]}
+                    return ( <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',color:'#1e4495',fontWeight:'bold',flex:1}]}
                         key={i}> {party.name} </Text>);
         });
     }
@@ -158,13 +162,13 @@ export default class PaymentList extends Component {
                                         </View>
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                            
-                                                <Text style={[CustomStyles.erpText,{fontWeight: 'bold',fontFamily:'gothamBook',fontSize: 16,}]}>
+                                                <Text style={[CustomStyles.erpText,{fontWeight: 'bold',fontFamily:'Gotham-Book',fontSize: 16,}]}>
                                                                 {this.getName(item)}</Text>
                                                 {/* <Text style={CustomStyles.erpText}> +91 {this.getmobile(item)}</Text> */}
                                            
                                                 <Text style={CustomStyles.erpText}>{item.description}</Text>
                                                 <Text style={CustomStyles.erpText}>{this.getParsedDate(item.date)}</Text>
-                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'gothammedium',fontSize: 16}]}>Amount : {item.amount}</Text>
+                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'Gotham-Medium',fontSize: 16}]}>Amount : {item.amount}</Text>
                                                 
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>

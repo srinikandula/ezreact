@@ -7,6 +7,8 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+
 import call from 'react-native-phone-call'
 
 
@@ -77,7 +79,10 @@ export default class TruckList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        const self = this;
+
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        
+      /*   const self = this;
         const args = {
             number: ''+truckContactNum, // String value with the number to call
             prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -86,7 +91,7 @@ export default class TruckList extends Component {
          call(args)
          .catch(
              console.error)  
-        
+         */
     }
 
 
@@ -195,7 +200,7 @@ export default class TruckList extends Component {
                                             <View style={{ flexDirection: 'row',padding:10}}>
                                                 <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                                 
-                                                        <Text style={[CustomStyles.erpText,{fontFamily:'gothammedium',fontSize: 16,}]}>
+                                                        <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',fontSize: 16,}]}>
                                                                 {this.getName(item)}
                                                                 </Text>
                                                         <Text style={CustomStyles.erpText}> +
@@ -223,19 +228,19 @@ export default class TruckList extends Component {
                                                 <View style={{flex:1, flexDirection: 'row',paddingTop:5}}>
                                                         <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.permitExpiry)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'gothammedium',fontSize: 10,}]}>
+                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                         Permit 
                                                                 </Text>
                                                         </View>        
                                                         <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.pollutionExpiry)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'gothammedium',fontSize: 10,}]}>
+                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                 Pollution
                                                                 </Text>
                                                         </View>  
                                                         <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.insuranceExpiry)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'gothammedium',fontSize: 10,}]}>
+                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                 Insurance
                                                                 </Text>
                                                         </View>         
@@ -243,13 +248,13 @@ export default class TruckList extends Component {
                                                 <View style={{flex:1, flexDirection: 'row',paddingTop:5}}>
                                                         <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.fitnessExpiry)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'gothammedium',fontSize: 10,}]}>
+                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                     Fitness 
                                                                 </Text>
                                                         </View>        
                                                         <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.taxDueDate)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'gothammedium',fontSize: 10,}]}>
+                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                 Tax
                                                                 </Text>
                                                         </View>  

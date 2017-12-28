@@ -20,7 +20,7 @@ class FloatingLabelInput extends Component {
           top: !isFocused ? 16 : 0,
           fontSize: !isFocused ? 18 : 12,
           color: !isFocused ? '#aaa' : '#000',
-          fontFamily:'gothamlight',
+          // fontFamily:'Gotham-Light',
         },
         containerStyle: {       
           marginBottom: 10,

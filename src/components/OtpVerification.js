@@ -93,7 +93,7 @@ class OtpVerification extends Component{
          const phonelabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.phoneNumberlbl ? 18 : 0,
                   fontSize: ! this.state.phoneNumberlbl ? 20 : 14,
                   color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',

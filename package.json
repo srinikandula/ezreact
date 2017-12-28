@@ -17,6 +17,7 @@
 		"react-native": "0.51.0",
 		"react-native-checkbox": "^2.0.0",
 		"react-native-hideable-view": "^1.0.3",
+		"react-native-immediate-phone-call": "^1.0.0",
 		"react-native-phone-call": "^1.0.4",
 		"react-native-router-flux": "^4.0.0-beta.24",
 		"react-native-splash-screen": "^3.0.6"

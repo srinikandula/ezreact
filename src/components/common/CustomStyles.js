@@ -13,7 +13,7 @@ const CustomStyles={
     },
     logintext: {
         flex:1,
-        fontFamily:'gothamlight',
+        //fontFamily:'Gotham-Light',
         alignItems:'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
@@ -33,7 +33,7 @@ const CustomStyles={
 
     },
     loginInputStyle: {
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         fontSize: 16,
         marginTop:3,
         backgroundColor: 'transparent'
@@ -48,7 +48,7 @@ const CustomStyles={
         padding:3
     },
     loginForgotTextStyle: {
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'right',
         color: '#1e4495',
         paddingTop: 2
@@ -74,7 +74,7 @@ const CustomStyles={
         alignSelf:'stretch',
        textAlign: 'center',
         color: '#e83a13',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
        fontSize: 14,
        padding: 10,
        backgroundColor:'#ffffff'
@@ -116,7 +116,7 @@ const CustomStyles={
     },
     forgottext: {
         flex:1,
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         alignItems:'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
@@ -124,13 +124,13 @@ const CustomStyles={
     },
     forgotMainContainer:{flex:1,alignSelf:'stretch',justifyContent:'center'},
     forgotcancelTextStyle :{
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'right',
         color: '#1e4495',
         padding: 5
     },
     forgotsendTextStyle :{
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'right',
         color: '#e83a13',
         padding: 5
@@ -158,7 +158,7 @@ const CustomStyles={
         alignItems:'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',//rgba(0,0,0,0)
-         fontFamily:'gothamlight',
+        //  fontFamily:'Gotham-Light',
         fontSize: 32,
         margin:10
     },    
@@ -182,7 +182,7 @@ const CustomStyles={
     },
     otpInputStyle: {
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
        justifyContent:'center',
        marginTop:3,
        backgroundColor: 'transparent'
@@ -195,7 +195,7 @@ const CustomStyles={
    },
    otpVerifyTextStyle :{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'center',
         color: '#e83a13',
         padding: 5
@@ -220,7 +220,7 @@ resetPasswordLabel: {
     alignItems:'center',
     color: 'white',
     backgroundColor: 'rgba(0,0,0,0)',
-     fontFamily:'gothamlight',
+    //  fontFamily:'Gotham-Light',
     fontSize: 32,
     margin:10
 },
@@ -244,7 +244,7 @@ resetPasswordInputBox:{
     justifyContent:'center'
 },    
 resetPasswordinputStyle: {
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
    justifyContent:'center',
    marginTop:3,
    backgroundColor: 'transparent'
@@ -263,7 +263,7 @@ resetPasswordButtonStyle: {
     marginTop:1
 },
 resetPasswordButtonTextStyle :{
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
    textAlign: 'center',
    color: '#e83a13',
    padding: 5
@@ -311,7 +311,7 @@ profileInputContainerStyle:{
     marginBottom:0
 },
 profileInputStyle: {
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     fontSize: 14,
     marginTop:6,
     backgroundColor: 'transparent',
@@ -327,7 +327,7 @@ profileaAddGroupImageStyle:{
 },
 profileResettext: {
     flex:1,
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     color: '#000000',
     fontSize: 18
 },
@@ -357,7 +357,7 @@ profileactionStyle:{
      backgroundColor:'#1e4495'
 },
 profileButtonTextStyle :{
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     textAlign: 'right',
     color: '#ffffff',
     padding: 5
@@ -368,15 +368,15 @@ viewStyle: {
     backgroundColor: '#ffffff'
 },
 headingTextColor: {
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     color: '#494949'
 },
 subHeadingTextColor: {
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     color: '#404040'
 },
 amountColor: {
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     color: '#1e4495',
     marginTop: 10
 },
@@ -393,7 +393,7 @@ Category: {
 },
 headingTextColor: {
     alignSelf:'stretch',
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     color: '#494949'
 },
 EtextContainer: {
@@ -416,11 +416,11 @@ imageDimensions: {
 },
 expiryDateView:{flexDirection:'row', justifyContent:'space-around'},
 expiryMainContainer:{alignSelf:'stretch',padding:2 },
-expirySubContainer:{justifyContent:'space-around',height:60,alignSelf:'stretch',padding:3,borderWidth:0.5,flex:1},
+expirySubContainer:{justifyContent:'space-around',height:60,alignSelf:'stretch',padding:3,borderWidth:1,borderColor: '#ddd' ,flex:1},
 expiryCount:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:16,color:'blue',flex:1},
 expiryLabel:{textAlign:'center',justifyContent:'center',alignItems:'center',alignSelf:'stretch',fontSize:12,flex:1},
 headText: {
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         alignItems:'center',
         color: 'black',
         backgroundColor: 'rgba(0,0,0,0)',
@@ -444,7 +444,7 @@ headText: {
     },
     erpHeaderText:{
         alignSelf:'stretch',
-        fontFamily:'gothammedium',
+        fontFamily:'Gotham-Medium',
         alignItems:'center',
         color: '#1e4495',
         fontSize: 16,
@@ -456,7 +456,7 @@ headText: {
 
     erpText:{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         alignItems:'center',
         color: '#727272',
         fontSize: 14,
@@ -468,7 +468,7 @@ headText: {
     erpTextView:{
         flex:1,
         alignSelf:'stretch',
-        //fontFamily:'gothamlight',
+        //fontFamily:'Gotham-Light',
         alignItems:'center',
         //color: 'black',
         //backgroundColor: 'red',
@@ -500,7 +500,7 @@ headText: {
     },
     erpFooterText:{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         alignItems:'center',
         color: '#ffffff',
         fontSize: 16,
@@ -512,7 +512,7 @@ headText: {
 
     erpSubCatHeaderText:{
         alignSelf:'stretch',
-        fontFamily:'gothammedium',
+        fontFamily:'Gotham-Medium',
         alignItems:'center',
         color: '#1e4495',
         fontSize: 15,
@@ -524,7 +524,7 @@ headText: {
     },
     erpSubCatText:{
         alignSelf:'stretch',
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         alignItems:'center',
         color: '#727272',
         fontSize: 14,
@@ -544,7 +544,7 @@ headText: {
     },
     epiryButtons: {
     width:100,
-    fontFamily:'gothamlight',
+    // fontFamily:'Gotham-Light',
     justifyContent:'center',
         alignSelf:'center',
         alignItems:'center',
@@ -560,7 +560,7 @@ headText: {
         },
     epirySelectedButtons: {
         width:100,
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         justifyContent:'center',
         alignSelf:'center',
         alignItems:'center',
@@ -669,7 +669,42 @@ headText: {
        elevation: 1,
        margin:5
     },
+    globalTabs: {
+        flexDirection: 'row',
+        padding: 10,
+        justifyContent: 'space-around'
+    },
+    homeButtonContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5
+    },
+    globalTabsIcon: {
+        width: 40,
+        height: 40,
 
+    },
+    notificationContainer: {
+        margin:5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#fff'
+    },
+    notificationTextContainer: {
+        flex: 1,
+        marginLeft: 10,
+        justifyContent: 'space-around'
+    },
+    nTextRowOne: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+
+viewStyle: {
+    flex: 1,
+    backgroundColor: '#ffffff'
+},
 
 
 

@@ -5,6 +5,8 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+
 import call from 'react-native-phone-call';
 
 
@@ -75,7 +77,9 @@ export default class TripList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        const self = this;
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        
+        /* const self = this;
         const args = {
             number: ''+truckContactNum, // String value with the number to call
             prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -83,7 +87,7 @@ export default class TripList extends Component {
 
          call(args)
          .catch(
-             console.error)  
+             console.error)   */
         
     }
 
@@ -192,9 +196,9 @@ export default class TripList extends Component {
                                         <View style={{flex:1, flexDirection: 'column',padding:3}}>
                                             <View style={{flexDirection: 'row',padding:2}}>
                                                 <View style={{flex:1, flexDirection: 'column'}}>
-                                                        <Text style={[CustomStyles.erpText,{fontFamily:'gothammedium',fontSize: 15,textDecorationLine:'underline',fontWeight:'bold'}]}>
+                                                        <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',fontSize: 15,textDecorationLine:'underline',fontWeight:'bold'}]}>
                                                                 {item.tripId} </Text>
-                                                        <Text style={[CustomStyles.erpText,{fontFamily:'gothammedium',fontSize: 15,padding:1}]}>
+                                                        <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',fontSize: 15,padding:1}]}>
                                                                 {this.getpartyName(item)} </Text>
                                                         <Text style={CustomStyles.erpText}> 
                                                                 {item.tripLane} </Text>

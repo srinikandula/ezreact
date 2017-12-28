@@ -59,11 +59,11 @@ class GpsSetting extends Component{
         const miniStoplabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.mstoplbl ? 16 : 0,
                   fontSize: ! this.state.mstoplbl ? 16 : 14,
                   color: ! this.state.mstoplbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:1,
                   height:30,
                 }
@@ -71,11 +71,11 @@ class GpsSetting extends Component{
         const overSpeedlabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.OverSpeedlbl ? 16 : 0,
                   fontSize: ! this.state.OverSpeedlbl ? 16 : 14,
                   color: ! this.state.OverSpeedlbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
 
@@ -83,43 +83,43 @@ class GpsSetting extends Component{
         const intervallbl= {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.intervallbl ? 16 : 0,
                   fontSize: ! this.state.intervallbl ? 16 : 14,
                   color: ! this.state.intervallbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
         
         const stoplabelStyle = {
                   position: 'absolute',
                   left: 0,
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   top: ! this.state.stopTimelbl ? 16 : 0,
                   fontSize: ! this.state.stopTimelbl ? 16 : 14,
                   color: ! this.state.stopTimelbl ? '#aaa' : '#000',
-                  fontFamily:'gothamlight',
+                //   fontFamily:'Gotham-Light',
                   padding:3
                 }
                 
         const sourcelabelStyle = {
             position: 'absolute',
             left: 0,
-            fontFamily:'gothamlight',
+            // fontFamily:'Gotham-Light',
             top: ! this.state.sourcelbl ? 16 : 0,
             fontSize: ! this.state.sourcelbl ? 16 : 14,
             color: ! this.state.sourcelbl ? '#aaa' : '#000',
-            fontFamily:'gothamlight',
+            // fontFamily:'Gotham-Light',
             padding:3
         }    
         const destlabelStyle = {
             position: 'absolute',
             left: 0,
-            fontFamily:'gothamlight',
+            // fontFamily:'Gotham-Light',
             top: ! this.state.destinationlbl ? 16 : 0,
             fontSize: ! this.state.destinationlbl ? 16 : 14,
             color: ! this.state.destinationlbl ? '#aaa' : '#000',
-            fontFamily:'gothamlight',
+            // fontFamily:'Gotham-Light',
             padding:3
         }        
         
@@ -314,14 +314,14 @@ const styles = {
         marginBottom:0
     },
     inputStyle: {
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         fontSize: 14,
         marginTop:6,
         backgroundColor: 'transparent',
         height:35
     },
     sendTextStyle :{
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'right',
         color: '#ffffff',
         padding: 5
@@ -336,7 +336,7 @@ const styles = {
          backgroundColor:'#1e4495'
     },
     forgotTextStyle: {
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         textAlign: 'right',
         color: '#1e4495',
         paddingTop: 2
@@ -348,7 +348,7 @@ const styles = {
     },
     text: {
         flex:1,
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         color: '#000000',
         fontSize: 18,
         paddingLeft:10

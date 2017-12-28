@@ -52,7 +52,7 @@ const styles = {
     },
     inputStyle: {
         flex: 3,
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         color: '#000',
         fontSize: 18,
         lineHeight: 23,

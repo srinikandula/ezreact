@@ -25,21 +25,21 @@ export default class AddDriver extends Component {
     componentWillMount() {
         Axios({
             method: 'get',
-            headers: { 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMWMxOWExMDZjYTcwMzU0NGYzOTY5NiIsImFjY291bnRJZCI6IjVhMWMxOWExMDZjYTcwMzU0NGYzOTY5NiIsInVzZXJOYW1lIjoiZWFzeWRlbW8iLCJjb250YWN0UGhvbmUiOjg3MTI4Mjg1MjgsInR5cGUiOiJhY2NvdW50IiwiaWF0IjoxNTE0MjY1NDU2LCJleHAiOjE1MTQzNTE4NTZ9.TCItg9XMzFvMHsQR6m8nAmvfSqPmv4pOFicCGE85M5s' },
+            headers: { 'token': this.props.token},
             url: Config.routes.base + Config.routes.trucksList
         })
-            .then((response) => {
-                if (response.data.status) {
-                    console.log('driver ==>', response.data);
-                    this.setState({ trucks: response.data.trucks })
-                } else {
-                    console.log('error in driver ==>', response);
-                    this.setState({ erpDashBroadData: [], expirydetails: [] });
-                }
+        .then((response) => {
+            if (response.data.status) {
+                console.log('driver ==>', response.data);
+                this.setState({ trucks: response.data.trucks })
+            } else {
+                console.log('error in driver ==>', response);
+                this.setState({ erpDashBroadData: [], expirydetails: [] });
+            }
 
-            }).catch((error) => {
-                console.log('error in baskets ==>', error);
-            })
+        }).catch((error) => {
+            console.log('error in baskets ==>', error);
+        })
     }
 
     moveInputLabelUp(id, value) {

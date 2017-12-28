@@ -170,7 +170,7 @@ export default class DriverList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                 <TouchableOpacity
-                onPress={()=> Actions.AddDriver()}
+                onPress={()=> Actions.AddDriver({token:this.state.token})}
                 >
                     <Image source={require('../images/eg_driver.png')}
                         style={CustomStyles.addImage} />

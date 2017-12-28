@@ -25,7 +25,14 @@ let routes = {
     paymentList : '/payments/getPayments',
     ExpensesList : '/expense/getAllExpenses',
     tripsList : '/trips/getAllAccountTrips',
+    //Forgot-password
+    //otp vERIFICATION
+    OtpVerfication:'v1/group/verify-otp',
 
+    //Payments api
+    addPayment:'/payments/addPayments',
+    editPayment:'/payments/getPaymentsRecord/',
+    updatePayment:'/payments/updatePayments/',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

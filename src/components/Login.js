@@ -48,9 +48,9 @@ class Login extends Component{
 
     getCache(key){
         try{
-            console.log('login-riyaz',key);
+            //console.log('login-riyaz',key);
             var value = AsyncStorage.getItem('credientails');
-            console.log('credientails',key);
+            //console.log('credientails',key);
             if (value !== null){
                 var egObj = {};
                 egObj = JSON.parse(value);

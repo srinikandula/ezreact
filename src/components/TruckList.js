@@ -270,8 +270,12 @@ export default class TruckList extends Component {
                         
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
-                            <Image source={require('../images/eg_truck.png')} 
-                            style= {CustomStyles.addImage}/>
+                            <TouchableOpacity
+                                    onPress={() => { Actions.AddTruck({token:this.state.token,edit:false})}}
+                                >
+                                    <Image source={require('../images/eg_truck.png')} 
+                                    style= {CustomStyles.addImage}/>
+                            </TouchableOpacity>
                         </View>
                 </View>
                 

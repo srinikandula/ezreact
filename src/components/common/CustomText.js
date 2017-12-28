@@ -15,7 +15,7 @@ class CustomText extends Component {
 const styles = {
     textStyle: {
         fontSize: 16,
-        fontFamily:'gothamlight',
+        // fontFamily:'Gotham-Light',
         color: '#ffffff'
     }
 };

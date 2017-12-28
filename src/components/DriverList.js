@@ -7,6 +7,8 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+
 import call from 'react-native-phone-call'
 
 
@@ -77,7 +79,10 @@ export default class DriverList extends Component {
 
 
     callSubCategoryScreen(truckContactNum) {
-        const self = this;
+
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        
+       /*  const self = this;
         const args = {
             number: '' + truckContactNum, // String value with the number to call
             prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -85,7 +90,7 @@ export default class DriverList extends Component {
 
         call(args)
             .catch(
-            console.error)
+            console.error) */
 
     }
 
@@ -135,7 +140,7 @@ export default class DriverList extends Component {
                                         </View>
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
 
-                                            <Text style={[CustomStyles.erpText, { fontFamily: 'gothammedium', fontSize: 16, }]}>{item.fullName}</Text>
+                                            <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>{item.fullName}</Text>
                                             <Text style={CustomStyles.erpText}> +91 {item.mobile}</Text>
 
                                             <Text style={CustomStyles.erpText}>{this.getParsedDate(item.licenseValidity)}</Text>

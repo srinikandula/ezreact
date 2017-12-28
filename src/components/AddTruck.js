@@ -89,8 +89,6 @@ export default class AddTruck extends Component {
     }
    
     onPickdate(look) {
-
-      
         try {              
             let currDate = new Date();
             const { action, year, month, day } = DatePickerAndroid.open({
@@ -103,23 +101,23 @@ export default class AddTruck extends Component {
                 var month = response.month + 1
                 let date =  response.day+"/"+month+"/"+ response.year;
                     if(look==='TaxDue'){
-                        this.setState({ TaxDue:date,passdate:month+"/"+response.day+"/"+ response.year });
+                        this.setState({ TaxDueDate:date,passdate:month+"/"+response.day+"/"+ response.year });
                         this.moveInputLabelUp(4, date)
                          console.log(date);
                          }else if(look==='Permit'){
-                            this.setState({ Permit:date,passdate:month+"/"+response.day+"/"+ response.year });
+                            this.setState({ PermitDate:date,passdate:month+"/"+response.day+"/"+ response.year });
                             this.moveInputLabelUp(5, date)
                              console.log(date);
-                            }else if(look==='Finess'){
-                                this.setState({ Finess:date,passdate:month+"/"+response.day+"/"+ response.year });
+                            }else if(look==='Fitness'){
+                                this.setState({ FitnessDate:date,passdate:month+"/"+response.day+"/"+ response.year });
                                 this.moveInputLabelUp(6, date)
                                  console.log(date);
                                 }else if(look==='Pollution'){
-                                   this.setState({ Pollution:date,passdate:month+"/"+response.day+"/"+ response.year });
+                                   this.setState({ PollutionDate:date,passdate:month+"/"+response.day+"/"+ response.year });
                                     this.moveInputLabelUp(7, date)
                                      console.log(date);
                                     }else if(look==='Insurance'){
-                                       this.setState({ Insurance:date,passdate:month+"/"+response.day+"/"+ response.year });
+                                       this.setState({ InsuranceDate:date,passdate:month+"/"+response.day+"/"+ response.year });
                                         this.moveInputLabelUp(8, date)
                                          console.log(date);
                                          }return false;
@@ -247,7 +245,7 @@ export default class AddTruck extends Component {
                                 onChangeText={(Type) => {this.moveInputLabelUp(3, Type), this.setState({Type:Type})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                 selectedValue={this.state.selectedPartyId}
@@ -262,13 +260,13 @@ export default class AddTruck extends Component {
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 5 }}>                                
-                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 50, color: '#525252' }, this.state.field4]}>Tax Due Expiry Date* </CustomText>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Tax Due Expiry Date* </CustomText>
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.TaxDue} >
-                                            {this.state.TaxDue}
-                                            </CustomEditText>
+                                            value={this.state.TaxDueDate} >
+                                            {this.state.TaxDueDate}
+                                        </CustomEditText>
                                             
                                     </View>
                                 
@@ -289,8 +287,8 @@ export default class AddTruck extends Component {
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.Permit} >
-                                            {this.state.Permit}
+                                            value={this.state.PermitDate} >
+                                            {this.state.PermitDate}
                                             </CustomEditText>
                                     </View>
                                 
@@ -302,17 +300,17 @@ export default class AddTruck extends Component {
                             </View>
                         </TouchableOpacity> 
                         <TouchableOpacity
-                                        onPress={() => { this.onPickdate('Finess') }}
+                                        onPress={() => { this.onPickdate('/index.htm/index.htm') }}
                                     >
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 5 }}>                                
-                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Finess Expiry Date* </CustomText>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Fitness Expiry Date* </CustomText>
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.Finess}
-                                             >{this.state.Finess} </CustomEditText>
+                                            value={this.state.FitnessDate}
+                                             >{this.state.FitnessDate} </CustomEditText>
                                             
                                     </View>
                                  
@@ -333,9 +331,9 @@ export default class AddTruck extends Component {
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.Pollution} >
-                                            {this.state.Pollution}
-                                            </CustomEditText>
+                                            value={this.state.PollutionDate} >
+                                            {this.state.PollutionDate}
+                                        </CustomEditText>
                                     </View>
                                 
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -355,8 +353,8 @@ export default class AddTruck extends Component {
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.Insurance} >
-                                            {this.state.Insurance}
+                                            value={this.state.InsuranceDate} >
+                                            {this.state.InsuranceDate}
                                             </CustomEditText>
                                     </View>
                                 

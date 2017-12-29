@@ -174,8 +174,12 @@ export default class PartyList extends Component {
                         
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
-                            <Image source={require('../images/eg_party.png')} 
-                            style= {CustomStyles.addImage}/>
+                            <TouchableOpacity
+                                        onPress={() => { Actions.AddParty({token:this.state.token,edit:false})}}
+                                    >
+                                    <Image source={require('../images/eg_party.png')} 
+                                    style= {CustomStyles.addImage}/>
+                            </TouchableOpacity>        
                         </View>
                 </View>
                 

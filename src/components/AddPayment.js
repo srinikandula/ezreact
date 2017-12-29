@@ -85,8 +85,8 @@ export default class AddPayment extends Component {
 
     updateViewdate(paymentDetails){
         var date = new Date(paymentDetails.date);
-        var dateStr =  date.getDay()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
-        var passdateStr =  (date.getMonth() +1)+"/"+date.getDay() +"/" + date.getFullYear();
+        var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
+        var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
         var amt = paymentDetails.amount.toString();
         this.setState({Amount:amt,remark:paymentDetails.description,date:dateStr,selectedPartyId:paymentDetails.partyId,
             passdate:passdateStr},()=>{

@@ -47,7 +47,7 @@ export default class AddTruck extends Component {
                 console.log('driversList from add Truck ==>', response.data);
                 this.setState({ drivers: response.data.drivers });
                 if(this.props.edit){
-                    this.getPaymentDetails(this.props.id);
+                    this.getTruckDetails(this.props.id);
                 }
             } else {
                 console.log('error in DriverList from add Truck ==>', response);
@@ -60,20 +60,20 @@ export default class AddTruck extends Component {
     }
 
 
-    getPaymentDetails(paymentID){
+    getTruckDetails(paymentID){
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.editPayment+paymentID,
+            url: Config.routes.base + Config.routes.addtrucksList+paymentID,
             
         })
             .then((response) => {
                 console.log(paymentID+'<--editPaymentAPI ==>', response.data);
                 if (response.data.status) {    
                    self.setState({spinnerBool:false});
-                    this.updateViewdate(response.data.paymentsDetails);
+                    this.updateViewdate(response.data.truck);
                    
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
@@ -90,11 +90,57 @@ export default class AddTruck extends Component {
             })
     }
 
+    updateViewdate(truckDetails){
+        
+        let drivrID = truckDetails.driverId;
+        if(truckDetails.driverId === null){
+
+            drivrID = 'Select Driver';
+        }
+        this.setState({truckNumber: truckDetails.registrationNo,
+                        trucktonnage: truckDetails.tonnage,
+                        truckmodel: truckDetails.modelAndYear,
+                        trucktype: truckDetails.truckType,
+                        TaxDueDate:this.getDateDDMMYY(truckDetails.taxDueDate),
+                        PermitDate:this.getDateDDMMYY(truckDetails.permitExpiry),
+                        FitnessDate:this.getDateDDMMYY(truckDetails.fitnessExpiry),
+                        PollutionDate:this.getDateDDMMYY(truckDetails.pollutionExpiry),
+                        InsuranceDate:this.getDateDDMMYY(truckDetails.insuranceExpiry),
+                        taxpassdate:this.getDateISo(truckDetails.taxDueDate),
+                        permitpassdate:this.getDateISo(truckDetails.permitExpiry),
+                        fitnesspassdate:this.getDateISo(truckDetails.fitnessExpiry),
+                        pollpassdate:this.getDateISo(truckDetails.pollutionExpiry),
+                        insurpassdate:this.getDateISo(truckDetails.insuranceExpiry),
+                        selectedDriverId: drivrID
+                    });
+    }
+
+    getDateDDMMYY(dateString){
+        var date = new Date(dateString);
+        var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
+        console.log('dateStr',dateStr);
+        return dateStr;
+    }
+
+
+    getDateISo(dateString){
+        var date = new Date(dateString);
+        var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
+        console.log('passdateStr',passdateStr);
+        var passdate = new Date(passdateStr);
+        return  passdate;
+    }
+
     callAddPaymentAPI(postdata){
         const self = this;
         self.setState({ spinnerBool:true });
+        var methodType = 'post';
+        if(this.props.edit){
+            methodType = 'put';
+            postdata._id = self.props.id;
+        }
         Axios({
-            method: 'post',
+            method: methodType,
             headers: { 'token': self.props.token },
             url: Config.routes.base + Config.routes.addtrucksList,
             data: postdata
@@ -186,6 +232,11 @@ export default class AddTruck extends Component {
                                 if(this.state.FitnessDate.includes('/')){
                                     if(this.state.PollutionDate.includes('/')){
                                         if(this.state.InsuranceDate.includes('/')){
+                                            let driverID = this.state.selectedDriverId;
+                                            if(this.state.selectedDriverId.includes("Select Driver")){
+                                                driverID = "";
+                                            }
+
                                             var postData= {
                                                 'registrationNo' :this.state.truckNumber,
                                                 'truckType':this.state.trucktype,
@@ -196,7 +247,7 @@ export default class AddTruck extends Component {
                                                 'permitExpiry':this.state.permitpassdate.toISOString(),
                                                 'pollutionExpiry':this.state.pollpassdate.toISOString(),
                                                 'taxDueDate':this.state.taxpassdate.toISOString(),
-                                                'driverId':this.state.selectedDriverId,
+                                                'driverId':driverID,
                                                 };
 
                                             this.callAddPaymentAPI(postData);
@@ -251,8 +302,8 @@ export default class AddTruck extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-               <ScrollView style={{marginbottom:25,paddingBottom:10}}>
-                <View>
+               <ScrollView >
+                <View style={{marginBottom:25,paddingBottom:10}}>
                     
                     <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
                         {this.spinnerLoad()}
@@ -297,6 +348,7 @@ export default class AddTruck extends Component {
                                 onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
                                  <Picker.Item label="Select Driver" value="Select Driver" />
                                 {this.renderPartyList()}
+                                
                             </Picker>
                     </View>
                         <TouchableOpacity

@@ -103,7 +103,7 @@ export default class TruckList extends Component {
                     source={require('../images/green.png')}
                     style={{width:10,height:10,marginTop:5}} />
             );
-        } else if(this.functiona(formattedDate) <15 && this.functiona(formattedDate) <10){
+        } else if(this.functiona(formattedDate) > 2 && this.functiona(formattedDate) <=15){
             return (
                 <Image resizeMode="contain"
                     source={require('../images/orange.png')}

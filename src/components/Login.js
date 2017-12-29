@@ -249,7 +249,7 @@ class Login extends Component{
                             </View>
 
                              
-                            <View style={CustomStyles.loginCheckForgotStyle}>
+                        <View style={CustomStyles.loginCheckForgotStyle}>
                                 <View>
                                      <CheckBox 
                                           label='Remember Me'

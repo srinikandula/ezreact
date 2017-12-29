@@ -140,7 +140,6 @@ export default class ExpiryDate extends Component {
 
 
     renderItem(item) {
-        console.log(this.state.itemIndex);
         if (this.state.data.indexOf(item) == this.state.itemIndex) {
             //console.log('in if', item.title);
             return (

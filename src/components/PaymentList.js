@@ -43,15 +43,15 @@ export default class PaymentList extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('driver ==>', response.data);
+                                console.log('PaymentList ==>', response.data);
                                 this.setState({paymentsList:response.data.paymentsCosts})
                             } else {
-                                console.log('error in driver ==>', response);
+                                console.log('error in PaymentList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
                             }
     
                         }).catch((error) => {
-                            console.log('error in baskets ==>', error);
+                            console.log('error in PaymentList ==>', error);
                         })
                 } else {
                     this.setState({ loading: false })

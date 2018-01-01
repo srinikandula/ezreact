@@ -88,7 +88,22 @@ export default class AddDriver extends Component {
     onSubmitDriverDetails() {
         if(!this.state.name||!this.state.mobile||!this.state.licenseNo||!this.state.salaryPM){
             ToastAndroid.show('Please provide all details', ToastAndroid.SHORT)
+        }else {
+            console.log(this.state.name, 
+                this.state.mobile, 
+                this.state.licenseNo, 
+                new Date(this.state.licenseValidityDate),
+                this.state.selectedTruckId, 
+                this.state.salaryPM
+            );
+           /*  Axios({
+                method: 'post',
+                url: Config.routes.base+Config.routes.addDriver,
+                headers: {'token': this.props.token},
+                data: {
 
+                }
+            }) */
         }
 
     }

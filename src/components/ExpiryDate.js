@@ -86,7 +86,7 @@ export default class ExpiryDate extends Component {
                     });
                     self.setState({ spinnerBool:false });
                 } else {
-                    console.log('error in baskets ==>', response);
+                    console.log('error in ExpiryDate ==>', response);
                     self.setState({ spinnerBool:false });
                 }
                 var datad= [
@@ -118,7 +118,7 @@ export default class ExpiryDate extends Component {
                 ];
                 this.setState({data:datad});
             }).catch((error) => {
-                console.log('error in baskets ==>', error);
+                console.log('error in ExpiryDate ==>', error);
             })
     }
 

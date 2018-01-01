@@ -48,7 +48,7 @@ export default class ErpHome extends Component {
                         //result{expensesTotal: 236497, pendingDue: 599461, totalRevenue: 1114081, expiring: {…}}
 
                         if (response.data.status) {
-                            console.log('baskets ==>', response.data);
+                            console.log('ErpHome ==>', response.data);
                             
                             //Object.values()== array convetion
                             var temp =response.data.result.expiring;
@@ -78,12 +78,12 @@ export default class ErpHome extends Component {
                             this.setState({ erpDashBroadData: response.data.result,expirydetails:Aarr });
                             //console.log('expiry ==>', this.state.expirydetails);
                         } else {
-                            console.log('error in baskets ==>', response);
+                            console.log('error in ErpHome ==>', response);
                             this.setState({ erpDashBroadData: [],expirydetails:[] });
                         }
 
                     }).catch((error) => {
-                        console.log('error in baskets ==>', error);
+                        console.log('error in ErpHome ==>', error);
                     })
             } else {
                 this.setState({ loading: false })

@@ -705,7 +705,20 @@ viewStyle: {
     flex: 1,
     backgroundColor: '#ffffff'
 },
-
+mLt10:{ marginLeft: 10 },
+row :{flexDirection:'row'},
+mTop10 :{marginTop:10},
+mBottom10 :{marginBottom:10},
+radioStyle: {
+        borderWidth:1, 
+        borderColor:'#DDD', 
+        borderRadius:20,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+radioActiveStyle:{ backgroundColor:'#1e4495', width:15, height:15, borderRadius:12 }
 
 
 

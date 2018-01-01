@@ -40,15 +40,15 @@ export default class ExpenseList extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('driver ==>', response.data);
+                                console.log('ExpenseList ==>', response.data);
                                 this.setState({expenses:response.data.expenses})
                             } else {
-                                console.log('error in driver ==>', response);
+                                console.log('error in ExpenseList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
                             }
     
                         }).catch((error) => {
-                            console.log('error in baskets ==>', error);
+                            console.log('error in ExpenseList ==>', error);
                         })
                 } else {
                     this.setState({ loading: false })

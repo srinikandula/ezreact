@@ -141,7 +141,15 @@ export default class ERPCategory extends Component {
     }
 
 
-
+    gettruckName(item){
+        var data ='-';
+        if(item.hasOwnProperty("attrs")){
+            data = item.attrs.truckName;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
 
 
     render() {
@@ -174,12 +182,12 @@ export default class ERPCategory extends Component {
                             onPress={() => { this.setState({
                                                 categoryBgColor: !this.state.categoryBgColor
                                                  });
-                                                this.callSubCategoryScreen(item.attrs.truckName,item.totalRevenue,item.registrationNo) }}
+                                                this.callSubCategoryScreen(this.gettruckName(item),item.totalRevenue,item.registrationNo) }}
                         >
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{item.attrs.truckName}</Text>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{this.gettruckName(item)}</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpText}>{item.totalFreight}</Text>

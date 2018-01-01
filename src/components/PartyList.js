@@ -43,15 +43,15 @@ export default class PartyList extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('driver ==>', response.data);
+                                console.log('PartyList ==>', response.data);
                                 this.setState({parties:response.data.parties})
                             } else {
-                                console.log('error in driver ==>', response);
+                                console.log('error in PartyList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
                             }
     
                         }).catch((error) => {
-                            console.log('error in baskets ==>', error);
+                            console.log('error in PartyList ==>', error);
                         })
                 } else {
                     this.setState({ loading: false })

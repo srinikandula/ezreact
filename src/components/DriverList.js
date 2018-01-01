@@ -43,15 +43,15 @@ export default class DriverList extends Component {
                 })
                     .then((response) => {
                         if (response.data.status) {
-                            console.log('driver ==>', response.data);
+                            console.log('DriverList ==>', response.data);
                             this.setState({ driver: response.data.drivers })
                         } else {
-                            console.log('error in driver ==>', response);
+                            console.log('error in DriverList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
                         }
 
                     }).catch((error) => {
-                        console.log('error in baskets ==>', error);
+                        console.log('error in DriverList ==>', error);
                     })
             } else {
                 this.setState({ loading: false })

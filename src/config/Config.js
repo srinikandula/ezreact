@@ -1,6 +1,7 @@
 let routes = {
     base: 'http://demo.easygaadi.com/v1',
     // base: 'http://erp.easygaadi.com/v1',
+    //base: 'http://192.168.0.154:3000/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle',
@@ -20,7 +21,8 @@ let routes = {
     //Driver Module
     addDriver: '/drivers',
     driverList : '/drivers/account/drivers',
-    partyList : '/party/get/all',
+    //partyList : '/party/get/all',
+    partyList : '/party/get/accountParties',
     trucksList : '/trucks/groupTrucks',
     paymentList : '/payments/getPayments',
     ExpensesList : '/expense/getAllExpenses',
@@ -34,9 +36,13 @@ let routes = {
     editPayment:'/payments/getPaymentsRecord/',
     updatePayment:'/payments/updatePayments/',
 
-    //trucks api
+    //trucks api--add ,edit(GET--trucks/id)
     addtrucksList : '/trucks/',
 
+    //party api--add ,edit(GET--party/id)
+    addParty : '/party/addParty',
+    getPartyDetails:'/party/',
+    updatePartyDetails:'/party/updateParty',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

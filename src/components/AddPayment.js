@@ -88,10 +88,15 @@ export default class AddPayment extends Component {
         var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
         var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
         var amt = paymentDetails.amount.toString();
-        this.setState({Amount:amt,remark:paymentDetails.description,date:dateStr,selectedPartyId:paymentDetails.partyId,
-            passdate:passdateStr},()=>{
+        this.setState({Amount:amt,remark:paymentDetails.description,
+                        date:dateStr,
+                        selectedPartyId:paymentDetails.partyId,
+                        passdate:passdateStr,
+                        paymentType :paymentDetails.paymentType,
+                        paymentref:paymentDetails.paymentRefNo},()=>{
             console.log(this.state.selectedPartyId);
         });
+
     }
 
     callAddPaymentAPI(postdata){

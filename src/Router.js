@@ -36,6 +36,7 @@ import TripList from './components/TripList';
 import AddParty from './components/AddParty';
 import AddPayment from './components/AddPayment';
 import AddTruck from './components/AddTruck';
+import AddTrip from './components/AddTrip';
 
 class TabIcon extends Component {
 	render() {
@@ -218,9 +219,10 @@ export default class Navigation extends Component {
 					<Scene key="AddDriver"
 						component={AddDriver}
 						title="Add Driver"
-						
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
+
+
 
 					<Scene key="AddParty"
 						component={AddParty}
@@ -233,6 +235,15 @@ export default class Navigation extends Component {
 						title="Add Payment"
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
+
+					<Scene key="AddTrip"
+						component={AddTrip}
+						title="Add Trip"
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+					/>
+
+
+
 					<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'
 							component={Profile} />
 						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Notifications} />

@@ -18,8 +18,9 @@ export default class AddParty extends Component {
         partyContact:'',
         PartyMailID:'',
         PartyCity:'',
-        from:'',
-        to:'',
+        from:'A',
+        to:'B',
+        name:'A-B',
         operationlane:'',
         tripLanes:[],
         spinnerBool: false,
@@ -32,24 +33,27 @@ export default class AddParty extends Component {
         isSms : false
     };
     componentWillMount() {
-        console.log("AddParty token",this.props.token);        
+        console.log("AddParty token",this.props);   
+        if(this.props.edit){
+            this.getPartyDetails(this.props.id);
+        }     
     }
 
 
-    getTruckDetails(paymentID){
+    getPartyDetails(partyID){
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.addtrucksList+paymentID,
+            url: Config.routes.base + Config.routes.getPartyDetails+partyID,
             
         })
             .then((response) => {
-                console.log(paymentID+'<--editPaymentAPI ==>', response.data);
+                console.log(partyID+'<--editpartyIDAPI ==>', response.data);
                 if (response.data.status) {    
                    self.setState({spinnerBool:false});
-                    this.updateViewdate(response.data.truck);
+                    this.updateViewdate(response.data.party);
                    
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
@@ -62,33 +66,31 @@ export default class AddParty extends Component {
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 }
             }).catch((error) => {
-                console.log('error in editPaymentAPI ==>', error);
+                console.log('error in editpartyIDAPI ==>', error);
             })
     }
 
-    updateViewdate(truckDetails){
+    updateViewdate(partyDetails){
         
-        let drivrID = truckDetails.driverId;
-        if(truckDetails.driverId === null){
-
-            drivrID = 'Select Driver';
-        }
-        this.setState({truckNumber: truckDetails.registrationNo,
-                        trucktonnage: truckDetails.tonnage,
-                        truckmodel: truckDetails.modelAndYear,
-                        trucktype: truckDetails.truckType,
-                        TaxDueDate:this.getDateDDMMYY(truckDetails.taxDueDate),
-                        PermitDate:this.getDateDDMMYY(truckDetails.permitExpiry),
-                        FitnessDate:this.getDateDDMMYY(truckDetails.fitnessExpiry),
-                        PollutionDate:this.getDateDDMMYY(truckDetails.pollutionExpiry),
-                        InsuranceDate:this.getDateDDMMYY(truckDetails.insuranceExpiry),
-                        taxpassdate:this.getDateISo(truckDetails.taxDueDate),
-                        permitpassdate:this.getDateISo(truckDetails.permitExpiry),
-                        fitnesspassdate:this.getDateISo(truckDetails.fitnessExpiry),
-                        pollpassdate:this.getDateISo(truckDetails.pollutionExpiry),
-                        insurpassdate:this.getDateISo(truckDetails.insuranceExpiry),
-                        selectedDriverId: drivrID
+        console.log('partyDetails',partyDetails);
+        this.setState({partyName:partyDetails.name,
+                        partyContact:''+partyDetails.contact,
+                        PartyMailID:partyDetails.email,
+                        PartyCity:partyDetails.city,
+                        tripLanes:partyDetails.tripLanes,
+                        role:partyDetails.partyType,
+                        isMail:partyDetails.isEmail,
+                        isSms : partyDetails.isSms
                     });
+                    if(partyDetails.partyType.includes('Transporter')){
+                        this.setState({
+                            transporterBool:'flex',suppliereBool:'none', role:'Transporter'        
+                        });
+                    }else{
+                        this.setState({
+                            transporterBool:'none', suppliereBool:'flex', role:'Supplier'
+                        });
+                    }
     }
 
     getDateDDMMYY(dateString){
@@ -107,23 +109,25 @@ export default class AddParty extends Component {
         return  passdate;
     }
 
-    callAddPaymentAPI(postdata){
+    callAddPartytAPI(postdata){
         const self = this;
         self.setState({ spinnerBool:true });
         var methodType = 'post';
+        var url = Config.routes.base + Config.routes.addParty
         if(this.props.edit){
             methodType = 'put';
             postdata._id = self.props.id;
+            url = Config.routes.base + Config.routes.updatePartyDetails
         }
         Axios({
             method: methodType,
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.addtrucksList,
+            url: url,
             data: postdata
         })
             .then((response) => {
-                console.log(Config.routes.base + Config.routes.addtrucksList,"URL");
-                console.log(postdata,'<--addtrucksList ==>', response.data);
+                console.log(Config.routes.base + Config.routes.addParty,"URL");
+                console.log(postdata,'<--addParty ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     Actions.pop();
@@ -143,7 +147,7 @@ export default class AddParty extends Component {
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 }
             }).catch((error) => {
-                console.log('error in addtrucksList ==>', error);
+                console.log('error in addParty ==>', error);
             })
     }
     onBackAndroid() {
@@ -157,15 +161,18 @@ export default class AddParty extends Component {
     //click--
     onSubmitTruckDetails() {
         if(this.state.PartyMailID.length > 0){
-            return   ToastAndroid.show('Please Enter Truck model', ToastAndroid.SHORT);                     
+            if(/^\S+@\S+\.\S+/.test(this.state.PartyMailID)){
+                console.log("lll");
+            }else{
+                return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+            }           
         }
 
         if(this.state.partyName.length > 0){
             if(this.state.partyContact.length > 0){
                 if(this.state.role.length > 0){
                     if(this.state.isMail || this.state.isSms){
-                        if(this.state.role.includes('Supplier')){
-                           
+                        if(this.state.role.includes('Supplier')){                           
                             var postData= {
                                 'city':this.state.PartyCity,
                                 'contact':this.state.partyContact,
@@ -176,10 +183,10 @@ export default class AddParty extends Component {
                                 'partyType':this.state.role,
                                 'tripLanes':""
                                 };
-                            //callAddPaymentAPI();
+                            this.callAddPartytAPI(postData);
                         }else{
                             
-                            if(this.state.tripLanes.length > 1){
+                            if(this.state.tripLanes.length > 0){
                                 var tlanes = this.state.tripLanes;
                                 
                                 var myJSON =  JSON.stringify(tlanes);
@@ -192,9 +199,9 @@ export default class AddParty extends Component {
                                     'isSms':this.state.isSms,
                                     'name':this.state.partyName,
                                     'partyType':this.state.role,
-                                    'tripLanes':myJSON
+                                    'tripLanes':tlanes
                                     };
-
+                                    this.callAddPartytAPI(postData);
                             }else{
                                 ToastAndroid.show('Please Add Trip Lanes ', ToastAndroid.SHORT);
                             }
@@ -285,10 +292,11 @@ export default class AddParty extends Component {
                         var trip = {from:this.state.from,to:this.state.to,name:this.state.name};
                         this.setState({checkTrip: true,});
                          this.state.tripLanes.push(trip);   
-                         this.setState({tripLanes:this.state.tripLanes,showTripForm:false,
+                         this.setState({tripLanes:this.state.tripLanes,showTripForm:true,
                                         from:'',
                                         to:'',
                                         name:''}); 
+                                        console.log('this.state.tripLanes',this.state.tripLanes);
                       
                     }else{
                         this.setState({checkTrip: false});
@@ -306,13 +314,13 @@ export default class AddParty extends Component {
         }
     }
     renderLanesList(){
-        if(this.state.role.includes('Supplier') || this.state.role.includes('')){
+        if(this.state.role.includes('Supplier') || this.state.role.length == 0){
             return;
         }else{
             return this.state.tripLanes.map((lane, i)=>
                 <View key={i} style={{flexDirection: 'row', padding: 5}}>
                     <CustomText customTextStyle={{ color: '#000000' }}>
-                                        {lane.name}}</CustomText>
+                                        {lane.name}</CustomText>
                 </View> 
             )
         }
@@ -348,6 +356,8 @@ export default class AddParty extends Component {
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>
                                         Contact Number*</CustomText>
                             <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                           maxLength={Config.limiters.mobileLength}
+                                           keyboardType='numeric'
                                             value={this.state.partyContact}
                                             onChangeText={(partyContact) => {this.moveInputLabelUp(1, partyContact), this.setState({partyContact:partyContact})}} />
                         </View>

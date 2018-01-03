@@ -350,7 +350,7 @@ export default class AddTruck extends Component {
                                 {this.renderPartyList()}
                                 
                             </Picker>
-                    </View>
+                        </View>
                         <TouchableOpacity
                                         onPress={() => { this.onPickdate('TaxDue') }}
                                     >

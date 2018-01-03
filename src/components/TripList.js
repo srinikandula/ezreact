@@ -262,8 +262,12 @@ export default class TripList extends Component {
                         
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
-                            <Image source={require('../images/eg_truck.png')} 
-                            style= {CustomStyles.addImage}/>
+                            <TouchableOpacity
+                                        onPress={() => { Actions.AddTrip({token:this.state.token,edit:false})}}
+                                    >
+                                <Image source={require('../images/eg_trip.png')} 
+                                        style= {CustomStyles.addImage}/>
+                            </TouchableOpacity>
                         </View>
                 </View>
                 

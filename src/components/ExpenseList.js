@@ -114,7 +114,7 @@ export default class ExpenseList extends Component {
                     <View style={CustomStyles.erpCategory}>
                        
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
-                            data={this.state.expensess}
+                            data={this.state.expenses}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
                             <TouchableOpacity
@@ -162,8 +162,12 @@ export default class ExpenseList extends Component {
                         
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
+                        <TouchableOpacity
+                                        onPress={() => { Actions.AddExpense({token:this.state.token,edit:false})}}
+                                    >
                             <Image source={require('../images/eg_expenes.png')} 
                             style= {CustomStyles.addImage}/>
+                            </TouchableOpacity>
                         </View>
                 </View>
                 

@@ -1,7 +1,7 @@
 let routes = {
-    base: 'http://demo.easygaadi.com/v1',
+    //base: 'http://demo.easygaadi.com/v1',
     // base: 'http://erp.easygaadi.com/v1',
-    //base: 'http://192.168.0.154:3000/v1',
+    base: 'http://192.168.0.154:3000/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle',
@@ -43,6 +43,14 @@ let routes = {
     addParty : '/party/addParty',
     getPartyDetails:'/party/',
     updatePartyDetails:'/party/updateParty',
+    //Trip -api--add,edit(GET--trips/id)
+    addTrip:'/trips/addTrip',
+    getTripsDetails:'/trips/',
+
+    //expenseType
+    getExpensesType:'/expenseMaster',
+    getAllSupplier:'/party/getAllPartiesBySupplier',
+    addExpense:'/expense/addExpense',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

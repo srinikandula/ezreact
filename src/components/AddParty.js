@@ -359,7 +359,7 @@ export default class AddParty extends Component {
                                            maxLength={Config.limiters.mobileLength}
                                            keyboardType='numeric'
                                             value={this.state.partyContact}
-                                            onChangeText={(partyContact) => {this.moveInputLabelUp(1, partyContact), this.setState({partyContact:partyContact})}} />
+                                            onChangeText={(partyContact) => {this.moveInputLabelUp(1, partyContact), this.setState({partyContact:partyContact.trim()})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 

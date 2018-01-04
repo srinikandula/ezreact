@@ -1,14 +1,14 @@
 let routes = {
-    //base: 'http://demo.easygaadi.com/v1',
+    base: 'http://demo.easygaadi.com/v1',
     // base: 'http://erp.easygaadi.com/v1',
-    base: 'http://192.168.0.154:3000/v1',
+    //base: 'http://192.168.0.154:3000/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
-    totalRevenueByVechicle:'/trips/find/revenueByVehicle',
+    totalRevenueByVechicle:'/trips/find/revenueByVehicle?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     detailsRevenueFromVechicle:'/party/vehiclePayments/',
-    totalExpensesForAllVehicles:'/expense/groupByVehicle',
+    totalExpensesForAllVehicles:'/expense/groupByVehicle?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     detailsExpensesForAllVehicles:'/expense/vehicleExpense/',
-    totalPaymentFromParty: '/payments/getDuesByParty/',
+    totalPaymentFromParty: '/payments/getDuesByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     totalPaymentByParty: '/party/tripsPayments/',
 
     //expiry
@@ -51,6 +51,8 @@ let routes = {
     getExpensesType:'/expenseMaster',
     getAllSupplier:'/party/getAllPartiesBySupplier',
     addExpense:'/expense/addExpense',
+    updateExpenseDetails:'/expense/updateExpense',
+    getExpenseDetails:'/expense/getExpense/',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

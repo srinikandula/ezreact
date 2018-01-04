@@ -56,7 +56,7 @@ class Login extends Component{
                 egObj = JSON.parse(value);
                this.setState({userName:egObj.userName,userNamelbl:true,rememberme:true});
               } else {
-                console.log('value',value)
+                console.log('value',value.json())
               }
 
             return value.json();

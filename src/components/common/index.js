@@ -13,3 +13,4 @@ export * from './ERPSettingItem';
 export * from './ExpiryDateItems';
 export * from './CSpinner';
 export * from './CRadio';
+export * from './CustomErpDateView';

@@ -718,8 +718,17 @@ radioStyle: {
         justifyContent: 'center',
         alignItems: 'center'
     },
-radioActiveStyle:{ backgroundColor:'#1e4495', width:15, height:15, borderRadius:12 }
+radioActiveStyle:{ backgroundColor:'#1e4495', width:15, height:15, borderRadius:12 },
+containerStyle: {
+    flex: 1,
+    alignSelf:'stretch',
+    backgroundColor: 'transparent',
+    alignItems:'flex-start',
+    marginTop:40,
+    marginRight:10,
+    marginLeft:10
 
+},
 
 
 };

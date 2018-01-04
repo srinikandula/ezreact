@@ -16,12 +16,13 @@ export default class AddTrip extends Component {
         passdate:'',
         selectedVehicleId:'',
         selectedDriverId:'',
-        selectedPartyId:'',
+        tripPartyId:'',
+        selectedlaneId:'',
         Amount:'',
-        remark:'',
+        remark:'test',
         trucks:[],
         drivers:[],
-        partyList:[{_id:"Select Party", name:"Select Party"}],
+        partyList:[],
         lanesList:[],
         share:true,
         rate:'',
@@ -59,25 +60,123 @@ export default class AddTrip extends Component {
                        this.getDataList('Party',Config.routes.base + Config.routes.partyList);   
                        return ;
                 }else{
-                    var tempPArtList=response.data.parties;
-                    tempPArtList.unshift({_id:"Select Party", name:"Select Party"})
-                    this.setState({ partyList: tempPArtList },()=> {
+                    this.setState({ partyList: response.data.parties },()=> {
                      console.log('party array isfrom add trip ', this.state.partyList);
-                    })
+                    });
+                    
+                    if(this.props.edit){
+                        this.gettripDetails(this.props.id);
+                    }
                 }            
             } else {
                 console.log('error in add trip ==>', response);
                 this.setState({ partyList: [] });
             }
 
+
         }).catch((error) => {
             console.log('error in add partyList ==>', error);
         })
     }
-    
 
-    
 
+    gettripDetails(paymentID){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        Axios({
+            method: 'get',
+            headers: { 'token': self.props.token },
+            url: Config.routes.base + Config.routes.getTripsDetails+paymentID,
+            
+        })
+            .then((response) => {
+                console.log(paymentID+'<--editTripAPI ==>', response.data);
+                if (response.data.status) {    
+                   self.setState({spinnerBool:false});
+                    this.updateViewdate(response.data.trip);                   
+                } else {
+                   // console.log('fail in forgotPassword ==>', response);
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in editTripAPI ==>', error);
+            })
+    }
+
+    updateViewdate(paymentDetails){
+        var date = new Date(paymentDetails.date);
+        var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
+        var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
+        //var amt = paymentDetails.amount.toString();
+        this.setState({
+                        date:dateStr,                        
+                        passdate:passdateStr,
+                        selectedVehicleId:paymentDetails.registrationNo,
+                        selectedDriverId:paymentDetails.driverId,
+                        tripPartyId:paymentDetails.partyId,
+                        selectedlaneId:paymentDetails.tripLane,
+                        share:paymentDetails.share,
+                        rate:''+paymentDetails.rate,
+                        tonnage:''+paymentDetails.tonnage,
+                        famount:''+paymentDetails.freightAmount,
+                        remark:paymentDetails.remarks,
+                        },()=>{
+            console.log('party ID',this.state.tripPartyId);
+        });
+        this.updateLaneList(paymentDetails.partyId);
+        this.getTruckNum(paymentDetails.registrationNo)
+        this.getDriverName(paymentDetails.driverId)
+
+    }
+
+    callAddTripAPI(postdata){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        var methodType = 'post';
+        var url = Config.routes.addTrip;
+        if(this.props.edit){
+            methodType = 'put';
+            url=Config.routes.getTripsDetails;
+            postdata._id = self.props.id;
+        }
+        Axios({
+            method: methodType,
+            headers: { 'token': self.props.token },
+            url: Config.routes.base + url,
+            data: postdata
+        })
+            .then((response) => {
+                console.log(postdata,'<--callAddtripAPI ==>', response.data);
+                if (response.data.status) {
+                    
+                    self.setState({ spinnerBool:false });
+                    Actions.pop();
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                } else {
+                   // console.log('fail in forgotPassword ==>', response);
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in callAddtripAPI ==>', error);
+            })
+    }
     
     onBackAndroid() {
      Actions.pop();
@@ -101,7 +200,7 @@ export default class AddTrip extends Component {
                 if (response.action === "dateSetAction") {
                     var month = response.month + 1
                     let date =  response.day+"/"+month+"/"+ response.year;
-                    this.setState({ date:date,passdate:month+"/"+response.day+"/"+ response.year });
+                    this.setState({ date:date,passdate:month+"/"+response.get+"/"+ response.year });
                     this.moveInputLabelUp(0, date)
 
                 }
@@ -113,48 +212,53 @@ export default class AddTrip extends Component {
         }
 
     }
-    onSubmitPartyDetails() {
+    onSubmitTripDetails() {
         if(this.state.date.includes('/')){
-            if(!this.state.selectedPartyId.includes('Select Party')){
-                if(this.state.Amount.length > 0 ){
-                    if(!this.state.paymentType.includes("paymenttype") ){
-                        var date = new Date(this.state.passdate);
-                        console.log(date.toISOString());
-                        if(this.state.paymentType.includes("cash")){
-                            ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
-                            var postData= {
-                                'amount':this.state.Amount,
-                                'date':date.toISOString(),
-                                'description':this.state.remark,
-                                'partyId':this.state.selectedPartyId,
-                                'paymentRefNo':this.state.paymentref,
-                                'paymentType':this.state.paymentType
-                                };
-                            this.callAddPaymentAPI(postData);
-                        }else{
-                            if(this.state.paymentref.length>0){
-                                ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
-                                var postData= {
-                                    amount:this.state.Amount,
-                                    'date':date.toISOString(),
-                                    description:this.state.remark,
-                                    partyId:this.state.selectedPartyId,
-                                    paymentRefNo:this.state.paymentref,
-                                    paymentType:this.state.paymentType
-                                    };
-                                this.callAddPaymentAPI(postData);
+            if(!this.state.selectedVehicleId.includes("Select Vehicle")){
+                if(!this.state.selectedDriverId.includes("Select Driver")){
+                    if(!this.state.tripPartyId.includes("Select Party")){
+                        if(!this.state.selectedlaneId.includes("Select lane")){
+                            if(this.state.rate.length > 0){
+                                if(this.state.tonnage.length > 0){
+                                    if(this.state.famount.length > 0){
+                                        var date = new Date(this.state.passdate);
+                                        var postData={
+                                            'date':date.toISOString(),
+                                            'driverId':this.state.selectedDriverId,
+                                            'partyId':this.state.tripPartyId,
+                                            'registrationNo':this.state.selectedVehicleId,
+                                            'freightAmount':Number(this.state.famount),
+                                            'tripLane':this.state.selectedlaneId,
+                                            'tonnage':Number(this.state.tonnage),
+                                            'rate':Number(this.state.rate),                                        
+                                            'remarks':this.state.remark,
+                                            'share':this.state.share,
+                                            'vechicleNo': this.state.vehicleNum,
+                                            'driverName': this.state.driverName
+                                        };
+
+                                        console.log('postdata',postData);
+                                        this.callAddTripAPI(postData);
+                                    }else{
+                                        ToastAndroid.show('Please Enter Frieght Amount', ToastAndroid.SHORT);
+                                    }
+                                }else{
+                                    ToastAndroid.show('Please Enter Tonnage', ToastAndroid.SHORT);
+                                }
                             }else{
-                                ToastAndroid.show('Please Enter Reference Number to '+ this.state.paymentType, ToastAndroid.SHORT);
-                            } 
-                        }  
+                                ToastAndroid.show('Please Enter Rate', ToastAndroid.SHORT);
+                            }
+                        }else{
+                            ToastAndroid.show('Please Select Lane ', ToastAndroid.SHORT);
+                        }
                     }else{
-                        ToastAndroid.show('Please Select Payment Type ', ToastAndroid.SHORT);
-                    }                    
-                }else{
-                    ToastAndroid.show('Please Enter Amount ', ToastAndroid.SHORT);
-                }
+                        ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
+                    }
             }else{
-                ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
+                ToastAndroid.show('Please Select Driver', ToastAndroid.SHORT);
+            }
+            }else{
+                ToastAndroid.show('Please Select Vehicle', ToastAndroid.SHORT);
             }
         }else{
             ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
@@ -209,27 +313,80 @@ export default class AddTrip extends Component {
     }
 
     updateLaneList(itemValue){
-        console.log('itemValue',itemValue);
        if(itemValue==='Select Party'){
            return;
        }
        else{
-        for (let i=0;i< this.state.partyList.length; i++){
-            console.log('lanesList',this.state.partyList[i]);
-            console.log('lanesList in for',this.state.partyList[i].tripLanes);
-            
-            if(this.state.partyList[i]._id === itemValue){
-                console.log(' in if',this.state.partyList[i].tripLanes);
-                
-                this.setState({lanesList: this.state.partyList[i].tripLanes},()=> {
-                    console.log('lanesList',this.state.lanesList);
-                    
+        for (let i=0;i< this.state.partyList.length; i++){            
+            if(this.state.partyList[i]._id === itemValue){ 
+                var lanearr = this.state.partyList[i].tripLanes;
+                for(let j=0;j<lanearr.length;j++){
+                    var laneObj = lanearr[j];
+                    if(laneObj.hasOwnProperty("name")){
+                        this.state.lanesList.push(laneObj);
+                    }
+                }               
+                this.setState({lanesList: this.state.lanesList},()=> {
+                    console.log('lanesList',this.state.lanesList);                    
                 })
                 break;
             }
         };
        }
+    }
+    
+    getDriverName(itemValue){
+        if(itemValue==='Select Driver'){
+            return '';
+        }
+        else{
+            //console.log(this.state.drivers[index].fullName,' <--->driver name');
+            //this.setState({driverName : this.state.drivers[index].fullName})
+            for (let i=0;i< this.state.drivers.length; i++){            
+                if(this.state.drivers[i]._id === itemValue){                
+                    this.setState({driverName: this.state.drivers[i].fullName},()=> {
+                        console.log('driverName',this.state.driverName);                    
+                    })
+                    break;
+                }
+            };
+        }
+     }
+     getTruckNum(itemValue){
+        if(itemValue==='Select Vehicle'){
+            return '';
+        }
+        else{
+            //console.log(this.state.trucks[index].registrationNo,' <--->registrationNo');
+            //this.setState({vehicleNum : this.state.trucks[index].registrationNo})
+            for (let i=0;i< this.state.trucks.length; i++){            
+                if(this.state.trucks[i]._id === itemValue){                
+                    this.setState({vehicleNum: this.state.trucks[i].registrationNo},()=> {
+                        console.log('vehicleNum',this.state.vehicleNum);                    
+                    })
+                    break;
+                }
+            };
+        }
+     }
 
+    
+
+    updateFrieght(){
+        var rateAmount= 0;
+        var tonnageAmount = 0;
+        if(this.state.rate.trim().length > 0 ){
+            rateAmount = this.state.rate.trim();
+        }
+        if(this.state.tonnage.trim().length > 0 ){
+            tonnageAmount = this.state.tonnage.trim();
+        } 
+        if( rateAmount != 0 && tonnageAmount != 0){
+            var tempAmount = rateAmount *tonnageAmount;
+            this.setState({famount:''+tempAmount });
+            this.moveInputLabelUp(4, ''+tempAmount)
+        }     
+        
     }
 
     render() {
@@ -264,7 +421,9 @@ export default class AddTrip extends Component {
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                 selectedValue={this.state.selectedVehicleId}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectedVehicleId: itemValue })}>
+                                onValueChange={(itemValue, itemIndex) =>{
+                                    this.getTruckNum(itemValue); 
+                                this.setState({ selectedVehicleId: itemValue })}}>
                                 <Picker.Item label="Select Vehicle" value="Select Vehicle" />
                                 {this.renderTrucksList()}
                                 
@@ -276,7 +435,9 @@ export default class AddTrip extends Component {
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                 selectedValue={this.state.selectedDriverId}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
+                                onValueChange={(itemValue, itemIndex) =>{ 
+                                        this.getDriverName(itemValue);
+                                        this.setState({ selectedDriverId: itemValue })}}>
                                 <Picker.Item label="Select Driver" value="Select Driver" />
                                 {this.renderDriverList()}
                                 
@@ -287,11 +448,11 @@ export default class AddTrip extends Component {
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Party Name*</CustomText>
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                selectedValue={(this.state && this.state.selectedPartyId) || 'Select Party'}
+                                selectedValue={this.state.tripPartyId}
                                 onValueChange={(itemValue, itemIndex) => {
                                    this.updateLaneList(itemValue);
-                                    this.setState({ selectedPartyId: itemValue })}}>
-                                {/* <Picker.Item label="Select Party" value="Select Party" /> */}
+                                    this.setState({ tripPartyId: itemValue })}}>
+                                 <Picker.Item label="Select Party" value="Select Party" /> 
                                 {this.renderPartyList()}
                             </Picker>
                         </View>
@@ -300,7 +461,8 @@ export default class AddTrip extends Component {
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                 selectedValue={(this.state && this.state.selectedlaneId) || 'Select Lane'}
-                                onValueChange={(itemValue, itemIndex) => {this.setState({ selectedlaneId: itemValue })}}>
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.setState({ selectedlaneId: itemValue })}}>
                                  <Picker.Item label="Select Lane" value="Select lane" /> 
                                 {this.renderLaneList()}
                             </Picker>
@@ -308,22 +470,29 @@ export default class AddTrip extends Component {
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>Rate </CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.rate}
-                                onChangeText={(rate) => {this.moveInputLabelUp(2, rate), this.setState({rate:rate})}} />
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            keyboardType='numeric'
+                                            inputTextStyle={{ marginHorizontal: 16 }} value={this.state.rate}
+                                onChangeText={(rate) => {this.moveInputLabelUp(2, rate); this.setState({rate:rate.trim()}); this.updateFrieght()}} />
                         </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
-                                onChangeText={(tonnage) => {this.moveInputLabelUp(3, tonnage), this.setState({tonnage:tonnage})}} />
+                            <CustomEditText underlineColorAndroid='transparent'
+                                            keyboardType='numeric'
+                                            inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
+                                onChangeText={(tonnage) => {this.moveInputLabelUp(3, tonnage); this.setState({tonnage:tonnage.trim()});this.updateFrieght()}} />
                         </View>                        
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Frieght Amount </CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.famount}
-                                onChangeText={(famount) => {this.moveInputLabelUp(4, famount), this.setState({famount:famount})}} />
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            keyboardType='numeric'
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.famount}
+                                onChangeText={(famount) => {this.moveInputLabelUp(4, famount), this.setState({famount:famount.trim()})}} />
                         </View>  
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -364,7 +533,7 @@ export default class AddTrip extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#1e4495", alignSelf: 'stretch' }}
-                        onPress={() => { this.onSubmitPartyDetails() }}>
+                        onPress={() => { this.onSubmitTripDetails() }}>
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ color: '#fff', padding: 15, alignSelf: 'center' }}>
                                 SUBMIT

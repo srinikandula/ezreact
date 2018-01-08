@@ -36,7 +36,7 @@ class ForgotPin extends Component{
         self.setState({ spinnerBool:true });
         Axios({
             method: 'post',
-            url: 'http://192.168.1.41:3100/v1/group/forgot-password',//Url,
+            url: Url,
             data: {
                 contactPhone: this.state.phoneNumber
             }

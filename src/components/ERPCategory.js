@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
@@ -149,6 +149,14 @@ export default class ERPCategory extends Component {
             data =  '-';
         }
         return data;
+    }
+
+    changeRoleStatus(value){
+        if(value === 'P'){
+            this.setState({ transporterBool:'flex', suppliereBool:'none', role:'Transporter'});
+        } else {
+            this.setState({ transporterBool:'none', suppliereBool:'flex', role:'Supplier'});
+        }
     }
 
 
@@ -298,6 +306,17 @@ export default class ERPCategory extends Component {
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
+                        <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>
+                            <Ctoggle label='Payables' activeStyle={{backgroundColor:'#ffffff',margin:10}} 
+                                                        labelStyle={{color:'black'}}
+                                                        onPress={() => this.changeRoleStatus('P')}
+                                                     />
+                            <Ctoggle label='Receivables' activeStyle={{backgroundColor:'#1e4495',margin:10}} 
+                                                        labelStyle={{color:'white'}}
+                                                        onPress={() => this.changeRoleStatus('R')}
+                                                         />
+                        </View>
+
                             <Text style={CustomStyles.headText}>{this.props.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                 <View style={CustomStyles.erpTextView}>

@@ -729,6 +729,14 @@ containerStyle: {
     marginLeft:10
 
 },
+toogleStyle: {
+    borderWidth:1, 
+    borderColor:'#DDD', 
+    borderRadius:20,
+    justifyContent: 'center',
+    alignItems: 'stretch'
+},
+toggleActiveStyle:{ margin:10,  borderRadius:12 },
 
 
 };

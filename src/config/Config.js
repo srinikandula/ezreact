@@ -1,15 +1,19 @@
 let routes = {
     base: 'http://demo.easygaadi.com/v1',
     // base: 'http://erp.easygaadi.com/v1',
-    //base: 'http://192.168.0.154:3000/v1',
+    //base: 'http://192.168.0.137:3000/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
+    erpSettingData:'/admin/getErpSettings',
+    updateErpSettingData:'/admin/updateErpSettings',
     totalRevenueByVechicle:'/trips/find/revenueByVehicle?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     detailsRevenueFromVechicle:'/party/vehiclePayments/',
     totalExpensesForAllVehicles:'/expense/groupByVehicle?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     detailsExpensesForAllVehicles:'/expense/vehicleExpense/',
     totalPaymentFromParty: '/payments/getDuesByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     totalPaymentByParty: '/party/tripsPayments/',
+
+    totalPayeblesPayment:'/expense/getPaybleAmountByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
 
     //expiry
     permitExpiryTrucks: '/trucks/permitExpiryTrucks/',
@@ -28,8 +32,9 @@ let routes = {
     ExpensesList : '/expense/getAllExpenses',
     tripsList : '/trips/getAllAccountTrips',
     //Forgot-password
+    forgotPassword:'/group/forgot-password',
     //otp vERIFICATION
-    OtpVerfication:'v1/group/verify-otp',
+    OtpVerfication:'/group/verify-otp',
 
     //Payments api
     addPayment:'/payments/addPayments',

@@ -130,7 +130,7 @@ export default class AddExpense extends Component {
                 console.log(postdata,'<--addExpense ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
-                    Actions.pop();
+                    // Actions.pop();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -153,7 +153,7 @@ export default class AddExpense extends Component {
 
     
     onBackAndroid() {
-     Actions.pop();
+     //Actions.pop();
     }
 
     moveInputLabelUp(id, value) {
@@ -327,6 +327,18 @@ export default class AddExpense extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
+                    <Image
+                    style={{width: 20,marginLeft: 20}}
+                    resizeMode='contain'
+                    source={require('../images/backButtonIcon.png')}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
+                        Add Expense
+                        </Text>
+                </View>
                 <View>
                     <ScrollView>
                     <View style={{ backgroundColor: '#ffffff', margin: 10 ,marginBottom:40}}>
@@ -425,8 +437,8 @@ export default class AddExpense extends Component {
                 <View style={{flexDirection: 'row',bottom:0, position:'absolute',zIndex: 1   }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
-                        onPress={() => { Actions.Drivers() }}
-                    >
+                        onPress={() => { this.props.navigation.goBack()}}
+                        >
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ padding: 15, alignSelf: 'center' }}>
                                 CANCEL

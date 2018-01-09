@@ -5,7 +5,6 @@ import { View,BackHandler,NetInfo, ScrollView,Text, AsyncStorage, Image, Touchab
 import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';
-import {Actions,Reducer} from 'react-native-router-flux';
 import Axios from 'axios';
 const category = [
     {
@@ -112,9 +111,10 @@ export default class ErpHome extends Component {
     }
 
     callcategoryScreen(data){
+        const {navigate} = this.props.navigation;
         switch(data) {
             case "Revenue":
-               Actions.erpcategory({
+               navigate('Erpcategory',{
                 token: this.state.token,
                 Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
                 mode:data,
@@ -123,7 +123,7 @@ export default class ErpHome extends Component {
 
                 break;
             case "Expense":
-            Actions.erpcategory({
+            navigate('Erpcategory',{
                 token: this.state.token,
                 Url: Config.routes.base + Config.routes.totalExpensesForAllVehicles,
                 mode:data,
@@ -132,7 +132,7 @@ export default class ErpHome extends Component {
                 break;
             case "Payments":
                 console.log("Expense",data);
-                Actions.erpcategory({
+                navigate('Erpcategory',{
                     token: this.state.token,
                     Url: Config.routes.base + Config.routes.totalPaymentFromParty,
                     mode:data,
@@ -141,7 +141,7 @@ export default class ErpHome extends Component {
                 break;
             case "Expiry":
                 console.log("Expiry",data);
-                Actions.erpExpiryDate({
+                navigate('ErpExpiryDate',{
                     token: this.state.token,
                     Url: Config.routes.base + Config.routes.permitExpiryTrucks,
                     mode:data,

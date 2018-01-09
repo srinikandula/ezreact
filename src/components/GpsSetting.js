@@ -29,7 +29,7 @@ class GpsSetting extends Component{
     }
 
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();
     }
 
         

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,ToastAndroid} from 'react-native';
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
-import {Actions} from 'react-native-router-flux';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
 
@@ -20,20 +19,8 @@ class OtpVerification extends Component{
              passwordlbl:false,
              spinnerBool: false
         };
-        console.log(this.props,'props');
     }
  
-    componentWillMount() {
-       BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
-    }
-    componentWillUnmount(){
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
-    }
-
-    onBackAndroid() {
-     Actions.pop();
-    }
-
     onVerifyOTP() {
             if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {       
                 ToastAndroid.show('Enter a 6 digits OTP Number', ToastAndroid.SHORT);
@@ -54,7 +41,7 @@ class OtpVerification extends Component{
             method: 'post',
             url: 'http://192.168.1.41:3100/v1/group/verify-otp',//Url,
             data: {
-                contactPhone: this.props.mobile,
+                contactPhone: this.props.navigation.state.params.mobile,
                 otp:otpNumber
             }
         })
@@ -63,7 +50,7 @@ class OtpVerification extends Component{
                 if (response.data.status) {
                     
                     self.setState({ spinnerBool:false });
-                    Actions.pop({ refresh: { close: true }})
+                    //Actions.pop({ refresh: { close: true }})
                     let message ="";
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;

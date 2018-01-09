@@ -26,7 +26,7 @@ class ResetPassword extends Component{
     }
 
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();`
     }
 
      onVerifyOTP() {

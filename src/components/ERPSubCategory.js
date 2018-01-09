@@ -55,7 +55,7 @@ export default class ERPSubCategory extends Component {
         }
 
         onBackAndroid() {
-            Actions.pop();
+            // Actions.pop();
             //var value = await this.getCache('credientails');
            }
     constructor() {

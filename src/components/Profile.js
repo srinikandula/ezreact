@@ -34,7 +34,7 @@ class Profile extends Component{
     }
 
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();
     }
 
         

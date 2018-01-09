@@ -1,21 +1,35 @@
-// from index.js this is where you land
-
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Button
-} from 'react-native';
-import Router from './Router';
-import HomeScreen from './components/HomeScreen';
+import {AsyncStorage } from 'react-native';
+import AppNavigation from './AppNavigation';
 
 export default class App extends Component {
+  state = { check: false, signedIn: false };
+
+
+  componentWillMount() {
+    this.getItem().then((resp) => {
+      if (!resp)
+        this.setState({ signed: false, check: true });
+      else
+        this.setState({ signed: true, check: true });
+    });
+  }
+
+  async getItem() {
+    return await AsyncStorage.getItem('credientails');
+  }
+
   render() {
-    return (
-      <Router/>
-    );
+    if (!this.state.check) {
+      return null;
+    }
+    if (this.state.signed) {
+      let LoginValid = AppNavigation(true);
+      return <LoginValid />;
+    } else {
+      let LoginInvalid = AppNavigation(false);
+      return <LoginInvalid />;
+    }
   }
 }
 

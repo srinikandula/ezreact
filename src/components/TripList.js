@@ -205,7 +205,7 @@ export default class TripList extends Component {
                                                 </View>
                                                 <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
                                                     <TouchableOpacity onPress={() => 
-                                                                            {Actions.AddTrip({token:this.state.token,id:item._id,edit:true}) }
+                                                                            {this.props.navigation.navigate('AddTrip',{token:this.state.token,id:item._id,edit:true}) }
                                                                         }>
                                                         <Image resizeMode="contain"
                                                                 source={require('../images/form_edit.png')} 
@@ -263,7 +263,7 @@ export default class TripList extends Component {
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
                             <TouchableOpacity
-                                        onPress={() => { Actions.AddTrip({token:this.state.token,edit:false})}}
+                                        onPress={() => { this.props.navigation.navigate('AddTrip',{token:this.state.token,edit:false})}}
                                     >
                                 <Image source={require('../images/eg_trip.png')} 
                                         style= {CustomStyles.addImage}/>

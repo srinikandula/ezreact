@@ -109,7 +109,7 @@ export default class ERPCategory extends Component {
         console.log(self.props.token);
         switch(self.props.mode) {
             case "Revenue":
-               Actions.erpsubcategory({
+            this.props.navigation.navigate('ErpSubCategory',{
                 token: self.props.token,
                 Url: Config.routes.base + Config.routes.detailsRevenueFromVechicle+truckID,
                 label:'Total Revenue From '  +truckNum +":  "+ truckAmount,
@@ -119,7 +119,7 @@ export default class ERPCategory extends Component {
                 break;
             case "Expense":
             console.log("Expense",'data',);
-            Actions.erpsubcategory({
+            this.props.navigation.navigate('ErpSubCategory',{
                 token: self.props.token,
                 Url: Config.routes.base + Config.routes.detailsExpensesForAllVehicles+truckID,
                 label:'Total Expense From '  +truckNum +"  "+ truckAmount,
@@ -128,7 +128,7 @@ export default class ERPCategory extends Component {
                 break;
             case "Payments":
             console.log("Payments","data");
-                Actions.erpsubcategory({
+            this.props.navigation.navigate('ErpSubCategory',{
                     token: self.props.token,
                     Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
                     label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
@@ -155,7 +155,7 @@ export default class ERPCategory extends Component {
     render() {
         const self=this;
       
-        switch(self.props.mode) {
+        switch(self.props.navigation.state.params.mode) {
             case "Revenue":
             return (
                 <View style={CustomStyles.viewStyle}>

@@ -18,10 +18,9 @@ export default class AddExpense extends Component {
         selectedExpenseType:'',
         selectedPartyID:'',
         otherExpense:'',
-        tripPartyId:'',
         totalAmount:'',
         paidAmount:'',
-        remark:'test',
+        remark:'',
         trucks:[],
         expenses:[],
         partyList:[],
@@ -31,7 +30,7 @@ export default class AddExpense extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("payment token",this.props.token);
+        console.log("AddExpense token",this.props.token);
         this.getDataList('trucks',Config.routes.base + Config.routes.trucksList);
         
     }
@@ -65,35 +64,33 @@ export default class AddExpense extends Component {
                     });
                     
                     if(this.props.edit){
-                        this.gettripDetails(this.props.id);
+                        this.getExpenseDetails(this.props.id);
                     }
                 }            
             } else {
                 console.log('error in add trip ==>', response);
                 this.setState({ partyList: [] });
             }
-
-
         }).catch((error) => {
             console.log('error in add partyList ==>', error);
         })
     }
 
 
-    gettripDetails(paymentID){
+    getExpenseDetails(paymentID){
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.getTripsDetails+paymentID,
+            url: Config.routes.base + Config.routes.getExpenseDetails+paymentID,
             
         })
             .then((response) => {
-                console.log(paymentID+'<--editTripAPI ==>', response.data);
+                console.log(paymentID+'<--editExpenseAPI ==>', response.data);
                 if (response.data.status) {    
                    self.setState({spinnerBool:false});
-                    this.updateViewdate(response.data.trip);                   
+                    this.updateViewdate(response.data.expense);                   
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
@@ -105,8 +102,32 @@ export default class AddExpense extends Component {
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 }
             }).catch((error) => {
-                console.log('error in editTripAPI ==>', error);
+                console.log('error in editExpenseAPI ==>', error);
             })
+    }
+    updateViewdate(expenseDetails){
+        var date = new Date(expenseDetails.date);
+        var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
+        var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
+        this.setState({
+            date:dateStr,                        
+            passdate:passdateStr,                    
+            selectedVehicleId:expenseDetails.vehicleNumber,
+            selectedExpenseType:expenseDetails.expenseType,            
+            totalAmount:''+expenseDetails.totalAmount,            
+            remark:expenseDetails.description,
+            },()=>{
+                
+            console.log('party ID',);
+            });
+
+            if(expenseDetails.mode === 'Credit'){
+                this.setState({ creditBool:'flex', cashBool:'none', paymentType:'Credit',selectedPartyID:expenseDetails.partyId,paidAmount:''+expenseDetails.paidAmount});
+            } else {
+                this.setState({ creditBool:'none', cashBool:'flex', paymentType:'Cash'});
+            }
+
+    
     }
 
     callAddExpenseAPI(postdata){
@@ -117,7 +138,7 @@ export default class AddExpense extends Component {
         if(this.props.edit){
             methodType = 'put';
             postdata._id = self.props.id;
-            url = Config.routes.base + Config.routes.updatePartyDetails
+            url = Config.routes.base + Config.routes.updateExpenseDetails
         }
         Axios({
             method: methodType,
@@ -197,7 +218,7 @@ export default class AddExpense extends Component {
                     }
 
                     if(this.state.paymentType.length > 0){
-                        
+                         //--Cash mode                        
                         if(this.state.paymentType === 'Cash'){
                             if(this.state.totalAmount.length > 0){
                                 var date = new Date(this.state.passdate);                                
@@ -213,19 +234,42 @@ export default class AddExpense extends Component {
                                     "vehicleNumber":this.state.selectedVehicleId,
                                 }
                                 console.log('postdata',postData);
-                                this.callAddExpenseAPI(postData);
-                                
+                                this.callAddExpenseAPI(postData);                                
                             }else{
                                 ToastAndroid.show('Please Enter Expense Amount', ToastAndroid.SHORT);
                             }
 
                         }else{
-
+                            //--credit mode
+                            if(!this.state.selectedExpenseType.includes("Select Party Name")){
+                                if(this.state.totalAmount.length > 0){
+                                    if(this.state.paidAmount.length > 0){
+                                        var date = new Date(this.state.passdate);                                
+                                        var postData={
+                                            "date":date.toISOString(),
+                                            "description":this.state.remark,
+                                            "expenseName":this.state.otherExpense,
+                                            "expenseType":this.state.selectedExpenseType ,//for other type 
+                                            "mode":this.state.paymentType,
+                                            "paidAmount":Number(this.state.paidAmount),// if mode is credit is mandatory
+                                            "partyId":this.state.selectedPartyID,
+                                            "totalAmount":Number(this.state.totalAmount),
+                                            "vehicleNumber":this.state.selectedVehicleId,
+                                        }
+                                        console.log('postdata',postData);
+                                        this.callAddExpenseAPI(postData); 
+                                        }else{
+                                            ToastAndroid.show('Please Enter  Paid Amount', ToastAndroid.SHORT);
+                                        }
+                                }else{
+                                    ToastAndroid.show('Please Enter Expense Total Amount', ToastAndroid.SHORT);
+                                }
+                            }else{
+                                ToastAndroid.show('Please Select Party', ToastAndroid.SHORT);
+                            }
                         }
-
-
                     }else{
-
+                        ToastAndroid.show('Please Select payment Type', ToastAndroid.SHORT);
                     }                 
                 }else{
                     ToastAndroid.show('Please Select Driver', ToastAndroid.SHORT);
@@ -404,25 +448,46 @@ export default class AddExpense extends Component {
                                                         onPress={() => this.changepaymentType('cash')} />
                         </View>           
                         
-                        <View style={{display:this.state.cashBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                       
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>Total Amount </CustomText>
+                        <View style={{display:this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field3]}>Party Name*</CustomText>
+                            <Picker
+                                style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                selectedValue={this.state.selectedPartyID}
+                                onValueChange={(itemValue, itemIndex) =>{
+                                this.setState({ selectedPartyID: itemValue })}}>
+                                <Picker.Item label="Select Party Name" value="Select Party Name" />
+                                {this.renderPartyList()}
+                            </Picker>
+                        </View>
+
+                        <View style={{backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>Total Amount* </CustomText>
                             <CustomEditText underlineColorAndroid='transparent' 
                                             keyboardType='numeric'
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.totalAmount}
                                 onChangeText={(totalAmount) => {this.moveInputLabelUp(5, totalAmount); this.setState({totalAmount:totalAmount.trim()});}} />
-                        </View>
+                        </View>           
 
+                        <View style={{display:this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Paid Amount* </CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            keyboardType='numeric'
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.paidAmount}
+                                onChangeText={(paidAmount) => {this.moveInputLabelUp(6, paidAmount); this.setState({paidAmount:paidAmount.trim()});}} />
+                        </View>           
                         <View style={{backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Remarks </CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field7]}>Remarks </CustomText>
                             <CustomEditText underlineColorAndroid='transparent' 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
-                                            value={this.state.totalAmount}
-                                onChangeText={(remark) => {this.moveInputLabelUp(6, remark); this.setState({remark:remark});}} />
+                                            value={this.state.remark}
+                                onChangeText={(remark) => {this.moveInputLabelUp(7, remark); this.setState({remark:remark});}} />
                         </View>
                         
                         

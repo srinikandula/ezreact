@@ -38,6 +38,7 @@ import AddPayment from './components/AddPayment';
 import AddTruck from './components/AddTruck';
 import AddTrip from './components/AddTrip';
 import AddExpense from './components/AddExpense';
+import ReportsSetting from './components/ReportsSetting';
 
 class TabIcon extends Component {
 	render() {
@@ -254,10 +255,10 @@ export default class Navigation extends Component {
 							component={Profile} />
 						<Scene key='tab4' activeTintColor='cyan' hideNavBar title='Notifications' component={Notifications} />
 					
-					<Scene key='root' tabs={true} tabBarStyle={styles.tabBar} default="tab3"
+					{/* <Scene key='root' tabs={true} tabBarStyle={styles.tabBar} default="tab3"
 						tabBarPosition='bottom' swipeEnabled={false}>
 						<Scene key='tab1' activeTintColor='red' showIcon={true} hideNavBar title='Home'
-							component={Login} icon={TabIcon} />
+							component={Login} icon={TabIcon} /> */}
 
 						<Scene key='tab2' headerMode="float" tabs={true} title='Setting'
 							indicatorStyle={styles.indicatorStyle}
@@ -269,15 +270,15 @@ export default class Navigation extends Component {
 							tabBarPosition='top'
 							swipeEnabled={true}>
 							<Scene key='gps' headerMode="float" duration={1}
-								title='Setting'
-								component={GpsSetting} />
+								title='GPS'
+								component={ReportsSetting} />
 							<Scene key='reports' headerMode="float" duration={1}
-								hideNavBar title='Reports'
-								component={Login} />
+								hideNavBar title='set Reports'
+								component={ReportsSetting} />
 						</Scene>
 
 						
-					</Scene>
+					{/* </Scene> */}
 					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="Trips"
 						tabBarPosition="top"  swipeEnabled={true}  initial={this.state.logged}>
 						<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />

@@ -11,19 +11,22 @@ import { Actions } from 'react-native-router-flux';
 import CheckBox from 'react-native-checkbox';
 
 export default class AddTrip extends Component {
+
     state = {
         date: "",
         passdate:'',
         selectedVehicleId:'',
         selectedDriverId:'',
         tripPartyId:'',
+        temptripPartyId:'',
         selectedlaneId:'',
+        tempLaneID:'',
         Amount:'',
         remark:'test',
         trucks:[],
         drivers:[],
-        partyList:[],
-        lanesList:[],
+        partyList:[{name:'Select Party',_id:''}],
+        lanesList:[{name:'Select Lane'}],
         share:true,
         rate:'',
         tonnage:'',
@@ -60,7 +63,12 @@ export default class AddTrip extends Component {
                        this.getDataList('Party',Config.routes.base + Config.routes.partyList);   
                        return ;
                 }else{
-                    this.setState({ partyList: response.data.parties },()=> {
+
+                    for(let i=0;i<response.data.parties.length;i++){
+                        this.state.partyList.push(response.data.parties[i]);
+                    }
+
+                    this.setState({ partyList: this.state.partyList },()=> {
                      console.log('party array isfrom add trip ', this.state.partyList);
                     });
                     
@@ -80,17 +88,17 @@ export default class AddTrip extends Component {
     }
 
 
-    gettripDetails(paymentID){
+    gettripDetails(TRIPID){
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
             headers: { 'token': self.props.token },
-            url: Config.routes.base + Config.routes.getTripsDetails+paymentID,
+            url: Config.routes.base + Config.routes.getTripsDetails+TRIPID,
             
         })
             .then((response) => {
-                console.log(paymentID+'<--editTripAPI ==>', response.data);
+                console.log(TRIPID+'<--editTripAPI ==>', response.data);
                 if (response.data.status) {    
                    self.setState({spinnerBool:false});
                     this.updateViewdate(response.data.trip);                   
@@ -120,18 +128,21 @@ export default class AddTrip extends Component {
                         selectedVehicleId:paymentDetails.registrationNo,
                         selectedDriverId:paymentDetails.driverId,
                         tripPartyId:paymentDetails.partyId,
+                        temptripPartyId:paymentDetails.partyId,
                         selectedlaneId:paymentDetails.tripLane,
+                        tempLaneID:paymentDetails.tripLane,
                         share:paymentDetails.share,
                         rate:''+paymentDetails.rate,
                         tonnage:''+paymentDetails.tonnage,
                         famount:''+paymentDetails.freightAmount,
                         remark:paymentDetails.remarks,
                         },()=>{
-            console.log('party ID',this.state.tripPartyId);
+                            
+            console.log('party ID',paymentDetails.partyId,this.state.tripPartyId,this.state.selectedVehicleId,this.state.selectedDriverId);
         });
         this.updateLaneList(paymentDetails.partyId);
-        this.getTruckNum(paymentDetails.registrationNo)
-        this.getDriverName(paymentDetails.driverId)
+        this.getTruckNum(paymentDetails.registrationNo);
+        this.getDriverName(paymentDetails.driverId);
 
     }
 
@@ -174,6 +185,8 @@ export default class AddTrip extends Component {
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 }
             }).catch((error) => {
+                self.setState({ spinnerBool:false });
+                Actions.pop();
                 console.log('error in callAddtripAPI ==>', error);
             })
     }
@@ -200,7 +213,7 @@ export default class AddTrip extends Component {
                 if (response.action === "dateSetAction") {
                     var month = response.month + 1
                     let date =  response.day+"/"+month+"/"+ response.year;
-                    this.setState({ date:date,passdate:month+"/"+response.get+"/"+ response.year });
+                    this.setState({ date:date,passdate:month+"/"+response.day+"/"+ response.year });
                     this.moveInputLabelUp(0, date)
 
                 }
@@ -213,11 +226,12 @@ export default class AddTrip extends Component {
 
     }
     onSubmitTripDetails() {
+        console.log('hi=====>',this.state.selectedVehicleId,this.state.selectedDriverId,this.state.tripPartyId,this.state.selectedlaneId);
         if(this.state.date.includes('/')){
             if(!this.state.selectedVehicleId.includes("Select Vehicle")){
                 if(!this.state.selectedDriverId.includes("Select Driver")){
-                    if(!this.state.tripPartyId.includes("Select Party")){
-                        if(!this.state.selectedlaneId.includes("Select lane")){
+                    if(this.state.tripPartyId.length > 0){
+                        if(this.state.selectedlaneId.length > 0){
                             if(this.state.rate.length > 0){
                                 if(this.state.tonnage.length > 0){
                                     if(this.state.famount.length > 0){
@@ -313,26 +327,38 @@ export default class AddTrip extends Component {
     }
 
     updateLaneList(itemValue){
-       if(itemValue==='Select Party'){
+        const self = this;
+        
+       if(itemValue.length <= 1){
            return;
        }
        else{
-        for (let i=0;i< this.state.partyList.length; i++){            
-            if(this.state.partyList[i]._id === itemValue){ 
-                var lanearr = this.state.partyList[i].tripLanes;
+        self.state.lanesList=[{name:'Select Lane'}];
+        self.setState({lanesList:self.state.lanesList});
+        for (let i=0;i< self.state.partyList.length; i++){            
+            if(self.state.partyList[i]._id === itemValue){ 
+                var lanearr = self.state.partyList[i].tripLanes;
                 for(let j=0;j<lanearr.length;j++){
                     var laneObj = lanearr[j];
                     if(laneObj.hasOwnProperty("name")){
-                        this.state.lanesList.push(laneObj);
+                        self.state.lanesList.push(laneObj);
                     }
                 }               
-                this.setState({lanesList: this.state.lanesList},()=> {
-                    console.log('lanesList',this.state.lanesList);                    
-                })
+                self.setState({lanesList: self.state.lanesList},()=> {
+                    console.log('lanesList',self.state.lanesList);                                     
+                });
                 break;
             }
-        };
+        }
+
+        if(self.props.edit){
+            
+            setTimeout(function(){
+                self.setState({tripPartyId:self.state.temptripPartyId,selectedlaneId:self.state.tempLaneID})
+            }, 1000);
+        }   
        }
+      
     }
     
     getDriverName(itemValue){
@@ -464,7 +490,7 @@ export default class AddTrip extends Component {
                                 onValueChange={(itemValue, itemIndex) => {
                                    this.updateLaneList(itemValue);
                                     this.setState({ tripPartyId: itemValue })}}>
-                                 <Picker.Item label="Select Party" value="Select Party" /> 
+                                 
                                 {this.renderPartyList()}
                             </Picker>
                         </View>
@@ -472,10 +498,9 @@ export default class AddTrip extends Component {
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                selectedValue={(this.state && this.state.selectedlaneId) || 'Select Lane'}
+                                selectedValue={this.state.selectedlaneId}
                                 onValueChange={(itemValue, itemIndex) => {
                                     this.setState({ selectedlaneId: itemValue })}}>
-                                 <Picker.Item label="Select Lane" value="Select lane" /> 
                                 {this.renderLaneList()}
                             </Picker>
                         </View>

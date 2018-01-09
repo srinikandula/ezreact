@@ -134,7 +134,8 @@ export default class ErpHome extends Component {
                 console.log("Expense",data);
                 navigate('Erpcategory',{
                     token: this.state.token,
-                    Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                    //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                    Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                     mode:data,
                     label:'Total Payments Details'
                 });

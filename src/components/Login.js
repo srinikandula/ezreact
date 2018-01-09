@@ -47,10 +47,10 @@ class Login extends Component {
             if (value !== null) {
                 var egObj = {};
                 egObj = JSON.parse(value);
-                this.setState({ userName: egObj.userName, userNamelbl: true, rememberme: true });
-            } else {
-                console.log('value', value)
-            }
+               this.setState({userName:egObj.userName,userNamelbl:true,rememberme:true});
+              } else {
+                console.log('value',value.json())
+              }
 
             return value.json();
         }

@@ -39,7 +39,7 @@ class OtpVerification extends Component{
         self.setState({ spinnerBool:true });
         Axios({
             method: 'post',
-            url: 'http://192.168.1.41:3100/v1/group/verify-otp',//Url,
+            url: Url,
             data: {
                 contactPhone: this.props.navigation.state.params.mobile,
                 otp:otpNumber

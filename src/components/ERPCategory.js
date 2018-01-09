@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ToastAndroid,ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
@@ -47,10 +47,19 @@ export default class ERPCategory extends Component {
                 if (response.data.status) {
                     if(self.props.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
+                        if(response.data.expenses.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
                     }else if(self.props.mode == 'Revenue'){
                         self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
+                        if(response.data.revenue.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
                     }else if(self.props.mode == 'Payments'){
                         self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
+                        if(response.data.parties.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
                     }
                     
                 } else {

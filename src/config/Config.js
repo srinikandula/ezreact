@@ -59,6 +59,10 @@ let routes = {
     updateExpenseDetails:'/expense/updateExpense',
     getExpenseDetails:'/expense/getExpense/',
 
+
+    //Add Group
+    addGroup:'/admin/addAccountGroup',
+
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

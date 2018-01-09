@@ -134,8 +134,8 @@ export default class ErpHome extends Component {
                 console.log("Expense",data);
                 Actions.erpcategory({
                     token: this.state.token,
-                    //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
-                    Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                    Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                    //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                     mode:data,
                     label:'Total Payments Details'
                 });
@@ -222,7 +222,7 @@ export default class ErpHome extends Component {
                                 From all vehicles
                         </Text>
                             <Text style={CustomStyles.amountColor}>
-                            {`payables   ₹0`}
+                            {`payables    ₹${this.state.erpDashBroadData.paybleAmount}`}
                             </Text>
                             <Text style={CustomStyles.amountColor}>
                                 

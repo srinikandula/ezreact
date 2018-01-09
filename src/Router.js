@@ -39,6 +39,8 @@ import AddTruck from './components/AddTruck';
 import AddTrip from './components/AddTrip';
 import AddExpense from './components/AddExpense';
 import ReportsSetting from './components/ReportsSetting';
+import AddGroup from './components/AddGroup';
+import DriverSelectionList from './components/DriverSelectionList';
 
 class TabIcon extends Component {
 	render() {
@@ -249,6 +251,16 @@ export default class Navigation extends Component {
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
 
+					<Scene key="AddGroup"
+						component={AddGroup}
+						title="Add Group"
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+					/>
+					<Scene key="SelectDriver"
+						component={DriverSelectionList}
+						title="Add Group"
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+					/>
 
 
 					<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'

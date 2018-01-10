@@ -123,7 +123,11 @@ class Profile extends Component{
         return (
             <View style={CustomStyles.profileviewStyle}>
                 <View style={CustomStyles.profileheaderStyle}>
-                    <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
+                    <TouchableOpacity
+                            onPress={() => { Actions.GroupList({token:this.state.token,edit:false})}}
+                                    >
+                        <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
+                    </TouchableOpacity>
                 </View>            
                 
                 <ScrollView style={CustomStyles.profileScroll}>

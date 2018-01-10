@@ -62,6 +62,9 @@ let routes = {
 
     //Add Group
     addGroup:'/admin/addAccountGroup',
+    getListofGroups:'/admin/getAllAccountGroup',
+    getGroupDetails:'/admin/getAccountGroup/',
+    updateGroupGroup:'/admin/updateAccountGroup',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

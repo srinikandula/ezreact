@@ -26,10 +26,65 @@ export default class AddGroup extends Component {
     };
     componentWillMount() {
         console.log("AddParty token",this.props);   
-          
+        if(this.props.edit){
+            this.getGroupDetails(this.props.id);
+        }
     }
 
+    getGroupDetails(groupID){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        Axios({
+            method: 'get',
+            headers: { 'token': self.props.token },
+            url: Config.routes.base + Config.routes.getGroupDetails+groupID,
+            
+        })
+            .then((response) => {
+                console.log(groupID+'<--getGroupDetails ==>', response.data);
+                if (response.data.status) {    
+                   self.setState({spinnerBool:false});
+                    this.updateViewdate(response.data.accountGroup);                   
+                } else {
+                   // console.log('fail in forgotPassword ==>', response);
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+            }).catch((error) => {
+                console.log('error in getGroupDetails ==>', error);
+            })
+    }
 
+    updateViewdate(groupDetails){
+       
+        this.setState({                  
+            groupName: groupDetails.groupName,    
+            groupUserName:groupDetails.userName,  
+            password:groupDetails.password,  
+            cpassword:groupDetails.confirmPassword,  
+            numTrucks:this.getTruckCount(groupDetails.truckIds || groupDetails.truckId),
+            truckArr:groupDetails.truckIds || groupDetails.truckId,
+            contactName:groupDetails.contactName,
+            groupContact: ''+groupDetails.contactPhone,
+            location:groupDetails.location,
+            isERP:groupDetails.erpEnabled,
+            isGPS : groupDetails.gpsEnabled,
+            },()=>{
+                
+            console.log('groupDetails ID',groupDetails._id);
+            });
+    }
+
+    getTruckCount(trucks) {
+        var arrr = []
+        arrr = trucks;
+        return "Assgined Trucks  " + arrr.length;
+    }
     onBackAndroid() {
      Actions.pop();
     }
@@ -46,7 +101,7 @@ export default class AddGroup extends Component {
         if(this.props.edit){
             methodType = 'put';
             postdata._id = self.props.id;
-            url = Config.routes.base + Config.routes.updateExpenseDetails
+            url = Config.routes.base + Config.routes.updateGroupGroup
         }
         Axios({
             method: methodType,
@@ -92,16 +147,17 @@ export default class AddGroup extends Component {
                                     if(this.state.location.trim().length > 0){
                                         if(this.state.isERP || this.state.isGPS){
                                             var postData = {
+                                                "groupName":this.state.groupName,
+                                                "userName":this.state.groupUserName,
+                                                "password":this.state.password,
                                                 "confirmPassword":this.state.cpassword,
                                                 "contactName":this.state.contactName,
                                                 "contactPhone":Number(this.state.groupContact.trim()),
-                                                "erpEnabled":this.state.isERP,
-                                                "gpsEnabled":this.state.isGPS,
-                                                "groupName":this.state.groupName,
                                                 "location":this.state.location,
-                                                "password":this.state.password,
-                                                "truckId":this.state.truckArr,
-                                                "userName":this.state.groupUserName
+                                                "truckIds":this.state.truckArr,
+                                                "erpEnabled":this.state.isERP,
+                                                "gpsEnabled":this.state.isGPS,                                            
+                                                "type" : "group"
                                                 };
                                                 console.log('postData',postData);
                                                 this.callAddGroupAPI(postData);

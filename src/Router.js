@@ -41,6 +41,7 @@ import AddExpense from './components/AddExpense';
 import ReportsSetting from './components/ReportsSetting';
 import AddGroup from './components/AddGroup';
 import DriverSelectionList from './components/DriverSelectionList';
+import GroupsList from './components/GroupsList';
 
 class TabIcon extends Component {
 	render() {
@@ -262,6 +263,12 @@ export default class Navigation extends Component {
 						navigationBarStyle={{backgroundColor: "#1e4495"}}
 					/>
 
+					<Scene key="GroupList"
+						component={GroupsList}
+						title="Add Group"
+						navigationBarStyle={{backgroundColor: "#1e4495"}}
+					/>
+
 
 					<Scene key='tab3' activeTintColor='cyan' hideNavBar title='Profile'
 							component={Profile} />
@@ -292,7 +299,8 @@ export default class Navigation extends Component {
 						
 					{/* </Scene> */}
 					<Scene key='erp' headerMode="float" wrap={false} tabs={true} default="Trips"
-						tabBarPosition="top"  swipeEnabled={true}  initial={this.state.logged}>
+						tabBarPosition="top" scrollEnabled={true}
+						swipeEnabled={true}  initial={this.state.logged}>
 						<Scene key='ErpHome' title='ErpHome' headerMode="float" component={ErpHome} />
 						<Scene key='Trucks' title='Trucks' headerMode="float" component={TruckList}
 						/>

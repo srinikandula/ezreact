@@ -156,7 +156,7 @@ export default class GroupsList extends Component {
                 </View>
                 <View style={[CustomStyles.addGroupImageStyle,{bottom:10,right:10,}]}>
                     <TouchableOpacity
-                    onPress={()=> Actions.AddDriver({token:this.state.token})}
+                    onPress={()=> Actions.AddGroup({token:this.state.token})}
                     >
                         <Image source={require('../images/eg_driver.png')}
                         style={CustomStyles.addImage} />

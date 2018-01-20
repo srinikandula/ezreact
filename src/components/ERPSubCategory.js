@@ -16,6 +16,7 @@ export default class ERPSubCategory extends Component {
         payementsResults:[],
         totalExpenses:{},
         totalPendingPayments:{},
+        totalPayablePayments:{},
         totalRevenue: {
         }
     };
@@ -27,9 +28,7 @@ export default class ERPSubCategory extends Component {
             headers: { 'token': self.props.token },
             url: self.props.Url
         })
-            .then((response) => {
-               
-
+            .then((response) => {              
                 if (response.data.status) {
                     if(self.props.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
@@ -37,16 +36,15 @@ export default class ERPSubCategory extends Component {
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
                     
                     }else if(self.props.mode == 'Payments'){
-                        console.log('.props.Url ==>', self.props.Url);
-                        console.log('sub payementsResults ==>', response.data.results);
-                        console.log('sub tpayementsResults  ==>', response.data.totalPendingPayments);
+                        self.setState({payementsResults:response.data.partyData,totalPayablePayments: response.data.grossAmounts});
+                    }else if(self.props.mode == 'Receivables'){
                         self.setState({payementsResults:response.data.results,totalPendingPayments: response.data.totalPendingPayments});
                     }                       
                 } else {
-                    console.log('error in baskets ==>', response);
+                    console.log(self.props.mode,'error in ERP SUB Cat ==>', response);
                 }
             }).catch((error) => {
-                console.log('error in baskets ==>', error);
+                console.log(self.props.mode,'error in ERP SUB Cat ==>', error);
             })
             BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }
@@ -76,6 +74,11 @@ export default class ERPSubCategory extends Component {
                 totalFreight: 0,
                 totalPaid: 0
             },
+            totalPayablePayments:{
+                totalAmount: 0,
+                paidAmount: 0,
+                payableAmount: 0
+            },
             dataSource: ds.cloneWithRows(['row 1', 'row 2']),
         };
     }
@@ -86,22 +89,6 @@ export default class ERPSubCategory extends Component {
             return <ExpiryDateItems key={i} style={{ flex: 1 }} count={expirydetail.count} label={expirydetail.label} />
 
         });
-    }
-
-    callcategoryScreen(data) {
-        switch (data) {
-            case "Revenue":
-                console.log("Revenue", data, Config.routes.base + Config.routes.totalRevenueByVechicle, );
-                break;
-            case "Expense":
-                console.log("Expense", data);
-                break;
-            case "Payments":
-                console.log("Expense", data);
-                break;
-            default:
-                text = "I have never heard of that fruit...";
-        }
     }
 
     getParsedDate(date){
@@ -164,7 +151,6 @@ export default class ERPSubCategory extends Component {
         const self=this;
         switch (self.props.mode) {
             case "Revenue":
-                console.log("Revenue", 'data', Config.routes.base + Config.routes.totalRevenueByVechicle, );
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
@@ -231,7 +217,6 @@ export default class ERPSubCategory extends Component {
                 );
                 break;
             case "Expense":
-                console.log("Expense", 'data',this.state.expenses);
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
@@ -298,7 +283,72 @@ export default class ERPSubCategory extends Component {
                 );
                 break;
             case "Payments":
-                console.log("Payments",'Payments' );
+                return (
+                    <View style={CustomStyles.viewStyle}>
+                        <View style={CustomStyles.erpCategory}>
+                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <View style={CustomStyles.erpCategoryHeaderItems}>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Date</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Expense</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Total Amt. </Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Paid Amt.</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Payable</Text>
+                                    </View>
+                            </View>
+                            <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
+                                data={this.state.payementsResults}
+                                renderItem={({ item }) =>
+                                
+                                    <View style={CustomStyles.erpCategoryItems}>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getParsedDate(item.date)
+                                                                                }</Text>
+                                        </View>
+                                         <View style={CustomStyles.erpTextView}>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.expenseType.expenseName}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.totalAmount}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.paidAmount}</Text>
+                                        </View>
+                                        <View style={CustomStyles.erpTextView}>
+                                            <Text style={[CustomStyles.erpSubCatText,{}]}>{item.payableAmount}</Text>
+                                        </View> 
+                                    </View>
+                                }
+                                keyExtractor={item => item._id} />
+                            <View style={CustomStyles.erpCategoryFooterItems}>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>Total</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
+                                </View><View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.totalAmount}</Text>
+                                </View>
+                               <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.paidAmount}</Text>
+                                </View>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.payableAmount}</Text>
+                                </View> 
+                            </View>
+                        </View>
+                    </View>
+                );
+                break;
+            case "Receivables":
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>

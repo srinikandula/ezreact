@@ -233,7 +233,6 @@ class ReportsSetting extends Component{
                 this.setState({spinnerBool:false});
                 ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
             })
-
     }
 
 

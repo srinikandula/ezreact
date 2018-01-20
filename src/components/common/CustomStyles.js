@@ -709,6 +709,7 @@ mLt10:{ marginLeft: 10 },
 row :{flexDirection:'row'},
 mTop10 :{marginTop:10},
 mBottom10 :{marginBottom:10},
+mBottom2 :{marginBottom:2},
 radioStyle: {
         borderWidth:1, 
         borderColor:'#DDD', 

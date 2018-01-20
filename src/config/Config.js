@@ -13,7 +13,13 @@ let routes = {
     totalPaymentFromParty: '/payments/getDuesByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     totalPaymentByParty: '/party/tripsPayments/',
 
+    //filter with date,vechile
+    filterTotalRevenueByVechicle:'/trips/find/revenueByVehicle?',
+    filterTotalExpensesForAllVehicles:'/expense/groupByVehicle?',
+    filterTotalPaymentFromParty: '/payments/getDuesByParty?',
     totalPayeblesPayment:'/expense/getPaybleAmountByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
+    totalPayablesPaymentByParty: '/expense/getPaybleAmountByPartyId?partyId=',
+    filterTotalPayeblesPayment:'/expense/getPaybleAmountByParty?',
 
     //expiry
     permitExpiryTrucks: '/trucks/permitExpiryTrucks/',
@@ -102,5 +108,10 @@ let limiters = {
     passwordLength: 8,
     otpLength: 6
 };
+
+
+
+
+
 
 export default {routes, limiters};

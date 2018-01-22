@@ -72,6 +72,15 @@ let routes = {
     getGroupDetails:'/admin/getAccountGroup/',
     updateGroupGroup:'/admin/updateAccountGroup',
 
+
+    //mail
+    revenueMail:'/trips/shareRevenueDetailsByVechicleViaEmail?',
+    expenseMail:'/expense/shareExpensesDetailsViaEmail?',
+    paymentsMail:'/payments/sharePaymentsDetailsByPartyViaEmail?',
+    receivablesMail:'payments/sharePaymentsDetailsByPartyViaEmail?',
+    
+
+
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

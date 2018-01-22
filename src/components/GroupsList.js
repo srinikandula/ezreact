@@ -111,7 +111,6 @@ export default class GroupsList extends Component {
                                     });
                                 }}
                             >
-
                                 <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={[CustomStyles.erpDriverItems,{marginBottom: this.state.groupsList.indexOf(item) == this.state.groupsList.length-1 ? 50 :0 }]}>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
@@ -128,9 +127,6 @@ export default class GroupsList extends Component {
                                             </Text>
                                             <Text style={CustomStyles.erpText}>{ this.getTruckCount(item.truckIds || item.truckId) }</Text>
                                             <Text style={CustomStyles.erpText}> +91 {item.contactPhone}</Text>
-
-                                            
-
                                         </View>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
                                             <TouchableOpacity onPress={() => { Actions.AddGroup({token:this.state.token,edit:true,id:item._id}) }

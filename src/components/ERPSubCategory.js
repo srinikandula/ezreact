@@ -248,16 +248,16 @@ export default class ERPSubCategory extends Component {
                                                                                 }</Text>
                                         </View>
                                          <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseDieselData(item.attrs.expenseName,item.cost)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseDieselData(item.attrs.expenseName,item.totalAmount)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseTollData(item.attrs.expenseName,item.cost)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseTollData(item.attrs.expenseName,item.totalAmount)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseMaintenanceData(item.attrs.expenseName,item.cost)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseMaintenanceData(item.attrs.expenseName,item.totalAmount)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseFromData(item.attrs.expenseName,item.cost)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseFromData(item.attrs.expenseName,item.totalAmount)}</Text>
                                         </View> 
                                     </View>
                                 }

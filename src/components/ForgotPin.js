@@ -73,11 +73,11 @@ class ForgotPin extends Component{
         return false;
     }
 
-    componentWillReceiveProps(nextProps){
+    /* componentWillReceiveProps(nextProps){
         if(nextProps.close){
             //Actions.pop();
         }
-    }
+    } */
  render() {
         
          const phonelabelStyle = {

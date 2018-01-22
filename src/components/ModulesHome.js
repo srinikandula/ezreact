@@ -21,7 +21,7 @@ export default class ModulesHome extends Component {
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')}>
+                        <TouchableOpacity onPress={() => {/* this.props.navigation.navigate('Profile') */}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}
@@ -73,6 +73,11 @@ export default class ModulesHome extends Component {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
+                <View style={{flex: 1,alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>
+                        Landing Screen
+                        </Text>
+                    </View>
             </View>
         );
     }

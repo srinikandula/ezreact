@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {View,Image,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Button,Image,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
-import {Actions,Reducer} from 'react-native-router-flux';
 
 class GpsSetting extends Component{
      state = {};
@@ -127,7 +126,6 @@ class GpsSetting extends Component{
 
         return (
             <View style={viewStyle}>            
-                
                     <ScrollView style={{alignSelf:'stretch',flex:1,marginBottom:10}}>
                     <View style={containerStyle}>                        
                        <Card>

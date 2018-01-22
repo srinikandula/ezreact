@@ -7,7 +7,6 @@ import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText,
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddParty extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -33,9 +32,9 @@ export default class AddParty extends Component {
         isSms : false
     };
     componentWillMount() {
-        console.log("AddParty token",this.props);   
-        if(this.props.edit){
-            this.getPartyDetails(this.props.id);
+        // console.log("AddParty token",this.propsnavigation.state.params.);   
+        if(this.props.navigation.state.params.edit){
+            this.getPartyDetails(this.props.navigation.state.params.id);
         }     
     }
 
@@ -45,7 +44,7 @@ export default class AddParty extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.getPartyDetails+partyID,
             
         })
@@ -114,14 +113,14 @@ export default class AddParty extends Component {
         self.setState({ spinnerBool:true });
         var methodType = 'post';
         var url = Config.routes.base + Config.routes.addParty
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
             url = Config.routes.base + Config.routes.updatePartyDetails
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url,
             data: postdata
         })

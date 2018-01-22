@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
-import { StackNavigator, TabNavigator } from 'react-navigation';
+import { View, Image,Platform, Text,ScrollView,TouchableOpacity } from 'react-native';
+import { StackNavigator, TabNavigator ,TabView} from 'react-navigation';
 
 //login related screens
 import Login from './components/Login';
@@ -17,7 +17,9 @@ import TruckList from './components/TruckList';
 import PaymentList from './components/PaymentList';
 import ExpenseList from './components/ExpenseList';
 import TripList from './components/TripList';
+//BOTTOM navigation
 import GpsSetting from './components/GpsSetting';
+import ReportsSetting from './components/ReportsSetting';
 import Profile from './components/Profile';
 import Notifications from './components/Notifications';
 
@@ -31,8 +33,77 @@ import AddExpense from './components/AddExpense';
 
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
+import ExpiryDate from './components/ExpiryDate';
 import ModulesHome from './components/ModulesHome';
 
+class FooterTabs extends Component {
+	render () {
+		console.log('all props',this.props);
+	  return (
+		<View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
+                    <ScrollView horizontal>
+                        <TouchableOpacity onPress={() => {/* this.props.navigation.navigate('Profile') */}}>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                <Image
+                                    source={require('./images/gpsIcon.png')}
+                                    resizeMode='contain'
+                                    style={{ width: 40, height: 30 }}
+                                />
+                                <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Gps</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity /* navigation={this.props.navigation} */ onPress={() => this.props.navigation.navigate('SubModule')}>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                <Image
+                                    source={require('./images/erpTruckIcon.png')}
+                                    resizeMode='contain'
+                                    style={{ width: 40, height: 30 }}
+                                />
+                                <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Erp</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                <Image
+                                    source={require('./images/fuelCardIcon.png')}
+                                    resizeMode='contain'
+                                    style={{ width: 40, height: 30 }}
+                                />
+                                <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Fuel Card</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                <Image
+                                    source={require('./images/tollCardIcon.png')}
+                                    resizeMode='contain'
+                                    style={{ width: 40, height: 30 }}
+                                />
+                                <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Toll Card</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                <Image
+                                    source={require('./images/loadsIcon.png')}
+                                    resizeMode='contain'
+                                    style={{ width: 40, height: 30 }}
+                                />
+                                <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Loads</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+                <View style={{flex: 1,alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>
+                        Landing Screen
+                        </Text>
+                    </View>
+            </View>
+	  )
+	}
+  }
 
 //global navigator===> stack navigator
 export default AppNavigation = (loginStatus) => StackNavigator({
@@ -42,8 +113,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	AddDriver: {
 		screen: AddDriver,
 		navigationOptions: {
-			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitle: 'Add Driver',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -52,7 +123,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 		screen: AddTruck,
 		navigationOptions: {
 			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -60,8 +131,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	AddExpense: {
 		screen: AddExpense,
 		navigationOptions: {
-			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitle: 'Add Expense',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -69,8 +140,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	AddParty: {
 		screen: AddParty,
 		navigationOptions: {
-			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitle: 'Add Party',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -78,8 +149,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	AddPayment: {
 		screen: AddPayment,
 		navigationOptions: {
-			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitle: 'Add Payment',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -87,8 +158,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	AddTrip: {
 		screen: AddTrip,
 		navigationOptions: {
-			headerTitle: 'Add Truck',
-			headerTitleStyle: { fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerTitle: 'Add Trip',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
@@ -120,42 +191,56 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 						navigationOptions: {
 						}
 					}, */
-					
+
 					SubModule: {
 						screen: TabNavigator({
 							Dashboard: {
 								screen: StackNavigator({
-									ErpHome:{
+									ErpHome: {
 										screen: ErpHome, navigationOptions: {
 											headerMode: 'none',
-										headerTitle: 'Dashboard',
-										headerTitleStyle: { alignSelf: 'center', fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
-										
-// /* for disabling back button */										headerLeft: null,
-										headerStyle: { backgroundColor: '#1e4495' },
-										tabBarIcon: (<Image
-											source={require('./images/revenue.png')}
-											style={{ height: 30, width: 40 }}
-											resizeMode='contain'
-	
-										/>)
-									}},
-									Erpcategory:{
+											headerTitle: 'DASHBOARD',
+											headerTintColor: '#fff',
+											
+											headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+
+											// /* for disabling back button */										headerLeft: null,
+											headerStyle: { backgroundColor: '#1e4495' },
+											tabBarIcon: (<Image
+												source={require('./images/revenue.png')}
+												style={{ height: 30, width: 40 }}
+												resizeMode='contain'
+
+											/>)
+										}
+									},
+									Erpcategory: {
 										screen: ERPCategory,
 										navigationOptions: {
 
 										}
 									},
-	
-								},{
-									headerMode: 'none',
-									
-								}) 
+									Erpsubcategory: {
+										screen: ERPSubCategory,
+										navigationOptions: {
+
+										}
+									},
+									ExpiryDate: {
+										screen: ExpiryDate
+									}
+
+								}, {
+										headerMode: 'none',
+
+									})
 							},
 							Trucks: {
 								screen: TruckList, navigationOptions: {
-									headerTitle: 'Trucks',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'TRUCKS',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabTruckIcon.png')}
@@ -166,8 +251,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Drivers: {
 								screen: DriverList, navigationOptions: {
-									headerTitle: 'Drivers',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'DRIVERS',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabDriverIcon.png')}
@@ -178,8 +265,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Parties: {
 								screen: PartyList, navigationOptions: {
-									headerTitle: 'Partys',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'PARTYS',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabPartyIcon.png')}
@@ -190,8 +279,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Payments: {
 								screen: PaymentList, navigationOptions: {
-									headerTitle: 'Payments',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'PAYMENTS',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabPaymentIcon.png')}
@@ -202,8 +293,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Expenses: {
 								screen: ExpenseList, navigationOptions: {
-									headerTitle: 'Expenses',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'EXPENSES',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabExpenseIcon.png')}
@@ -214,8 +307,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Trips: {
 								screen: TripList, navigationOptions: {
-									headerTitle: 'Trips',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 18, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitle: 'TRIPS',
+									headerTintColor: '#fff',
+									
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
 										source={require('./images/tabTripIcon.png')}
@@ -232,6 +327,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 								swipeEnabled: true,
 								scrollEnabled: true,
 								allowFontScaling: true,
+								...TabNavigator.Presets.AndroidTopTabs,
 								tabBarOptions: {
 									showIcon: true,
 									scrollEnabled: true,
@@ -247,6 +343,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									},
 									tabStyle: {
 										margin: 0,
+										
 									},
 									indicatorStyle: {
 										backgroundColor: 'black',
@@ -279,19 +376,71 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 
 			},
 			Settings: {
-				screen: TabNavigator({
-					gps: { screen: GpsSetting },
-					setreports: { screen: GpsSetting },
-				}, {
-						showIcon: true,
+				screen: StackNavigator({
+					TwoModules:{
+						screen: TabNavigator({
+							GPS: {
+								screen: GpsSetting, navigationOptions: {
+									headerTitle: 'SETTINGS',
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									
+									headerStyle: { backgroundColor: '#1e4495' },
+									tabBarIcon: (<Image
+										source={require('./images/gpsGrayIcon.png')}
+										style={{ height: 25, width: 25, resizeMode: 'contain' }}
+									/>)
+								}
+							},
+							SetReports: {
+								screen: ReportsSetting, navigationOptions: {
+									headerTitle: 'SETTINGS',
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									
+									headerStyle: { backgroundColor: '#1e4495' },
+									tabBarIcon: (<Image
+										source={require('./images/gpsGrayIcon.png')}
+										style={{ height: 25, width: 25, resizeMode: 'contain' }}
+									/>)
+								},
+							},
+						}, {
+								tabBarPosition: 'top',
+								// swipeEnabled: true,
+								// scrollEnabled: false,
+								// allowFontScaling: true,
+								tabBarOptions: {
+									showIcon: true,
+									animationEnabled: false,
+									swipeEnabled: false,
+									scrollEnabled: true,
+									upperCaseLabel: false,
+									style: {
+										backgroundColor: '#ffffff',
+									},
+									tabStyle: {
+										flexDirection: 'row',
+										justifyContent: 'center'
+									},
+									labelStyle: {
+										marginLeft: 20,
+										color: '#4c69a9',
+										fontSize: 14,
+										fontFamily: 'Gotham-Book',
+									},
+									indicatorStyle: {
+										backgroundColor: 'black',
+									},
+								}
+							}
+						), navigationOptions: {
+							tabBarIcon: ({ tintColor }) => (<Image
+								source={require('./images/settingsButton.png')}
+								style={[{ height: 25, width: 25, resizeMode: 'contain' }, { tintColor: tintColor }]}
+		
+							/>)
+						}
 					}
-				), navigationOptions: {
-					tabBarIcon: ({ tintColor }) => (<Image
-						source={require('./images/settingsButton.png')}
-						style={[{ height: 25, width: 25, resizeMode: 'contain' }, { tintColor: tintColor }]}
-
-					/>)
-				}
+				})
 			},
 			Profile: {
 				screen: Profile,
@@ -327,6 +476,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					activeTintColor: '#e91e63',
 					upperCaseLabel: false,
 					style: {
+						height: Platform.OS === 'ios'?70:null,
 						borderTopColor: '#ddd',
 						borderTopWidth: 1,
 						backgroundColor: '#ffffff',
@@ -352,8 +502,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 		)
 	}
 }, {
-	headerMode: 'none',
-	
+		headerMode: 'none',
 		initialRouteName: loginStatus ? 'homepage' : 'login'
 	}
 )

@@ -7,7 +7,6 @@ import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 import CheckBox from 'react-native-checkbox';
 
 export default class AddTrip extends Component {
@@ -34,7 +33,7 @@ export default class AddTrip extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("payment token",this.props.token);
+        console.log("payment token",this.props.navigation.state.params.token);
         this.getDataList('trucks',Config.routes.base + Config.routes.trucksList);
         
     }
@@ -43,7 +42,7 @@ export default class AddTrip extends Component {
         const types = calltype;
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: url
         })
         .then((response) => {
@@ -72,8 +71,8 @@ export default class AddTrip extends Component {
                      console.log('party array isfrom add trip ', this.state.partyList);
                     });
                     
-                    if(this.props.edit){
-                        this.gettripDetails(this.props.id);
+                    if(this.props.navigation.state.params.edit){
+                        this.gettripDetails(this.props.navigation.state.params.id);
                     }
                 }            
             } else {
@@ -93,7 +92,7 @@ export default class AddTrip extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.getTripsDetails+TRIPID,
             
         })
@@ -151,14 +150,14 @@ export default class AddTrip extends Component {
         self.setState({ spinnerBool:true });
         var methodType = 'post';
         var url = Config.routes.addTrip;
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
             url=Config.routes.getTripsDetails;
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + url,
             data: postdata
         })
@@ -186,7 +185,7 @@ export default class AddTrip extends Component {
                 }
             }).catch((error) => {
                 self.setState({ spinnerBool:false });
-                Actions.pop();
+                //Actions.pop();
                 console.log('error in callAddtripAPI ==>', error);
             })
     }
@@ -202,7 +201,7 @@ export default class AddTrip extends Component {
     onPickdate() {
         try {
             let currDate = new Date();            
-            if(this.props.edit){
+            if(this.props.navigation.state.params.edit){
                 currDate = new Date(this.state.date);
             }
             const { action, year, month, day } = DatePickerAndroid.open({
@@ -351,7 +350,7 @@ export default class AddTrip extends Component {
             }
         }
 
-        if(self.props.edit){
+        if(self.props.navigation.state.params.edit){
             
             setTimeout(function(){
                 self.setState({tripPartyId:self.state.temptripPartyId,selectedlaneId:self.state.tempLaneID})

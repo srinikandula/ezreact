@@ -7,7 +7,6 @@ import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddTruck extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -36,18 +35,18 @@ export default class AddTruck extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("payment token",this.props.token);
+        console.log("payment token",this.props.navigation.state.params.token);
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: Config.routes.base + Config.routes.driverList
         })
         .then((response) => {
             if (response.data.status) {
                 console.log('driversList from add Truck ==>', response.data);
                 this.setState({ drivers: response.data.drivers });
-                if(this.props.edit){
-                    this.getTruckDetails(this.props.id);
+                if(this.props.navigation.state.params.edit){
+                    this.getTruckDetails(this.props.navigation.state.params.id);
                 }
             } else {
                 console.log('error in DriverList from add Truck ==>', response);
@@ -61,11 +60,12 @@ export default class AddTruck extends Component {
 
 
     getTruckDetails(paymentID){
+        console.log(paymentID,"paymentID")
         const self = this;
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.addtrucksList+paymentID,
             
         })
@@ -135,13 +135,13 @@ export default class AddTruck extends Component {
         const self = this;
         self.setState({ spinnerBool:true });
         var methodType = 'post';
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.addtrucksList,
             data: postdata
         })
@@ -302,7 +302,7 @@ export default class AddTruck extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+             <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
                 <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
                     <Image
                     style={{width: 20,marginLeft: 20}}

@@ -4,7 +4,6 @@ import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
-import {Actions,Reducer} from 'react-native-router-flux';
 import CustomStyles from './common/CustomStyles';
 
 class Profile extends Component{

@@ -4,7 +4,6 @@ import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,CSpinner,Card,CustomEditText,CustomErpDateView,CustomText} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
-import {Actions,Reducer} from 'react-native-router-flux';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
 
@@ -107,7 +106,7 @@ class ReportsSetting extends Component{
     }
 
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();
     }
 
     setSelection(type,filterTypes){
@@ -636,7 +635,6 @@ class ReportsSetting extends Component{
                     
         return (
             <View style={CustomStyles.viewStyle}>   
-                
                     <ScrollView style={{alignSelf:'stretch',flex:1,marginBottom:10}}>
                     <View style={CustomStyles.containerStyle}>                
                     {this.spinnerLoad()}        

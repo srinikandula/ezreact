@@ -7,7 +7,6 @@ import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddPayment extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -25,10 +24,10 @@ export default class AddPayment extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("payment token",this.props.token);
+        console.log("payment token",this.props.navigation.state.params.token);
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: Config.routes.base + Config.routes.partyList
         })
         .then((response) => {
@@ -40,8 +39,8 @@ export default class AddPayment extends Component {
                this.setState({ partyList: tempPArtList },()=> {
                 console.log('array is ', this.state.partyList);
                })
-                if(this.props.edit){
-                    this.getPaymentDetails(this.props.id);
+                if(this.props.navigation.state.params.edit){
+                    this.getPaymentDetails(this.props.navigation.state.params.id);
                 }
             } else {
                 console.log('error in partyList ==>', response);
@@ -58,7 +57,7 @@ export default class AddPayment extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.editPayment+paymentID,
             
         })
@@ -104,14 +103,14 @@ export default class AddPayment extends Component {
         self.setState({ spinnerBool:true });
         var methodType = 'post';
         var url = Config.routes.addPayment;
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
             url=Config.routes.updatePayment;
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + url,
             data: postdata
         })
@@ -152,7 +151,7 @@ export default class AddPayment extends Component {
     onPickdate() {
         try {
             let currDate = new Date();            
-            if(this.props.edit){
+            if(this.props.navigation.state.params.edit){
                 currDate = new Date(this.state.date);
             }
             const { action, year, month, day } = DatePickerAndroid.open({

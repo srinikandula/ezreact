@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import AppNavigation from './AppNavigation';
 
 export default class App extends Component {
-  state = { check: false, signedIn: false };
+  state = { check: false, signed: false };
 
 
   componentWillMount() {
@@ -12,11 +12,13 @@ export default class App extends Component {
         this.setState({ signed: false, check: true });
       else
         this.setState({ signed: true, check: true });
+    }).catch((error) => {
+      console.log('error===> ', error)
     });
   }
 
-  async getItem() {
-    return await AsyncStorage.getItem('credientails');
+  getItem() {
+    return AsyncStorage.getItem('credientails');
   }
 
   render() {

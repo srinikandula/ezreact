@@ -5,7 +5,6 @@ import { ActivityIndicator,View, ScrollView, BackHandler, ListView, FlatList, Te
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems,CSpinner, CustomText } from './common';
 import Config from '../config/Config';
-import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 
 export default class ExpiryDate extends Component {
@@ -22,7 +21,7 @@ export default class ExpiryDate extends Component {
     };
     componentWillMount() {
         const self = this;
-        this.callExpiryAPI(self.props.baseExpiry);
+        this.callExpiryAPI(self.props.navigation.state.params.baseExpiry);
         BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
     componentWillUnmount() {
@@ -75,7 +74,7 @@ export default class ExpiryDate extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Url
         })
             .then((response) => {

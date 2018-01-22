@@ -624,8 +624,8 @@ headText: {
         padding:5,
         backgroundColor: 'transparent',
         position:'absolute',
-        bottom:30,
-        right:40,
+        bottom:10,
+        right:10,
         zIndex: 1 
     },
     addImage:{

@@ -7,7 +7,6 @@ import { CustomInput, renderIf, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddDriver extends Component {
     state = {
@@ -25,7 +24,7 @@ export default class AddDriver extends Component {
     componentWillMount() {
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: Config.routes.base + Config.routes.trucksList
         })
         .then((response) => {

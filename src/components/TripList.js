@@ -3,7 +3,6 @@ import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, I
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
-import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 

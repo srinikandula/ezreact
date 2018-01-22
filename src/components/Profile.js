@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,AsyncStorage,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
@@ -7,27 +7,55 @@ import CheckBox from 'react-native-checkbox';
 import CustomStyles from './common/CustomStyles';
 
 class Profile extends Component{
-     state = {userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
+     state = {token:'',userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false};
 
-    constructor(props) {
-        super(props);
-        this.state = {
+    
+
+
+    componentWillMount() {
+        this.setState({
             userNamelbl: true,
              phoneNumberlbl:true,
              passwordlbl:false,
              cpasswordlbl:false,
              userName: 'Riyazuddin ',phoneNumber: '8801715086',emailId:'Riyaz@Mtwlabs.com',grups:'My Groups -60'
-        };
-    }
-
-
-    componentWillMount() {
-      // do stuff while splash screen is shown
-        // After having done stuff (such as async tasks) hide the splash screen
-       SplashScreen.hide();
+        });
+       this.getCredentailsData();
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
+
+    async getCredentailsData() {
+        this.getCache((value) => {
+            if (value !== null) {
+                var egObj = {};
+                egObj = JSON.parse(value);
+                this.setState({token:egObj.token});
+                
+            } else {
+                this.setState({ loading: false })
+            }
+        }
+        );
+    }
+    async getCache(callback) {
+        try {
+            var value = await AsyncStorage.getItem('credientails');
+            console.log('credientails=profile', value);
+            if (value !== null) {
+                console.log('riyaz=profile', value);
+            } else {
+                console.log('value=profile', value);
+            }
+            callback(value);
+        }
+        catch (e) {
+            console.log('caught error=profile', e);
+            // Handle exceptions
+        }
+    }
+
+
     componentWillUnmount(){
     BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
@@ -94,7 +122,11 @@ class Profile extends Component{
         return (
             <View style={CustomStyles.profileviewStyle}>
                 <View style={CustomStyles.profileheaderStyle}>
-                    <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
+                    <TouchableOpacity
+                            onPress={() => { Actions.GroupList({token:this.state.token,edit:false})}}
+                                    >
+                        <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
+                    </TouchableOpacity>
                 </View>            
                 
                 <ScrollView style={CustomStyles.profileScroll}>
@@ -207,8 +239,12 @@ class Profile extends Component{
 
                 <View style={CustomStyles.profileaAddGroupImageStyle}>
                      <View style={CustomStyles.profileCircle} >
-                        <Image source={require('../images/eg_addgroup.png')} 
-                            style= {{height:30,width:30,resizeMode: 'contain'}}/>
+                        <TouchableOpacity
+                            onPress={() => { Actions.AddGroup({token:this.state.token,edit:false})}}
+                                    >
+                            <Image source={require('../images/eg_addgroup.png')} 
+                                style= {{height:30,width:30,resizeMode: 'contain'}}/>
+                        </TouchableOpacity>
                      </View>
                 </View>
                     

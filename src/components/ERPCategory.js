@@ -1,9 +1,10 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ToastAndroid,ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,Ctoggle, CustomText } from './common';
+import Utils from './common/Utils';
+import { ExpiryDateItems,Card,CustomEditText,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 
@@ -30,7 +31,22 @@ export default class ERPCategory extends Component {
             grossExpenses: 0,
             grossDue: 0
         },
-        dechileID:''
+        payableGrossAmounts:{
+            totalAmount: 0,
+            paidAmount: 0,
+            payableAmount: 0
+        },
+        erpSettings:[],
+        rMaxDate:'',rMaxPassdate:'',rMinDate:'',rMinPassdate:'',
+        expMaxDate:'',expMaxPassdate:'',expMinDate:'',expMinPassdate:'',
+        pMaxDate:'',pMaxPassdate:'',pMinDate:'',pMinPassdate:'',
+        recMaxDate:'',recMaxPassdate:'',recMinDate:'',recMinPassdate:'',
+        selectedTruckId:'',
+        trucks:[],
+        partyList:[],
+        dechileID:'',
+        payablesBool:'#1e4495',
+        receiveablesBool:'#ffffff'
     };
     componentWillMount() {
         const self = this;
@@ -41,23 +57,39 @@ export default class ERPCategory extends Component {
             url: self.props.navigation.state.params.Url
         })
             .then((response) => {
-                console.log('baskets ==>', response.data);
-
+               // console.log('ERP CAtegory ==>', response.data);
                 if (response.data.status) {
                     if(self.props.navigation.state.params.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
+                        if(response.data.expenses.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
                     }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
+                        if(response.data.revenue.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
                     }else if(self.props.navigation.state.params.mode == 'Payments'){
+                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
+                        if(response.data.paybleAmounts.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                    }else if(self.props.navigation.state.params.mode == 'Receivables'){
                         self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
-                    }
-                    
+                        if(response.data.parties.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                    }                                      
                 } else {
-                    console.log('error in baskets ==>', response);
+                    console.log(self.props.navigation.state.params.mode,'error  ==>', response);
                 }
 
             }).catch((error) => {
-                console.log('error in baskets ==>', error);
+                console.log('error in ERP Category ==>', error);
             })
             BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }
@@ -68,7 +100,8 @@ export default class ERPCategory extends Component {
         onBackAndroid() {
             //Actions.pop();
             //var value = await this.getCache('credientails');
-           }
+        }
+
 
     constructor() {
         super();
@@ -95,12 +128,58 @@ export default class ERPCategory extends Component {
         };
     }
 
+
+    callDependenciesList(url){    
+        const self  = this;
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.token},
+            url: url
+        })
+        .then((response) => {
+            if (response.data.status) {
+                //console.log('ERp--trucks ==>', response.data);
+                if(self.props.navigation.state.params.mode == 'Payments' || self.props.navigation.state.params.mode == 'Receivables')
+                {
+                    this.setState({ partyList: response.data.parties });
+                }else{
+                   
+                    this.setState({ trucks: response.data.trucks });
+                }
+            } else {
+                console.log('error in ERp trucks ==>', response);
+            }
+
+        }).catch((error) => {
+            console.log('error in ERp trucks ==>', error);
+        })
+    }
+
     getExpiryDateView() {
         return this.state.expirydetails.map((expirydetail, i) => {
-
             return <ExpiryDateItems key={i} style={{ flex: 1 }} count={expirydetail.count} label={expirydetail.label} />
 
         });
+    }
+
+    renderTrucksRegNo(){        
+    return this.state.trucks.map((truckItem, i) =>        
+            <Picker.Item
+                key={i}
+                label={truckItem.registrationNo}
+                value={truckItem._id}
+            />
+        );    
+    }
+
+    renderPartyList(){
+        return this.state.partyList.map((truckItem, i) =>
+                                    <Picker.Item
+                                        key={i}
+                                        label={truckItem.name}
+                                        value={truckItem._id}
+                                    />
+                                );
     }
 
     callSubCategoryScreen(truckNum,truckAmount,truckID){
@@ -134,6 +213,14 @@ export default class ERPCategory extends Component {
                     mode:self.props.navigation.state.params.mode
                     });
                 break;
+            case "Receivables":
+                    Actions.erpsubcategory({
+                        token: self.props.token,
+                        Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
+                        label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
+                        mode:self.props.navigation.state.params.mode
+                        });
+            break;
             default:
                 text = "I have never heard of that fruit...";
         }
@@ -152,12 +239,351 @@ export default class ERPCategory extends Component {
 
     changeRoleStatus(value){
         if(value === 'P'){
-            this.setState({ transporterBool:'flex', suppliereBool:'none', role:'Transporter'});
+            this.props.mode='Payments';
+            this.setState({ payablesBool:'#1e4495', receiveablesBool:'#ffffff', role:'Transporter'});
+                this.setState({paymentsParties:[]});
+                this.paymentRoleData('Payments',Config.routes.base + Config.routes.totalPayeblesPayment);
         } else {
-            this.setState({ transporterBool:'none', suppliereBool:'flex', role:'Supplier'});
+            this.props.mode='Receivables';
+            this.setState({ payablesBool:'#ffffff', receiveablesBool:'#1e4495', role:'Supplier'});
+            this.setState({paymentsParties:[]});
+                this.paymentRoleData('Receivables',Config.routes.base + Config.routes.totalPaymentFromParty);
         }
     }
 
+
+    paymentRoleData(str,url){
+        console.log(str,' 000  ',url,'---riyaz');
+        const self= this;
+        Axios({
+            method: 'get',
+            headers: { 'token': self.props.token },
+            url: url
+        })
+            .then((response) => {
+                //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
+                if (response.data.status) {
+                     if(str == 'Payments'){
+                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
+                        if(response.data.paybleAmounts.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        Actions.refresh({token: this.props.token,
+                            Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                            //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                            mode:'Payments',
+                            label:'Total Payments Details'});
+                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                    }else {
+                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
+                        if(response.data.parties.length == 0){
+                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        }
+                        Actions.refresh({token: this.props.token,
+                            //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                            Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                            mode:'Receivables',
+                            label:'Total Payments Details'});
+                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                    }
+                } else {
+                    console.log(self.props.navigation.state.params.mode,'error  ==>', response);
+                }
+
+            }).catch((error) => {
+                console.log('error in ERP Category ==>', error);
+            })
+    }
+
+    onPickdate(str,category) {
+        const self = this;
+        try {
+            const { action, year, month, day } = DatePickerAndroid.open({
+                        
+                        //minDate: str == 'min'? new Date() :new Date('1-1-2007'),
+                    }).then((response) => {
+                if (response.action === "dateSetAction") {
+                    var month = response.month + 1
+                    let date =  response.day+"/"+month+"/"+ response.year;
+                   
+                    switch(category){
+                        case "revenue" :
+                            if(str === 'max'){
+                                this.setState({ rMaxDate:date,rMaxPassdate:month+"/"+response.day+"/"+ response.year });
+                            }else{
+                                this.setState({ rMinDate:date,rMinPassdate:month+"/"+response.day+"/"+ response.year });
+                            }
+                        return;
+                        break;
+                    case "expense" :
+                            if(str === 'max'){
+                                this.setState({ expMaxDate:date,expMaxPassdate:month+"/"+response.day+"/"+ response.year });
+                            }else{
+                                this.setState({ expMinDate:date,expMinPassdate:month+"/"+response.day+"/"+ response.year });
+                            }
+                        return;
+                        break;
+                    case "payment" :
+                        if(str === 'max'){
+                            this.setState({ pMaxDate:date,pMaxPassdate:month+"/"+response.day+"/"+ response.year });
+                        }else{
+                            this.setState({ pMinDate:date,pMinPassdate:month+"/"+response.day+"/"+ response.year });
+                        }
+                    return;
+                    case "receivables" :
+                    if(str === 'max'){
+                        this.setState({ recMaxDate:date,recMaxPassdate:month+"/"+response.day+"/"+ response.year });
+                    }else{
+                        this.setState({ recMinDate:date,recMinPassdate:month+"/"+response.day+"/"+ response.year });
+                    }
+                return;
+                    break;    
+                    }
+                    
+                    
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
+
+    sendSettingData(category){
+        switch(category){
+            case "revenue" :
+                if(this.state.selectedTruckId.includes('All  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
+                {
+                        ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                    
+                }else{
+
+                    if(this.state.selectedTruckId.includes('All  Vechiles'))
+                    {
+                        this.setState({selectedTruckId:''});
+                    }
+                    var sort = {"createdAt":-1};
+                    if(this.state.rMaxDate.includes('/') && this.state.rMinDate.includes('/')){
+                        if(this.getDaysfunction(new Date(this.state.rMinPassdate),new Date(this.state.rMaxPassdate)) > 0){
+                            
+                            this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.rMinPassdate)+"&page=&regNumber="+this.state.selectedTruckId+
+                            "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.rMaxPassdate);
+                            this.searchReportsData(Config.routes.base +Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
+                        }else{
+                            ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                        }
+                    }else{
+                        this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
+                        "&size=&sort="+JSON.stringify(sort)+"&toDate=";
+                        this.searchReportsData(Config.routes.base +Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
+                    }
+                }
+                
+            return;
+            break;
+        case "expense" :
+            if(this.state.selectedTruckId.includes('All  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
+            {
+                    ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                
+            }else{
+                if(this.state.selectedTruckId.includes('All  Vechiles'))
+                {
+                    this.setState({selectedTruckId:''});
+                }
+                var sort = {"createdAt":-1};
+                if(this.state.expMaxDate.includes('/') && this.state.expMinDate.includes('/')){
+                    if(this.getDaysfunction(new Date(this.state.expMinPassdate),new Date(this.state.expMaxPassdate)) > 0){
+                        
+                        this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.expMinPassdate)+"&page=&regNumber="+this.state.selectedTruckId+
+                        "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.expMaxPassdate);
+                        this.searchReportsData(Config.routes.base +Config.routes.filterTotalExpensesForAllVehicles + this.state.erpSettings.revenue);
+                    }else{
+                        ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                    }
+                }else{
+                    this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate=";
+                    this.searchReportsData(Config.routes.base +Config.routes.filterTotalExpensesForAllVehicles + this.state.erpSettings.revenue);
+                }
+            }
+            return;
+            break;
+        case "payment" :
+            if(this.state.selectedTruckId.includes('All Parties') && this.state.pMinPassdate === '' && this.state.pMaxPassdate === '')
+            {
+                    ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                
+            }else{
+                var partyID = '';
+                if(this.state.selectedTruckId.includes('All Parties'))
+                {
+                    partyID = '';
+                }else{
+                    partyID = this.state.selectedTruckId;
+                }
+                var sort = {"createdAt":-1};
+                if(this.state.pMaxDate.includes('/') && this.state.pMinDate.includes('/')){
+                    if(this.getDaysfunction(new Date(this.state.pMinPassdate),new Date(this.state.pMaxPassdate)) > 0){
+                        
+                        this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.pMinPassdate)+"&page=&partyId="+partyID+
+                        "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.pMaxPassdate);
+                        this.searchReportsData(Config.routes.base +Config.routes.filterTotalPayeblesPayment + this.state.erpSettings.revenue);
+
+
+                    }else{
+                        ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                    }
+                }else{
+                    this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate=";
+                    this.searchReportsData(Config.routes.base +Config.routes.filterTotalPayeblesPayment + this.state.erpSettings.revenue);
+                }
+            }
+            return;
+        break;
+    case "receivables" :
+        if(this.state.selectedTruckId.includes('All Parties') && this.state.recMinPassdate === '' && this.state.recMaxPassdate === '')
+        {
+                ToastAndroid.show("Please Select Dates or Parties", ToastAndroid.SHORT);
+            
+        }else{
+            var partyID = '';
+            if(this.state.selectedTruckId.includes('All Parties'))
+            {
+                partyID = '';
+            }else{
+                partyID = this.state.selectedTruckId;
+            }
+            var sort = {"createdAt":-1};
+            if(this.state.recMaxDate.includes('/') && this.state.recMinDate.includes('/')){
+                if(this.getDaysfunction(new Date(this.state.recMinPassdate),new Date(this.state.recMaxPassdate)) > 0){
+                    
+                    this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.recMinPassdate)+"&page=&partyId="+partyID+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.recMaxPassdate);
+                    this.searchReportsData(Config.routes.base +Config.routes.filterTotalPaymentFromParty + this.state.erpSettings.revenue);
+
+
+                }else{
+                    ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                }
+            }else{
+                this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
+                "&size=&sort="+JSON.stringify(sort)+"&toDate=";
+                this.searchReportsData(Config.routes.base +Config.routes.filterTotalPaymentFromParty + this.state.erpSettings.revenue);
+            }
+        }
+        return;
+    break;
+        }
+    }
+
+    getDaysfunction(date1,date2) {
+        //Get 1 day in milliseconds
+        var one_day = 1000 * 60 * 60 * 24;
+        var today = new Date();
+        // Convert both dates to milliseconds
+        var date1_ms = date1.getTime();
+        var date2_ms = date2.getTime();
+
+        // Calculate the difference in milliseconds
+        var difference_ms = date2_ms - date1_ms;
+
+        // Convert back to days and return
+        return Math.round(difference_ms / one_day);
+    }
+
+    getParsedDate(item) {
+        var formattedDate = new Date(item);     
+        return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth() +1) + "/" + formattedDate.getYear().toString();
+    }
+
+    getISODate(item) {
+        var formattedDate = new Date(item);     
+        return formattedDate.toISOString();
+    }
+
+    searchReportsData(url){
+        this.setState({spinnerBool:true});
+        console.log('posting data',url);
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.token },
+            url: url
+        })
+            .then((response) => {
+                if (response.data.status) {
+                   this.setState({spinnerBool:false});
+                   if(this.props.mode == 'Expense'){
+                    this.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
+                    if(response.data.expenses.length == 0){
+                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                    }
+                }else if(this.props.mode == 'Revenue'){
+                    this.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
+                    if(response.data.revenue.length == 0){
+                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);//receivables
+                    }
+                }else if(this.props.mode == 'Receivables'){
+                    this.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
+                    if(response.data.parties.length == 0){
+                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                    }
+                }else {
+                    this.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
+                    if(response.data.paybleAmounts.length == 0){
+                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                    }
+                }
+
+                } else {
+                    //console.log('reponse in update erpSettingData ==>', response);
+                    this.setState({spinnerBool:false});
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+
+            }).catch((error) => {
+                console.log('error in erpSettingData ==>', error);
+                this.setState({spinnerBool:false});
+                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+            })
+    }
+
+
+    getParty(item){
+        var data ='-';
+        if(item.hasOwnProperty("attrs")){
+            data = item.attrs.partyName;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
+
+
+    getPayablePartyName(item){
+        var data ='-';
+        if(item.hasOwnProperty("_id")){
+            data = item["_id"].name;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
+    getPayablePartyID(item){
+        var data ='-';
+        if(item.hasOwnProperty("_id")){
+            data = item["_id"]._id;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
 
     render() {
         const self=this;
@@ -166,8 +592,101 @@ export default class ERPCategory extends Component {
             case "Revenue":
             return (
                 <View style={CustomStyles.viewStyle}>
-                    <View style={CustomStyles.erpCategory}>
-                        <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
+                    <View style={CustomStyles.erpCategory}>                
+                        <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
+                            <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('min','revenue') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                borderWidth: 0,
+                                                borderBottomWidth:1, 
+                                                borderBottomColor:'black', 
+                                                borderColor: '#000',justifyContent: 'flex-end' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end', }}>
+                                                <View style={{ flex: 4, justifyContent: 'flex-end' }}>                                
+                                                    
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                        value={this.state.rMinDate} />
+                                                        
+                                                </View>
+                                            
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('max','revenue') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                    borderWidth: 0,
+                                                    borderBottomWidth:1, 
+                                                    borderBottomColor:'black' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end' }}>
+                                                <View style={{ flex: 4 , justifyContent: 'flex-end'}}>                                
+
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                        value={this.state.rMaxDate} />                                                                
+                                                </View>                                                    
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_mail.png')} />
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_download.png')} />
+                                </View>
+                            </View>  
+                            <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                                <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
+                                                borderBottomWidth: 1,
+                                                borderBottomColor: '#000' }}>
+                                    <Picker
+                                        style={{ width:200, height:45}}
+                                        selectedValue={this.state.selectedTruckId}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                        <Picker.Item label="All Vechiles" value="All  Vechiles" />
+                                        {this.renderTrucksRegNo()}
+                                    </Picker>
+                                </View>
+                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                        <TouchableOpacity
+                                            onPress={() => {this.sendSettingData('revenue') }}>
+                                            <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
+                                                <Text style={{ color: '#fff', padding: 5,width:60, height:45, alignSelf: 'center' }}>
+                                                    SET
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>  
+                        </View>
+                        
+                    </View>       
+                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
                         <View style={CustomStyles.erpCategoryHeaderItems}>
                             <View style={CustomStyles.erpTextView}>
                                 <Text style={CustomStyles.erpHeaderText}>V.No</Text>
@@ -228,11 +747,103 @@ export default class ERPCategory extends Component {
             );
 
                 break;
-            case "Expense":
+        case "Expense":
             return (
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                        <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
+                    <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
+                            <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('min','expense') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                borderWidth: 0,
+                                                borderBottomWidth:1, 
+                                                borderBottomColor:'black', 
+                                                borderColor: '#000',justifyContent: 'flex-end' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end', }}>
+                                                <View style={{ flex: 4, justifyContent: 'flex-end' }}>                                
+                                                    
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                        value={this.state.expMinDate} />
+                                                        
+                                                </View>
+                                            
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('max','expense') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                    borderWidth: 0,
+                                                    borderBottomWidth:1, 
+                                                    borderBottomColor:'black' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end' }}>
+                                                <View style={{ flex: 4 , justifyContent: 'flex-end'}}>                                
+
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                        value={this.state.expMaxDate} />                                                                
+                                                </View>                                                    
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_mail.png')} />
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_download.png')} />
+                                </View>
+                            </View>  
+                            <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                                <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
+                                                borderBottomWidth: 1,
+                                                borderBottomColor: '#000' }}>
+                                    <Picker
+                                        style={{ width:200, height:45}}
+                                        selectedValue={this.state.selectedTruckId}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                        <Picker.Item label="All Vechiles" value="All  Vechiles" />
+                                        {this.renderTrucksRegNo()}
+                                    </Picker>
+                                </View>
+                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                        <TouchableOpacity
+                                            onPress={() => {this.sendSettingData('expense') }}>
+                                            <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
+                                                <Text style={{ color: '#fff', padding: 5,width:60, height:45, alignSelf: 'center' }}>
+                                                    GO
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>  
+                        </View>
+                    </View>      
+                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
                         <View style={CustomStyles.erpCategoryHeaderItems}>
                             <View style={CustomStyles.erpTextView}>
                                 <Text style={CustomStyles.erpHeaderText}>V.No</Text>
@@ -301,20 +912,282 @@ export default class ERPCategory extends Component {
                 </View>
             );
                 break;
-            case "Payments":
+        case "Payments":
                 return (
+                    <View style={CustomStyles.viewStyle}>
+                    <View style={CustomStyles.erpCategory}>
+                    <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>
+                        <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool,margin:10}} 
+                                                    labelStyle={{color:'black'}}
+                                                    onPress={() => this.changeRoleStatus('P')}
+                                                 />
+                        <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool,margin:10}} 
+                                                    labelStyle={{color:'black'}}
+                                                    onPress={() => this.changeRoleStatus('R')}
+                                                     />
+                    </View>
+                    <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
+                        <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                            <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                <TouchableOpacity
+                                    onPress={() => { this.onPickdate('min','payment') }}
+                                >
+                                    <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                            borderWidth: 0,
+                                            borderBottomWidth:1, 
+                                            borderBottomColor:'black', 
+                                            borderColor: '#000',justifyContent: 'flex-end' }}>
+                                        <View style={{ flexDirection: 'row',justifyContent: 'flex-end', }}>
+                                            <View style={{ flex: 4, justifyContent: 'flex-end' }}>                                
+                                                
+                                                <CustomEditText underlineColorAndroid='transparent'
+                                                    editable={false} 
+                                                    placeholder={'Select Date'}
+                                                    inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                    inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                    value={this.state.pMinDate} />
+                                                    
+                                            </View>
+                                        
+                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                    <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                            source={require('../images/down_arrow.png')} />
+                                            </View>
+                                            
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                <TouchableOpacity
+                                    onPress={() => { this.onPickdate('max','payment') }}
+                                >
+                                    <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                borderWidth: 0,
+                                                borderBottomWidth:1, 
+                                                borderBottomColor:'black' }}>
+                                        <View style={{ flexDirection: 'row',justifyContent: 'flex-end' }}>
+                                            <View style={{ flex: 4 , justifyContent: 'flex-end'}}>                                
+
+                                                <CustomEditText underlineColorAndroid='transparent'
+                                                    editable={false} 
+                                                    placeholder={'Select Date'}
+                                                    inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                    inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                    value={this.state.pMaxDate} />                                                                
+                                            </View>                                                    
+                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                    <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                            source={require('../images/down_arrow.png')} />
+                                            </View>
+                                            
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                    source={require('../images/erp_mail.png')} />
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                    source={require('../images/erp_download.png')} />
+                            </View>
+                        </View>  
+                        <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                            <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: '#000' }}>
+                                <Picker
+                                    style={{ width:200, height:45}}
+                                    selectedValue={this.state.selectedTruckId}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                    <Picker.Item label="All Parties" value="All Parties" />
+                                    {this.renderPartyList()}
+                                </Picker>
+                            </View>
+                            <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                    <TouchableOpacity
+                                        onPress={() => {this.sendSettingData('payment') }}>
+                                        <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
+                                            <Text style={{ color: '#fff', padding: 5,width:60, height:45, alignSelf: 'center' }}>
+                                                GO
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>  
+                    </View>
+                </View> 
+
+                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                        <View style={CustomStyles.erpCategoryHeaderItems}>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpHeaderText}>Party</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpHeaderText}>Total Amount </Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpHeaderText}>Paid</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpHeaderText}>Payable</Text>
+                            </View>
+                        </View>
+                        <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
+                            data={this.state.paymentsParties}
+                            renderItem={({ item }) =>
+                            <TouchableOpacity
+                                onPress={() => { this.setState({
+                                                    categoryBgColor: !this.state.categoryBgColor
+                                                    });
+                                                    this.callSubCategoryScreen(this.getPayablePartyName(item),'',this.getPayablePartyID(item)) }}
+                            >
+                        
+                                <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>
+                                                {this.getPayablePartyName(item)}
+                                            </Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpText}>{item.totalAmount}</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpText}>{item.paidAmount}</Text>
+                                    </View>
+                                    <View style={CustomStyles.erpTextView}>
+                                        <Text style={CustomStyles.erpText}>{item.payableAmount}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            }
+                            keyExtractor={item => item.id} />
+                        <View style={CustomStyles.erpCategoryFooterItems}>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>Total</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.payableGrossAmounts.totalAmount}</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.payableGrossAmounts.paidAmount}</Text>
+                            </View>
+                            <View style={CustomStyles.erpTextView}>
+                                <Text style={CustomStyles.erpFooterText}>{this.state.payableGrossAmounts.payableAmount}</Text>
+                            </View> 
+                        </View>
+                    </View>
+                </View>
+                );
+                break;        
+        case "Receivables":
+                return (
+                    
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
                         <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>
-                            <Ctoggle label='Payables' activeStyle={{backgroundColor:'#ffffff',margin:10}} 
+                            <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool,margin:10}} 
                                                         labelStyle={{color:'black'}}
                                                         onPress={() => this.changeRoleStatus('P')}
                                                      />
-                            <Ctoggle label='Receivables' activeStyle={{backgroundColor:'#1e4495',margin:10}} 
-                                                        labelStyle={{color:'white'}}
+                            <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool,margin:10}} 
+                                                        labelStyle={{color:'black'}}
                                                         onPress={() => this.changeRoleStatus('R')}
                                                          />
                         </View>
+                        <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
+                            <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('min','receivables') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                borderWidth: 0,
+                                                borderBottomWidth:1, 
+                                                borderBottomColor:'black', 
+                                                borderColor: '#000',justifyContent: 'flex-end' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end', }}>
+                                                <View style={{ flex: 4, justifyContent: 'flex-end' }}>                                
+                                                    
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                        value={this.state.recMinDate} />
+                                                        
+                                                </View>
+                                            
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{flex:4,justifyContent: 'flex-end'}}>
+                                    <TouchableOpacity
+                                        onPress={() => { this.onPickdate('max','receivables') }}
+                                    >
+                                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, 
+                                                    borderWidth: 0,
+                                                    borderBottomWidth:1, 
+                                                    borderBottomColor:'black' }}>
+                                            <View style={{ flexDirection: 'row',justifyContent: 'flex-end' }}>
+                                                <View style={{ flex: 4 , justifyContent: 'flex-end'}}>                                
+
+                                                    <CustomEditText underlineColorAndroid='transparent'
+                                                        editable={false} 
+                                                        placeholder={'Select Date'}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
+                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                        value={this.state.recMaxDate} />                                                                
+                                                </View>                                                    
+                                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                        <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} 
+                                                                source={require('../images/down_arrow.png')} />
+                                                </View>
+                                                
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_mail.png')} />
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_download.png')} />
+                                </View>
+                            </View>  
+                            <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                                <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
+                                                borderBottomWidth: 1,
+                                                borderBottomColor: '#000' }}>
+                                    <Picker
+                                        style={{ width:200, height:45}}
+                                        selectedValue={this.state.selectedTruckId}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                        <Picker.Item label="All Parties" value="All Parties" />
+                                        {this.renderPartyList()}
+                                    </Picker>
+                                </View>
+                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                        <TouchableOpacity
+                                            onPress={() => {this.sendSettingData('receivables') }}>
+                                            <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
+                                                <Text style={{ color: '#fff', padding: 5,width:60, height:45, alignSelf: 'center' }}>
+                                                    GO
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>  
+                        </View>
+                    </View> 
 
                             <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
@@ -338,12 +1211,13 @@ export default class ERPCategory extends Component {
                                     onPress={() => { this.setState({
                                                         categoryBgColor: !this.state.categoryBgColor
                                                         });
-                                                        this.callSubCategoryScreen(item.attrs.partyName,'',item.id) }}
+                                                        this.callSubCategoryScreen(item.totalFright,'',item.id) }}
                                 >
                             
                                     <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>{item.attrs.partyName}</Text>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold',textDecorationLine:'underline'}]}>
+                                            {this.getParty(item)}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
                                             <Text style={CustomStyles.erpText}>{item.totalFright}</Text>
@@ -376,6 +1250,7 @@ export default class ERPCategory extends Component {
                     </View>
                 );
                 break;
+            
             
         }
       

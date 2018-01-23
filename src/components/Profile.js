@@ -123,7 +123,7 @@ class Profile extends Component{
             <View style={CustomStyles.profileviewStyle}>
                 <View style={CustomStyles.profileheaderStyle}>
                     <TouchableOpacity
-                            onPress={() => { Actions.GroupList({token:this.state.token,edit:false})}}
+                            onPress={() => { this.props.navigation.navigate('GroupList',{token:this.state.token,edit:false})}}
                                     >
                         <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
                     </TouchableOpacity>
@@ -240,7 +240,7 @@ class Profile extends Component{
                 <View style={CustomStyles.profileaAddGroupImageStyle}>
                      <View style={CustomStyles.profileCircle} >
                         <TouchableOpacity
-                            onPress={() => { Actions.AddGroup({token:this.state.token,edit:false})}}
+                            onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:false})}}
                                     >
                             <Image source={require('../images/eg_addgroup.png')} 
                                 style= {{height:30,width:30,resizeMode: 'contain'}}/>

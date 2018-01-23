@@ -214,7 +214,7 @@ export default class ERPCategory extends Component {
                     });
                 break;
             case "Receivables":
-                    Actions.erpsubcategory({
+                    this.props.navigation.navigate('erpsubcategory',{
                         token: self.props.token,
                         Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
                         label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,

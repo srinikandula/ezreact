@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View, ToastAndroid,ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
-import { ExpiryDateItems,Card,CustomEditText,Ctoggle, CustomText } from './common';
+import { ExpiryDateItems,Card,MailBox,CustomEditText,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 
@@ -45,6 +45,8 @@ export default class ERPCategory extends Component {
         trucks:[],
         partyList:[],
         dechileID:'',
+        showMail: false,
+        mail:'',
         payablesBool:'#1e4495',
         receiveablesBool:'#ffffff'
     };
@@ -500,6 +502,8 @@ export default class ERPCategory extends Component {
     }
 
     getISODate(item) {
+        if(item == '')
+        return '';
         var formattedDate = new Date(item);     
         return formattedDate.toISOString();
     }
@@ -585,6 +589,172 @@ export default class ERPCategory extends Component {
         return data;
     }
 
+    ShowModalFunction(visible) {        
+        this.setState({showMail: visible});            
+    }
+    
+
+    sendMail(mode){
+        const self=this;        
+          switch(mode) {
+              case "Revenue":
+                if(this.state.selectedTruckId.includes('All  Vechiles'))
+                {
+                    this.setState({selectedTruckId:''});
+                }
+
+                if(this.state.mail.trim().length == 0){
+                    return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+                }
+                var rMinPassdate = ''
+                if(this.state.rMinPassdate.length>1 ){
+                    rMinPassdate= this.getISODate(this.state.rMinPassdate)
+                }
+
+                var rMaxPassdate = ''
+                if(this.state.rMaxPassdate.length>1 ){
+                    rMaxPassdate= this.getISODate(this.state.rMaxPassdate)
+                }
+
+                if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                    var sort = {"createdAt":-1};
+
+                    var  tempURL = "email="+this.state.mail+"&fromDate="+rMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate="+rMaxPassdate;
+                    this.sendReportsData(Config.routes.base +Config.routes.revenueMail + tempURL);
+                }else{
+                    return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+                }   
+                return;
+              break;
+        case "Expense":
+              if(this.state.selectedTruckId.includes('All  Vechiles'))
+              {
+                  this.setState({selectedTruckId:''});
+              }
+
+              if(this.state.mail.trim().length == 0){
+                  return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+              }
+              var expMinPassdate = ''
+              if(this.state.expMinPassdate.length>1 ){
+                expMinPassdate= this.getISODate(this.state.expMinPassdate)
+              }
+
+              var expMaxPassdate = ''
+              if(this.state.expMaxPassdate.length>1 ){
+                expMaxPassdate= this.getISODate(this.state.expMaxPassdate)
+              }
+
+              if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                  var sort = {"createdAt":-1};
+                  var  tempURL = "email="+this.state.mail+"&fromDate="+expMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                  "&size=&sort="+JSON.stringify(sort)+"&toDate="+expMaxPassdate;
+                  this.sendReportsData(Config.routes.base +Config.routes.expenseMail + tempURL);
+              }else{
+                  return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+              }   
+              return;
+            break;
+        case "Payments":
+            if(this.state.selectedTruckId.includes('All  Vechiles'))
+            {
+                this.setState({selectedTruckId:''});
+            }
+
+            if(this.state.mail.trim().length == 0){
+                return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+            }
+            var pMinPassdate = ''
+            if(this.state.pMinPassdate.length>1 ){
+              pMinPassdate= this.getISODate(this.state.pMinPassdate)
+            }
+
+            var pMaxPassdate = ''
+            if(this.state.pMaxPassdate.length>1 ){
+              pMaxPassdate= this.getISODate(this.state.pMaxPassdate)
+            }
+
+            if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                var sort = {"createdAt":-1};
+                var  tempURL = "email="+this.state.mail+"&fromDate="+pMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                "&size=&sort="+JSON.stringify(sort)+"&toDate="+pMaxPassdate;
+                this.sendReportsData(Config.routes.base +Config.routes.paymentsMail + tempURL);
+            }else{
+                return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+            }   
+            return;
+          break;
+    case "Receivables":
+          if(this.state.selectedTruckId.includes('All  Vechiles'))
+          {
+              this.setState({selectedTruckId:''});
+          }
+
+          if(this.state.mail.trim().length == 0){
+              return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+          }
+          var recMinPassdate = ''
+          if(this.state.recMinPassdate.length>1 ){
+            recMinPassdate= this.getISODate(this.state.recMinPassdate)
+          }
+
+          var recMaxPassdate = ''
+          if(this.state.recMaxPassdate.length>1 ){
+            recMaxPassdate= this.getISODate(this.state.recMaxPassdate)
+          }
+
+          if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+              var sort = {"createdAt":-1};
+              var  tempURL = "email="+this.state.mail+"&fromDate="+recMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+              "&size=&sort="+JSON.stringify(sort)+"&toDate="+recMaxPassdate;
+              this.sendReportsData(Config.routes.base +Config.routes.receivablesMail + tempURL);
+          }else{
+              return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+          }   
+          return;
+        break;
+
+              default:
+              break;
+          }
+    }
+
+    sendReportsData(url){
+        this.setState({spinnerBool:true});
+        console.log('posting data',url);
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.token },
+            url: url
+        })
+            .then((response) => {
+                console.log('posting data',response);
+                if (response.data.status) {
+                   this.setState({spinnerBool:false});
+                   let message ="";
+                   response.data.messages.forEach(function(current_value) {
+                       message = message+current_value;
+                   });
+                   ToastAndroid.show(message, ToastAndroid.SHORT);
+                   this.ShowModalFunction(!this.state.showMail);
+                } else {
+                    //console.log('reponse in update erpSettingData ==>', response);
+                    this.setState({spinnerBool:false});
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+
+            }).catch((error) => {
+                console.log('error in erpSettingData ==>', error);
+                this.setState({spinnerBool:false});
+                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+            })
+    }
+
     render() {
         const self=this;
       
@@ -653,8 +823,12 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_mail.png')} />
+                                    <TouchableOpacity
+                                            onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
+                                        >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_mail.png')} />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                     <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
@@ -742,7 +916,12 @@ export default class ERPCategory extends Component {
                                 <Text style={CustomStyles.erpFooterText}>{this.state.grossAmounts.grossRevenue}</Text>
                             </View> 
                         </View>
+
                     </View>
+                    <MailBox visible={this.state.showMail} Submit={'Submit'} cancel={'cancel'} 
+                            onAccept={() => {this.sendMail('Revenue')}}
+                            onDecline= {() => { this.ShowModalFunction(!this.state.showMail) }}
+                        onchange={(mail) => {this.setState({mail:mail})}}/>
                 </View>
             );
 
@@ -811,8 +990,13 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_mail.png')} />
+                                    
+                                    <TouchableOpacity
+                                                onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
+                                            >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_mail.png')} />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                     <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
@@ -909,6 +1093,10 @@ export default class ERPCategory extends Component {
                             </View> 
                         </View>
                     </View>
+                    <MailBox visible={this.state.showMail} Submit={'Submit'} cancel={'cancel'} 
+                            onAccept={() => {this.sendMail('Expense')}}
+                            onDecline= {() => { this.ShowModalFunction(!this.state.showMail) }}
+                        onchange={(mail) => {this.setState({mail:mail})}}/>
                 </View>
             );
                 break;
@@ -986,8 +1174,12 @@ export default class ERPCategory extends Component {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                    source={require('../images/erp_mail.png')} />
+                                <TouchableOpacity
+                                                onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
+                                            >
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_mail.png')} />
+                                </TouchableOpacity>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                 <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
@@ -1078,6 +1270,10 @@ export default class ERPCategory extends Component {
                             </View> 
                         </View>
                     </View>
+                    <MailBox visible={this.state.showMail} Submit={'Submit'} cancel={'cancel'} 
+                            onAccept={() => {this.sendMail('Payments')}}
+                            onDecline= {() => { this.ShowModalFunction(!this.state.showMail) }}
+                        onchange={(mail) => {this.setState({mail:mail})}}/>
                 </View>
                 );
                 break;        
@@ -1247,6 +1443,10 @@ export default class ERPCategory extends Component {
                                 </View> 
                             </View>
                         </View>
+                        <MailBox visible={this.state.showMail} Submit={'Submit'} cancel={'cancel'} 
+                            onAccept={() => {this.sendMail('Receivables')}}
+                            onDecline= {() => { this.ShowModalFunction(!this.state.showMail) }}
+                        onchange={(mail) => {this.setState({mail:mail})}}/>
                     </View>
                 );
                 break;

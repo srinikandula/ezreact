@@ -1,9 +1,9 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { ActivityIndicator,View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { ActivityIndicator,View, ToastAndroid,ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,CSpinner, CustomText } from './common';
+import { ExpiryDateItems,MailBox,CSpinner, CustomText } from './common';
 import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
@@ -18,7 +18,9 @@ export default class ExpiryDate extends Component {
         spinnerBool: false,
         data: [ ],
         trucks: [],
-        count: 0
+        count: 0,
+        showMail: false,
+        mail:'',
     };
     componentWillMount() {
         const self = this;
@@ -80,6 +82,8 @@ export default class ExpiryDate extends Component {
         })
             .then((response) => {
                 console.log('expiry ==>', response.data);
+                console.log('expiry ==>', response.status,
+                "====401");
                 if (response.data.status) {
                     self.setState({
                         trucks: response.data.trucks
@@ -204,6 +208,62 @@ export default class ExpiryDate extends Component {
             return <CSpinner/>;
         return false;
     }
+    ShowModalFunction(visible) {        
+        this.setState({showMail: visible});            
+    }
+    
+
+    sendMail(){
+        const self=this;        
+        if(this.state.mail.trim().length == 0){
+            return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+        }
+        
+        if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+            var sort = {"createdAt":-1};
+
+            var  tempURL = "email="+this.state.mail+"&fromDate=&page=&regNumber=&size=&sort="+JSON.stringify(sort)+"&toDate=";
+            this.sendReportsData(Config.routes.base +Config.routes.expiryTrucksMail + tempURL);
+        }else{
+            return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+        }   
+               
+    }
+
+    sendReportsData(url){
+        this.setState({spinnerBool:true});
+        console.log('ExpiryDate posting data',url);
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.token },
+            url: url
+        })
+            .then((response) => {
+                console.log('ExpiryDate posting data',response);
+                if (response.data.status) {
+                   this.setState({spinnerBool:false});
+                   let message ="";
+                   response.data.messages.forEach(function(current_value) {
+                       message = message+current_value;
+                   });
+                   ToastAndroid.show(message, ToastAndroid.SHORT);
+                   this.ShowModalFunction(!this.state.showMail);
+                } else {
+                    //console.log('reponse in update erpSettingData ==>', response);
+                    this.setState({spinnerBool:false});
+                    let message ="";
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                }
+
+            }).catch((error) => {
+                console.log('error in ExpiryDate ==>', error);
+                this.setState({spinnerBool:false});
+                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+            })
+    }
     
     render() {
         const self = this;
@@ -222,20 +282,34 @@ export default class ExpiryDate extends Component {
                         />
                     </View>
                     <View style={{ alignSelf: 'stretch', flex: 1 }}>
-
-                    <Text style={CustomStyles.headText}>{this.state.label} Details</Text>
-                        
-                        <View style={CustomStyles.erpCategoryHeaderItems}>
-                            <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>S.No</Text>
+                    <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                        <Text style={[CustomStyles.headText,{flex:1}]}>{this.state.label} Details</Text>
+                        <View style={{flex:1,flexDirection:'row',justifyContent: 'flex-end'}}>
+                            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                <TouchableOpacity
+                                        onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
+                                    >
+                                    <Image style={{ width: 24, height: 24,margin:5, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_mail.png')} />
+                                </TouchableOpacity>
                             </View>
-                            <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>V.No</Text>
-                            </View>
-                            <View style={CustomStyles.erpTextView}>
-                                <Text style={CustomStyles.erpHeaderText}>Expiry Date</Text>
+                            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                <Image style={{ width: 24, height: 24,margin:5, resizeMode: 'contain' }} 
+                                    source={require('../images/erp_download.png')} />
                             </View>
                         </View>
+                    </View>
+                    <View style={CustomStyles.erpCategoryHeaderItems}>
+                        <View style={CustomStyles.erpTextView}>
+                            <Text style={CustomStyles.erpHeaderText}>S.No</Text>
+                        </View>
+                        <View style={CustomStyles.erpTextView}>
+                            <Text style={CustomStyles.erpHeaderText}>V.No</Text>
+                        </View>
+                        <View style={CustomStyles.erpTextView}>
+                            <Text style={CustomStyles.erpHeaderText}>Expiry Date</Text>
+                        </View>
+                    </View>
                         <View style={{ alignSelf: 'stretch', flex: 1 }}>
                             <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                                 data={this.state.trucks}
@@ -256,6 +330,10 @@ export default class ExpiryDate extends Component {
                         </View>
                     </View>
                 </View>
+                <MailBox visible={this.state.showMail} Submit={'Submit'} cancel={'cancel'} 
+                            onAccept={() => {this.sendMail()}}
+                            onDecline= {() => { this.ShowModalFunction(!this.state.showMail) }}
+                        onchange={(mail) => {this.setState({mail:mail})}}/>
             </View>
         );
     }

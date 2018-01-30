@@ -46,7 +46,7 @@ export default class ErpHome extends Component {
                 })
                     .then((response) => {
                         //result{expensesTotal: 236497, pendingDue: 599461, totalRevenue: 1114081, expiring: {…}}
-
+                        console.log('ErpHome ==>', response.status,"====401");
                         if (response.data.status) {
                             console.log('ErpHome ==>', response.data);
                             

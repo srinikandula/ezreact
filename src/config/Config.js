@@ -76,8 +76,9 @@ let routes = {
     //mail
     revenueMail:'/trips/shareRevenueDetailsByVechicleViaEmail?',
     expenseMail:'/expense/shareExpensesDetailsViaEmail?',
-    paymentsMail:'/payments/sharePaymentsDetailsByPartyViaEmail?',
-    receivablesMail:'payments/sharePaymentsDetailsByPartyViaEmail?',
+    paymentsMail:'/expense/sharePayableDetailsViaEmail?',
+    receivablesMail:'/payments/sharePaymentsDetailsByPartyViaEmail?',
+    expiryTrucksMail:'/trucks/shareExpiredDetailsViaEmail?',
     
 
 

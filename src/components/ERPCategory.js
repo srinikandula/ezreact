@@ -356,13 +356,13 @@ export default class ERPCategory extends Component {
     sendSettingData(category){
         switch(category){
             case "revenue" :
-                if(this.state.selectedTruckId.includes('All  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
+                if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
                 {
                         ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
                     
                 }else{
 
-                    if(this.state.selectedTruckId.includes('All  Vechiles'))
+                    if(this.state.selectedTruckId.includes('Select  Vechiles'))
                     {
                         this.setState({selectedTruckId:''});
                     }
@@ -386,12 +386,12 @@ export default class ERPCategory extends Component {
             return;
             break;
         case "expense" :
-            if(this.state.selectedTruckId.includes('All  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
+            if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
             {
                     ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
                 
             }else{
-                if(this.state.selectedTruckId.includes('All  Vechiles'))
+                if(this.state.selectedTruckId.includes('Select  Vechiles'))
                 {
                     this.setState({selectedTruckId:''});
                 }
@@ -414,13 +414,13 @@ export default class ERPCategory extends Component {
             return;
             break;
         case "payment" :
-            if(this.state.selectedTruckId.includes('All Parties') && this.state.pMinPassdate === '' && this.state.pMaxPassdate === '')
+            if(this.state.selectedTruckId.includes('Select Parties') && this.state.pMinPassdate === '' && this.state.pMaxPassdate === '')
             {
                     ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
                 
             }else{
                 var partyID = '';
-                if(this.state.selectedTruckId.includes('All Parties'))
+                if(this.state.selectedTruckId.includes('Select Parties'))
                 {
                     partyID = '';
                 }else{
@@ -447,13 +447,13 @@ export default class ERPCategory extends Component {
             return;
         break;
     case "receivables" :
-        if(this.state.selectedTruckId.includes('All Parties') && this.state.recMinPassdate === '' && this.state.recMaxPassdate === '')
+        if(this.state.selectedTruckId.includes('Select Parties') && this.state.recMinPassdate === '' && this.state.recMaxPassdate === '')
         {
                 ToastAndroid.show("Please Select Dates or Parties", ToastAndroid.SHORT);
             
         }else{
             var partyID = '';
-            if(this.state.selectedTruckId.includes('All Parties'))
+            if(this.state.selectedTruckId.includes('Select Parties'))
             {
                 partyID = '';
             }else{
@@ -599,7 +599,7 @@ export default class ERPCategory extends Component {
         const self=this;        
           switch(mode) {
               case "Revenue":
-                if(this.state.selectedTruckId.includes('All  Vechiles'))
+                if(this.state.selectedTruckId.includes('Select  Vechiles'))
                 {
                     this.setState({selectedTruckId:''});
                 }
@@ -629,7 +629,7 @@ export default class ERPCategory extends Component {
                 return;
               break;
         case "Expense":
-              if(this.state.selectedTruckId.includes('All  Vechiles'))
+              if(this.state.selectedTruckId.includes('Select  Vechiles'))
               {
                   this.setState({selectedTruckId:''});
               }
@@ -658,7 +658,7 @@ export default class ERPCategory extends Component {
               return;
             break;
         case "Payments":
-            if(this.state.selectedTruckId.includes('All  Vechiles'))
+            if(this.state.selectedTruckId.includes('Select  Parties'))
             {
                 this.setState({selectedTruckId:''});
             }
@@ -687,7 +687,7 @@ export default class ERPCategory extends Component {
             return;
           break;
     case "Receivables":
-          if(this.state.selectedTruckId.includes('All  Vechiles'))
+          if(this.state.selectedTruckId.includes('Select  Parties'))
           {
               this.setState({selectedTruckId:''});
           }
@@ -720,6 +720,9 @@ export default class ERPCategory extends Component {
               break;
           }
     }
+
+
+
 
     sendReportsData(url){
         this.setState({spinnerBool:true});
@@ -832,8 +835,12 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_download.png')} />
+                                    <TouchableOpacity
+                                                onPress={() => { this.downLoadFile('Revenue') }}
+                                            >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_download.png')} />
+                                    </TouchableOpacity>
                                 </View>
                             </View>  
                             <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
@@ -844,7 +851,7 @@ export default class ERPCategory extends Component {
                                         style={{ width:200, height:45}}
                                         selectedValue={this.state.selectedTruckId}
                                         onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                        <Picker.Item label="All Vechiles" value="All  Vechiles" />
+                                        <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
                                         {this.renderTrucksRegNo()}
                                     </Picker>
                                 </View>
@@ -1012,7 +1019,7 @@ export default class ERPCategory extends Component {
                                         style={{ width:200, height:45}}
                                         selectedValue={this.state.selectedTruckId}
                                         onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                        <Picker.Item label="All Vechiles" value="All  Vechiles" />
+                                        <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
                                         {this.renderTrucksRegNo()}
                                     </Picker>
                                 </View>
@@ -1195,7 +1202,7 @@ export default class ERPCategory extends Component {
                                     style={{ width:200, height:45}}
                                     selectedValue={this.state.selectedTruckId}
                                     onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                    <Picker.Item label="All Parties" value="All Parties" />
+                                    <Picker.Item label="Select Parties" value="Select Parties" />
                                     {this.renderPartyList()}
                                 </Picker>
                             </View>
@@ -1353,8 +1360,12 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_mail.png')} />
+                                    <TouchableOpacity
+                                                onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
+                                            >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_mail.png')} />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                     <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
@@ -1369,7 +1380,7 @@ export default class ERPCategory extends Component {
                                         style={{ width:200, height:45}}
                                         selectedValue={this.state.selectedTruckId}
                                         onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                        <Picker.Item label="All Parties" value="All Parties" />
+                                        <Picker.Item label="Select Parties" value="Select Parties" />
                                         {this.renderPartyList()}
                                     </Picker>
                                 </View>

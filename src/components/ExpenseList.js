@@ -3,7 +3,6 @@ import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, I
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
-import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
@@ -145,7 +144,7 @@ export default class ExpenseList extends Component {
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
                                             <TouchableOpacity onPress={() => 
-                                                                    {Actions.AddExpense({token:this.state.token,id:item._id,edit:true}) }
+                                                                    {this.props.navigation.navigate('AddExpense',{token:this.state.token,id:item._id,edit:true}) }
                                                                 }>
                                                 <Image resizeMode="contain"
                                                         source={require('../images/form_edit.png')} 
@@ -163,7 +162,7 @@ export default class ExpenseList extends Component {
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
                         <TouchableOpacity
-                                        onPress={() => { Actions.AddExpense({token:this.state.token,edit:false})}}
+                                        onPress={() => { this.props.navigation.navigate('AddExpense',{token:this.state.token,edit:false})}}
                                     >
                             <Image source={require('../images/eg_expenes.png')} 
                             style= {CustomStyles.addImage}/>

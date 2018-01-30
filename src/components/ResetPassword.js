@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,ToastAndroid} from 'react-native';
 import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
-import {Actions} from 'react-native-router-flux';
 import CustomStyles from './common/CustomStyles';
 
 class ResetPassword extends Component{
@@ -26,7 +25,7 @@ class ResetPassword extends Component{
     }
 
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();`
     }
 
      onVerifyOTP() {
@@ -43,7 +42,7 @@ class ResetPassword extends Component{
             }else
             {
                 if(this.state.password == this.state.cpassword){
-                        Actions.tab1();
+                        this.props.navigation.navigate('tab1')
                 }else{
                     ToastAndroid.show(' Password does not match', ToastAndroid.SHORT);
                 }

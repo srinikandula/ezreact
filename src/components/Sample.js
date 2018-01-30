@@ -6,7 +6,6 @@ import CustomStyles from './common/CustomStyles';
 import {ExpiryDateItems} from  './common';
 import Config from '../config/Config';
 import Router from '../Router';
-import {Actions,Reducer} from 'react-native-router-flux';
 import Axios from 'axios';
 const category = [
     {

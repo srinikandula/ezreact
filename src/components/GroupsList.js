@@ -52,7 +52,7 @@ export default class GroupsList extends Component {
     }
 
     onBackAndroid() {
-        //Actions.pop();
+        //this.props.navigation.navigatepop();
         //var value = await this.getCache('credientails');
     }
 
@@ -129,7 +129,7 @@ export default class GroupsList extends Component {
                                             <Text style={CustomStyles.erpText}> +91 {item.contactPhone}</Text>
                                         </View>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                            <TouchableOpacity onPress={() => { Actions.AddGroup({token:this.state.token,edit:true,id:item._id}) }
+                                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:true,id:item._id}) }
                                             }>
                                                 <Image resizeMode="contain"
                                                     source={require('../images/form_edit.png')}
@@ -152,7 +152,7 @@ export default class GroupsList extends Component {
                 </View>
                 <View style={[CustomStyles.addGroupImageStyle,{bottom:10,right:10,}]}>
                     <TouchableOpacity
-                    onPress={()=> Actions.AddGroup({token:this.state.token})}
+                    onPress={()=> this.props.navigation.navigate('AddGroup',{token:this.state.token})}
                     >
                         <Image source={require('../images/eg_driver.png')}
                         style={CustomStyles.addImage} />

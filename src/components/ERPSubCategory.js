@@ -5,7 +5,6 @@ import { View,BackHandler, ScrollView, ListView, FlatList, Text, AsyncStorage, I
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
-import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 
 
@@ -22,17 +21,17 @@ export default class ERPSubCategory extends Component {
     };
     componentWillMount() {
         const self = this;
-        console.log(self.props.token);
+        console.log(self.props.navigation.state.params.token);
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
-            url: self.props.Url
+            headers: { 'token': self.props.navigation.state.params.token },
+            url: self.props.navigation.state.params.Url
         })
             .then((response) => {              
                 if (response.data.status) {
-                    if(self.props.mode == 'Expense'){
+                    if(self.props.navigation.state.params.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
-                    }else if(self.props.mode == 'Revenue'){
+                    }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
                     
                     }else if(self.props.mode == 'Payments'){
@@ -53,7 +52,7 @@ export default class ERPSubCategory extends Component {
         }
 
         onBackAndroid() {
-            Actions.pop();
+            // Actions.pop();
             //var value = await this.getCache('credientails');
            }
     constructor() {
@@ -149,12 +148,12 @@ export default class ERPSubCategory extends Component {
 
     render() {
         const self=this;
-        switch (self.props.mode) {
+        switch (self.props.navigation.state.params.mode) {
             case "Revenue":
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
-                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
@@ -220,7 +219,7 @@ export default class ERPSubCategory extends Component {
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
-                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
@@ -352,7 +351,7 @@ export default class ERPSubCategory extends Component {
                 return (
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
-                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                     <View style={CustomStyles.erpTextView}>
                                         <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>

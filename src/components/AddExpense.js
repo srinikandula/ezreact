@@ -7,7 +7,6 @@ import { CustomInput,CRadio, CSpinner, CustomEditText, CustomButton, CustomText,
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 import CheckBox from 'react-native-checkbox';
 
 export default class AddExpense extends Component {
@@ -30,7 +29,7 @@ export default class AddExpense extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("AddExpense token",this.props.token);
+        console.log("AddExpense token",this.props.navigation.state.params.token);
         this.getDataList('trucks',Config.routes.base + Config.routes.trucksList);
         
     }
@@ -39,7 +38,7 @@ export default class AddExpense extends Component {
         const types = calltype;
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: url
         })
         .then((response) => {
@@ -63,8 +62,8 @@ export default class AddExpense extends Component {
                      console.log('party array isfrom add trip ', this.state.partyList);
                     });
                     
-                    if(this.props.edit){
-                        this.getExpenseDetails(this.props.id);
+                    if(this.props.navigation.state.params.edit){
+                        this.getExpenseDetails(this.props.navigation.state.params.id);
                     }
                 }            
             } else {
@@ -82,7 +81,7 @@ export default class AddExpense extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.getExpenseDetails+paymentID,
             
         })
@@ -135,14 +134,14 @@ export default class AddExpense extends Component {
         self.setState({ spinnerBool:true });
         var methodType = 'post';
         var url = Config.routes.base + Config.routes.addExpense
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
             url = Config.routes.base + Config.routes.updateExpenseDetails
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url,
             data: postdata
         })
@@ -151,7 +150,7 @@ export default class AddExpense extends Component {
                 console.log(postdata,'<--addExpense ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
-                    Actions.pop();
+                    // Actions.pop();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -174,7 +173,7 @@ export default class AddExpense extends Component {
 
     
     onBackAndroid() {
-     Actions.pop();
+     //Actions.pop();
     }
 
     moveInputLabelUp(id, value) {
@@ -184,7 +183,7 @@ export default class AddExpense extends Component {
     onPickdate() {
         try {
             let currDate = new Date();            
-            if(this.props.edit){
+            if(this.props.navigation.state.params.edit){
                 currDate = new Date(this.state.date);
             }
             const { action, year, month, day } = DatePickerAndroid.open({
@@ -371,6 +370,18 @@ export default class AddExpense extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
+                    <Image
+                    style={{width: 20,marginLeft: 20}}
+                    resizeMode='contain'
+                    source={require('../images/backButtonIcon.png')}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
+                        Add Expense
+                        </Text>
+                </View>
                 <View>
                     <ScrollView>
                     <View style={{ backgroundColor: '#ffffff', margin: 10 ,marginBottom:40}}>
@@ -490,8 +501,8 @@ export default class AddExpense extends Component {
                 <View style={{flexDirection: 'row',bottom:0, position:'absolute',zIndex: 1   }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
-                        onPress={() => { Actions.Drivers() }}
-                    >
+                        onPress={() => { this.props.navigation.goBack()}}
+                        >
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ padding: 15, alignSelf: 'center' }}>
                                 CANCEL

@@ -7,7 +7,6 @@ import { CustomInput, renderIf, CustomEditText, CustomButton, CustomText, Common
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddDriver extends Component {
     state = {
@@ -25,7 +24,7 @@ export default class AddDriver extends Component {
     componentWillMount() {
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': this.props.navigation.state.params.token},
             url: Config.routes.base + Config.routes.trucksList
         })
         .then((response) => {
@@ -88,7 +87,22 @@ export default class AddDriver extends Component {
     onSubmitDriverDetails() {
         if(!this.state.name||!this.state.mobile||!this.state.licenseNo||!this.state.salaryPM){
             ToastAndroid.show('Please provide all details', ToastAndroid.SHORT)
+        }else {
+            console.log(this.state.name, 
+                this.state.mobile, 
+                this.state.licenseNo, 
+                new Date(this.state.licenseValidityDate),
+                this.state.selectedTruckId, 
+                this.state.salaryPM
+            );
+           /*  Axios({
+                method: 'post',
+                url: Config.routes.base+Config.routes.addDriver,
+                headers: {'token': this.props.token},
+                data: {
 
+                }
+            }) */
         }
 
     }
@@ -106,6 +120,18 @@ export default class AddDriver extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
+                    <Image
+                    style={{width: 20,marginLeft: 20}}
+                    resizeMode='contain'
+                    source={require('../images/backButtonIcon.png')}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
+                        Add Driver
+                        </Text>
+                </View>
                 <View>
                     <ScrollView>
                         <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
@@ -167,7 +193,7 @@ export default class AddDriver extends Component {
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
-                        onPress={() => { Actions.Drivers() }}
+                        onPress={() => { this.props.navigation.goBack()}}
                     >
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ padding: 15, alignSelf: 'center' }}>

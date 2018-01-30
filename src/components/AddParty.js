@@ -7,7 +7,6 @@ import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText,
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-import { Actions } from 'react-native-router-flux';
 
 export default class AddParty extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -33,9 +32,9 @@ export default class AddParty extends Component {
         isSms : false
     };
     componentWillMount() {
-        console.log("AddParty token",this.props);   
-        if(this.props.edit){
-            this.getPartyDetails(this.props.id);
+        // console.log("AddParty token",this.propsnavigation.state.params.);   
+        if(this.props.navigation.state.params.edit){
+            this.getPartyDetails(this.props.navigation.state.params.id);
         }     
     }
 
@@ -45,7 +44,7 @@ export default class AddParty extends Component {
         self.setState({ spinnerBool:true });
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.getPartyDetails+partyID,
             
         })
@@ -114,14 +113,14 @@ export default class AddParty extends Component {
         self.setState({ spinnerBool:true });
         var methodType = 'post';
         var url = Config.routes.base + Config.routes.addParty
-        if(this.props.edit){
+        if(this.props.navigation.state.params.edit){
             methodType = 'put';
-            postdata._id = self.props.id;
+            postdata._id = self.props.navigation.state.params.id;
             url = Config.routes.base + Config.routes.updatePartyDetails
         }
         Axios({
             method: methodType,
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url,
             data: postdata
         })
@@ -130,7 +129,7 @@ export default class AddParty extends Component {
                 console.log(postdata,'<--addParty ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
-                    Actions.pop();
+                    // Actions.pop();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -151,7 +150,7 @@ export default class AddParty extends Component {
             })
     }
     onBackAndroid() {
-     Actions.pop();
+    //  Actions.pop();
     }
 
     moveInputLabelUp(id, value) {
@@ -337,6 +336,18 @@ export default class AddParty extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
+                    <Image
+                    style={{width: 20,marginLeft: 20}}
+                    resizeMode='contain'
+                    source={require('../images/backButtonIcon.png')}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
+                        Add Party
+                        </Text>
+                </View>
                <ScrollView >
                 <View style={{marginBottom:50,padding:10}}>
                     
@@ -444,8 +455,8 @@ export default class AddParty extends Component {
              <View style={{ flexDirection: 'row',bottom:0, position:'absolute',zIndex: 1  }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
-                        onPress={() => { Actions.Drivers() }}
-                    >
+                        onPress={() => { this.props.navigation.goBack()}}
+                        >
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ padding: 15, alignSelf: 'center' }}>
                                 CANCEL

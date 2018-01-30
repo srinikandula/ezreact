@@ -6,7 +6,6 @@ import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
 import { ExpiryDateItems,Card,MailBox,CustomEditText,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
-import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 
 
@@ -56,31 +55,31 @@ export default class ERPCategory extends Component {
         
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
-            url: self.props.Url
+            headers: { 'token': self.props.navigation.state.params.token },
+            url: self.props.navigation.state.params.Url
         })
             .then((response) => {
                // console.log('ERP CAtegory ==>', response.data);
                 if (response.data.status) {
-                    if(self.props.mode == 'Expense'){
+                    if(self.props.navigation.state.params.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                         if(response.data.expenses.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    }else if(self.props.mode == 'Revenue'){
+                    }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
                         if(response.data.revenue.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    }else if(self.props.mode == 'Payments'){
+                    }else if(self.props.navigation.state.params.mode == 'Payments'){
                         self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
                         if(response.data.paybleAmounts.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    }else if(self.props.mode == 'Receivables'){
+                    }else if(self.props.navigation.state.params.mode == 'Receivables'){
                         self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                         if(response.data.parties.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
@@ -88,7 +87,7 @@ export default class ERPCategory extends Component {
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }                                      
                 } else {
-                    console.log(self.props.mode,'error  ==>', response);
+                    console.log(self.props.navigation.state.params.mode,'error  ==>', response);
                 }
 
             }).catch((error) => {
@@ -142,7 +141,7 @@ export default class ERPCategory extends Component {
         .then((response) => {
             if (response.data.status) {
                 //console.log('ERp--trucks ==>', response.data);
-                if(self.props.mode == 'Payments' || self.props.mode == 'Receivables')
+                if(self.props.navigation.state.params.mode == 'Payments' || self.props.navigation.state.params.mode == 'Receivables')
                 {
                     this.setState({ partyList: response.data.parties });
                 }else{
@@ -187,41 +186,41 @@ export default class ERPCategory extends Component {
 
     callSubCategoryScreen(truckNum,truckAmount,truckID){
         const self = this;
-        console.log(self.props.token);
-        switch(self.props.mode) {
+        console.log(self.props.navigation.state.params.token);
+        switch(self.props.navigation.state.params.mode) {
             case "Revenue":
-               Actions.erpsubcategory({
-                token: self.props.token,
+            this.props.navigation.navigate('Erpsubcategory',{
+                token: self.props.navigation.state.params.token,
                 Url: Config.routes.base + Config.routes.detailsRevenueFromVechicle+truckID,
                 label:'Total Revenue From '  +truckNum +":  "+ truckAmount,
-                mode:self.props.mode
+                mode:self.props.navigation.state.params.mode
                 });
 
                 break;
             case "Expense":
             console.log("Expense",'data',);
-            Actions.erpsubcategory({
-                token: self.props.token,
+            this.props.navigation.navigate('Erpsubcategory',{
+                token: self.props.navigation.state.params.token,
                 Url: Config.routes.base + Config.routes.detailsExpensesForAllVehicles+truckID,
                 label:'Total Expense From '  +truckNum +"  "+ truckAmount,
-                mode:self.props.mode
+                mode:self.props.navigation.state.params.mode
                 });
                 break;
             case "Payments":
             console.log("Payments","data");
-                Actions.erpsubcategory({
-                    token: self.props.token,
-                    Url: Config.routes.base + Config.routes.totalPayablesPaymentByParty+truckID,
-                    label:'Total Payable Payments  For  ' +"\n" +truckNum +"  "+ truckAmount,
-                    mode:self.props.mode
+            this.props.navigation.navigate('Erpsubcategory',{
+                    token: self.props.navigation.state.params.token,
+                    Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
+                    label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
+                    mode:self.props.navigation.state.params.mode
                     });
                 break;
             case "Receivables":
-                    Actions.erpsubcategory({
+                    this.props.navigation.navigate('erpsubcategory',{
                         token: self.props.token,
                         Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
                         label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
-                        mode:self.props.mode
+                        mode:self.props.navigation.state.params.mode
                         });
             break;
             default:
@@ -264,7 +263,7 @@ export default class ERPCategory extends Component {
             url: url
         })
             .then((response) => {
-                //console.log(self.props.mode,'ERP CAtegory ==>', response.data);
+                //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
                 if (response.data.status) {
                      if(str == 'Payments'){
                         self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
@@ -290,7 +289,7 @@ export default class ERPCategory extends Component {
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }
                 } else {
-                    console.log(self.props.mode,'error  ==>', response);
+                    console.log(self.props.navigation.state.params.mode,'error  ==>', response);
                 }
 
             }).catch((error) => {
@@ -762,7 +761,7 @@ export default class ERPCategory extends Component {
     render() {
         const self=this;
       
-        switch(self.props.mode) {
+        switch(self.props.navigation.state.params.mode) {
             case "Revenue":
             return (
                 <View style={CustomStyles.viewStyle}>
@@ -1397,7 +1396,7 @@ export default class ERPCategory extends Component {
                         </View>
                     </View> 
 
-                            <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                            <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpHeaderText}>Party</Text>

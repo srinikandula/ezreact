@@ -3,7 +3,6 @@ import {View,Image,Text,CheckBox,TouchableOpacity,ToastAndroid,ScrollView,Keyboa
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
-import {Actions} from 'react-native-router-flux';
 import Axios from 'axios';
 
 class ForgotPin extends Component{
@@ -22,15 +21,6 @@ class ForgotPin extends Component{
         };
     }
 
-    componentWillMount() {
-        
-       BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
-    }
-    componentWillUnmount(){
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
-        Actions.pop();
-    }
-
     callForgotPasswordAPI(Url,mobile){
         const self = this;
         self.setState({ spinnerBool:true });
@@ -46,9 +36,7 @@ class ForgotPin extends Component{
                 if (response.data.status) {
                     
                     self.setState({ spinnerBool:false });
-                    Actions.OtpVerification({
-                        mobile:this.state.phoneNumber
-                    });
+                    this.props.navigation.navigate('Otpverification',{mobile:this.state.phoneNumber});
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -64,18 +52,12 @@ class ForgotPin extends Component{
                 console.log('error in forgotPassword ==>', error);
             })
     }
-    onBackAndroid() {
-     Actions.pop();
-    }
-
-    
-
+   
     getOtpNUmber() {
          if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
                 ToastAndroid.show('Please Enter  Mobile Number', ToastAndroid.SHORT);
         } else {
              if(this.state.phoneNumber.length == 10){
-                 //Actions.OtpVerification
                     ToastAndroid.show(this.state.phoneNumber, ToastAndroid.SHORT);
                     this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
             }else{
@@ -91,11 +73,11 @@ class ForgotPin extends Component{
         return false;
     }
 
-    componentWillReceiveProps(nextProps){
+    /* componentWillReceiveProps(nextProps){
         if(nextProps.close){
-            Actions.pop();
+            //Actions.pop();
         }
-    }
+    } */
  render() {
         
          const phonelabelStyle = {
@@ -136,7 +118,7 @@ class ForgotPin extends Component{
                                
                                      <TouchableOpacity style={CustomStyles.forgotActionpadding}  onPress={() => {
                                                                 Keyboard.dismiss();
-                                                                Actions.pop();
+                                                                //Actions.pop();
                                                             }}>
                                         <CustomText customTextStyle={CustomStyles.forgotcancelTextStyle}>
                                             CANCEL

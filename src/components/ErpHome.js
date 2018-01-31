@@ -3,7 +3,9 @@
 import React, { Component } from 'react';
 import { View, BackHandler, NetInfo, ScrollView, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems } from './common';
+import { ExpiryDateItems} from './common';
+import  Utils from './common/Utils';
+import { NavigationActions } from 'react-navigation';
 import Config from '../config/Config';
 import Axios from 'axios';
 const category = [
@@ -42,8 +44,6 @@ export default class ErpHome extends Component {
             return <LoadingSpinner />;
         return false;
     }
-
-
     async getCredentailsData() {
         this.getCache((value) => {
             if (value !== null) {
@@ -89,9 +89,13 @@ export default class ErpHome extends Component {
                             console.log('error in ErpHome ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
                         }
-
                     }).catch((error) => {
                         console.log('error in ErpHome ==>', error);
+                        if (error.response.status === 401) {
+                            AsyncStorage.clear();// AsyncStorage.clear();
+                            this.reset();
+                           
+                         }
                     })
                 });
 
@@ -101,6 +105,18 @@ export default class ErpHome extends Component {
         }
         );
     }
+
+    reset() {
+        const { navigate } = this.props.navigation
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'login' })
+          ],
+          key: null
+        });
+        this.props.navigation.dispatch(resetAction);
+      }
     async getCache(callback) {
         try {
             var value = await AsyncStorage.getItem('credientails');

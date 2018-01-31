@@ -1,6 +1,6 @@
 let routes = {
     base: 'http://demo.easygaadi.com/v1',
-    // base: 'http://erp.easygaadi.com/v1',
+     //base: 'http://erp.easygaadi.com/v1',
     //base: 'http://192.168.0.154:3000/v1',
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',

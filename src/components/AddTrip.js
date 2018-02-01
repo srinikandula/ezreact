@@ -30,7 +30,8 @@ export default class AddTrip extends Component {
         rate:'',
         tonnage:'',
         famount:'',
-        spinnerBool: false
+        spinnerBool: false,
+        accountId:''
     };
     componentWillMount() {
         console.log("payment token",this.props.navigation.state.params.token);
@@ -135,6 +136,7 @@ export default class AddTrip extends Component {
                         tonnage:''+paymentDetails.tonnage,
                         famount:''+paymentDetails.freightAmount,
                         remark:paymentDetails.remarks,
+                        accountId:paymentDetails.accountId
                         },()=>{
                             
             console.log('party ID',paymentDetails.partyId,this.state.tripPartyId,this.state.selectedVehicleId,this.state.selectedDriverId);
@@ -154,6 +156,7 @@ export default class AddTrip extends Component {
             methodType = 'put';
             url=Config.routes.getTripsDetails;
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
         }
         Axios({
             method: methodType,
@@ -234,6 +237,10 @@ export default class AddTrip extends Component {
                             if(this.state.rate.length > 0){
                                 if(this.state.tonnage.length > 0){
                                     if(this.state.famount.length > 0){
+
+                                        var lane =this.state.lanesList.filter(lane => lane.name ===this.state.selectedlaneId );
+
+
                                         var date = new Date(this.state.passdate);
                                         var postData={
                                             'date':date.toISOString(),
@@ -241,7 +248,7 @@ export default class AddTrip extends Component {
                                             'partyId':this.state.tripPartyId,
                                             'registrationNo':this.state.selectedVehicleId,
                                             'freightAmount':Number(this.state.famount),
-                                            'tripLane':this.state.selectedlaneId,
+                                            'tripLane':lane[0],
                                             'tonnage':Number(this.state.tonnage),
                                             'rate':Number(this.state.rate),                                        
                                             'remarks':this.state.remark,

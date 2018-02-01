@@ -29,7 +29,8 @@ export default class AddParty extends Component {
         transporterBool:'none',
         suppliereBool:'none',
         isMail:false,
-        isSms : false
+        isSms : false,
+        accountId:''
     };
     componentWillMount() {
         // console.log("AddParty token",this.propsnavigation.state.params.);   
@@ -59,7 +60,7 @@ export default class AddParty extends Component {
                     self.setState({ spinnerBool:false });
                     let message ="";
                     if(response.data)
-                    response.data.messages.forEach(function(current_value) {
+                    response.data.message.forEach(function(current_value) {
                         message = message+current_value;
                     });
                     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -79,7 +80,8 @@ export default class AddParty extends Component {
                         tripLanes:partyDetails.tripLanes,
                         role:partyDetails.partyType,
                         isMail:partyDetails.isEmail,
-                        isSms : partyDetails.isSms
+                        isSms : partyDetails.isSms,
+                        accountId:partyDetails.accountId
                     });
                     if(partyDetails.partyType.includes('Transporter')){
                         this.setState({
@@ -116,6 +118,7 @@ export default class AddParty extends Component {
         if(this.props.navigation.state.params.edit){
             methodType = 'put';
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
             url = Config.routes.base + Config.routes.updatePartyDetails
         }
         Axios({
@@ -125,7 +128,6 @@ export default class AddParty extends Component {
             data: postdata
         })
             .then((response) => {
-                console.log(Config.routes.base + Config.routes.addParty,"URL");
                 console.log(postdata,'<--addParty ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
@@ -134,6 +136,8 @@ export default class AddParty extends Component {
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
+                        if(current_value.includes('Unauthorized access'))
+                        this.props.navigation.navigate('login');
                     });
                     ToastAndroid.show(message, ToastAndroid.SHORT);
                 } else {
@@ -168,7 +172,7 @@ export default class AddParty extends Component {
         }
 
         if(this.state.partyName.length > 0){
-            if(this.state.partyContact.length > 0){
+            if(this.state.partyContact.length >= 10){
                 if(this.state.role.length > 0){
                     if(this.state.isMail || this.state.isSms){
                         if(this.state.role.includes('Supplier')){                           

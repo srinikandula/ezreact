@@ -19,32 +19,32 @@ export default class AddPayment extends Component {
         Amount:'',
         paymentref:'',
         remark:'',
-        partyList:[{_id:"Select Party", name:"Select Party"}],
+        partyList:[],
         paymentsDetails:{},
-        spinnerBool: false
+        spinnerBool: false,
+        accountId:''
     };
     componentWillMount() {
         console.log("payment token",this.props.navigation.state.params.token);
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token},
-            url: Config.routes.base + Config.routes.partyList
+            url: Config.routes.base + Config.routes.getpartyTrip
         })
         .then((response) => {
             if (response.data.status) {
                 console.log('partyList ==>', response.data.parties);
-               var tempPArtList=response.data.parties;
-               tempPArtList.unshift({_id:"Select Party", name:"Select Party"})
-               //tempPArtList.concat(response.data.parties);
-               this.setState({ partyList: tempPArtList },()=> {
-                console.log('array is ', this.state.partyList);
-               })
+               var tempPArtList=response.data.partyList;
+               tempPArtList.unshift({_id:"Select Party", name:"Select Party"});
+               this.setState({ partyList: tempPArtList });
                 if(this.props.navigation.state.params.edit){
                     this.getPaymentDetails(this.props.navigation.state.params.id);
                 }
             } else {
                 console.log('error in partyList ==>', response);
-                this.setState({ partyList: [], expirydetails: [] });
+                var tempPArtList=[];
+                tempPArtList.unshift({_id:"Select Party", name:"Select Party"});
+                this.setState({ partyList: tempPArtList });
             }
 
         }).catch((error) => {
@@ -92,6 +92,7 @@ export default class AddPayment extends Component {
                         selectedPartyId:paymentDetails.partyId,
                         passdate:passdateStr,
                         paymentType :paymentDetails.paymentType,
+                        accountId:paymentDetails.accountId,
                         paymentref:paymentDetails.paymentRefNo},()=>{
             console.log(this.state.selectedPartyId);
         });
@@ -107,6 +108,7 @@ export default class AddPayment extends Component {
             methodType = 'put';
             url=Config.routes.updatePayment;
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
         }
         Axios({
             method: methodType,
@@ -172,7 +174,6 @@ export default class AddPayment extends Component {
         } catch ({ code, message }) {
             console.warn('Cannot open date picker', message);
         }
-
     }
     onSubmitPartyDetails() {
         if(this.state.date.includes('/')){
@@ -182,7 +183,6 @@ export default class AddPayment extends Component {
                         var date = new Date(this.state.passdate);
                         console.log(date.toISOString());
                         if(this.state.paymentType.includes("cash")){
-                            ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
                             var postData= {
                                 'amount':this.state.Amount,
                                 'date':date.toISOString(),
@@ -194,7 +194,6 @@ export default class AddPayment extends Component {
                             this.callAddPaymentAPI(postData);
                         }else{
                             if(this.state.paymentref.length>0){
-                                ToastAndroid.show('Validation Done,can call API ', ToastAndroid.SHORT);
                                 var postData= {
                                     amount:this.state.Amount,
                                     'date':date.toISOString(),
@@ -229,7 +228,7 @@ export default class AddPayment extends Component {
         }else if(!this.state.paymentType.includes('paymenttype') ){
             return   <View style={{ backgroundColor: '#ffffff', margin: 10, marginHorizontal: 5, borderWidth: 1, 
                             borderColor: '#000' }}>
-                                        <CustomEditText underlineColorAndroid='transparent' 
+                                    <CustomEditText underlineColorAndroid='transparent' 
                                         inputTextStyle={{ marginHorizontal: 16 }} 
                                         placeholder ={placeholderstr}
                                         value={this.state.paymentref}
@@ -298,16 +297,17 @@ export default class AddPayment extends Component {
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                         <Picker
                             style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                            selectedValue={(this.state && this.state.selectedPartyId) || 'Select Party'}
+                            selectedValue={this.state.selectedPartyId}
                             onValueChange={(itemValue, itemIndex) => {this.setState({ selectedPartyId: itemValue })}}>
-                             {/* <Picker.Item label="Select Party" value="Select Party" /> */}
                             {this.renderPartyList()}
                         </Picker>
                     </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>Amount</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.Amount}
+                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                                keyboardType='numeric'
+                                value={this.state.Amount}
                                 onChangeText={(Amount) => {this.moveInputLabelUp(2, Amount), this.setState({Amount:Amount})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>

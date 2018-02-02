@@ -20,6 +20,7 @@ export default class AddExpense extends Component {
         totalAmount:'',
         paidAmount:'',
         remark:'',
+        accountId:'',
         trucks:[],
         expenses:[],
         partyList:[],
@@ -29,7 +30,6 @@ export default class AddExpense extends Component {
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("AddExpense token",this.props.navigation.state.params.token);
         this.getDataList('trucks',Config.routes.base + Config.routes.trucksList);
         
     }
@@ -44,8 +44,11 @@ export default class AddExpense extends Component {
         .then((response) => {
             if (response.data.status) {                
                 if(types ==='trucks'){
-                    console.log('trucksList from add trip ==>', response.data.trucks);
-                    this.setState({ trucks: response.data.trucks },()=> {
+                    console.log('trucksList from add Expense ==>', response.data.trucks);
+                    var tempTrucksList=response.data.trucks;
+                    tempTrucksList.unshift({_id:"Select Vehicle", registrationNo:"Select Vehicle"});
+                    
+                    this.setState({ trucks: tempTrucksList },()=> {
                      console.log('trucks array is  ', this.state.trucks);
                     });
                     this.getDataList('expense',Config.routes.base + Config.routes.getExpensesType);
@@ -115,6 +118,7 @@ export default class AddExpense extends Component {
             selectedExpenseType:expenseDetails.expenseType,            
             totalAmount:''+expenseDetails.totalAmount,            
             remark:expenseDetails.description,
+            accountId:expenseDetails.accountId
             },()=>{
                 
             console.log('party ID',);
@@ -123,7 +127,7 @@ export default class AddExpense extends Component {
             if(expenseDetails.mode === 'Credit'){
                 this.setState({ creditBool:'flex', cashBool:'none', paymentType:'Credit',selectedPartyID:expenseDetails.partyId,paidAmount:''+expenseDetails.paidAmount});
             } else {
-                this.setState({ creditBool:'none', cashBool:'flex', paymentType:'Cash'});
+                this.setState({ creditBool:'none', cashBool:'flex', paymentType:'Cash',totalAmount:''+expenseDetails.cost});
             }
 
     
@@ -137,6 +141,7 @@ export default class AddExpense extends Component {
         if(this.props.navigation.state.params.edit){
             methodType = 'put';
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
             url = Config.routes.base + Config.routes.updateExpenseDetails
         }
         Axios({
@@ -230,6 +235,7 @@ export default class AddExpense extends Component {
                                     "paidAmount":this.state.paidAmount.length > 0 ?Number(this.state.paidAmount):0 ,// if mode is credit is mandatory
                                     //"partyId":this.state.selectedPartyID,
                                     "totalAmount":Number(this.state.totalAmount),
+                                    "cost":Number(this.state.totalAmount),
                                     "vehicleNumber":this.state.selectedVehicleId,
                                 }
                                 console.log('postdata',postData);
@@ -370,6 +376,7 @@ export default class AddExpense extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={{flex:1}}>
             <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
                 <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
                     <Image
@@ -414,7 +421,6 @@ export default class AddExpense extends Component {
                                 onValueChange={(itemValue, itemIndex) =>{
                                     this.getTruckNum(itemValue); 
                                 this.setState({ selectedVehicleId: itemValue })}}>
-                                <Picker.Item label="Select Vehicle" value="Select Vehicle" />
                                 {this.renderTrucksList()}
                                 
                             </Picker>
@@ -520,7 +526,7 @@ export default class AddExpense extends Component {
                     </TouchableOpacity>
 
                 </View>
-
+                </View>
             </View>
 
         );

@@ -249,7 +249,7 @@ export default class TruckList extends Component {
                                                                     Fitness 
                                                                 </Text>
                                                         </View>        
-                                                        <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
+                                                        <View style={{flex:2, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
                                                             {this.getcolorDate(item.taxDueDate)}
                                                             <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
                                                                 Tax

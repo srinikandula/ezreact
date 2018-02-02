@@ -90,6 +90,16 @@ export default class ExpenseList extends Component {
             return data;
         }  
 
+        getExpenseAmount(item){
+            var data ='-';
+            if(item.mode === 'Credit' || item.mode === 'credit' ){
+                data = item.totalAmount;
+            }else{
+                data = item.cost;
+            }
+            return data;
+        }
+
 
     getParsedDate(date){
         var formattedDate = new Date(date);
@@ -107,8 +117,7 @@ export default class ExpenseList extends Component {
 
     render() {
         const self=this;
-        return(      
-        
+        return(              
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
                        
@@ -139,7 +148,12 @@ export default class ExpenseList extends Component {
                                                 <Text style={CustomStyles.erpText}>  {item.description}</Text>
                                            
                                                 <Text style={CustomStyles.erpText}>{this.getParsedDate(item.date)}</Text>
-                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'Gotham-Medium',fontSize: 16}]}>Amount : {item.cost}</Text>
+                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'Gotham-Medium',fontSize: 16}]}>
+                                                    Mode : {item.mode}
+                                                    </Text>
+                                                <Text style={[CustomStyles.erpText,{color:'#1e4495',fontFamily:'Gotham-Medium',fontSize: 16}]}>
+                                                    Amount : {this.getExpenseAmount(item)}
+                                                    </Text>
                                                 
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>

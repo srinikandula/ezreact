@@ -258,7 +258,8 @@ export default class AddPayment extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+           <View style={{flex:1}}>
+           <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
                 <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
                     <Image
                     style={{width: 20,marginLeft: 20}}
@@ -332,6 +333,7 @@ export default class AddPayment extends Component {
                     </View>
                     </ScrollView>
                 </View>
+               </View>
                
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity

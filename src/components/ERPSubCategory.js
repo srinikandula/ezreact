@@ -34,16 +34,16 @@ export default class ERPSubCategory extends Component {
                     }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
                     
-                    }else if(self.props.mode == 'Payments'){
+                    }else if(self.props.navigation.state.params.mode == 'Payments'){
                         self.setState({payementsResults:response.data.partyData,totalPayablePayments: response.data.grossAmounts});
-                    }else if(self.props.mode == 'Receivables'){
+                    }else if(self.props.navigation.state.params.mode == 'Receivables'){
                         self.setState({payementsResults:response.data.results,totalPendingPayments: response.data.totalPendingPayments});
                     }                       
                 } else {
-                    console.log(self.props.mode,'error in ERP SUB Cat ==>', response);
+                    console.log(self.props.navigation.state.params.mode,'error in ERP SUB Cat ==>', response);
                 }
             }).catch((error) => {
-                console.log(self.props.mode,'error in ERP SUB Cat ==>', error);
+                console.log(self.props.navigation.state.params.mode,'error in ERP SUB Cat ==>', error);
             })
             BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }

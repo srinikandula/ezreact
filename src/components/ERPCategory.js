@@ -135,7 +135,7 @@ export default class ERPCategory extends Component {
         const self  = this;
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token},
+            headers: { 'token': self.props.navigation.state.params.token},
             url: url
         })
         .then((response) => {
@@ -210,14 +210,14 @@ export default class ERPCategory extends Component {
             console.log("Payments","data");
             this.props.navigation.navigate('Erpsubcategory',{
                     token: self.props.navigation.state.params.token,
-                    Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
+                    Url: Config.routes.base + Config.routes.totalPayablesPaymentByParty+truckID,
                     label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
                     mode:self.props.navigation.state.params.mode
                     });
                 break;
             case "Receivables":
-                    this.props.navigation.navigate('erpsubcategory',{
-                        token: self.props.token,
+                    this.props.navigation.navigate('Erpsubcategory',{
+                        token: self.props.navigation.state.params.token,
                         Url: Config.routes.base + Config.routes.totalPaymentByParty+truckID,
                         label:'Total Payments Receivablea From ' +"\n" +truckNum +"  "+ truckAmount,
                         mode:self.props.navigation.state.params.mode
@@ -240,13 +240,14 @@ export default class ERPCategory extends Component {
     }
 
     changeRoleStatus(value){
+        const self =this;
         if(value === 'P'){
-            this.props.mode='Payments';
+            self.props.navigation.state.params.mode='Payments';
             this.setState({ payablesBool:'#1e4495', receiveablesBool:'#ffffff', role:'Transporter'});
                 this.setState({paymentsParties:[]});
                 this.paymentRoleData('Payments',Config.routes.base + Config.routes.totalPayeblesPayment);
         } else {
-            this.props.mode='Receivables';
+            self.props.navigation.state.params.mode='Receivables';
             this.setState({ payablesBool:'#ffffff', receiveablesBool:'#1e4495', role:'Supplier'});
             this.setState({paymentsParties:[]});
                 this.paymentRoleData('Receivables',Config.routes.base + Config.routes.totalPaymentFromParty);
@@ -259,7 +260,7 @@ export default class ERPCategory extends Component {
         const self= this;
         Axios({
             method: 'get',
-            headers: { 'token': self.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url
         })
             .then((response) => {
@@ -270,7 +271,7 @@ export default class ERPCategory extends Component {
                         if(response.data.paybleAmounts.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                         }
-                        Actions.refresh({token: this.props.token,
+                        Actions.refresh({token: self.props.navigation.state.params.token,
                             Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                             //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                             mode:'Payments',
@@ -281,7 +282,7 @@ export default class ERPCategory extends Component {
                         if(response.data.parties.length == 0){
                             ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                         }
-                        Actions.refresh({token: this.props.token,
+                        Actions.refresh({token: self.props.navigation.state.params.token,
                             //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
                             Url: Config.routes.base + Config.routes.totalPaymentFromParty,
                             mode:'Receivables',
@@ -509,27 +510,28 @@ export default class ERPCategory extends Component {
     }
 
     searchReportsData(url){
+        const self =this;
         this.setState({spinnerBool:true});
         console.log('posting data',url);
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url
         })
             .then((response) => {
                 if (response.data.status) {
                    this.setState({spinnerBool:false});
-                   if(this.props.mode == 'Expense'){
+                   if(self.props.navigation.state.params.mode == 'Expense'){
                     this.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                     if(response.data.expenses.length == 0){
                         ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
                     }
-                }else if(this.props.mode == 'Revenue'){
+                }else if(self.props.navigation.state.params.mode == 'Revenue'){
                     this.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
                     if(response.data.revenue.length == 0){
                         ToastAndroid.show('No Records Found', ToastAndroid.SHORT);//receivables
                     }
-                }else if(this.props.mode == 'Receivables'){
+                }else if(self.props.navigation.state.params.mode == 'Receivables'){
                     this.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                     if(response.data.parties.length == 0){
                         ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
@@ -724,11 +726,12 @@ export default class ERPCategory extends Component {
 
 
     sendReportsData(url){
+        const self =this;
         this.setState({spinnerBool:true});
         console.log('posting data',url);
         Axios({
             method: 'get',
-            headers: { 'token': this.props.token },
+            headers: { 'token': self.props.navigation.state.params.token },
             url: url
         })
             .then((response) => {
@@ -842,7 +845,7 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                             </View>  
-                            <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                            <View style={{flex:1,flexDirection:'row',justifyContent: 'space-between' }}>
                                 <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: '#000' }}>
@@ -854,12 +857,12 @@ export default class ERPCategory extends Component {
                                         {this.renderTrucksRegNo()}
                                     </Picker>
                                 </View>
-                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                <View style={{marginTop: 5,marginLeft:2}}>
                                         <TouchableOpacity
                                             onPress={() => {this.sendSettingData('revenue') }}>
-                                            <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
-                                                <Text style={{ color: '#fff', padding: 5,width:60, height:45, alignSelf: 'center' }}>
-                                                    SET
+                                            <View style={{justifyContent:'center',alignItems: 'center',width:60, height:45, backgroundColor: "#e83b13" }}>
+                                                <Text style={{ color: '#fff', padding: 5,alignSelf: 'center' }}>
+                                                    Go
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>

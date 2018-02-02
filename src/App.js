@@ -27,6 +27,8 @@ export default class App extends Component {
                   console.log('APP ==>', response.data);
               } else {
                   console.log('error in APP ==>', response);
+                  AsyncStorage.clear();// AsyncStorage.clear();
+                  this.setState({ signed: false, check: true });
               }
           }).catch((error) => {
             if (error.response.status === 401) {
@@ -37,8 +39,8 @@ export default class App extends Component {
           })
         });
     }).catch((error) => {
-      console.log('APP ==>', response.status);
-      console.log('error===> ', error)
+      AsyncStorage.clear();// AsyncStorage.clear();
+      this.setState({ signed: false, check: true });
     });
   }
 

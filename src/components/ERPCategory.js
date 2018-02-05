@@ -7,7 +7,8 @@ import Utils from './common/Utils';
 import { ExpiryDateItems,Card,MailBox,CustomEditText,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
-
+import RNCOpenDoc from 'react-native-open-doc';
+import RNFetchBlob from 'react-native-fetch-blob'
 
 export default class ERPCategory extends Component {
     state = {
@@ -256,7 +257,6 @@ export default class ERPCategory extends Component {
 
 
     paymentRoleData(str,url){
-        console.log(str,' 000  ',url,'---riyaz');
         const self= this;
         Axios({
             method: 'get',
@@ -595,14 +595,25 @@ export default class ERPCategory extends Component {
         this.setState({showMail: visible});            
     }
     
+    
 
-    sendMail(mode){
+    sendMail(mode,look){
+
         const self=this;        
           switch(mode) {
               case "Revenue":
+
+
                 if(this.state.selectedTruckId.includes('Select  Vechiles'))
                 {
                     this.setState({selectedTruckId:''});
+                }
+
+                if(look ==='download'){
+                    var  tempURL = "&fromDate="+rMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate="+rMaxPassdate;
+                    return this.downLoadData(Config.routes.base +Config.routes.downloadRevenue + tempURL);
+                    break;
                 }
 
                 if(this.state.mail.trim().length == 0){
@@ -617,6 +628,7 @@ export default class ERPCategory extends Component {
                 if(this.state.rMaxPassdate.length>1 ){
                     rMaxPassdate= this.getISODate(this.state.rMaxPassdate)
                 }
+                
 
                 if(/^\S+@\S+\.\S+/.test(this.state.mail)){
                     var sort = {"createdAt":-1};
@@ -624,8 +636,9 @@ export default class ERPCategory extends Component {
                     var  tempURL = "email="+this.state.mail+"&fromDate="+rMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
                     "&size=&sort="+JSON.stringify(sort)+"&toDate="+rMaxPassdate;
                     this.sendReportsData(Config.routes.base +Config.routes.revenueMail + tempURL);
+                   
                 }else{
-                    return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+                    return   ToastAndroid.show('Pleaseytu Enter Valid Mail ID', ToastAndroid.SHORT);  
                 }   
                 return;
               break;
@@ -761,15 +774,42 @@ export default class ERPCategory extends Component {
             })
     }
 
+    downLoadData(url){
+        const self =this;
+        const android = RNFetchBlob.android;
+        var currdate = new Date();
+        RNFetchBlob.config({
+          path:'/data/user/0/com.easygaadi/files/'+self.props.navigation.state.params.mode+currdate.getDay()+'easyGaadi.xlsx',
+          // add this option that makes response data to be stored as a file,
+          // this is much more performant.
+          fileCache : true,
+        })
+        .fetch('GET', url, {
+          headers :"{ token:"+ self.props.navigation.state.params.token+" }"
+        })
+        .then((res) => {
+          // the temp file path
+          console.log('The file saved to ', res.path())
+
+         RNCOpenDoc.open(res.path());
+      
+        })
+        .catch((errorMessage,statusCode) =>
+      { 
+        console.log(errorMessage,statusCode);
+      })
+    }
+
+   
+
     render() {
         const self=this;
-      
         switch(self.props.navigation.state.params.mode) {
             case "Revenue":
             return (
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>                
-                        <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
+                        <View style={{ alignSelf: 'stretch',flexDirection:'column' }}>                   
                             <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
                                 <View style={{flex:4,justifyContent: 'flex-end'}}>
                                     <TouchableOpacity
@@ -838,14 +878,14 @@ export default class ERPCategory extends Component {
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                     <TouchableOpacity
-                                                onPress={() => { this.downLoadFile('Revenue') }}
+                                                onPress={() => { this.sendMail('Revenue','download') }}
                                             >
                                         <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
                                             source={require('../images/erp_download.png')} />
                                     </TouchableOpacity>
                                 </View>
                             </View>  
-                            <View style={{flex:1,flexDirection:'row',justifyContent: 'space-between' }}>
+                            <View style={{flexDirection:'row',justifyContent: 'space-between'}}>
                                 <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: '#000' }}>
@@ -870,7 +910,7 @@ export default class ERPCategory extends Component {
                         </View>
                         
                     </View>       
-                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                        <Text style={[CustomStyles.headText,{marginTop:5}]}>{this.props.navigation.state.params.label}</Text>
                         <View style={CustomStyles.erpCategoryHeaderItems}>
                             <View style={CustomStyles.erpTextView}>
                                 <Text style={CustomStyles.erpHeaderText}>V.No</Text>
@@ -940,8 +980,8 @@ export default class ERPCategory extends Component {
             return (
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                    <View style={{ alignSelf: 'stretch',flexDirection:'column',flex:1 }}>                   
-                            <View style={{flexDirection:'row',justifyContent: 'flex-end' }}>
+                    <View style={{ alignSelf: 'stretch',flexDirection:'column'}}>                   
+                            <View style={{flexDirection:'row',justifyContent: 'flex-end'}}>
                                 <View style={{flex:4,justifyContent: 'flex-end'}}>
                                     <TouchableOpacity
                                         onPress={() => { this.onPickdate('min','expense') }}
@@ -999,8 +1039,7 @@ export default class ERPCategory extends Component {
                                         </View>
                                     </TouchableOpacity>
                                 </View>
-                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    
+                                <View style={{alignItems:'center',justifyContent: 'flex-end' }}>                                    
                                     <TouchableOpacity
                                                 onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
                                             >
@@ -1009,23 +1048,27 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_download.png')} />
+                                    <TouchableOpacity
+                                                    onPress={() => { this.sendMail('Expense','download') }}
+                                                >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_download.png')} />
+                                    </TouchableOpacity>
                                 </View>
                             </View>  
-                            <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
+                            <View style={{flexDirection:'row',justifyContent: 'space-between' }}>
                                 <View style={{ width:200, height:45,backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, 
-                                                borderBottomWidth: 1,
-                                                borderBottomColor: '#000' }}>
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: '#000' }}>
                                     <Picker
-                                        style={{ width:200, height:45}}
+                                        style={{ width:200, height:30}}
                                         selectedValue={this.state.selectedTruckId}
                                         onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
                                         <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
                                         {this.renderTrucksRegNo()}
                                     </Picker>
                                 </View>
-                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                <View style={{marginTop: 5,marginLeft:2}}>
                                         <TouchableOpacity
                                             onPress={() => {this.sendSettingData('expense') }}>
                                             <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
@@ -1034,10 +1077,11 @@ export default class ERPCategory extends Component {
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
-                                    </View>  
+                                      
+                                </View>  
                         </View>
                     </View>      
-                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                        <Text style={[CustomStyles.headText,{marginTop:5}]}>{this.props.navigation.state.params.label}</Text>
                         <View style={CustomStyles.erpCategoryHeaderItems}>
                             <View style={CustomStyles.erpTextView}>
                                 <Text style={CustomStyles.erpHeaderText}>V.No</Text>
@@ -1114,12 +1158,12 @@ export default class ERPCategory extends Component {
                 return (
                     <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                    <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>
-                        <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool,margin:10}} 
+                    <View style={[CustomStyles.row]}>
+                        <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool}} 
                                                     labelStyle={{color:'black'}}
                                                     onPress={() => this.changeRoleStatus('P')}
                                                  />
-                        <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool,margin:10}} 
+                        <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool}} 
                                                     labelStyle={{color:'black'}}
                                                     onPress={() => this.changeRoleStatus('R')}
                                                      />
@@ -1141,8 +1185,8 @@ export default class ERPCategory extends Component {
                                                 <CustomEditText underlineColorAndroid='transparent'
                                                     editable={false} 
                                                     placeholder={'Select Date'}
-                                                    inputContainerStyle={{justifyContent:'flex-end', height:30}}
-                                                    inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                    inputContainerStyle={{justifyContent:'flex-end', height:20}}
+                                                    inputTextStyle={{ fontSize:14,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
                                                     value={this.state.pMinDate} />
                                                     
                                             </View>
@@ -1170,8 +1214,8 @@ export default class ERPCategory extends Component {
                                                 <CustomEditText underlineColorAndroid='transparent'
                                                     editable={false} 
                                                     placeholder={'Select Date'}
-                                                    inputContainerStyle={{justifyContent:'flex-end', height:30}}
-                                                    inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                    inputContainerStyle={{justifyContent:'flex-end', height:20}}
+                                                    inputTextStyle={{ fontSize:14,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
                                                     value={this.state.pMaxDate} />                                                                
                                             </View>                                                    
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
@@ -1192,8 +1236,12 @@ export default class ERPCategory extends Component {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                    source={require('../images/erp_download.png')} />
+                                <TouchableOpacity
+                                                        onPress={() => { this.sendMail('Payments','download') }}
+                                                    >
+                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                        source={require('../images/erp_download.png')} />
+                                </TouchableOpacity>
                             </View>
                         </View>  
                         <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
@@ -1208,7 +1256,7 @@ export default class ERPCategory extends Component {
                                     {this.renderPartyList()}
                                 </Picker>
                             </View>
-                            <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                            <View style={{marginTop: 5,marginLeft:2}}>
                                     <TouchableOpacity
                                         onPress={() => {this.sendSettingData('payment') }}>
                                         <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
@@ -1221,7 +1269,7 @@ export default class ERPCategory extends Component {
                     </View>
                 </View> 
 
-                        <Text style={CustomStyles.headText}>{this.props.label}</Text>
+                        <Text style={[CustomStyles.headText,{marginTop:5}]}>{this.props.navigation.state.params.label}</Text>
                         <View style={CustomStyles.erpCategoryHeaderItems}>
                             <View style={CustomStyles.erpTextView}>
                                 <Text style={CustomStyles.erpHeaderText}>Party</Text>
@@ -1292,12 +1340,12 @@ export default class ERPCategory extends Component {
                     
                     <View style={CustomStyles.viewStyle}>
                         <View style={CustomStyles.erpCategory}>
-                        <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>
-                            <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool,margin:10}} 
+                        <View style={[CustomStyles.row]}>
+                            <Ctoggle label='Payables' activeStyle={{backgroundColor :this.state.payablesBool}} 
                                                         labelStyle={{color:'black'}}
                                                         onPress={() => this.changeRoleStatus('P')}
                                                      />
-                            <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool,margin:10}} 
+                            <Ctoggle label='Receivables' activeStyle={{backgroundColor:this.state.receiveablesBool}} 
                                                         labelStyle={{color:'black'}}
                                                         onPress={() => this.changeRoleStatus('R')}
                                                          />
@@ -1319,8 +1367,8 @@ export default class ERPCategory extends Component {
                                                     <CustomEditText underlineColorAndroid='transparent'
                                                         editable={false} 
                                                         placeholder={'Select Date'}
-                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
-                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:20}}
+                                                        inputTextStyle={{ fontSize:14,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }} 
                                                         value={this.state.recMinDate} />
                                                         
                                                 </View>
@@ -1348,8 +1396,8 @@ export default class ERPCategory extends Component {
                                                     <CustomEditText underlineColorAndroid='transparent'
                                                         editable={false} 
                                                         placeholder={'Select Date'}
-                                                        inputContainerStyle={{justifyContent:'flex-end', height:30}}
-                                                        inputTextStyle={{ fontSize:11,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
+                                                        inputContainerStyle={{justifyContent:'flex-end', height:20}}
+                                                        inputTextStyle={{ fontSize:14,justifyContent:'flex-end',marginHorizontal: 16,lineHeight:5 }}
                                                         value={this.state.recMaxDate} />                                                                
                                                 </View>                                                    
                                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
@@ -1370,8 +1418,12 @@ export default class ERPCategory extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                    <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
-                                        source={require('../images/erp_download.png')} />
+                                    <TouchableOpacity
+                                                            onPress={() => { this.sendMail('Receivables','download') }}
+                                                        >
+                                        <Image style={{ width: 24, height: 24, resizeMode: 'contain' }} 
+                                            source={require('../images/erp_download.png')} />
+                                    </TouchableOpacity>
                                 </View>
                             </View>  
                             <View style={{flex:1,height:100,flexDirection:'row',justifyContent: 'space-between' }}>
@@ -1386,7 +1438,7 @@ export default class ERPCategory extends Component {
                                         {this.renderPartyList()}
                                     </Picker>
                                 </View>
-                                <View style={{flex:2,justifyContent:'center',alignItems:'flex-end',marginTop: 5,marginLeft:2}}>
+                                <View style={{marginTop: 5,marginLeft:2}}>
                                         <TouchableOpacity
                                             onPress={() => {this.sendSettingData('receivables') }}>
                                             <View style={{ backgroundColor: "#e83b13",justifyContent:'center',alignItems:'flex-end' }}>
@@ -1399,7 +1451,7 @@ export default class ERPCategory extends Component {
                         </View>
                     </View> 
 
-                            <Text style={CustomStyles.headText}>{this.props.navigation.state.params.label}</Text>
+                            <Text style={[CustomStyles.headText,{marginTop:5}]}>{this.props.navigation.state.params.label}</Text>
                             <View style={CustomStyles.erpCategoryHeaderItems}>
                                 <View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpHeaderText}>Party</Text>

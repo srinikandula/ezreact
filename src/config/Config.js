@@ -21,6 +21,9 @@ let routes = {
     totalPayablesPaymentByParty: '/expense/getPaybleAmountByPartyId?partyId=',
     filterTotalPayeblesPayment:'/expense/getPaybleAmountByParty?',
 
+    //downloadReports
+    downloadRevenue:'/trips/downloadRevenueDetailsByVechicle?',
+
     //expiry
     permitExpiryTrucks: '/trucks/permitExpiryTrucks/',
     insuranceExpiryTrucks: '/trucks/insuranceExpiryTrucks/',

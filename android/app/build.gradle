@@ -150,6 +150,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-file-viewer')
+    compile project(':react-native-open-doc')
+    compile project(':react-native-fetch-blob')
     compile project(':react-native-immediate-phone-call')
     compile project(':react-native-splash-screen')
     compile fileTree(dir: "libs", include: ["*.jar"])

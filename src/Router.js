@@ -3,7 +3,6 @@ import {
 	AsyncStorage,
 	Icon,
 	TouchableOpacity,
-	ToastAndroid,
 	StatusBar,
 	Text, Image,
 	View,

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage, Text, ToastAndroid, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler } from 'react-native';
+import { View, Image, AsyncStorage, Text,  TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
+import Utils from './common/Utils';
 import {
     CustomInput,
     renderIf,
@@ -66,14 +67,14 @@ class Login extends Component {
     onSignIn() {
         const self = this;
         if (this.state.userName.length < Config.limiters.userNameLength) {
-            return ToastAndroid.show('Enter a UserName', ToastAndroid.SHORT);
+            return Utils.ShowMessage('Enter a UserName');
         }
         if (this.state.phoneNumber.length < Config.limiters.mobileLength) {
 
-            return ToastAndroid.show('Enter a valid Mobile Number', ToastAndroid.SHORT);
+            return Utils.ShowMessage('Enter a valid Mobile Number');
         }
         if (this.state.password.length < 4) {
-            return ToastAndroid.show('Enter valid password', ToastAndroid.SHORT);
+            return Utils.ShowMessage('Enter valid password');
         }
         Axios({
             method: 'post',
@@ -96,7 +97,7 @@ class Login extends Component {
                     response.data.messages.forEach(function (current_value) {
                         message = message + current_value;
                     });
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                Utils.ShowMessage(message);
 
             }
         }).catch((error) => {
@@ -106,14 +107,14 @@ class Login extends Component {
     }
 
     getUserToken() {
-        ToastAndroid.show('wrong', ToastAndroid.SHORT);
+        Utils.ShowMessage('wrong');
 
         AsyncStorage.getItem('advaitha:usertoken', (err, token) => {
             console.log('asdfasdfasdfgad', err, token);
             if (err) {
-                ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
+                Utils.ShowMessage('Something went wrong');
             } else {
-                ToastAndroid.show('Some', ToastAndroid.SHORT);
+                Utils.ShowMessage('Some');
 
                 callback(token);
             }

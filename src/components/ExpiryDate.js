@@ -1,12 +1,12 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { ActivityIndicator,View, ToastAndroid,ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { ActivityIndicator,View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems,MailBox,CSpinner, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
-
+import Utils from './common/Utils';
 export default class ExpiryDate extends Component {
 
     state = {
@@ -215,7 +215,7 @@ export default class ExpiryDate extends Component {
     sendMail(){
         const self=this;        
         if(this.state.mail.trim().length == 0){
-            return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+            return Utils.ShowMessage("Please Enter Email");
         }
         
         if(/^\S+@\S+\.\S+/.test(this.state.mail)){
@@ -224,7 +224,7 @@ export default class ExpiryDate extends Component {
             var  tempURL = "email="+this.state.mail+"&fromDate=&page=&regNumber=&size=&sort="+JSON.stringify(sort)+"&toDate=";
             this.sendReportsData(Config.routes.base +Config.routes.expiryTrucksMail + tempURL);
         }else{
-            return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+            return   Utils.ShowMessage('Please Enter Valid Mail ID');  
         }   
                
     }
@@ -245,7 +245,7 @@ export default class ExpiryDate extends Component {
                    response.data.messages.forEach(function(current_value) {
                        message = message+current_value;
                    });
-                   ToastAndroid.show(message, ToastAndroid.SHORT);
+                   Utils.ShowMessage(message);
                    this.ShowModalFunction(!this.state.showMail);
                 } else {
                     //console.log('reponse in update erpSettingData ==>', response);
@@ -254,13 +254,13 @@ export default class ExpiryDate extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
 
             }).catch((error) => {
                 console.log('error in ExpiryDate ==>', error);
                 this.setState({spinnerBool:false});
-                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+                Utils.ShowMessage("Something went Wrong,Please Try again ");
             })
     }
     

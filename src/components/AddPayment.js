@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
     View, Image, Text, Picker, DatePickerAndroid,
-    CheckBox, TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
+    CheckBox, TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-
+import Utils from './common/Utils';
 export default class AddPayment extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
     state = {
@@ -75,7 +75,7 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in editPaymentAPI ==>', error);
@@ -131,7 +131,7 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
@@ -140,7 +140,7 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in callAddPaymentAPI ==>', error);
@@ -208,20 +208,20 @@ export default class AddPayment extends Component {
                                     };
                                 this.callAddPaymentAPI(postData);
                             }else{
-                                ToastAndroid.show('Please Enter Reference Number to '+ this.state.paymentType, ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Enter Reference Number to '+ this.state.paymentType);
                             } 
                         }  
                     }else{
-                        ToastAndroid.show('Please Select Payment Type ', ToastAndroid.SHORT);
+                        Utils.ShowMessage('Please Select Payment Type ');
                     }                    
                 }else{
-                    ToastAndroid.show('Please Enter Amount ', ToastAndroid.SHORT);
+                    Utils.ShowMessage('Please Enter Amount ');
                 }
             }else{
-                ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Select Party Name');
             }
         }else{
-            ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
+            Utils.ShowMessage('Please  Select Date');
         }
     }
 

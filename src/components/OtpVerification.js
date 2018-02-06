@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,ToastAndroid} from 'react-native';
+import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
-
+import Utils from './common/Utils';
 class OtpVerification extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
@@ -23,13 +23,13 @@ class OtpVerification extends Component{
  
     onVerifyOTP() {
             if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.otpLength) {       
-                ToastAndroid.show('Enter a 6 digits OTP Number', ToastAndroid.SHORT);
+                Utils.ShowMessage('Enter a 6 digits OTP Number');
         } else {
             if(this.state.phoneNumber.length == Config.limiters.otpLength){
                 this.callOtpVerfiyAPI(Config.routes.base + Config.routes.OtpVerfication,this.state.phoneNumber);
                     //Actions.POP();-OtpVerfication
             }else{
-                ToastAndroid.show('Enter a 6 digits OTP Number', ToastAndroid.SHORT);
+                Utils.ShowMessage('Enter a 6 digits OTP Number');
             }
         }
     }
@@ -55,7 +55,7 @@ class OtpVerification extends Component{
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                     console.log('fail in verify-otp ==>', response);
                     self.setState({ spinnerBool:false });
@@ -63,7 +63,7 @@ class OtpVerification extends Component{
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in verify-otp ==>', error);

@@ -166,6 +166,9 @@ export default class TruckList extends Component {
         return data;
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log('nextProps====',nextProps);
+    }
     render() {
         const self=this;
         return(      
@@ -177,11 +180,11 @@ export default class TruckList extends Component {
                             data={this.state.trucks}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                            <TouchableOpacity
-                            onPress={() => { this.setState({
-                                                categoryBgColor: !this.state.categoryBgColor
-                                                 });}}
-                            >
+                            // <TouchableOpacity
+                            // onPress={() => { this.setState({
+                            //                     categoryBgColor: !this.state.categoryBgColor
+                            //                      });}}
+                            // >
                         
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
@@ -261,7 +264,7 @@ export default class TruckList extends Component {
                                         </View>                        
                                     </View>
                                 </View>
-                                </TouchableOpacity>
+                                //</TouchableOpacity>
                             }
                             keyExtractor={item => item._id} />
                         

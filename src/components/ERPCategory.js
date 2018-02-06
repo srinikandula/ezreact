@@ -1,14 +1,14 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ToastAndroid,ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
 import { ExpiryDateItems,Card,MailBox,CustomEditText,Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNCOpenDoc from 'react-native-open-doc';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class ERPCategory extends Component {
     state = {
@@ -65,25 +65,25 @@ export default class ERPCategory extends Component {
                     if(self.props.navigation.state.params.mode == 'Expense'){
                         self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                         if(response.data.expenses.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
                     }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
                         if(response.data.revenue.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
                     }else if(self.props.navigation.state.params.mode == 'Payments'){
                         self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
                         if(response.data.paybleAmounts.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }else if(self.props.navigation.state.params.mode == 'Receivables'){
                         self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                         if(response.data.parties.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }                                      
@@ -269,7 +269,7 @@ export default class ERPCategory extends Component {
                      if(str == 'Payments'){
                         self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
                         if(response.data.paybleAmounts.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         Actions.refresh({token: self.props.navigation.state.params.token,
                             Url: Config.routes.base + Config.routes.totalPayeblesPayment,
@@ -280,7 +280,7 @@ export default class ERPCategory extends Component {
                     }else {
                         self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                         if(response.data.parties.length == 0){
-                            ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                            Utils.ShowMessage('No Records Found');
                         }
                         Actions.refresh({token: self.props.navigation.state.params.token,
                             //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
@@ -358,7 +358,7 @@ export default class ERPCategory extends Component {
             case "revenue" :
                 if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
                 {
-                        ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Select Dates or Vechicle");
                     
                 }else{
 
@@ -374,7 +374,7 @@ export default class ERPCategory extends Component {
                             "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.rMaxPassdate);
                             this.searchReportsData(Config.routes.base +Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
                         }else{
-                            ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Invalid Date Selection");
                         }
                     }else{
                         this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
@@ -388,7 +388,7 @@ export default class ERPCategory extends Component {
         case "expense" :
             if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
             {
-                    ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Select Dates or Vechicle");
                 
             }else{
                 if(this.state.selectedTruckId.includes('Select  Vechiles'))
@@ -403,7 +403,7 @@ export default class ERPCategory extends Component {
                         "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.expMaxPassdate);
                         this.searchReportsData(Config.routes.base +Config.routes.filterTotalExpensesForAllVehicles + this.state.erpSettings.revenue);
                     }else{
-                        ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Invalid Date Selection");
                     }
                 }else{
                     this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
@@ -416,7 +416,7 @@ export default class ERPCategory extends Component {
         case "payment" :
             if(this.state.selectedTruckId.includes('Select Parties') && this.state.pMinPassdate === '' && this.state.pMaxPassdate === '')
             {
-                    ToastAndroid.show("Please Select Dates or Vechicle", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Select Dates or Vechicle");
                 
             }else{
                 var partyID = '';
@@ -436,7 +436,7 @@ export default class ERPCategory extends Component {
 
 
                     }else{
-                        ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Invalid Date Selection");
                     }
                 }else{
                     this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
@@ -449,7 +449,7 @@ export default class ERPCategory extends Component {
     case "receivables" :
         if(this.state.selectedTruckId.includes('Select Parties') && this.state.recMinPassdate === '' && this.state.recMaxPassdate === '')
         {
-                ToastAndroid.show("Please Select Dates or Parties", ToastAndroid.SHORT);
+                Utils.ShowMessage("Please Select Dates or Parties");
             
         }else{
             var partyID = '';
@@ -469,7 +469,7 @@ export default class ERPCategory extends Component {
 
 
                 }else{
-                    ToastAndroid.show("Invalid Date Selection", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Invalid Date Selection");
                 }
             }else{
                 this.state.erpSettings.revenue = "fromDate=&page=&regNumber="+this.state.selectedTruckId+
@@ -524,22 +524,22 @@ export default class ERPCategory extends Component {
                    if(self.props.navigation.state.params.mode == 'Expense'){
                     this.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
                     if(response.data.expenses.length == 0){
-                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        Utils.ShowMessage('No Records Found');
                     }
                 }else if(self.props.navigation.state.params.mode == 'Revenue'){
                     this.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
                     if(response.data.revenue.length == 0){
-                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);//receivables
+                        Utils.ShowMessage('No Records Found');//receivables
                     }
                 }else if(self.props.navigation.state.params.mode == 'Receivables'){
                     this.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
                     if(response.data.parties.length == 0){
-                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        Utils.ShowMessage('No Records Found');
                     }
                 }else {
                     this.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
                     if(response.data.paybleAmounts.length == 0){
-                        ToastAndroid.show('No Records Found', ToastAndroid.SHORT);
+                        Utils.ShowMessage('No Records Found');
                     }
                 }
 
@@ -550,13 +550,13 @@ export default class ERPCategory extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
 
             }).catch((error) => {
                 console.log('error in erpSettingData ==>', error);
                 this.setState({spinnerBool:false});
-                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+                Utils.ShowMessage("Something went Wrong,Please Try again ");
             })
     }
 
@@ -602,8 +602,6 @@ export default class ERPCategory extends Component {
         const self=this;        
           switch(mode) {
               case "Revenue":
-
-
                 if(this.state.selectedTruckId.includes('Select  Vechiles'))
                 {
                     this.setState({selectedTruckId:''});
@@ -617,7 +615,7 @@ export default class ERPCategory extends Component {
                 }
 
                 if(this.state.mail.trim().length == 0){
-                    return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+                    return Utils.ShowMessage("Please Enter Email");
                 }
                 var rMinPassdate = ''
                 if(this.state.rMinPassdate.length>1 ){
@@ -638,7 +636,7 @@ export default class ERPCategory extends Component {
                     this.sendReportsData(Config.routes.base +Config.routes.revenueMail + tempURL);
                    
                 }else{
-                    return   ToastAndroid.show('Pleaseytu Enter Valid Mail ID', ToastAndroid.SHORT);  
+                    return   Utils.ShowMessage('Pleaseytu Enter Valid Mail ID');  
                 }   
                 return;
               break;
@@ -649,7 +647,7 @@ export default class ERPCategory extends Component {
               }
 
               if(this.state.mail.trim().length == 0){
-                  return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+                  return Utils.ShowMessage("Please Enter Email");
               }
               var expMinPassdate = ''
               if(this.state.expMinPassdate.length>1 ){
@@ -667,7 +665,7 @@ export default class ERPCategory extends Component {
                   "&size=&sort="+JSON.stringify(sort)+"&toDate="+expMaxPassdate;
                   this.sendReportsData(Config.routes.base +Config.routes.expenseMail + tempURL);
               }else{
-                  return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+                  return   Utils.ShowMessage('Please Enter Valid Mail ID');  
               }   
               return;
             break;
@@ -678,7 +676,7 @@ export default class ERPCategory extends Component {
             }
 
             if(this.state.mail.trim().length == 0){
-                return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+                return Utils.ShowMessage("Please Enter Email");
             }
             var pMinPassdate = ''
             if(this.state.pMinPassdate.length>1 ){
@@ -696,7 +694,7 @@ export default class ERPCategory extends Component {
                 "&size=&sort="+JSON.stringify(sort)+"&toDate="+pMaxPassdate;
                 this.sendReportsData(Config.routes.base +Config.routes.paymentsMail + tempURL);
             }else{
-                return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+                return   Utils.ShowMessage('Please Enter Valid Mail ID');  
             }   
             return;
           break;
@@ -707,7 +705,7 @@ export default class ERPCategory extends Component {
           }
 
           if(this.state.mail.trim().length == 0){
-              return ToastAndroid.show("Please Enter Email",ToastAndroid.SHORT);
+              return Utils.ShowMessage("Please Enter Email");
           }
           var recMinPassdate = ''
           if(this.state.recMinPassdate.length>1 ){
@@ -725,7 +723,7 @@ export default class ERPCategory extends Component {
               "&size=&sort="+JSON.stringify(sort)+"&toDate="+recMaxPassdate;
               this.sendReportsData(Config.routes.base +Config.routes.receivablesMail + tempURL);
           }else{
-              return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+              return   Utils.ShowMessage('Please Enter Valid Mail ID');  
           }   
           return;
         break;
@@ -755,7 +753,7 @@ export default class ERPCategory extends Component {
                    response.data.messages.forEach(function(current_value) {
                        message = message+current_value;
                    });
-                   ToastAndroid.show(message, ToastAndroid.SHORT);
+                   Utils.ShowMessage(message);
                    this.ShowModalFunction(!this.state.showMail);
                 } else {
                     //console.log('reponse in update erpSettingData ==>', response);
@@ -764,13 +762,13 @@ export default class ERPCategory extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
 
             }).catch((error) => {
                 console.log('error in erpSettingData ==>', error);
                 this.setState({spinnerBool:false});
-                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+                Utils.ShowMessage("Something went Wrong,Please Try again ");
             })
     }
 

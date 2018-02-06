@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {View, Image, Text, Picker, FlatList,
-            TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
+            TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
         } from 'react-native';
 import CheckBox from 'react-native-checkbox';
 import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-
+import Utils from './common/Utils';
 export default class AddParty extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   
@@ -63,7 +63,7 @@ export default class AddParty extends Component {
                     response.data.message.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in editpartyIDAPI ==>', error);
@@ -143,7 +143,7 @@ export default class AddParty extends Component {
                         if(current_value.includes('Unauthorized access'))
                         this.props.navigation.navigate('login');
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                     self.setState({ spinnerBool:false });
                     let message ="";
@@ -151,7 +151,7 @@ export default class AddParty extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in addParty ==>', error);
@@ -171,7 +171,7 @@ export default class AddParty extends Component {
             if(/^\S+@\S+\.\S+/.test(this.state.PartyMailID)){
                 console.log("lll");
             }else{
-                return   ToastAndroid.show('Please Enter Valid Mail ID', ToastAndroid.SHORT);  
+                return   Utils.ShowMessage('Please Enter Valid Mail ID');  
             }           
         }
 
@@ -210,21 +210,21 @@ export default class AddParty extends Component {
                                     };
                                     this.callAddPartytAPI(postData);
                             }else{
-                                ToastAndroid.show('Please Add Trip Lanes ', ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Add Trip Lanes ');
                             }
                         }
                         
                     }else{
-                        ToastAndroid.show('Please Select Notification Type ', ToastAndroid.SHORT);                
+                        Utils.ShowMessage('Please Select Notification Type ');                
                     }
                 }else{
-                    ToastAndroid.show('Please Select Role', ToastAndroid.SHORT);
+                    Utils.ShowMessage('Please Select Role');
                 }
             }else{
-                ToastAndroid.show('Please Enter Party Contact', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Enter Party Contact');
             }            
         }else{
-            ToastAndroid.show('Please Enter Party Name', ToastAndroid.SHORT);
+            Utils.ShowMessage('Please Enter Party Name');
         }
     }
 
@@ -307,15 +307,15 @@ export default class AddParty extends Component {
                       
                     }else{
                         this.setState({checkTrip: false});
-                        ToastAndroid.show('Please Enter operation lane name ', ToastAndroid.SHORT);
+                        Utils.ShowMessage('Please Enter operation lane name ');
                     }
                 }else{
                     this.setState({checkTrip: false});
-                    ToastAndroid.show('Please Enter Destination location ', ToastAndroid.SHORT);
+                    Utils.ShowMessage('Please Enter Destination location ');
                 }
             }else{
                 this.setState({checkTrip: false});
-                ToastAndroid.show('Please Enter from location', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Enter from location');
             }   
             
         }

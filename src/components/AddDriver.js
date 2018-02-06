@@ -18,6 +18,7 @@ export default class AddDriver extends Component {
         name: '',
         mobile:'',
         licenseNo:'',
+        accountId:'',
         salaryPM:'',
         selectedTruckId: '',
         date: "",
@@ -95,7 +96,8 @@ export default class AddDriver extends Component {
                         passdate:this.getDateISo(driverDetails.licenseValidity),
                         selectedTruckId: truckID,
                         salaryPM:""+driverDetails.salary,
-                        activeMe:driverDetails.isActive
+                        activeMe:driverDetails.isActive,
+                        accountId:driverDetails.accountId
                     });
         for (let index = 0; index < 10; index++) {
             this.moveInputLabelUp(index, "")
@@ -198,6 +200,7 @@ export default class AddDriver extends Component {
         if(this.props.navigation.state.params.edit){
             methodType = 'put';
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
             url = Config.routes.base + Config.routes.addDriver
         }
         Axios({
@@ -211,7 +214,7 @@ export default class AddDriver extends Component {
                 console.log(postdata,'<--addDriver ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
-                    
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -226,8 +229,7 @@ export default class AddDriver extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
-                    
+                    ToastAndroid.show(message, ToastAndroid.SHORT);                    
                 }
             }).catch((error) => {
                 console.log('error in addDriver ==>', error);

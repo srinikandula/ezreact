@@ -117,7 +117,8 @@ export default class AddGroup extends Component {
                 console.log(postdata,'<--addGroup ==>', response.data);
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
-                    Actions.pop();
+                    //Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {

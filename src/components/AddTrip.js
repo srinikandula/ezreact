@@ -174,6 +174,7 @@ export default class AddTrip extends Component {
                     
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {

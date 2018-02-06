@@ -28,6 +28,7 @@ export default class AddTruck extends Component {
         pollpassdate:'',
         insurpassdate:'',
         selectedDriverId:'',
+        accountId:'',
         Amount:'',
         paymentref:'',
         remark:'',
@@ -111,7 +112,8 @@ export default class AddTruck extends Component {
                         fitnesspassdate:this.getDateISo(truckDetails.fitnessExpiry),
                         pollpassdate:this.getDateISo(truckDetails.pollutionExpiry),
                         insurpassdate:this.getDateISo(truckDetails.insuranceExpiry),
-                        selectedDriverId: drivrID
+                        selectedDriverId: drivrID,
+                        accountId:truckDetails.accountId
                     });
         for (let index = 0; index < 10; index++) {
             this.moveInputLabelUp(index, "")
@@ -142,6 +144,7 @@ export default class AddTruck extends Component {
         if(this.props.navigation.state.params.edit){
             methodType = 'put';
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
         }
         Axios({
             method: methodType,
@@ -155,6 +158,7 @@ export default class AddTruck extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {

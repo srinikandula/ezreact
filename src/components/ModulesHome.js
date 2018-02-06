@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, BackHandler, Alert } from 'react-native';
-var count=0;
+var count = 0;
 export default class ModulesHome extends Component {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', function () {
             count++;
-            if(count===1){
+            if (count === 1) {
                 Alert.alert('', 'Do you want to exit app?', [
-                      {text: 'Cancel', onPress: () => {count--}, style: 'cancel'},
-                      {text: 'OK', onPress: () => {count=0;BackHandler.exitApp()}}, ],{ cancelable: false }
-                  )
+                    { text: 'Cancel', onPress: () => { count-- }, style: 'cancel' },
+                    { text: 'OK', onPress: () => { count = 0; BackHandler.exitApp() } },], { cancelable: false }
+                )
             }
-            console.log('back button pressed',count);
+            console.log('back button pressed', count);
             return true;
         })
     }
@@ -21,7 +21,7 @@ export default class ModulesHome extends Component {
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
-                        <TouchableOpacity onPress={() => {/* this.props.navigation.navigate('Profile') */}}>
+                        <TouchableOpacity onPress={() => {/* this.props.navigation.navigate('Profile') */ }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}
@@ -73,11 +73,11 @@ export default class ModulesHome extends Component {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-                <View style={{flex: 1,alignItems: 'center', justifyContent: 'center'}}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text>
                         Landing Screen
                         </Text>
-                    </View>
+                </View>
             </View>
         );
     }

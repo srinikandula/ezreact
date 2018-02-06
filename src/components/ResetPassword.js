@@ -3,6 +3,7 @@ import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimension
 import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
+import Utils from './common/Utils';
 
 class ResetPassword extends Component{
      state = {};
@@ -44,7 +45,8 @@ class ResetPassword extends Component{
                 if(this.state.password == this.state.cpassword){
                         this.props.navigation.navigate('tab1')
                 }else{
-                    ToastAndroid.show(' Password does not match', ToastAndroid.SHORT);
+                    Utils.ShowMessage(' Password does not match');
+
                 }
              }   
         }

@@ -35,6 +35,10 @@ import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
 import ModulesHome from './components/ModulesHome';
+import AddGroup from './components/AddGroup';
+import DriverSelectionList from './components/DriverSelectionList';
+import GroupsList from './components/GroupsList';
+
 
 class FooterTabs extends Component {
 	render () {
@@ -157,6 +161,15 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 	},
 	AddTrip: {
 		screen: AddTrip,
+		navigationOptions: {
+			headerTitle: 'Add Trip',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerStyle: { backgroundColor: '#1e4495' },
+			headerTintColor: '#fff'
+		}
+	},
+	AddGroup: {
+		screen: AddGroup,
 		navigationOptions: {
 			headerTitle: 'Add Trip',
 			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },

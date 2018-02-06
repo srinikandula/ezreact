@@ -74,7 +74,7 @@ export default class AddDriver extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in editdriverAPI ==>', error);
@@ -217,8 +217,8 @@ export default class AddDriver extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
-                    this.props.navigation.goBack();
+                    Utils.ShowMessage(message);    
+                this.props.navigation.goBack();
                 } else {
                     self.setState({ spinnerBool:false });
                     let message ="";
@@ -226,7 +226,8 @@ export default class AddDriver extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+
+                    Utils.ShowMessage(message);
                     
                 }
             }).catch((error) => {

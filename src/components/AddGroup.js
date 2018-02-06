@@ -6,6 +6,9 @@ import CheckBox from 'react-native-checkbox';
 import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
+import Utils from './common/Utils';
+
+
 import CustomStyles from './common/CustomStyles';
 import { Actions } from 'react-native-router-flux';
 
@@ -53,7 +56,9 @@ export default class AddGroup extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+                    
+
                 }
             }).catch((error) => {
                 console.log('error in getGroupDetails ==>', error);
@@ -123,7 +128,8 @@ export default class AddGroup extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+                    
                 } else {
                     self.setState({ spinnerBool:false });
                     let message ="";
@@ -131,7 +137,8 @@ export default class AddGroup extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+                    
                 }
             }).catch((error) => {
                 console.log('error in addGroup ==>', error);
@@ -165,31 +172,49 @@ export default class AddGroup extends Component {
                                                 console.log('postData',postData);
                                                 this.callAddGroupAPI(postData);
                                     }else{
-                                        ToastAndroid.show('Please Select ERP/GPS ', ToastAndroid.SHORT);
+                                                            Utils.ShowMessage('Please Select ERP/GPS ');
+
+
                                     }
                                     }else{
-                                        ToastAndroid.show('Please Enter Location Name ', ToastAndroid.SHORT); 
+                                                            Utils.ShowMessage('Please Enter Location Name ');
+
+ 
                                     }
                                 }else{
-                                    ToastAndroid.show('Please Enter Contact Number ', ToastAndroid.SHORT); 
+                                                        Utils.ShowMessage('Please Enter Contact Number ');
+
+
                                 }
                             }else{
-                                ToastAndroid.show('Please Enter Contact Name ', ToastAndroid.SHORT); 
+                                                    Utils.ShowMessage('Please Enter Contact Name ');
+
+
                             }
                         }else{
-                            ToastAndroid.show('Please Select Vehicles ', ToastAndroid.SHORT); 
+                                                Utils.ShowMessage('Please Select Vehicles ');
+
+
                         }
                     }else{
-                        ToastAndroid.show('Enter Confirm Password does not Match  ', ToastAndroid.SHORT); 
+                                            Utils.ShowMessage('Enter Confirm Password does not Match  ');
+
+
                     }
                 }else{
-                    ToastAndroid.show('Please Enter Password', ToastAndroid.SHORT); 
+                                        Utils.ShowMessage('Please Enter Password');
+
+
                 }
             }else{
-                ToastAndroid.show('Please Enter Group User Name', ToastAndroid.SHORT); 
+                                    Utils.ShowMessage('Please Enter Group User Name');
+
+
             }
         }else{
-            ToastAndroid.show('Please Enter Group Name', ToastAndroid.SHORT); 
+                                Utils.ShowMessage('Please Enter Group Name');
+
+
         }
        
 

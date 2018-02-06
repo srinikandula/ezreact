@@ -101,7 +101,7 @@ export default class AddExpense extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);                    
                 }
             }).catch((error) => {
                 console.log('error in editExpenseAPI ==>', error);
@@ -163,7 +163,9 @@ export default class AddExpense extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+                    
+
                 } else {
                     self.setState({ spinnerBool:false });
                     let message ="";
@@ -171,7 +173,9 @@ export default class AddExpense extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+                    
+
                 }
             }).catch((error) => {
                 console.log('error in addExpense ==>', error);
@@ -219,7 +223,8 @@ export default class AddExpense extends Component {
                 if(!this.state.selectedExpenseType.includes("Select Expense Type")){
                     if(this.state.selectedExpenseType.includes("other")){
                         if(this.state.otherExpense.trim().length == 0){
-                            return ToastAndroid.show('Please Enter Expense Type', ToastAndroid.SHORT);    
+                            return 
+                            Utils.ShowMessage('Please Enter Expense Type');   
                         } 
                     }
 
@@ -243,7 +248,7 @@ export default class AddExpense extends Component {
                                 console.log('postdata',postData);
                                 this.callAddExpenseAPI(postData);                                
                             }else{
-                                ToastAndroid.show('Please Enter Expense Amount', ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Enter Expense Amount');   
                             }
 
                         }else{
@@ -266,26 +271,40 @@ export default class AddExpense extends Component {
                                         console.log('postdata',postData);
                                         this.callAddExpenseAPI(postData); 
                                         }else{
-                                            ToastAndroid.show('Please Enter  Paid Amount', ToastAndroid.SHORT);
+                                                                Utils.ShowMessage('Please Enter  Paid Amount');
+
+
                                         }
                                 }else{
-                                    ToastAndroid.show('Please Enter Expense Total Amount', ToastAndroid.SHORT);
+                                                        Utils.ShowMessage('Please Enter Expense Total Amount');
+
+
                                 }
                             }else{
-                                ToastAndroid.show('Please Select Party', ToastAndroid.SHORT);
+                                                    Utils.ShowMessage('Please Select Party');
+
+
                             }
                         }
                     }else{
-                        ToastAndroid.show('Please Select payment Type', ToastAndroid.SHORT);
+                                            Utils.ShowMessage('Please Select payment Type');
+
+
                     }                 
                 }else{
-                    ToastAndroid.show('Please Select Driver', ToastAndroid.SHORT);
+                                        Utils.ShowMessage('Please Select Driver');
+
+
                 }
             }else{
-                ToastAndroid.show('Please Select Vehicle', ToastAndroid.SHORT);
+                                    Utils.ShowMessage('Please Select Vehicle');
+
+
             }
         }else{
-            ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please  Select Date');
+
+
         }
     }
 

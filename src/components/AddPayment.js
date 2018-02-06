@@ -75,7 +75,8 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+
                 }
             }).catch((error) => {
                 console.log('error in editPaymentAPI ==>', error);
@@ -130,7 +131,8 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
+
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
@@ -139,7 +141,7 @@ export default class AddPayment extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in callAddPaymentAPI ==>', error);
@@ -207,20 +209,25 @@ export default class AddPayment extends Component {
                                     };
                                 this.callAddPaymentAPI(postData);
                             }else{
-                                ToastAndroid.show('Please Enter Reference Number to '+ this.state.paymentType, ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Enter Reference Number to '+ this.state.paymentType);
+
                             } 
                         }  
                     }else{
-                        ToastAndroid.show('Please Select Payment Type ', ToastAndroid.SHORT);
+                        Utils.ShowMessage('Please Select Payment Type ');
+
                     }                    
                 }else{
-                    ToastAndroid.show('Please Enter Amount ', ToastAndroid.SHORT);
+                    Utils.ShowMessage('Please Enter Amount ');
+
                 }
             }else{
-                ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Select Party Name');
+
             }
         }else{
-            ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
+            Utils.ShowMessage('Please  Select Date');
+
         }
     }
 

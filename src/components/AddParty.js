@@ -70,8 +70,7 @@ export default class AddParty extends Component {
             })
     }
 
-    updateViewdate(partyDetails){
-        
+    updateViewdate(partyDetails){        
         console.log('partyDetails',partyDetails);
         this.setState({partyName:partyDetails.name,
                         partyContact:''+partyDetails.contact,
@@ -83,15 +82,19 @@ export default class AddParty extends Component {
                         isSms : partyDetails.isSms,
                         accountId:partyDetails.accountId
                     });
-                    if(partyDetails.partyType.includes('Transporter')){
-                        this.setState({
-                            transporterBool:'flex',suppliereBool:'none', role:'Transporter'        
-                        });
-                    }else{
-                        this.setState({
-                            transporterBool:'none', suppliereBool:'flex', role:'Supplier'
-                        });
-                    }
+        if(partyDetails.partyType.includes('Transporter')){
+            this.setState({
+                transporterBool:'flex',suppliereBool:'none', role:'Transporter'        
+            });
+        }else{
+            this.setState({
+                transporterBool:'none', suppliereBool:'flex', role:'Supplier'
+            });
+        }
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
     }
 
     getDateDDMMYY(dateString){

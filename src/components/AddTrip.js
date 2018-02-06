@@ -144,6 +144,10 @@ export default class AddTrip extends Component {
         this.updateLaneList(paymentDetails.partyId);
         this.getTruckNum(paymentDetails.registrationNo);
         this.getDriverName(paymentDetails.driverId);
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
 
     }
 

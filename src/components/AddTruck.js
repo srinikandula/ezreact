@@ -113,6 +113,10 @@ export default class AddTruck extends Component {
                         insurpassdate:this.getDateISo(truckDetails.insuranceExpiry),
                         selectedDriverId: drivrID
                     });
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
     }
 
     getDateDDMMYY(dateString){

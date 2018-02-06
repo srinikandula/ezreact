@@ -96,7 +96,10 @@ export default class AddPayment extends Component {
                         paymentref:paymentDetails.paymentRefNo},()=>{
             console.log(this.state.selectedPartyId);
         });
-
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
     }
 
     callAddPaymentAPI(postdata){
@@ -295,7 +298,8 @@ export default class AddPayment extends Component {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                    <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field9]}>Party Name</CustomText>
                         <Picker
                             style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                             selectedValue={this.state.selectedPartyId}
@@ -312,6 +316,7 @@ export default class AddPayment extends Component {
                                 onChangeText={(Amount) => {this.moveInputLabelUp(2, Amount), this.setState({Amount:Amount})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Payment mode</CustomText>
                             <Picker
                                 style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                 selectedValue={this.state.paymentType}

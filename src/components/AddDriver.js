@@ -97,6 +97,10 @@ export default class AddDriver extends Component {
                         salaryPM:""+driverDetails.salary,
                         activeMe:driverDetails.isActive
                     });
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
     }
 
     getDateDDMMYY(dateString){
@@ -298,6 +302,7 @@ export default class AddDriver extends Component {
                                 </View>
                             </TouchableOpacity>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Truck Num</CustomText>
                                 <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedTruckId}
@@ -314,7 +319,7 @@ export default class AddDriver extends Component {
                                                 value={this.state.salaryPM}
                                                 onChangeText={(salaryPM) => {this.moveInputLabelUp(4, salaryPM), this.setState({salaryPM:salaryPM})}} />
                             </View>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5,marginLeft:10, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <CheckBox
                                         label='Active'
                                         color={'#000000'}

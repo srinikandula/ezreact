@@ -60,8 +60,7 @@ export default class AddGroup extends Component {
             })
     }
 
-    updateViewdate(groupDetails){
-       
+    updateViewdate(groupDetails){       
         this.setState({                  
             groupName: groupDetails.groupName,    
             groupUserName:groupDetails.userName,  
@@ -76,8 +75,12 @@ export default class AddGroup extends Component {
             isGPS : groupDetails.gpsEnabled,
             },()=>{
                 
-            console.log('groupDetails ID',groupDetails._id);
-            });
+        console.log('groupDetails ID',groupDetails._id);
+        });
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+            
+        }
     }
 
     getTruckCount(trucks) {

@@ -124,12 +124,14 @@ export default class AddExpense extends Component {
             console.log('party ID',);
             });
 
-            if(expenseDetails.mode === 'Credit'){
-                this.setState({ creditBool:'flex', cashBool:'none', paymentType:'Credit',selectedPartyID:expenseDetails.partyId,paidAmount:''+expenseDetails.paidAmount});
-            } else {
-                this.setState({ creditBool:'none', cashBool:'flex', paymentType:'Cash',totalAmount:''+expenseDetails.cost});
-            }
-
+        if(expenseDetails.mode === 'Credit'){
+            this.setState({ creditBool:'flex', cashBool:'none', paymentType:'Credit',selectedPartyID:expenseDetails.partyId,paidAmount:''+expenseDetails.paidAmount});
+        } else {
+            this.setState({ creditBool:'none', cashBool:'flex', paymentType:'Cash',totalAmount:''+expenseDetails.cost});
+        }
+        for (let index = 0; index < 10; index++) {
+            this.moveInputLabelUp(index, "")
+        }
     
     }
 

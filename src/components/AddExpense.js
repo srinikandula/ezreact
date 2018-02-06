@@ -158,6 +158,7 @@ export default class AddExpense extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {

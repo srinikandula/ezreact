@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View,Image,Text,CheckBox,TouchableOpacity,ToastAndroid,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
-
+import Utils from './common/Utils';
 class ForgotPin extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
@@ -42,11 +42,11 @@ class ForgotPin extends Component{
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
-                    ToastAndroid.show(response.data.messages, ToastAndroid.SHORT);
+                    Utils.ShowMessage(response.data.messages);
                 }
             }).catch((error) => {
                 console.log('error in forgotPassword ==>', error);
@@ -55,14 +55,14 @@ class ForgotPin extends Component{
    
     getOtpNUmber() {
          if (!this.state.phoneNumber || isNaN(this.state.phoneNumber) || this.state.phoneNumber.length !== Config.limiters.mobileLength) {
-                ToastAndroid.show('Please Enter  Mobile Number', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Enter  Mobile Number');
         } else {
              if(this.state.phoneNumber.length == 10){
-                    ToastAndroid.show(this.state.phoneNumber, ToastAndroid.SHORT);
+                    Utils.ShowMessage(this.state.phoneNumber);
                     this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
             }else{
                 this.setState({message: ' Please Enter 10 digits Mobile nmuber'});
-                ToastAndroid.show(this.state.message, ToastAndroid.SHORT);
+                Utils.ShowMessage(this.state.message);
             }
         }
     }

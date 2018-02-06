@@ -1,14 +1,14 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ToastAndroid, ScrollView, DatePickerAndroid, Picker, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
 import { ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNCOpenDoc from 'react-native-open-doc';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class ERPCategory extends Component {
     state = {
@@ -62,35 +62,28 @@ export default class ERPCategory extends Component {
             .then((response) => {
                 // console.log('ERP CAtegory ==>', response.data);
                 if (response.data.status) {
-                    if (self.props.navigation.state.params.mode == 'Expense') {
-                        self.setState({ expenses: response.data.expenses, totalExpenses: response.data.totalExpenses });
-                        if (response.data.expenses.length == 0) {
+                    if(self.props.navigation.state.params.mode == 'Expense'){
+                        self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
+                        if(response.data.expenses.length == 0){
                             Utils.ShowMessage('No Records Found');
-
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    } else if (self.props.navigation.state.params.mode == 'Revenue') {
-                        self.setState({ recordsList: response.data.revenue, grossAmounts: response.data.grossAmounts });
-                        if (response.data.revenue.length == 0) {
+                    }else if(self.props.navigation.state.params.mode == 'Revenue'){
+                        self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
+                        if(response.data.revenue.length == 0){
                             Utils.ShowMessage('No Records Found');
-
-
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    } else if (self.props.navigation.state.params.mode == 'Payments') {
-                        self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
-                        if (response.data.paybleAmounts.length == 0) {
+                    }else if(self.props.navigation.state.params.mode == 'Payments'){
+                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
+                        if(response.data.paybleAmounts.length == 0){
                             Utils.ShowMessage('No Records Found');
-
-
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    } else if (self.props.navigation.state.params.mode == 'Receivables') {
-                        self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
-                        if (response.data.parties.length == 0) {
+                    }else if(self.props.navigation.state.params.mode == 'Receivables'){
+                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
+                        if(response.data.parties.length == 0){
                             Utils.ShowMessage('No Records Found');
-
-
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }
@@ -272,12 +265,10 @@ export default class ERPCategory extends Component {
             .then((response) => {
                 //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
                 if (response.data.status) {
-                    if (str == 'Payments') {
-                        self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
-                        if (response.data.paybleAmounts.length == 0) {
+                     if(str == 'Payments'){
+                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
+                        if(response.data.paybleAmounts.length == 0){
                             Utils.ShowMessage('No Records Found');
-
-
                         }
                         Actions.refresh({
                             token: self.props.navigation.state.params.token,
@@ -287,12 +278,10 @@ export default class ERPCategory extends Component {
                             label: 'Total Payments Details'
                         });
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    } else {
-                        self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
-                        if (response.data.parties.length == 0) {
+                    }else {
+                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
+                        if(response.data.parties.length == 0){
                             Utils.ShowMessage('No Records Found');
-
-
                         }
                         Actions.refresh({
                             token: self.props.navigation.state.params.token,
@@ -367,30 +356,28 @@ export default class ERPCategory extends Component {
         }
     }
 
-    sendSettingData(category) {
-        switch (category) {
-            case "revenue":
-                if (this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
-                    Utils.ShowMessage("Please Select Dates or Vechicle");
+    sendSettingData(category){
+        switch(category){
+            case "revenue" :
+                if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
+                {
+                        Utils.ShowMessage("Please Select Dates or Vechicle");
+                    
+                }else{
 
-
-
-                } else {
-
-                    if (this.state.selectedTruckId.includes('Select  Vechiles')) {
-                        this.setState({ selectedTruckId: '' });
+                    if(this.state.selectedTruckId.includes('Select  Vechiles'))
+                    {
+                        this.setState({selectedTruckId:''});
                     }
-                    var sort = { "createdAt": -1 };
-                    if (this.state.rMaxDate.includes('/') && this.state.rMinDate.includes('/')) {
-                        if (this.getDaysfunction(new Date(this.state.rMinPassdate), new Date(this.state.rMaxPassdate)) > 0) {
-
-                            this.state.erpSettings.revenue = "fromDate=" + this.getISODate(this.state.rMinPassdate) + "&page=&regNumber=" + this.state.selectedTruckId +
-                                "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + this.getISODate(this.state.rMaxPassdate);
-                            this.searchReportsData(Config.routes.base + Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
-                        } else {
+                    var sort = {"createdAt":-1};
+                    if(this.state.rMaxDate.includes('/') && this.state.rMinDate.includes('/')){
+                        if(this.getDaysfunction(new Date(this.state.rMinPassdate),new Date(this.state.rMaxPassdate)) > 0){
+                            
+                            this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.rMinPassdate)+"&page=&regNumber="+this.state.selectedTruckId+
+                            "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.rMaxPassdate);
+                            this.searchReportsData(Config.routes.base +Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
+                        }else{
                             Utils.ShowMessage("Invalid Date Selection");
-
-
                         }
                     } else {
                         this.state.erpSettings.revenue = "fromDate=&page=&regNumber=" + this.state.selectedTruckId +
@@ -793,12 +780,111 @@ export default class ERPCategory extends Component {
 
 
                 }
-                return;
-                break;
+                
 
-            default:
-                break;
-        }
+                if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                    var sort = {"createdAt":-1};
+
+                    var  tempURL = "email="+this.state.mail+"&fromDate="+rMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                    "&size=&sort="+JSON.stringify(sort)+"&toDate="+rMaxPassdate;
+                    this.sendReportsData(Config.routes.base +Config.routes.revenueMail + tempURL);
+                   
+                }else{
+                    return   Utils.ShowMessage('Pleaseytu Enter Valid Mail ID');  
+                }   
+                return;
+              break;
+        case "Expense":
+              if(this.state.selectedTruckId.includes('Select  Vechiles'))
+              {
+                  this.setState({selectedTruckId:''});
+              }
+
+              if(this.state.mail.trim().length == 0){
+                  return Utils.ShowMessage("Please Enter Email");
+              }
+              var expMinPassdate = ''
+              if(this.state.expMinPassdate.length>1 ){
+                expMinPassdate= this.getISODate(this.state.expMinPassdate)
+              }
+
+              var expMaxPassdate = ''
+              if(this.state.expMaxPassdate.length>1 ){
+                expMaxPassdate= this.getISODate(this.state.expMaxPassdate)
+              }
+
+              if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                  var sort = {"createdAt":-1};
+                  var  tempURL = "email="+this.state.mail+"&fromDate="+expMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                  "&size=&sort="+JSON.stringify(sort)+"&toDate="+expMaxPassdate;
+                  this.sendReportsData(Config.routes.base +Config.routes.expenseMail + tempURL);
+              }else{
+                  return   Utils.ShowMessage('Please Enter Valid Mail ID');  
+              }   
+              return;
+            break;
+        case "Payments":
+            if(this.state.selectedTruckId.includes('Select  Parties'))
+            {
+                this.setState({selectedTruckId:''});
+            }
+
+            if(this.state.mail.trim().length == 0){
+                return Utils.ShowMessage("Please Enter Email");
+            }
+            var pMinPassdate = ''
+            if(this.state.pMinPassdate.length>1 ){
+              pMinPassdate= this.getISODate(this.state.pMinPassdate)
+            }
+
+            var pMaxPassdate = ''
+            if(this.state.pMaxPassdate.length>1 ){
+              pMaxPassdate= this.getISODate(this.state.pMaxPassdate)
+            }
+
+            if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+                var sort = {"createdAt":-1};
+                var  tempURL = "email="+this.state.mail+"&fromDate="+pMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+                "&size=&sort="+JSON.stringify(sort)+"&toDate="+pMaxPassdate;
+                this.sendReportsData(Config.routes.base +Config.routes.paymentsMail + tempURL);
+            }else{
+                return   Utils.ShowMessage('Please Enter Valid Mail ID');  
+            }   
+            return;
+          break;
+    case "Receivables":
+          if(this.state.selectedTruckId.includes('Select  Parties'))
+          {
+              this.setState({selectedTruckId:''});
+          }
+
+          if(this.state.mail.trim().length == 0){
+              return Utils.ShowMessage("Please Enter Email");
+          }
+          var recMinPassdate = ''
+          if(this.state.recMinPassdate.length>1 ){
+            recMinPassdate= this.getISODate(this.state.recMinPassdate)
+          }
+
+          var recMaxPassdate = ''
+          if(this.state.recMaxPassdate.length>1 ){
+            recMaxPassdate= this.getISODate(this.state.recMaxPassdate)
+          }
+
+          if(/^\S+@\S+\.\S+/.test(this.state.mail)){
+              var sort = {"createdAt":-1};
+              var  tempURL = "email="+this.state.mail+"&fromDate="+recMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
+              "&size=&sort="+JSON.stringify(sort)+"&toDate="+recMaxPassdate;
+              this.sendReportsData(Config.routes.base +Config.routes.receivablesMail + tempURL);
+          }else{
+              return   Utils.ShowMessage('Please Enter Valid Mail ID');  
+          }   
+          return;
+        break;
+
+              default:
+              break;
+          }
     }
 
 

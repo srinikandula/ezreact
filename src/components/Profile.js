@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,AsyncStorage,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';

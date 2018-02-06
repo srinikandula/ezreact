@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
     View, Image, Text, Picker, DatePickerAndroid,
-    CheckBox, TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
+    CheckBox, TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-
+import Utils from './common/Utils';
 export default class AddTruck extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   
@@ -28,6 +28,7 @@ export default class AddTruck extends Component {
         pollpassdate:'',
         insurpassdate:'',
         selectedDriverId:'',
+        accountId:'',
         Amount:'',
         paymentref:'',
         remark:'',
@@ -83,7 +84,7 @@ export default class AddTruck extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in editPaymentAPI ==>', error);
@@ -111,7 +112,8 @@ export default class AddTruck extends Component {
                         fitnesspassdate:this.getDateISo(truckDetails.fitnessExpiry),
                         pollpassdate:this.getDateISo(truckDetails.pollutionExpiry),
                         insurpassdate:this.getDateISo(truckDetails.insuranceExpiry),
-                        selectedDriverId: drivrID
+                        selectedDriverId: drivrID,
+                        accountId:truckDetails.accountId
                     });
         for (let index = 0; index < 10; index++) {
             this.moveInputLabelUp(index, "")
@@ -122,7 +124,7 @@ export default class AddTruck extends Component {
     getDateDDMMYY(dateString){
         var date = new Date(dateString);
         var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
-        console.log('dateStr',dateStr);
+       
         return dateStr;
     }
 
@@ -130,7 +132,7 @@ export default class AddTruck extends Component {
     getDateISo(dateString){
         var date = new Date(dateString);
         var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
-        console.log('passdateStr',passdateStr);
+        
         var passdate = new Date(passdateStr);
         return  passdate;
     }
@@ -142,6 +144,7 @@ export default class AddTruck extends Component {
         if(this.props.navigation.state.params.edit){
             methodType = 'put';
             postdata._id = self.props.navigation.state.params.id;
+            postdata.accountId = self.state.accountId;
         }
         Axios({
             method: methodType,
@@ -155,12 +158,14 @@ export default class AddTruck extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
+                    
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                     self.setState({ spinnerBool:false });
                     let message ="";
@@ -168,7 +173,7 @@ export default class AddTruck extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in addtrucksList ==>', error);
@@ -256,31 +261,31 @@ export default class AddTruck extends Component {
 
                                             this.callAddPaymentAPI(postData);
                                         }else{
-                                            ToastAndroid.show('Please Enter Insurance Date', ToastAndroid.SHORT);
+                                            Utils.ShowMessage('Please Enter Insurance Date');
                                         }
                                     }else{
-                                        ToastAndroid.show('Please Enter Pollution Date', ToastAndroid.SHORT);
+                                        Utils.ShowMessage('Please Enter Pollution Date');
                                     }
                                 }else{
-                                    ToastAndroid.show('Please Enter Fitness Date', ToastAndroid.SHORT);
+                                    Utils.ShowMessage('Please Enter Fitness Date');
                                 }
                             }else{
-                                ToastAndroid.show('Please Enter Permit Date', ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Enter Permit Date');
                             }
                         }else{
-                            ToastAndroid.show('Please Enter TaxDue Date', ToastAndroid.SHORT);
+                            Utils.ShowMessage('Please Enter TaxDue Date');
                         }
                     }else{
-                        ToastAndroid.show('Please Enter Truck Type', ToastAndroid.SHORT);
+                        Utils.ShowMessage('Please Enter Truck Type');
                     }                      
                 }else{
-                    ToastAndroid.show('Please Enter Truck model', ToastAndroid.SHORT);
+                    Utils.ShowMessage('Please Enter Truck model');
                 }                  
             }else{
-                ToastAndroid.show('Please Enter Truck Tonnage', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Enter Truck Tonnage');
             }            
         }else{
-            ToastAndroid.show('Please Enter Truck Number', ToastAndroid.SHORT);
+            Utils.ShowMessage('Please Enter Truck Number');
         }
     }
 

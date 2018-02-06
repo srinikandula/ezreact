@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {View, Image, Text, Picker, FlatList,
-            TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
+            TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
         } from 'react-native';
 import CheckBox from 'react-native-checkbox';
 import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
-
+import Utils from './common/Utils';
 export default class AddParty extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
   
@@ -64,7 +64,6 @@ export default class AddParty extends Component {
                         message = message+current_value;
                     });
                     Utils.ShowMessage(message);
-
                 }
             }).catch((error) => {
                 console.log('error in editpartyIDAPI ==>', error);
@@ -136,6 +135,7 @@ export default class AddParty extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
@@ -175,9 +175,7 @@ export default class AddParty extends Component {
             if(/^\S+@\S+\.\S+/.test(this.state.PartyMailID)){
                 console.log("lll");
             }else{
-                Utils.ShowMessage('Please Enter Valid Mail ID');
-                
- 
+                return   Utils.ShowMessage('Please Enter Valid Mail ID');  
             }           
         }
 
@@ -319,21 +317,15 @@ export default class AddParty extends Component {
                       
                     }else{
                         this.setState({checkTrip: false});
-                                                               Utils.ShowMessage('Please Enter operation lane name ');
-
-
+                        Utils.ShowMessage('Please Enter operation lane name ');
                     }
                 }else{
                     this.setState({checkTrip: false});
-                                                          Utils.ShowMessage('Please Enter Destination location ');
-
-
+                    Utils.ShowMessage('Please Enter Destination location ');
                 }
             }else{
                 this.setState({checkTrip: false});
-                                                    Utils.ShowMessage('Please Enter from location');
-
-
+                Utils.ShowMessage('Please Enter from location');
             }   
             
         }

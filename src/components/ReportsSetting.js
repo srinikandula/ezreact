@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {View,Image,AsyncStorage,Text,DatePickerAndroid,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, FlatList,BackHandler} from 'react-native';
+import {View,Image,AsyncStorage,Text,DatePickerAndroid,TouchableOpacity,ScrollView,Keyboard, FlatList,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,CSpinner,Card,CustomEditText,CustomErpDateView,CustomText} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
+import Utils from './common/Utils';
 
 class ReportsSetting extends Component{
      state = {
@@ -82,7 +83,7 @@ class ReportsSetting extends Component{
                             response.data.messages.forEach(function(current_value) {
                                  message = message+current_value;
                                 });
-                            ToastAndroid.show(message, ToastAndroid.SHORT);
+                            Utils.ShowMessage(message);
                         }
 
                     }).catch((error) => {
@@ -215,7 +216,7 @@ class ReportsSetting extends Component{
                    response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                Utils.ShowMessage(message);
 
                 } else {
                     //console.log('reponse in update erpSettingData ==>', response);
@@ -224,13 +225,13 @@ class ReportsSetting extends Component{
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
 
             }).catch((error) => {
                 console.log('error in erpSettingData ==>', error);
                 this.setState({spinnerBool:false});
-                ToastAndroid.show("Something went Wrong,Please Try again ", ToastAndroid.SHORT);
+                Utils.ShowMessage("Something went Wrong,Please Try again ");
             })
     }
 
@@ -501,13 +502,13 @@ class ReportsSetting extends Component{
 
 
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Revenue Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Revenue Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Revenue Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Revenue Mini. Date");
                 }
             return;
             break;
@@ -520,13 +521,13 @@ class ReportsSetting extends Component{
                                                             "filterType":  "custom"};
                             this.sendReportsData();
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Payment Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Payment Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Payment Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Payment Mini. Date");
                 }
             return;
             break;
@@ -539,13 +540,13 @@ class ReportsSetting extends Component{
                                                         "filterType":  "custom"};
                             this.sendReportsData();
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Expense Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Expense Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Expense Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Expense Mini. Date");
                 }
             return;
             break;
@@ -558,13 +559,13 @@ class ReportsSetting extends Component{
                                                         "filterType":  "custom"};
                             this.sendReportsData();
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Toll Card Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Toll Card Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Toll Card Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Toll Card Mini. Date");
                 }
             return;
             break;
@@ -577,13 +578,13 @@ class ReportsSetting extends Component{
                                                         "filterType":  "custom"};
                             this.sendReportsData();
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Fuel Card  Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Fuel Card  Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Fuel Card Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Fuel Card Mini. Date");
                 }
             return;
             break;
@@ -596,13 +597,13 @@ class ReportsSetting extends Component{
                                                         "filterType":  "custom"};
                             this.sendReportsData();
                         }else{
-                            ToastAndroid.show("Please Check Mini./Max. Date", ToastAndroid.SHORT);
+                            Utils.ShowMessage("Please Check Mini./Max. Date");
                         }
                     }else{
-                        ToastAndroid.show("Please Enter Fuel Card  Max. Date", ToastAndroid.SHORT);
+                        Utils.ShowMessage("Please Enter Fuel Card  Max. Date");
                     }
                 }else{
-                    ToastAndroid.show("Please Enter Fuel Card Mini. Date", ToastAndroid.SHORT);
+                    Utils.ShowMessage("Please Enter Fuel Card Mini. Date");
                 }
             return;
             break;

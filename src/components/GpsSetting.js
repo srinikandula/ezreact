@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View,Button,Image,Text,ToastAndroid,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Button,Image,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
-
+import Utils from './common/Utils';
 class GpsSetting extends Component{
      state = {};
 

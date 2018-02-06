@@ -8,7 +8,7 @@ import Config from '../config/Config';
 import { Actions, Reducer } from 'react-native-router-flux';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
-
+import Utils from './common/Utils';
 
 
 export default class GroupsList extends Component {
@@ -31,7 +31,7 @@ export default class GroupsList extends Component {
                     self.setState({ groupsList: response.data.accountGroup })
                     if(response.data.accountGroup.length == 0){
                         
-                        ToastAndroid.show("No Record Found", ToastAndroid.SHORT);
+                        Utils.ShowMessage("No Record Found");
                     }
                 } else {
                     
@@ -40,7 +40,7 @@ export default class GroupsList extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
 
             }).catch((error) => {

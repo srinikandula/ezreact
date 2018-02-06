@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
     View, Image, Text, Picker, DatePickerAndroid,
-     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
+     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
-
+import Utils from './common/Utils';
 export default class AddTrip extends Component {
 
     state = {
@@ -110,7 +110,7 @@ export default class AddTrip extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in editTripAPI ==>', error);
@@ -174,12 +174,13 @@ export default class AddTrip extends Component {
                     
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
@@ -188,7 +189,7 @@ export default class AddTrip extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    ToastAndroid.show(message, ToastAndroid.SHORT);
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 self.setState({ spinnerBool:false });
@@ -264,28 +265,28 @@ export default class AddTrip extends Component {
                                         console.log('postdata',postData);
                                         this.callAddTripAPI(postData);
                                     }else{
-                                        ToastAndroid.show('Please Enter Frieght Amount', ToastAndroid.SHORT);
+                                        Utils.ShowMessage('Please Enter Frieght Amount');
                                     }
                                 }else{
-                                    ToastAndroid.show('Please Enter Tonnage', ToastAndroid.SHORT);
+                                    Utils.ShowMessage('Please Enter Tonnage');
                                 }
                             }else{
-                                ToastAndroid.show('Please Enter Rate', ToastAndroid.SHORT);
+                                Utils.ShowMessage('Please Enter Rate');
                             }
                         }else{
-                            ToastAndroid.show('Please Select Lane ', ToastAndroid.SHORT);
+                            Utils.ShowMessage('Please Select Lane ');
                         }
                     }else{
-                        ToastAndroid.show('Please Select Party Name', ToastAndroid.SHORT);
+                        Utils.ShowMessage('Please Select Party Name');
                     }
             }else{
-                ToastAndroid.show('Please Select Driver', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Select Driver');
             }
             }else{
-                ToastAndroid.show('Please Select Vehicle', ToastAndroid.SHORT);
+                Utils.ShowMessage('Please Select Vehicle');
             }
         }else{
-            ToastAndroid.show('Please  Select Date', ToastAndroid.SHORT);
+            Utils.ShowMessage('Please  Select Date');
         }
     }
 

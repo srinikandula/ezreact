@@ -43,10 +43,9 @@
 		834C91542A604D44975869A4 /* libRNImmediatePhoneCall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34ECE007388D477CA907E512 /* libRNImmediatePhoneCall.a */; };
 		86A5A7294FA649DBB04F57BC /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D81A5246F6C142519FABC4BA /* libRNFetchBlob.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		C34A0094DAD146DE88F37B33 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E695285CA8EF484A953FB483 /* libAirMaps.a */; };
 		D7A495E56EA5411F881A732A /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7A967C5C864A4D91CED23E /* libSplashScreen.a */; };
 		EEEDB5454CF7481E90880021 /* libRNCOpenDoc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 98756E47D2424DCAB4B62EDB /* libRNCOpenDoc.a */; };
-		1D805C7E367D4648AE3328D9 /* libRNFileViewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B8E5160C9E244E2A95D7BD4 /* libRNFileViewer.a */; };
-		C34A0094DAD146DE88F37B33 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E695285CA8EF484A953FB483 /* libAirMaps.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,6 +308,13 @@
 			remoteGlobalIDString = 3D7682761D8E76B80014119E;
 			remoteInfo = SplashScreen;
 		};
+		81A2D549202B4CC200F551AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F76EDCF2554946BCB5435CE7 /* AirMaps.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
+			remoteInfo = AirMaps;
+		};
 		81ECA244202978CB004D7C57 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1658E0AB5F1461882C66778 /* RNFetchBlob.xcodeproj */;
@@ -389,15 +395,9 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		C1658E0AB5F1461882C66778 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		D81A5246F6C142519FABC4BA /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
+		E695285CA8EF484A953FB483 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		F24EE3A856BC44BD9CB5C79A /* Gotham-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gotham-Medium.otf"; path = "../assets/fonts/Gotham-Medium.otf"; sourceTree = "<group>"; };
-		C1658E0AB5F1461882C66778 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		D81A5246F6C142519FABC4BA /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		2CCCA165ABF1411DBCDFEA98 /* RNCOpenDoc.xcodeproj */ = {isa = PBXFileReference; name = "RNCOpenDoc.xcodeproj"; path = "../node_modules/react-native-open-doc/ios/RNCOpenDoc.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		98756E47D2424DCAB4B62EDB /* libRNCOpenDoc.a */ = {isa = PBXFileReference; name = "libRNCOpenDoc.a"; path = "libRNCOpenDoc.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		27EEEBFE07084C3E8A1772BC /* RNFileViewer.xcodeproj */ = {isa = PBXFileReference; name = "RNFileViewer.xcodeproj"; path = "../node_modules/react-native-file-viewer/ios/RNFileViewer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		8B8E5160C9E244E2A95D7BD4 /* libRNFileViewer.a */ = {isa = PBXFileReference; name = "libRNFileViewer.a"; path = "libRNFileViewer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		F76EDCF2554946BCB5435CE7 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		E695285CA8EF484A953FB483 /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		F76EDCF2554946BCB5435CE7 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -623,6 +623,7 @@
 				D81A5246F6C142519FABC4BA /* libRNFetchBlob.a */,
 				98756E47D2424DCAB4B62EDB /* libRNCOpenDoc.a */,
 				8B8E5160C9E244E2A95D7BD4 /* libRNFileViewer.a */,
+				E695285CA8EF484A953FB483 /* libAirMaps.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -631,6 +632,14 @@
 			isa = PBXGroup;
 			children = (
 				8184AB9F1FF284AE00F27B37 /* libSplashScreen.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81A2D546202B4CC200F551AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81A2D54A202B4CC200F551AB /* libAirMaps.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -842,6 +851,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 81A2D546202B4CC200F551AB /* Products */;
+					ProjectRef = F76EDCF2554946BCB5435CE7 /* AirMaps.xcodeproj */;
+				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -1167,6 +1180,13 @@
 			remoteRef = 8184AB9E1FF284AE00F27B37 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		81A2D54A202B4CC200F551AB /* libAirMaps.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAirMaps.a;
+			remoteRef = 81A2D549202B4CC200F551AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		81ECA245202978CB004D7C57 /* libRNFetchBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1346,10 +1366,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = EasyGaadiTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1380,10 +1400,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = EasyGaadiTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1416,10 +1436,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = EasyGaadi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1442,10 +1462,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = EasyGaadi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1474,10 +1494,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = "EasyGaadi-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1517,10 +1537,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-splash-screenios",
-					"$(SRCROOT)\..\node_modules\react-native-fetch-blob\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-open-doc\ios",
-					"$(SRCROOT)\..\node_modules\react-native-file-viewer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)..\node_modules\neact-native-fetch-blobios/**",
+					"$(SRCROOT)..\node_modules\neact-native-open-docios",
+					"$(SRCROOT)..\node_modules\neact-native-file-viewerios",
+					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
 				);
 				INFOPLIST_FILE = "EasyGaadi-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

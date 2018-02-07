@@ -13,7 +13,7 @@ const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
 
-export default class GPSTruckList extends Component {
+export default class GPSTruckMap extends Component {
     state = {
         categoryBgColor: false,token:'',trucks:[],
         aspectRatio :0,
@@ -24,29 +24,8 @@ export default class GPSTruckList extends Component {
         animation : new Animated.Value(0),
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
-            view:'listshow',
-            location:['Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna',
-            'mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi',
-            'Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai',
-            'Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna',
-            'mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
-            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune']
+            view:'mapShow',
+            
 
     };
 
@@ -108,7 +87,6 @@ export default class GPSTruckList extends Component {
                                     this.setState({trucks:dump});
                                 }
 
-                               
                                 var catgryarr1 = [];                    
                                  for (let index = 0; index < catgryarr.length; index++) {
                                      const element = catgryarr[index].attrs.latestLocation.location.coordinates;
@@ -223,8 +201,8 @@ export default class GPSTruckList extends Component {
 
 
     getView(){
-        switch ('mapshow') {
-            case 'mapshow':
+        switch ('mapShow') {
+            case 'mapShow':
             console.log(this.state.markers.length,'--99999--','item');
                 return(
                     <View style ={CustomStyles.mapcontainer}>
@@ -306,11 +284,7 @@ export default class GPSTruckList extends Component {
         return(
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                        
-                            {self.getView()}
-                            
-                             
-                                 
+                            {self.getView()}      
                         </View>
                         
                 </View>

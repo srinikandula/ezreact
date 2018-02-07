@@ -24,7 +24,30 @@ export default class GPSTruckList extends Component {
         animation : new Animated.Value(0),
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
-            view:'listshow'
+            view:'listshow',
+            location:['Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna',
+            'mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi',
+            'Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai',
+            'Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad','patna',
+            'mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune','Hyderabad',
+            'patna','mumbai','Delhi','Pune','Hyderabad','patna','mumbai','Delhi','Pune']
+
     };
 
     componentWillMount() {
@@ -70,14 +93,24 @@ export default class GPSTruckList extends Component {
                             if (response.data.status) {
                                 console.log('trucksList ==>', response.data);
                                 var catgryarr = response.data.trucks;                    
-                                catgryarr = catgryarr.filter(function(item) {
+                                catgryarr = catgryarr.filter(function(item,index) {                                        
                                         if(item.hasOwnProperty('attrs'))
                                         return item;
                                     });
                                 this.setState({trucks:catgryarr});
-                                console.log(catgryarr,'catgryarr0');
+                                var dump =[];
+                                for (let index = 0; index < catgryarr.length; index++) {
+                                    const element = catgryarr[index];
+                                    element.location = this.state.location[index];
+                                    element.rememberme =false;
+                                    console.log(this.state.location[index],'element.location');
+                                    dump.push(element);
+                                    this.setState({trucks:dump});
+                                }
+
+                               
                                 var catgryarr1 = [];                    
-                                 for (let index = 0; index < 5; index++) {
+                                 for (let index = 0; index < catgryarr.length; index++) {
                                      const element = catgryarr[index].attrs.latestLocation.location.coordinates;
                                     // console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                     //latitude:0,longitude:0
@@ -160,8 +193,7 @@ export default class GPSTruckList extends Component {
     coordinate() {
         
         //markers
-        return this.state.markers.map((item,index)=>{
-           
+        return this.state.markers.map((item,index)=>{           
             <Marker
             key={index}
             coordinate = {{
@@ -171,14 +203,28 @@ export default class GPSTruckList extends Component {
             />
         });
     }
-    lookingForLoad(){
-        this.setState({ rememberme: !this.state.rememberme });
+    lookingForLoad(items){
+        var temparr=[];
+        for (let index = 0; index < this.state.trucks.length; index++) {
+            const element = this.state.trucks[index];
+            if(items._id == element._id){
+                if(element.rememberme){
+                element.rememberme =false;                
+               }else{
+                element.rememberme =true;    
+                }
+                this.state.trucks[index] = element;
+                this.setState({trucks:this.state.trucks});
+                break;
+            }
+            
+        }
     }
 
 
     getView(){
-        switch (this.state.view) {
-            case 'mapShow':
+        switch ('listshow') {
+            case 'mapshow':
             console.log(this.state.markers.length,'--99999--','item');
                 return(
                     <View style ={CustomStyles.mapcontainer}>
@@ -228,12 +274,13 @@ export default class GPSTruckList extends Component {
                                     <View style={{ flexDirection: 'row',padding:10}}>
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
-                                                Device ID {item.deviceId}</Text>
+                                                Location {item.location}</Text>
                                             <CheckBox
-                                                label='Looking For '
+                                            style={{width:10,height:10}}
+                                                label='Looking For Load'
                                                 color={'#000000'}
-                                                checked={this.state.rememberme}
-                                                onChange={() => this.lookingForLoad()}
+                                                checked={item.rememberme}
+                                                onChange={() => this.lookingForLoad(item)}
                                             />    
                                         </View>
                                         
@@ -243,7 +290,8 @@ export default class GPSTruckList extends Component {
                             </View>
                         </View>
                     }
-                keyExtractor={item => item._id} /> );
+                keyExtractor={item => item._id} 
+                extraData={this.state}/> );
                 break;
             default:
                 break;
@@ -258,25 +306,7 @@ export default class GPSTruckList extends Component {
         return(
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                        <View style={{ flexDirection: 'row',paddingTop:5,position:'absolute',
-                        top:5,
-                        right:10,
-                        zIndex: 1}}>
-                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => {  this.setState({ view: 'listshow'});}}>
-                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                                ListView 
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>        
-                            <View style={{flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => { this.setState({ view:'mapShow'});}}>
-                                    <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                        Map View
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>                                                          
-                            </View>
+                        
                             {self.getView()}
                             
                              

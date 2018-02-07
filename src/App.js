@@ -9,6 +9,7 @@ export default class App extends Component {
 
 
   componentWillMount() {
+    // AsyncStorage.clear();
     this.getItem().then((resp) => {
       console.log('resp',resp);
       if (!resp)

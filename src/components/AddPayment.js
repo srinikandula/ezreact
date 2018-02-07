@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
     CheckBox, TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
+import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground , Confirm} from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
@@ -11,6 +11,7 @@ import Utils from './common/Utils';
 export default class AddPayment extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
     state = {
+        showModal: false,
         selectedName: '',
         date: "",
         passdate:'',
@@ -155,6 +156,9 @@ export default class AddPayment extends Component {
     }
 
     onPickdate() {
+        if (Platform.OS === 'ios') {
+            this.setState({ showModal: !this.state.showModal })
+        } else {
         try {
             let currDate = new Date();            
             if(this.props.navigation.state.params.edit){
@@ -179,6 +183,21 @@ export default class AddPayment extends Component {
             console.warn('Cannot open date picker', message);
         }
     }
+    }
+
+    onAccept() {
+        if (this.state.date === '') {
+            alert('Select a date');
+        } else {
+            this.setState({ showModal: false })
+        }
+    }
+
+    onDecline() {
+        this.setState({ field0: { bottom: 10 }, showModal: false, date: '' });
+
+    }
+
     onSubmitPartyDetails() {
         if(this.state.date.includes('/')){
             if(!this.state.selectedPartyId.includes('Select Party')){
@@ -363,7 +382,25 @@ export default class AddPayment extends Component {
                     </TouchableOpacity>
 
                 </View>
-
+                <Confirm visible={this.state.showModal}
+                    onAccept={this.onAccept.bind(this)}
+                    onDecline={this.onDecline.bind(this)}
+                    sayNo="CANCEL"
+                    sayYes="CONFIRM"
+                >
+                    <View style={{ flex: 1, padding: 20 }}>
+                        <DatePickerIOS
+                            date={new Date()}
+                            onDateChange={(pickedDate) => {
+                                var month = pickedDate.getMonth() + 1
+                                let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
+                                this.setState({ date: date, passdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                this.moveInputLabelUp(0, date)
+                            }}
+                            mode="date"
+                        />
+                    </View>
+                </Confirm>
             </View>
 
         );

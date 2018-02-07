@@ -18,17 +18,17 @@ const Confirm = ({ children, visible, onAccept, onDecline, sayNo, sayYes }) => {
                 </View>
                 <View style={viewContainerStyle}>
                     <CustomButton
-                        customButtonStyle={{backgroundColor: '#263238', margin: 10}}
+                        customButtonStyle={{backgroundColor: '#1e4495', margin: 10}}
                         onPress={onDecline}>
                         <CustomText
-                        customTextStyle={{ color: '#02C9A6' }}
+                        customTextStyle={{ color: '#fff' }}
                         >{sayNo}</CustomText>
                     </CustomButton>
                     <CustomButton
-                        customButtonStyle={{backgroundColor: '#263238',margin: 10}}
+                        customButtonStyle={{backgroundColor: '#1e4495',margin: 10}}
                         onPress={onAccept}>
                         <CustomText
-                        customTextStyle={{color: '#02C9A6' }}
+                        customTextStyle={{color: '#fff' }}
                         >{sayYes}</CustomText>
                     </CustomButton>
 
@@ -50,7 +50,7 @@ const styles = {
         lineHeight: 35
     },
     containerStyle: {
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        backgroundColor: 'rgba(0,0,0,0.75)',
         position: 'relative',
         flex: 1,
         justifyContent: 'center',
@@ -58,7 +58,7 @@ const styles = {
     },
     viewContainerStyle: {
         padding: 5,
-        backgroundColor: '#263238',
+        backgroundColor: '#ffffff',
         justifyContent: 'flex-end',
         flexDirection: 'row',
 

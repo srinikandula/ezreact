@@ -7,8 +7,6 @@ import { CustomInput, CRadio,CSpinner, CustomEditText, CustomButton, CustomText,
 import Config from '../config/Config';
 import Axios from 'axios';
 import Utils from './common/Utils';
-
-
 import CustomStyles from './common/CustomStyles';
 import { Actions } from 'react-native-router-flux';
 

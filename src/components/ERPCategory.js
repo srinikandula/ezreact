@@ -1,10 +1,13 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,DatePickerAndroid,Picker,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import {
+    View, ScrollView, DatePickerAndroid, DatePickerIOS, Platform,
+    Picker, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
+} from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
-import { ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText } from './common';
+import { ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNCOpenDoc from 'react-native-open-doc';
@@ -12,6 +15,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class ERPCategory extends Component {
     state = {
+        showModal: false,
         categoryBgColor: false,
         recordsList: [],
         expenses: [],
@@ -62,27 +66,27 @@ export default class ERPCategory extends Component {
             .then((response) => {
                 // console.log('ERP CAtegory ==>', response.data);
                 if (response.data.status) {
-                    if(self.props.navigation.state.params.mode == 'Expense'){
-                        self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
-                        if(response.data.expenses.length == 0){
+                    if (self.props.navigation.state.params.mode == 'Expense') {
+                        self.setState({ expenses: response.data.expenses, totalExpenses: response.data.totalExpenses });
+                        if (response.data.expenses.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    }else if(self.props.navigation.state.params.mode == 'Revenue'){
-                        self.setState({recordsList:response.data.revenue,grossAmounts: response.data.grossAmounts});
-                        if(response.data.revenue.length == 0){
+                    } else if (self.props.navigation.state.params.mode == 'Revenue') {
+                        self.setState({ recordsList: response.data.revenue, grossAmounts: response.data.grossAmounts });
+                        if (response.data.revenue.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.trucksList);
-                    }else if(self.props.navigation.state.params.mode == 'Payments'){
-                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
-                        if(response.data.paybleAmounts.length == 0){
+                    } else if (self.props.navigation.state.params.mode == 'Payments') {
+                        self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
+                        if (response.data.paybleAmounts.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    }else if(self.props.navigation.state.params.mode == 'Receivables'){
-                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
-                        if(response.data.parties.length == 0){
+                    } else if (self.props.navigation.state.params.mode == 'Receivables') {
+                        self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
+                        if (response.data.parties.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
@@ -265,9 +269,9 @@ export default class ERPCategory extends Component {
             .then((response) => {
                 //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
                 if (response.data.status) {
-                     if(str == 'Payments'){
-                        self.setState({paymentsParties:response.data.paybleAmounts,payableGrossAmounts: response.data.gross});
-                        if(response.data.paybleAmounts.length == 0){
+                    if (str == 'Payments') {
+                        self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
+                        if (response.data.paybleAmounts.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         Actions.refresh({
@@ -278,9 +282,9 @@ export default class ERPCategory extends Component {
                             label: 'Total Payments Details'
                         });
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    }else {
-                        self.setState({paymentsParties:response.data.parties,paymentsGrossAmounts: response.data.grossAmounts});
-                        if(response.data.parties.length == 0){
+                    } else {
+                        self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
+                        if (response.data.parties.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
                         Actions.refresh({
@@ -303,80 +307,219 @@ export default class ERPCategory extends Component {
 
     onPickdate(str, category) {
         const self = this;
-        try {
-            const { action, year, month, day } = DatePickerAndroid.open({
+        if (Platform.OS === 'ios') {
+            this.setState({ showModal: !this.state.showModal, str: str, category: category })
+        } else {
+            try {
+                const { action, year, month, day } = DatePickerAndroid.open({
 
-                //minDate: str == 'min'? new Date() :new Date('1-1-2007'),
-            }).then((response) => {
-                if (response.action === "dateSetAction") {
-                    var month = response.month + 1
-                    let date = response.day + "/" + month + "/" + response.year;
+                    //minDate: str == 'min'? new Date() :new Date('1-1-2007'),
+                }).then((response) => {
+                    if (response.action === "dateSetAction") {
+                        var month = response.month + 1
+                        let date = response.day + "/" + month + "/" + response.year;
 
-                    switch (category) {
-                        case "revenue":
-                            if (str === 'max') {
-                                this.setState({ rMaxDate: date, rMaxPassdate: month + "/" + response.day + "/" + response.year });
-                            } else {
-                                this.setState({ rMinDate: date, rMinPassdate: month + "/" + response.day + "/" + response.year });
-                            }
-                            return;
-                            break;
-                        case "expense":
-                            if (str === 'max') {
-                                this.setState({ expMaxDate: date, expMaxPassdate: month + "/" + response.day + "/" + response.year });
-                            } else {
-                                this.setState({ expMinDate: date, expMinPassdate: month + "/" + response.day + "/" + response.year });
-                            }
-                            return;
-                            break;
-                        case "payment":
-                            if (str === 'max') {
-                                this.setState({ pMaxDate: date, pMaxPassdate: month + "/" + response.day + "/" + response.year });
-                            } else {
-                                this.setState({ pMinDate: date, pMinPassdate: month + "/" + response.day + "/" + response.year });
-                            }
-                            return;
-                        case "receivables":
-                            if (str === 'max') {
-                                this.setState({ recMaxDate: date, recMaxPassdate: month + "/" + response.day + "/" + response.year });
-                            } else {
-                                this.setState({ recMinDate: date, recMinPassdate: month + "/" + response.day + "/" + response.year });
-                            }
-                            return;
-                            break;
+                        switch (category) {
+                            case "revenue":
+                                if (str === 'max') {
+                                    this.setState({ rMaxDate: date, rMaxPassdate: month + "/" + response.day + "/" + response.year });
+                                } else {
+                                    this.setState({ rMinDate: date, rMinPassdate: month + "/" + response.day + "/" + response.year });
+                                }
+                                return;
+                                break;
+                            case "expense":
+                                if (str === 'max') {
+                                    this.setState({ expMaxDate: date, expMaxPassdate: month + "/" + response.day + "/" + response.year });
+                                } else {
+                                    this.setState({ expMinDate: date, expMinPassdate: month + "/" + response.day + "/" + response.year });
+                                }
+                                return;
+                                break;
+                            case "payment":
+                                if (str === 'max') {
+                                    this.setState({ pMaxDate: date, pMaxPassdate: month + "/" + response.day + "/" + response.year });
+                                } else {
+                                    this.setState({ pMinDate: date, pMinPassdate: month + "/" + response.day + "/" + response.year });
+                                }
+                                return;
+                            case "receivables":
+                                if (str === 'max') {
+                                    this.setState({ recMaxDate: date, recMaxPassdate: month + "/" + response.day + "/" + response.year });
+                                } else {
+                                    this.setState({ recMinDate: date, recMinPassdate: month + "/" + response.day + "/" + response.year });
+                                }
+                                return;
+                                break;
+                        }
+
+
                     }
-
-
-                }
-            }).catch((error) => {
-                console.log(error);
-            });
-        } catch ({ code, message }) {
-            console.warn('Cannot open date picker', message);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            } catch ({ code, message }) {
+                console.warn('Cannot open date picker', message);
+            }
         }
     }
 
-    sendSettingData(category){
-        switch(category){
-            case "revenue" :
-                if(this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '')
-                {
-                        Utils.ShowMessage("Please Select Dates or Vechicle");
-                    
-                }else{
+    onAccept() {
+      
+        switch (this.state.category) {
+            case "revenue":
+                if (this.state.str === 'max' && this.state.rMaxDate === '') {
+                    alert('Select a date');
+                } else if (this.state.str !== 'max' && this.state.rMinDate === '') {
+                    alert('Select a date');
+                } else {
+                    this.setState({ showModal: false })
+                }
+                return;
+                break;
+            case "expense":
+                if (this.state.str === 'max' && this.state.expMaxDate === '') {
+                    alert('Select a date');
+                } else if (this.state.str !== 'max' && this.state.expMinDate === '') {
+                    alert('Select a date');
+                }else {
+                    this.setState({ showModal: false })
+                }
+                return;
+                break;
+            case "payment":
+                if (this.state.str === 'max' && this.state.pMaxDate === '') {
+                    alert('Select a date');
+                } else if (this.state.str !== 'max' && this.state.pMinDate === '') {
+                    alert('Select a date');
+                }else {
+                    this.setState({ showModal: false })
+                }
+                return;
+            case "receivables":
+                if (this.state.str === 'max' && this.state.recMaxDate === '') {
+                    alert('Select a date');
+                } else if (this.state.str !== 'max' && this.state.recMinDate === '') {
+                    alert('Select a date');
+                }else {
+                    this.setState({ showModal: false })
+                }
+                return;
+                break;
+        }
+    }
 
-                    if(this.state.selectedTruckId.includes('Select  Vechiles'))
-                    {
-                        this.setState({selectedTruckId:''});
+    onDecline() {
+        switch (this.state.category) {
+            case "revenue":
+                if (this.state.str === 'max') {
+                    this.setState({ showModal: false, rMaxDate: '', rMaxPassdate: '' });
+                } else {
+                    this.setState({ showModal: false, rMinDate: '', rMinPassdate: '' });
+                }
+                return;
+                break;
+            case "expense":
+                if (this.state.str === 'max') {
+                    this.setState({ showModal: false, expMaxDate: '', expMaxPassdate: '' });
+                } else {
+                    this.setState({ showModal: false, expMinDate: '', expMinPassdate: '' });
+                }
+                return;
+                break;
+            case "payment":
+                if (this.state.str === 'max') {
+                    this.setState({ showModal: false, pMaxDate: '', pMaxPassdate: '' });
+                } else {
+                    this.setState({ showModal: false, pMinDate: '', pMinPassdate: '' });
+                }
+                return;
+            case "receivables":
+                if (this.state.str === 'max') {
+                    this.setState({ showModal: false, recMaxDate: '', recMaxPassdate: '' });
+                } else {
+                    this.setState({ showModal: false, recMinDate: '', recMinPassdate: '' });
+                }
+                return;
+                break;
+        }
+    }
+
+    iosDateModal() {
+        return <Confirm visible={this.state.showModal}
+            onAccept={this.onAccept.bind(this)}
+            onDecline={this.onDecline.bind(this)}
+            sayNo="CANCEL"
+            sayYes="CONFIRM"
+        >
+            <View style={{ flex: 1, padding: 20 }}>
+                <DatePickerIOS
+                    date={new Date()}
+                    onDateChange={(pickedDate) => {
+                        var month = pickedDate.getMonth() + 1
+                        let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
+                        switch (this.state.category) {
+                            case "revenue":
+                                if (this.state.str === 'max') {
+                                    this.setState({ rMaxDate: date, rMaxPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                } else {
+                                    this.setState({ rMinDate: date, rMinPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                }
+                                return;
+                                break;
+                            case "expense":
+                                if (this.state.str === 'max') {
+                                    this.setState({ expMaxDate: date, expMaxPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                } else {
+                                    this.setState({ expMinDate: date, expMinPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                }
+                                return;
+                                break;
+                            case "payment":
+                                if (this.state.str === 'max') {
+                                    this.setState({ pMaxDate: date, pMaxPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                } else {
+                                    this.setState({ pMinDate: date, pMinPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                }
+                                return;
+                            case "receivables":
+                                if (this.state.str === 'max') {
+                                    this.setState({ recMaxDate: date, recMaxPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                } else {
+                                    this.setState({ recMinDate: date, recMinPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
+                                }
+                                return;
+                                break;
+                        }
+
+                    }}
+                    mode="date"
+                />
+            </View>
+        </Confirm>
+    }
+
+
+
+    sendSettingData(category) {
+        switch (category) {
+            case "revenue":
+                if (this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
+                    Utils.ShowMessage("Please Select Dates or Vechicle");
+
+                } else {
+
+                    if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                        this.setState({ selectedTruckId: '' });
                     }
-                    var sort = {"createdAt":-1};
-                    if(this.state.rMaxDate.includes('/') && this.state.rMinDate.includes('/')){
-                        if(this.getDaysfunction(new Date(this.state.rMinPassdate),new Date(this.state.rMaxPassdate)) > 0){
-                            
-                            this.state.erpSettings.revenue = "fromDate="+this.getISODate(this.state.rMinPassdate)+"&page=&regNumber="+this.state.selectedTruckId+
-                            "&size=&sort="+JSON.stringify(sort)+"&toDate="+this.getISODate(this.state.rMaxPassdate);
-                            this.searchReportsData(Config.routes.base +Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
-                        }else{
+                    var sort = { "createdAt": -1 };
+                    if (this.state.rMaxDate.includes('/') && this.state.rMinDate.includes('/')) {
+                        if (this.getDaysfunction(new Date(this.state.rMinPassdate), new Date(this.state.rMaxPassdate)) > 0) {
+
+                            this.state.erpSettings.revenue = "fromDate=" + this.getISODate(this.state.rMinPassdate) + "&page=&regNumber=" + this.state.selectedTruckId +
+                                "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + this.getISODate(this.state.rMaxPassdate);
+                            this.searchReportsData(Config.routes.base + Config.routes.filterTotalRevenueByVechicle + this.state.erpSettings.revenue);
+                        } else {
                             Utils.ShowMessage("Invalid Date Selection");
                         }
                     } else {
@@ -780,111 +923,108 @@ export default class ERPCategory extends Component {
 
 
                 }
-                
 
-                if(/^\S+@\S+\.\S+/.test(this.state.mail)){
-                    var sort = {"createdAt":-1};
 
-                    var  tempURL = "email="+this.state.mail+"&fromDate="+rMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
-                    "&size=&sort="+JSON.stringify(sort)+"&toDate="+rMaxPassdate;
-                    this.sendReportsData(Config.routes.base +Config.routes.revenueMail + tempURL);
-                   
-                }else{
-                    return   Utils.ShowMessage('Pleaseytu Enter Valid Mail ID');  
-                }   
+                if (/^\S+@\S+\.\S+/.test(this.state.mail)) {
+                    var sort = { "createdAt": -1 };
+
+                    var tempURL = "email=" + this.state.mail + "&fromDate=" + rMinPassdate + "&page=&regNumber=" + this.state.selectedTruckId +
+                        "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + rMaxPassdate;
+                    this.sendReportsData(Config.routes.base + Config.routes.revenueMail + tempURL);
+
+                } else {
+                    return Utils.ShowMessage('Pleaseytu Enter Valid Mail ID');
+                }
                 return;
-              break;
-        case "Expense":
-              if(this.state.selectedTruckId.includes('Select  Vechiles'))
-              {
-                  this.setState({selectedTruckId:''});
-              }
+                break;
+            case "Expense":
+                if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                    this.setState({ selectedTruckId: '' });
+                }
 
-              if(this.state.mail.trim().length == 0){
-                  return Utils.ShowMessage("Please Enter Email");
-              }
-              var expMinPassdate = ''
-              if(this.state.expMinPassdate.length>1 ){
-                expMinPassdate= this.getISODate(this.state.expMinPassdate)
-              }
+                if (this.state.mail.trim().length == 0) {
+                    return Utils.ShowMessage("Please Enter Email");
+                }
+                var expMinPassdate = ''
+                if (this.state.expMinPassdate.length > 1) {
+                    expMinPassdate = this.getISODate(this.state.expMinPassdate)
+                }
 
-              var expMaxPassdate = ''
-              if(this.state.expMaxPassdate.length>1 ){
-                expMaxPassdate= this.getISODate(this.state.expMaxPassdate)
-              }
+                var expMaxPassdate = ''
+                if (this.state.expMaxPassdate.length > 1) {
+                    expMaxPassdate = this.getISODate(this.state.expMaxPassdate)
+                }
 
-              if(/^\S+@\S+\.\S+/.test(this.state.mail)){
-                  var sort = {"createdAt":-1};
-                  var  tempURL = "email="+this.state.mail+"&fromDate="+expMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
-                  "&size=&sort="+JSON.stringify(sort)+"&toDate="+expMaxPassdate;
-                  this.sendReportsData(Config.routes.base +Config.routes.expenseMail + tempURL);
-              }else{
-                  return   Utils.ShowMessage('Please Enter Valid Mail ID');  
-              }   
-              return;
-            break;
-        case "Payments":
-            if(this.state.selectedTruckId.includes('Select  Parties'))
-            {
-                this.setState({selectedTruckId:''});
-            }
+                if (/^\S+@\S+\.\S+/.test(this.state.mail)) {
+                    var sort = { "createdAt": -1 };
+                    var tempURL = "email=" + this.state.mail + "&fromDate=" + expMinPassdate + "&page=&regNumber=" + this.state.selectedTruckId +
+                        "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + expMaxPassdate;
+                    this.sendReportsData(Config.routes.base + Config.routes.expenseMail + tempURL);
+                } else {
+                    return Utils.ShowMessage('Please Enter Valid Mail ID');
+                }
+                return;
+                break;
+            case "Payments":
+                if (this.state.selectedTruckId.includes('Select  Parties')) {
+                    this.setState({ selectedTruckId: '' });
+                }
 
-            if(this.state.mail.trim().length == 0){
-                return Utils.ShowMessage("Please Enter Email");
-            }
-            var pMinPassdate = ''
-            if(this.state.pMinPassdate.length>1 ){
-              pMinPassdate= this.getISODate(this.state.pMinPassdate)
-            }
+                if (this.state.mail.trim().length == 0) {
+                    return Utils.ShowMessage("Please Enter Email");
+                }
+                var pMinPassdate = ''
+                if (this.state.pMinPassdate.length > 1) {
+                    pMinPassdate = this.getISODate(this.state.pMinPassdate)
+                }
 
-            var pMaxPassdate = ''
-            if(this.state.pMaxPassdate.length>1 ){
-              pMaxPassdate= this.getISODate(this.state.pMaxPassdate)
-            }
+                var pMaxPassdate = ''
+                if (this.state.pMaxPassdate.length > 1) {
+                    pMaxPassdate = this.getISODate(this.state.pMaxPassdate)
+                }
 
-            if(/^\S+@\S+\.\S+/.test(this.state.mail)){
-                var sort = {"createdAt":-1};
-                var  tempURL = "email="+this.state.mail+"&fromDate="+pMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
-                "&size=&sort="+JSON.stringify(sort)+"&toDate="+pMaxPassdate;
-                this.sendReportsData(Config.routes.base +Config.routes.paymentsMail + tempURL);
-            }else{
-                return   Utils.ShowMessage('Please Enter Valid Mail ID');  
-            }   
-            return;
-          break;
-    case "Receivables":
-          if(this.state.selectedTruckId.includes('Select  Parties'))
-          {
-              this.setState({selectedTruckId:''});
-          }
+                if (/^\S+@\S+\.\S+/.test(this.state.mail)) {
+                    var sort = { "createdAt": -1 };
+                    var tempURL = "email=" + this.state.mail + "&fromDate=" + pMinPassdate + "&page=&regNumber=" + this.state.selectedTruckId +
+                        "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + pMaxPassdate;
+                    this.sendReportsData(Config.routes.base + Config.routes.paymentsMail + tempURL);
+                } else {
+                    return Utils.ShowMessage('Please Enter Valid Mail ID');
+                }
+                return;
+                break;
+            case "Receivables":
+                if (this.state.selectedTruckId.includes('Select  Parties')) {
+                    this.setState({ selectedTruckId: '' });
+                }
 
-          if(this.state.mail.trim().length == 0){
-              return Utils.ShowMessage("Please Enter Email");
-          }
-          var recMinPassdate = ''
-          if(this.state.recMinPassdate.length>1 ){
-            recMinPassdate= this.getISODate(this.state.recMinPassdate)
-          }
+                if (this.state.mail.trim().length == 0) {
+                    return Utils.ShowMessage("Please Enter Email");
+                }
+                var recMinPassdate = ''
+                if (this.state.recMinPassdate.length > 1) {
+                    recMinPassdate = this.getISODate(this.state.recMinPassdate)
+                }
 
-          var recMaxPassdate = ''
-          if(this.state.recMaxPassdate.length>1 ){
-            recMaxPassdate= this.getISODate(this.state.recMaxPassdate)
-          }
+                var recMaxPassdate = ''
+                if (this.state.recMaxPassdate.length > 1) {
+                    recMaxPassdate = this.getISODate(this.state.recMaxPassdate)
+                }
 
-          if(/^\S+@\S+\.\S+/.test(this.state.mail)){
-              var sort = {"createdAt":-1};
-              var  tempURL = "email="+this.state.mail+"&fromDate="+recMinPassdate+"&page=&regNumber="+this.state.selectedTruckId+
-              "&size=&sort="+JSON.stringify(sort)+"&toDate="+recMaxPassdate;
-              this.sendReportsData(Config.routes.base +Config.routes.receivablesMail + tempURL);
-          }else{
-              return   Utils.ShowMessage('Please Enter Valid Mail ID');  
-          }   
-          return;
-        break;
+                if (/^\S+@\S+\.\S+/.test(this.state.mail)) {
+                    var sort = { "createdAt": -1 };
+                    var tempURL = "email=" + this.state.mail + "&fromDate=" + recMinPassdate + "&page=&regNumber=" + this.state.selectedTruckId +
+                        "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + recMaxPassdate;
+                    this.sendReportsData(Config.routes.base + Config.routes.receivablesMail + tempURL);
+                } else {
+                    return Utils.ShowMessage('Please Enter Valid Mail ID');
+                }
+                return;
+                break;
 
-              default:
-              break;
-          }
+            default:
+                break;
+        }
     }
 
 
@@ -959,7 +1099,6 @@ export default class ERPCategory extends Component {
                 console.log(errorMessage, statusCode);
             })
     }
-
 
 
     render() {
@@ -1140,6 +1279,7 @@ export default class ERPCategory extends Component {
                             onAccept={() => { this.sendMail('Revenue') }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
+                        {this.iosDateModal()}
                     </View>
                 );
 
@@ -1327,6 +1467,7 @@ export default class ERPCategory extends Component {
                             onAccept={() => { this.sendMail('Expense') }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
+                        {this.iosDateModal()}
                     </View>
                 );
                 break;
@@ -1516,6 +1657,7 @@ export default class ERPCategory extends Component {
                             onAccept={() => { this.sendMail('Payments') }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
+                        {this.iosDateModal()}
                     </View>
                 );
                 break;
@@ -1705,6 +1847,7 @@ export default class ERPCategory extends Component {
                             onAccept={() => { this.sendMail('Receivables') }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
+                        {this.iosDateModal()}
                     </View>
                 );
                 break;

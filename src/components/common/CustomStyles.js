@@ -1,4 +1,19 @@
+
+import {StyleSheet} from 'react-native';
 const CustomStyles={
+    mapcontainer: {
+        ...StyleSheet.absoluteFillObject,
+        top:60,
+        flex:1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      },
+      map: {
+        ...StyleSheet.absoluteFillObject,
+        flex:1,
+        height: '100%',
+        width: '100%',
+      },
     backgroundImage: {
         flex: 1,
         width: null,
@@ -739,7 +754,54 @@ toogleStyle: {
 },
 toggleActiveStyle:{ margin:10,  borderRadius:12 },
 
+markerWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  marker: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(130,4,150, 0.9)",
+  },
+  ring: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "rgba(130,4,150, 0.3)",
+    position: "absolute",
+    borderWidth: 1,
+    borderColor: "rgba(130,4,150, 0.5)",
+  },
 
+  mapcard: {
+    padding: 10,
+    elevation: 2,
+    backgroundColor: "#FFF",
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowRadius: 5,
+    shadowOpacity: 0.3,
+    shadowOffset: { x: 2, y: -2 },
+    height: 20,
+    width: 20,
+    overflow: "hidden",
+  },
+  cardImage: {
+    flex: 3,
+    width: "100%",
+    height: "100%",
+    alignSelf: "center",
+  },
+  cardtitle: {
+    fontSize: 12,
+    marginTop: 5,
+    fontWeight: "bold",
+  },
+  cardDescription: {
+    fontSize: 12,
+    color: "#444",
+  },
 };
 
 export default CustomStyles;

@@ -77,18 +77,7 @@ export default class PartyList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-       /*  const self = this;
-        const args = {
-            number: ''+truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
-          }
-
-         call(args)
-         .catch(
-             console.error)   */
-        
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);        
     }
 
 

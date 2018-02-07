@@ -21,9 +21,11 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+           
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false
         };
+        //userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
     }
 
 

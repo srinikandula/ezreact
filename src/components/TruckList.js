@@ -77,19 +77,7 @@ export default class TruckList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-
         RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-      /*   const self = this;
-        const args = {
-            number: ''+truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
-          }
-
-         call(args)
-         .catch(
-             console.error)  
-         */
     }
 
 
@@ -179,13 +167,7 @@ export default class TruckList extends Component {
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.trucks}
                             ItemSeparatorComponent={this.renderSeparator}
-                            renderItem={({ item }) =>
-                            // <TouchableOpacity
-                            // onPress={() => { this.setState({
-                            //                     categoryBgColor: !this.state.categoryBgColor
-                            //                      });}}
-                            // >
-                        
+                            renderItem={({ item }) =>                      
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
                                         <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
@@ -246,19 +228,18 @@ export default class TruckList extends Component {
                                                         </View>         
                                                 </View>
                                                 <View style={{flex:1, flexDirection: 'row',paddingTop:5}}>
-                                                        <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
-                                                            {this.getcolorDate(item.fitnessExpiry)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
-                                                                    Fitness 
-                                                                </Text>
-                                                        </View>        
-                                                        <View style={{flex:2, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
-                                                            {this.getcolorDate(item.taxDueDate)}
-                                                            <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
-                                                                Tax
-                                                                </Text>
-                                                        </View>  
-                                                        
+                                                    <View style={{flex:1, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
+                                                        {this.getcolorDate(item.fitnessExpiry)}
+                                                        <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
+                                                                Fitness 
+                                                            </Text>
+                                                    </View>        
+                                                    <View style={{flex:2, flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
+                                                        {this.getcolorDate(item.taxDueDate)}
+                                                        <Text style={[CustomStyles.erpText,{paddingLeft:2,paddingBottom:2,fontFamily:'Gotham-Medium',fontSize: 10,}]}>
+                                                            Tax
+                                                            </Text>
+                                                    </View>                                                          
                                                 </View>
                                             </View>
                                         </View>                        

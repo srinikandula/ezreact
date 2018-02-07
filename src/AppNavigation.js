@@ -35,6 +35,7 @@ import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
 import ModulesHome from './components/ModulesHome';
+import GPSTruckList from './components/GPSTruckList';
 
 class FooterTabs extends Component {
 	render () {
@@ -43,7 +44,7 @@ class FooterTabs extends Component {
 		<View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
-                        <TouchableOpacity onPress={() => {/* this.props.navigation.navigate('Profile') */}}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('GPS')}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('./images/gpsIcon.png')}
@@ -191,6 +192,11 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 						navigationOptions: {
 						}
 					}, */
+					GPS:{
+						screen: GPSTruckList,
+						navigationOptions: {
+						}
+					},
 
 					SubModule: {
 						screen: TabNavigator({

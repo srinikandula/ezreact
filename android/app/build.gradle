@@ -150,6 +150,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-maps')
     compile project(':react-native-file-viewer')
     compile project(':react-native-open-doc')
     compile project(':react-native-fetch-blob')

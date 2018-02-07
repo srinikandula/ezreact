@@ -36,6 +36,7 @@ import ERPSubCategory from './components/ERPSubCategory';
 import ExpiryDate from './components/ExpiryDate';
 import ModulesHome from './components/ModulesHome';
 import GPSTruckList from './components/GPSTruckList';
+import GPSTruckMap from './components/GPSTruckMap';
 
 class FooterTabs extends Component {
 	render () {
@@ -194,6 +195,11 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					}, */
 					GPS:{
 						screen: GPSTruckList,
+						navigationOptions: {
+						}
+					},
+					GPSMAp:{
+						screen: GPSTruckMap,
 						navigationOptions: {
 						}
 					},

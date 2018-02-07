@@ -22,7 +22,7 @@ export default class ModulesHome extends Component {
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('GPS')}}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('GPSMAp')}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}

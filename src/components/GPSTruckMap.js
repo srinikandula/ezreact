@@ -25,7 +25,28 @@ export default class GPSTruckMap extends Component {
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
             view:'mapShow',
-            
+            location: ['Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
+            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi',
+            'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai',
+            'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
+            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune']
 
     };
 
@@ -62,7 +83,7 @@ export default class GPSTruckMap extends Component {
                 if (value !== null) {
                     var egObj = {};
                     egObj = JSON.parse(value);
-                    this.setState({token:egObj.token});
+                    this.setState({ token: egObj.token });
                     Axios({
                         method: 'get',
                         headers: { 'token': egObj.token },
@@ -70,38 +91,50 @@ export default class GPSTruckMap extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                var catgryarr = response.data.trucks;                    
-                                catgryarr = catgryarr.filter(function(item,index) {   
-                                        if(item.hasOwnProperty('attrs'))
-                                        return item;
+                                console.log('trucksList ==>', response.data);
+                                if (response.data.trucks.length == 0) {
+                                    this.setState({ loadSpinner: false })
+                                } else {
+    
+                                    var catgryarr = response.data.trucks;
+                                    catgryarr = catgryarr.filter(function (item, index) {
+                                        if (item.hasOwnProperty('attrs'))
+                                            return item;
                                     });
-                                    console.log('catgryarr',catgryarr)
-                                this.setState({trucks:catgryarr});
-                                var dump =[];
-                                for (let index = 0; index < catgryarr.length; index++) {
-                                    const element = catgryarr[index];
-                                    // element.location = this.state.location[index];
-                                    // element.rememberme =false;
-                                    // console.log(this.state.location[index],'element.location');
-                                    dump.push(element);
-                                    this.setState({trucks:dump});
+    
+                                    this.setState({ trucks: catgryarr });
+    
+                                    var dump = [];
+                                    for (let index = 0; index < catgryarr.length; index++) {
+                                        const element = catgryarr[index];
+                                        element.location = this.state.location[index];
+                                        element.rememberme = false;
+                                        console.log(this.state.location[index], 'element.location');
+                                        dump.push(element);
+                                        this.setState({ trucks: dump });
+                                    }
+    
+                                    console.log(catgryarr, 'vignesh == ', dump);
+                                    var catgryarr1 = [];
+                                    for (let index = 0; index < catgryarr.length; index++) {
+                                        if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
+                                            const element = catgryarr[index].attrs.latestLocation.location.coordinates;
+                                            // console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                            //latitude:0,longitude:0
+                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' } };
+                                            catgryarr1.push(obj);
+                                            this.setState({ latitude: element[1], longitude: element[0] });
+                                            this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                        }
+                                    }
                                 }
-
-                                var catgryarr1 = [];                    
-                                 for (let index = 0; index < catgryarr.length; index++) {
-                                     const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                    console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
-                                    //latitude:0,longitude:0
-                                    var obj = {coordinate:{latitude:element[1],longitude:element[0],image:'https://i.imgur.com/sNam9iJ.jpg'}};
-                                     catgryarr1.push(obj);
-                                     this.setState({latitude:element[1],longitude:element[0]});
-                                     this.setState({markers:catgryarr1},()=>{console.log(this.state.markers,'markers');});
-                                 }
+                                this.setState({ loadSpinner: false })
+    
                             } else {
                                 console.log('error in trucksList ==>', response);
-                                this.setState({ erpDashBroadData: [],expirydetails:[] });
+                                this.setState({ erpDashBroadData: [], expirydetails: [] });
+                                this.setState({ loadSpinner: false })
                             }
-    
                         }).catch((error) => {
                             console.log('error in trucksList ==>', error);
                         })

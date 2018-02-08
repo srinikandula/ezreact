@@ -21,8 +21,8 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
-           
+            userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
+        //    userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false
         };
         //userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
@@ -206,7 +206,7 @@ class Login extends Component {
                                 </Text>
 
                                 <CustomEditText
-                                    maxLength={Config.limiters.mobileLength}
+                                    //maxLength={Config.limiters.mobileLength}
                                     keyboardType='default'
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.userName}

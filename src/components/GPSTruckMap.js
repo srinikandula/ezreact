@@ -19,8 +19,8 @@ export default class GPSTruckMap extends Component {
         aspectRatio :0,
         latitudeDelta : 1,
         longitudeDelta : 1,        
-        latitude: 78.3100319,
-        longitude: 17.46247,
+        latitude: 17.46247,
+        longitude: 78.3100319,
         animation : new Animated.Value(0),
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
@@ -70,19 +70,19 @@ export default class GPSTruckMap extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('trucksList ==>', response.data);
                                 var catgryarr = response.data.trucks;                    
-                                catgryarr = catgryarr.filter(function(item,index) {                                        
+                                catgryarr = catgryarr.filter(function(item,index) {   
                                         if(item.hasOwnProperty('attrs'))
                                         return item;
                                     });
+                                    console.log('catgryarr',catgryarr)
                                 this.setState({trucks:catgryarr});
                                 var dump =[];
                                 for (let index = 0; index < catgryarr.length; index++) {
                                     const element = catgryarr[index];
-                                    element.location = this.state.location[index];
-                                    element.rememberme =false;
-                                    console.log(this.state.location[index],'element.location');
+                                    // element.location = this.state.location[index];
+                                    // element.rememberme =false;
+                                    // console.log(this.state.location[index],'element.location');
                                     dump.push(element);
                                     this.setState({trucks:dump});
                                 }
@@ -90,7 +90,7 @@ export default class GPSTruckMap extends Component {
                                 var catgryarr1 = [];                    
                                  for (let index = 0; index < catgryarr.length; index++) {
                                      const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                    // console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                    console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                     //latitude:0,longitude:0
                                     var obj = {coordinate:{latitude:element[1],longitude:element[0],image:'https://i.imgur.com/sNam9iJ.jpg'}};
                                      catgryarr1.push(obj);
@@ -208,7 +208,7 @@ export default class GPSTruckMap extends Component {
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
                         style={CustomStyles.map}
-                        maxZoomLevel={7}
+                        maxZoomLevel={6}
                         initialRegion={{
                         latitude: this.state.latitude,
                         longitude: this.state.longitude,
@@ -219,11 +219,13 @@ export default class GPSTruckMap extends Component {
                     >
                         {this.state.markers.map((marker, index) => {
                         return (
-                        <MapView.Marker key={index} coordinate={marker.coordinate}>
-                            <Animated.View style={[styles.markerWrap]}>
+                        <MapView.Marker key={index} 
+                        image={require('../images/greenTruck.png')}
+                        coordinate={marker.coordinate}>
+                           {/*  <Animated.View style={[styles.markerWrap]}>
                             <Animated.View style={[styles.ring]} />
                             <View style={styles.marker} />
-                            </Animated.View>
+                            </Animated.View> */}
                         </MapView.Marker>
                         );
                     })}
@@ -283,9 +285,9 @@ export default class GPSTruckMap extends Component {
          
         return(
                 <View style={CustomStyles.viewStyle}>
-                    <View style={CustomStyles.erpCategory}>
+                    {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
-                        </View>
+                        {/* </View> */}
                         
                 </View>
                 

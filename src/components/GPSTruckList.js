@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,Animated,StyleSheet,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { LoadingSpinner, ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
@@ -15,6 +15,7 @@ const CARD_WIDTH = CARD_HEIGHT - 50;
 
 export default class GPSTruckList extends Component {
     state = {
+        loadSpinner: false,
         categoryBgColor: false,token:'',trucks:[],
         aspectRatio :0,
         latitudeDelta : 1,
@@ -51,7 +52,7 @@ export default class GPSTruckList extends Component {
     };
 
     componentWillMount() {
-
+this.setState({loadSpinner: true});
         const self = this;
         console.log(self.props,"token");
         this.getCredentailsData();
@@ -119,6 +120,7 @@ export default class GPSTruckList extends Component {
                                      this.setState({latitude:element[1],longitude:element[0]});
                                      this.setState({markers:catgryarr1},()=>{console.log(this.state.markers,'markers');});
                                  }
+                                 this.setState({loadSpinner: false})
                             } else {
                                 console.log('error in trucksList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
@@ -190,6 +192,13 @@ export default class GPSTruckList extends Component {
         console.log('nextProps====',nextProps);
     }
 
+    renderLoadingSpinner() {
+        if (this.state.loadSpinner)
+            return <LoadingSpinner />;
+        return false;
+    }
+    
+
     coordinate() {
         
         //markers
@@ -219,6 +228,24 @@ export default class GPSTruckList extends Component {
             }
             
         }
+    }
+
+    renderTruckIcon(item){
+        const speed = parseInt(item.attrs.latestLocation.speed)
+        if(speed>10){
+            return <Image resizeMode="contain"
+            source={require('../images/greenTruck.png')}
+            style={CustomStyles.imageWithoutradiusViewContainer} /> 
+        }else if (speed===0){
+            return <Image resizeMode="contain"
+            source={require('../images/redTruck.png')}
+            style={CustomStyles.imageWithoutradiusViewContainer} /> 
+        }else {
+            return <Image resizeMode="contain"
+            source={require('../images/orangeTruck.png')}
+            style={CustomStyles.imageWithoutradiusViewContainer} /> 
+        }
+        
     }
 
 
@@ -261,9 +288,7 @@ export default class GPSTruckList extends Component {
                         <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                             <View style={CustomStyles.erpDriverItems}>
                                 <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
-                                    <Image resizeMode="contain"
-                                            source={require('../images/truck_icon.png')}
-                                            style={CustomStyles.imageWithoutradiusViewContainer} />    
+                                    {this.renderTruckIcon(item)}   
                                     <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
                                             {item.registrationNo}</Text>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',fontSize:12}]}>
@@ -275,13 +300,16 @@ export default class GPSTruckList extends Component {
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
                                                 Location {item.location}</Text>
-                                            <CheckBox
-                                            style={{width:10,height:10}}
+                                           
+                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
+                                                {`Speed: ${parseInt(item.attrs.latestLocation.speed)} km/hr`}</Text>
+                                                <CheckBox
+                                            checkboxStyle={{width: 12, height: 12}}
                                                 label='Looking For Load'
                                                 color={'#000000'}
                                                 checked={item.rememberme}
                                                 onChange={() => this.lookingForLoad(item)}
-                                            />    
+                                            /> 
                                         </View>
                                         
                                     </View>
@@ -305,6 +333,7 @@ export default class GPSTruckList extends Component {
          
         return(
                 <View style={CustomStyles.viewStyle}>
+                {this.renderLoadingSpinner()}
                     <View style={CustomStyles.erpCategory}>
                         
                             {self.getView()}

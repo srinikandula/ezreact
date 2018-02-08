@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
-import { ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText, Confirm } from './common';
+import {LoadingSpinner, ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNCOpenDoc from 'react-native-open-doc';
@@ -15,6 +15,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class ERPCategory extends Component {
     state = {
+        loadSpinner: false,
         showModal: false,
         categoryBgColor: false,
         recordsList: [],
@@ -57,7 +58,6 @@ export default class ERPCategory extends Component {
     };
     componentWillMount() {
         const self = this;
-
         Axios({
             method: 'get',
             headers: { 'token': self.props.navigation.state.params.token },
@@ -135,6 +135,11 @@ export default class ERPCategory extends Component {
         };
     }
 
+    renderLoadingSpinner() {
+        if (this.state.loadSpinner)
+            return <LoadingSpinner />;
+        return false;
+    }
 
     callDependenciesList(url) {
         const self = this;

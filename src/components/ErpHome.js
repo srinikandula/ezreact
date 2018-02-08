@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, BackHandler, NetInfo, ScrollView, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems} from './common';
+import { LoadingSpinner, ExpiryDateItems} from './common';
 import  Utils from './common/Utils';
 import { NavigationActions } from 'react-navigation';
 import Config from '../config/Config';
@@ -83,7 +83,7 @@ export default class ErpHome extends Component {
                             tempObj.count = temp.taxExpiryCount;
                             Aarr.push(tempObj);
                             //this.onChange();
-                            this.setState({ erpDashBroadData: response.data.result, expirydetails: Aarr });
+                            this.setState({ erpDashBroadData: response.data.result, expirydetails: Aarr,loadSpinner: false  });
                             //console.log('expiry ==>', this.state.expirydetails);
                         } else {
                             console.log('error in ErpHome ==>', response);
@@ -100,7 +100,7 @@ export default class ErpHome extends Component {
                 });
 
             } else {
-                this.setState({ loading: false })
+                // this.setState({ loadSpinner: false })
             }
         }
         );
@@ -186,6 +186,7 @@ export default class ErpHome extends Component {
         return (
 
             <View style={CustomStyles.ViewStyle}>
+            {this.renderLoadingSpinner()}
                 <ScrollView>
                     <TouchableOpacity
                         onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }); this.callcategoryScreen('Revenue') }}

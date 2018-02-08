@@ -37,6 +37,9 @@ import ExpiryDate from './components/ExpiryDate';
 import ModulesHome from './components/ModulesHome';
 import GPSTruckList from './components/GPSTruckList';
 import GPSTruckMap from './components/GPSTruckMap';
+import AddGroup from './components/AddGroup';
+import DriverSelectionList from './components/DriverSelectionList';
+import GroupsList from './components/GroupsList';
 
 class FooterTabs extends Component {
 	render () {

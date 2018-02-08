@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 const CustomStyles={
     mapcontainer: {
         ...StyleSheet.absoluteFillObject,
-        top:60,
+        // top:60,
         flex:1,
         justifyContent: 'flex-end',
         alignItems: 'center',

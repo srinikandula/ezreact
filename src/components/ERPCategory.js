@@ -662,7 +662,7 @@ export default class ERPCategory extends Component {
 
     getParsedDate(item) {
         var formattedDate = new Date(item);
-        return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth() + 1) + "/" + formattedDate.getYear().toString();
+        return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth() + 1) + "/" + formattedDate.getFullYear().toString();
     }
 
     getISODate(item) {

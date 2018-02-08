@@ -103,7 +103,7 @@ export default class ExpenseList extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return "Date :  "+formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString();
+        return "Date :  "+formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
       }
 
       renderSeparator = () => (

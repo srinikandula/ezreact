@@ -170,7 +170,7 @@ export default class GPSTruckList extends Component {
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString() + "  " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + "  " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
     }
 
     renderSeparator = () => (
@@ -320,7 +320,7 @@ export default class GPSTruckList extends Component {
                                                 Location {item.location}</Text>
 
                                             <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', }]}>
-                                                {this.getName(item)} km/hr`}</Text>
+                                                {this.getName(item)} km/hr</Text>
                                             <CheckBox
                                                 checkboxStyle={{ width: 12, height: 12 }}
                                                 label='Looking For Load'

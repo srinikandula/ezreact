@@ -175,13 +175,13 @@ export default class ExpiryDate extends Component {
         if (true) {
             return (
                 <Text style={[CustomStyles.erpSubCatText, { color: 'red' }]}>
-                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString()
+                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString()
                     }
                 </Text>);
         } else {
             return (
                 <Text style={[CustomStyles.erpSubCatText, { color: 'yellow' }]}>
-                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString()
+                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString()
                     }
                 </Text>);
         }

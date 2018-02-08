@@ -94,7 +94,7 @@ export default class PaymentList extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return "Date : "+formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString();
+        return "Date : "+formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
       }
 
       renderSeparator = () => (

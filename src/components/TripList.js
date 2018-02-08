@@ -117,7 +117,7 @@ export default class TripList extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getYear().toString();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
       }
 
     functiona(date2) {

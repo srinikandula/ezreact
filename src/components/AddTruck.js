@@ -161,6 +161,12 @@ export default class AddTruck extends Component {
                 if (response.data.status) {
                     self.setState({ spinnerBool: false });
                     // Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
 
                     let message = "";
@@ -187,7 +193,7 @@ export default class AddTruck extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: 'flex' }, selectedName: value });
     }
 
     onPickdate(look) {
@@ -283,7 +289,6 @@ export default class AddTruck extends Component {
                                             if (this.state.selectedDriverId.includes("Select Driver")) {
                                                 driverID = "";
                                             }
-
                                             var postData = {
                                                 'registrationNo': this.state.truckNumber,
                                                 'truckType': this.state.trucktype,
@@ -369,38 +374,43 @@ export default class AddTruck extends Component {
 
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none',color: '#525252' }, this.state.field0]}>
                                     Truck Number*</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
+                                <CustomEditText underlineColorAndroid='transparent' 
+                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                    placeholder={'Truck Number*'}
                                     value={this.state.truckNumber}
                                     onChangeText={(truckNumber) => { this.moveInputLabelUp(0, truckNumber), this.setState({ truckNumber: truckNumber }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field1]}>
                                     Tonnage*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.trucktonnage}
+                                    placeholder={'Tonnage*'}
                                     onChangeText={(trucktonnage) => { this.moveInputLabelUp(1, trucktonnage), this.setState({ trucktonnage: trucktonnage }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field2]}>
                                     Model*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.truckmodel}
+                                    placeholder={'Model*'}
                                     onChangeText={(truckmodel) => { this.moveInputLabelUp(2, truckmodel), this.setState({ truckmodel: truckmodel }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none' ,color: '#525252' }, this.state.field3]}>
                                     Truck type*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.trucktype}
+                                    placeholder={'Truck type*'}
                                     onChangeText={(trucktype) => { this.moveInputLabelUp(3, trucktype), this.setState({ trucktype: trucktype }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                                 <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedDriverId}
@@ -416,9 +426,11 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Tax Due Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field4]}>
+                                            Tax Due Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
+                                                placeholder={'Tax Due Expiry Date*'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.TaxDueDate} >
                                                 {this.state.TaxDueDate}
@@ -438,9 +450,11 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>Permit Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field5]}>
+                                            Permit Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
+                                                placeholder={'Permit Expiry Date*'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.PermitDate} >
                                                 {this.state.PermitDate}
@@ -460,9 +474,11 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Fitness Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field6]}>
+                                            Fitness Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
+                                                placeholder={'Fitness Expiry Date*'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.FitnessDate}
                                             >{this.state.FitnessDate}
@@ -482,9 +498,11 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field7]}>Pollution Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field7]}>
+                                            Pollution Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
+                                                placeholder={'Pollution Expiry Date*'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.PollutionDate} >
                                                 {this.state.PollutionDate}
@@ -504,9 +522,11 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field8]}>Insurance Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field8]}>
+                                            Insurance Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
+                                                placeholder={'Insurance Expiry Date*'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.InsuranceDate} >
                                                 {this.state.InsuranceDate}

@@ -104,6 +104,13 @@ export default class PartyList extends Component {
         });
     }
 
+    refreshFunction = (nextProps) => {
+        if(nextProps.refresh){
+            console.log('hurra=refresh',nextProps.refresh);
+            this.getCredentailsData();
+        }
+    }
+
     render() {
         const self=this;
         return(      
@@ -139,7 +146,7 @@ export default class PartyList extends Component {
                                         </View>
                                         <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
                                             <TouchableOpacity onPress={() => 
-                                                                    {this.props.navigation.navigate('AddParty',{token:this.state.token,edit:true,id:item._id,edit:true})}
+                                                                    {this.props.navigation.navigate('AddParty',{token:this.state.token,edit:true,id:item._id,edit:true,refresh: this.refreshFunction})}
                                                                 }>
                                                 <Image resizeMode="contain"
                                                         source={require('../images/form_edit.png')} 

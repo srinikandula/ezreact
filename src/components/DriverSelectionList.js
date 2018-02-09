@@ -18,7 +18,7 @@ export default class TruckList extends Component {
 
     componentWillMount() {
         const self = this;
-        console.log(self.props,"token");
+        //console.log(self.props,"token");
         this.getCredentailsData();
     }
         componentWillUnmount(){
@@ -116,7 +116,16 @@ export default class TruckList extends Component {
     
         sendData(){  
             console.log(JSON.stringify(this.state.selectionList),"asdasd");
-            Actions.pop({ refresh: {selectedList:JSON.stringify(this.state.selectionList) }});
+            //Actions.pop({ refresh: {selectedList:JSON.stringify(this.state.selectionList) }});
+            const {navigation} = this.props;
+            const {state} = navigation;
+            let refreshFunc = state.params.refresh;
+            if(typeof refreshFunc === 'function'){
+                refreshFunc({selectedList:JSON.stringify(this.state.selectionList) });
+            }
+            let as =  JSON.stringify(this.state.selectionList);
+            this.props.navigation.state.params.selectedList= as;
+            navigation.goBack();
          }
 
     render() {

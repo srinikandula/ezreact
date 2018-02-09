@@ -121,6 +121,12 @@ export default class AddGroup extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     //Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
@@ -136,8 +142,7 @@ export default class AddGroup extends Component {
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
-                    Utils.ShowMessage(message);
-                    
+                    Utils.ShowMessage(message);                    
                 }
             }).catch((error) => {
                 console.log('error in addGroup ==>', error);
@@ -171,53 +176,32 @@ export default class AddGroup extends Component {
                                                 console.log('postData',postData);
                                                 this.callAddGroupAPI(postData);
                                     }else{
-                                                            Utils.ShowMessage('Please Select ERP/GPS ');
-
-
+                                        Utils.ShowMessage('Please Select ERP/GPS ');
                                     }
                                     }else{
-                                                            Utils.ShowMessage('Please Enter Location Name ');
-
- 
+                                        Utils.ShowMessage('Please Enter Location Name '); 
                                     }
                                 }else{
-                                                        Utils.ShowMessage('Please Enter Contact Number ');
-
-
+                                    Utils.ShowMessage('Please Enter Contact Number ');
                                 }
                             }else{
-                                                    Utils.ShowMessage('Please Enter Contact Name ');
-
-
+                                Utils.ShowMessage('Please Enter Contact Name ');
                             }
                         }else{
-                                                Utils.ShowMessage('Please Select Vehicles ');
-
-
+                            Utils.ShowMessage('Please Select Vehicles ');
                         }
                     }else{
-                                            Utils.ShowMessage('Enter Confirm Password does not Match  ');
-
-
+                            Utils.ShowMessage('Enter Confirm Password does not Match  ');
                     }
                 }else{
-                                        Utils.ShowMessage('Please Enter Password');
-
-
+                    Utils.ShowMessage('Please Enter Password');
                 }
             }else{
-                                    Utils.ShowMessage('Please Enter Group User Name');
-
-
+                Utils.ShowMessage('Please Enter Group User Name');
             }
         }else{
-                                Utils.ShowMessage('Please Enter Group Name');
-
-
+            Utils.ShowMessage('Please Enter Group Name');
         }
-       
-
-        
     }
 
     
@@ -227,7 +211,18 @@ export default class AddGroup extends Component {
         return false;
     }
 
-    componentWillReceiveProps(nextProps){
+    /*componentWillReceiveProps(nextProps){
+        if(nextProps.selectedList.length > 0){
+            var objArr  = JSON.parse(nextProps.selectedList);
+            var temp = ''+objArr.length ;
+            this.setState({numTrucks:temp,truckArr:objArr});
+            console.log('hurra',nextProps.selectedList);
+            this.moveInputLabelUp(4, temp)
+        }
+    }*/
+   
+    refreshFunction = (nextProps) => {
+        //alert(nextProps);
         if(nextProps.selectedList.length > 0){
             var objArr  = JSON.parse(nextProps.selectedList);
             var temp = ''+objArr.length ;
@@ -236,8 +231,6 @@ export default class AddGroup extends Component {
             this.moveInputLabelUp(4, temp)
         }
     }
-   
-    
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -285,7 +278,8 @@ export default class AddGroup extends Component {
                                             onChangeText={(cpassword) => {this.moveInputLabelUp(3, cpassword), this.setState({cpassword:cpassword})}} />
                         </View>
                         <TouchableOpacity
-                                        onPress={() => {Actions.SelectDriver({token:this.state.token,edit:false}) }}
+                                        onPress={() => {this.props.navigation.navigate('SelectDriver',
+                                        {token:this.state.token,edit:false,refresh: this.refreshFunction}) }}
                                     >
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>

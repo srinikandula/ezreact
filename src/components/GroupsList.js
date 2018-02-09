@@ -60,19 +60,7 @@ export default class GroupsList extends Component {
 
 
     callSubCategoryScreen(truckContactNum) {
-
         RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-       /*  const self = this;
-        const args = {
-            number: '' + truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
-        }
-
-        call(args)
-            .catch(
-            console.error) */
-
     }
 
 
@@ -90,7 +78,12 @@ export default class GroupsList extends Component {
             }}
         />
     );
-
+    refreshFunction = (nextProps) => {
+        if(nextProps.refresh){
+            console.log('hurra=refresh',nextProps.refresh);
+            this.getCredentailsData();
+        }
+    }
 
     render() {
         const self = this;
@@ -129,7 +122,7 @@ export default class GroupsList extends Component {
                                             <Text style={CustomStyles.erpText}> +91 {item.contactPhone}</Text>
                                         </View>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:true,id:item._id}) }
+                                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:true,id:item._id,refresh: this.refreshFunction}) }
                                             }>
                                                 <Image resizeMode="contain"
                                                     source={require('../images/form_edit.png')}

@@ -169,15 +169,15 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 			headerTintColor: '#fff'
 		}
 	},
-	AddGroup: {
+	/*AddGroup: {
 		screen: AddGroup,
 		navigationOptions: {
-			headerTitle: 'Add Trip',
+			headerTitle: 'Add Group',
 			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
-	},
+},*/
 
 	homepage: {
 		screen: TabNavigator({
@@ -215,7 +215,20 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 						navigationOptions: {
 						}
 					},
-
+					SelectDriver:{
+						screen:DriverSelectionList,
+						navigationOptions: {
+						}
+					},
+					AddGroup: {
+						screen: AddGroup,
+						navigationOptions: {
+							headerTitle: 'Add Group',
+							headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+							headerStyle: { backgroundColor: '#1e4495' },
+							headerTintColor: '#fff'
+						}
+					},
 					SubModule: {
 						screen: TabNavigator({
 							Dashboard: {

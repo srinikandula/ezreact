@@ -242,6 +242,12 @@ export default class AddDriver extends Component {
                             message = message + current_value;
                         });
                     Utils.ShowMessage(message);
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                 } else {
                     self.setState({ spinnerBool: false });

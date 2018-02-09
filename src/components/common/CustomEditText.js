@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInput, View, Image} from 'react-native';
 
 const CustomEditText = ({
-    underlineColorAndroid,
+                        underlineColorAndroid,
                          maxLength,
                          keyboardType,
                          inputContainerStyle,
@@ -30,6 +30,7 @@ const CustomEditText = ({
                 style={[inputStyle, inputTextStyle]}
                 value={value}
                 onChangeText={onChangeText}
+                
             />
         </View>
     );

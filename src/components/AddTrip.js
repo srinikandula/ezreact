@@ -175,6 +175,12 @@ export default class AddTrip extends Component {
                     
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                     let message ="";
                     if(response.data)

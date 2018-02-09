@@ -147,7 +147,7 @@ export default class TruckList extends Component {
     getmobile(item){
         var data ='-';
         if(item.hasOwnProperty("attrs")){
-            data = item.attrs.mobile;
+            data = '91 '+ item.attrs.mobile;
         }else{
             data =  '-';
         }
@@ -156,6 +156,13 @@ export default class TruckList extends Component {
 
     componentWillReceiveProps(nextProps){
         console.log('nextProps====',nextProps);
+    }
+
+    refreshFunction = (nextProps) => {
+        if(nextProps.refresh){
+            console.log('hurra=refresh',nextProps.refresh);
+            this.getCredentailsData();
+        }
     }
     render() {
         const self=this;
@@ -187,11 +194,11 @@ export default class TruckList extends Component {
                                                                 {this.getName(item)}
                                                                 </Text>
                                                         <Text style={CustomStyles.erpText}> +
-                                                                91 {this.getmobile(item)}
+                                                                 {this.getmobile(item)}
                                                                 </Text>
                                                 </View>
                                                 <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
-                                                    <TouchableOpacity onPress={() => {this.props.navigation.navigate('AddTruck',{token:this.state.token,id:item._id,edit:true}) }
+                                                    <TouchableOpacity onPress={() => {this.props.navigation.navigate('AddTruck',{token:this.state.token,id:item._id,edit:true,refresh: this.refreshFunction}) }
                                                                         }>
                                                         <Image resizeMode="contain"
                                                                 source={require('../images/form_edit.png')} 

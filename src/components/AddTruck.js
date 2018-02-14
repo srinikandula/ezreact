@@ -193,7 +193,7 @@ export default class AddTruck extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { display: 'flex' }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
     onPickdate(look) {
@@ -379,8 +379,9 @@ export default class AddTruck extends Component {
                                 <CustomEditText underlineColorAndroid='transparent' 
                                     inputTextStyle={{ marginHorizontal: 16 }}
                                     placeholder={'Truck Number*'}
-                                    value={this.state.truckNumber}
-                                    onChangeText={(truckNumber) => { this.moveInputLabelUp(0, truckNumber), this.setState({ truckNumber: truckNumber }) }} />
+                                    value={this.state.truckNumber}                                    
+                                    onChangeText={(truckNumber) => { this.moveInputLabelUp(0, truckNumber),
+                                                this.setState({ truckNumber: truckNumber }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
@@ -389,7 +390,8 @@ export default class AddTruck extends Component {
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.trucktonnage}
                                     placeholder={'Tonnage*'}
-                                    onChangeText={(trucktonnage) => { this.moveInputLabelUp(1, trucktonnage), this.setState({ trucktonnage: trucktonnage }) }} />
+                                    onChangeText={(trucktonnage) => { this.moveInputLabelUp(1, trucktonnage),
+                                                    this.setState({ trucktonnage: trucktonnage }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 

@@ -142,10 +142,6 @@ class Login extends Component {
             console.log('something went wrong');
         }
     }
-
-
-
-
     render() {
         const {
             signInTextStyle,
@@ -204,6 +200,9 @@ class Login extends Component {
                             </View>
 
                             <View style={CustomStyles.loginInputbox}>
+                               
+                            </View>
+                            <View style={CustomStyles.loginInputbox}>
                                 <Text style={namelabelStyle} >
                                     UserName
                                 </Text>
@@ -214,9 +213,17 @@ class Login extends Component {
                                     placeholder={'UserName'}
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.userName}
-                                    onChangeText={(value) => {
-                                        this.setState({ userName: value, userNamelbl: true })
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
                                     }}
+                                    onBlur={() => {
+                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
+                                    }}
+                                    onChangeText={(value) => {
+                                        this.setState({ userName: value, userNamelbl:value ===''?false: true })
+                                    }}
+                                   
                                 />
                             </View>
                             <View style={CustomStyles.loginInputbox}>
@@ -229,8 +236,15 @@ class Login extends Component {
                                     keyboardType='numeric'
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.phoneNumber}
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                    }}
+                                    onBlur={() => {
+                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                    }}
                                     onChangeText={(value) => {
-                                        this.setState({ phoneNumber: value, phoneNumberlbl: true })
+                                        this.setState({phoneNumber: value, phoneNumberlbl: value===''?false:true})
                                     }}
                                 />
                             </View>
@@ -243,8 +257,15 @@ class Login extends Component {
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.password}
                                     placeholder={'Password'}
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                    }}
+                                    onBlur={() => {
+                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                    }}
                                     onChangeText={(value) => {
-                                        this.setState({ password: value, passwordlbl: true })
+                                        this.setState({ password: value, passwordlbl:value===''?false: true })
                                     }}
                                 />
                             </View>

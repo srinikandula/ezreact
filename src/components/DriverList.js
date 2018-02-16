@@ -106,6 +106,10 @@ export default class DriverList extends Component {
         }
     }
 
+    showResult(){
+        if(this.state.driver.length == 0)
+         return 'No Drivers Found';
+    }
 
     render() {
         const self = this;
@@ -113,7 +117,11 @@ export default class DriverList extends Component {
 
             <View style={CustomStyles.viewStyle}>
                 <View style={CustomStyles.erpCategory}>
-
+                <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                     <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                         data={this.state.driver}
                         ItemSeparatorComponent={this.renderSeparator}

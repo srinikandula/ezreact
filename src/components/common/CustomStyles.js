@@ -802,6 +802,16 @@ markerWrap: {
     fontSize: 12,
     color: "#444",
   },
+  noResultView:{
+    alignSelf:'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    //justifyContent: 'flex-start',
+   // backgroundColor: '#00ffff'
+   borderWidth:0,
+   borderBottomWidth :0,
+   borderBottomColor:'black'
+},
 };
 
 export default CustomStyles;

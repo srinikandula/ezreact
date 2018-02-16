@@ -177,13 +177,23 @@ export default class TruckList extends Component {
             this.getCredentailsData();
         }
     }
+
+    showResult(){
+        if(this.state.trucks.length == 0)
+         return 'No Trucks Found';
+    }
+
     render() {
         const self=this;
         return(      
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                       
+                        <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.trucks}
                             ItemSeparatorComponent={this.renderSeparator}

@@ -77,7 +77,12 @@ export default class TruckList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        if(truckContactNum.legth > 0){
+            RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        }else{
+            Utils.ShowMessage('Mobile Number is Invalid');
+        }
+        
     }
 
 
@@ -125,15 +130,23 @@ export default class TruckList extends Component {
         return Math.round(difference_ms / one_day);
     }
 
-      renderSeparator = () => (
-        <View
-          style={{
-            backgroundColor: '#d6d6d6',
-            height: 0,
-          }}
-        />
-      );
-
+    renderSeparator = () => (
+    <View
+        style={{
+        backgroundColor: '#d6d6d6',
+        height: 0,
+        }}
+    />
+    );
+    getTonnage(item){
+        var data ='-';
+        if(item.hasOwnProperty("tonnage")){
+            data = item.tonnage + 'K';
+        }else{
+            data =  '-';
+        }
+        return data;
+    }  
     getName(item){
         var data ='-';
         if(item.hasOwnProperty("attrs")){
@@ -146,7 +159,7 @@ export default class TruckList extends Component {
 
     getmobile(item){
         var data ='-';
-        if(item.hasOwnProperty("attrs")){
+        if(item.hasOwnProperty("mobile")){
             data = '91 '+ item.attrs.mobile;
         }else{
             data =  '-';
@@ -184,7 +197,7 @@ export default class TruckList extends Component {
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
                                                     {item.registrationNo}</Text>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
-                                                    {item.tonnage}k  {item.modelAndYear}</Text>
+                                                    {this.getTonnage(item)}  {item.modelAndYear}</Text>
                                         </View>
                                         <View style={{flex:1, flexDirection: 'column',padding:10}}>
                                             <View style={{ flexDirection: 'row',padding:10}}>
@@ -193,7 +206,7 @@ export default class TruckList extends Component {
                                                         <Text style={[CustomStyles.erpText,{fontFamily:'Gotham-Medium',fontSize: 16,}]}>
                                                                 {this.getName(item)}
                                                                 </Text>
-                                                        <Text style={CustomStyles.erpText}> +
+                                                        <Text style={CustomStyles.erpText}> 
                                                                  {this.getmobile(item)}
                                                                 </Text>
                                                 </View>

@@ -96,7 +96,7 @@ export default class GPSTruckList extends Component {
                 })
                     .then((response) => {
                         if (response.data.status) {
-                            console.log('trucksList ==>', response.data);
+                            //console.log('trucksList ==>', response.data);
                             if (response.data.trucks.length == 0) {
                                 this.setState({ loadSpinner: false })
                             } else {
@@ -114,7 +114,7 @@ export default class GPSTruckList extends Component {
                                     const element = catgryarr[index];
                                     element.location = this.state.location[index];
                                     element.rememberme = false;
-                                    console.log(this.state.location[index], 'element.location');
+                                    //console.log(this.state.location[index], 'element.location');
                                     dump.push(element);
                                     this.setState({ trucks: dump });
                                 }
@@ -136,12 +136,12 @@ export default class GPSTruckList extends Component {
                             this.setState({ loadSpinner: false })
 
                         } else {
-                            console.log('error in trucksList ==>', response);
+                            console.log('error in GPStrucksList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
                             this.setState({ loadSpinner: false })
                         }
                     }).catch((error) => {
-                        console.log('error in trucksList ==>', error);
+                        console.log('error in GPStrucksList ==>', error);
                     })
             } else {
                 this.setState({ loading: false })

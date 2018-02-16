@@ -46,6 +46,12 @@ export default class AddDriver extends Component {
                     }
                 } else {
                     console.log('error in Add driver ==>', response);
+                    var tempTrucksList = [];
+                    tempTrucksList.unshift({ _id: "Select Truck", registrationNo: "Select Truck" });
+                    this.setState({ trucks: tempTrucksList });
+                    if (this.props.navigation.state.params.edit) {
+                        this.getDriverDetails(this.props.navigation.state.params.id);
+                    }
                 }
             }).catch((error) => {
                 console.log('error in baskets ==>', error);
@@ -102,7 +108,7 @@ export default class AddDriver extends Component {
             accountId: driverDetails.accountId
         });
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
 
         }
     }
@@ -124,7 +130,7 @@ export default class AddDriver extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
 
@@ -295,22 +301,33 @@ export default class AddDriver extends Component {
                         <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>Full Name</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.name}
-                                    onChangeText={(name) => { this.moveInputLabelUp(0, name), this.setState({ name: name }) }} />
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}>
+                                            Full Name</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent'
+                                                inputTextStyle={{ marginHorizontal: 16 }} 
+                                                placeholder={'Full Name'}
+                                                value={this.state.name}
+                                                onChangeText={(name) => { this.moveInputLabelUp(0, name), this.setState({ name: name }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>Contact Number</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field1]}>
+                                            Contact Number</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent'
-                                    keyboardType='numeric'
-                                    inputTextStyle={{ marginHorizontal: 16 }} value={this.state.mobile}
-                                    onChangeText={(mobile) => { this.moveInputLabelUp(1, mobile), this.setState({ mobile: mobile }) }} />
+                                                keyboardType='numeric'
+                                                inputTextStyle={{ marginHorizontal: 16 }} 
+                                                placeholder={'Contact Number'}
+                                                value={this.state.mobile}
+                                                onChangeText={(mobile) => { this.moveInputLabelUp(1, mobile), this.setState({ mobile: mobile }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>License Number</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.licenseNo}
-                                    onChangeText={(licenseNo) => { this.moveInputLabelUp(2, licenseNo), this.setState({ licenseNo: licenseNo }) }} />
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field2]}>
+                                            License Number</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent' 
+                                                inputTextStyle={{ marginHorizontal: 16 }} 
+                                                placeholder={'License Number'}
+                                                value={this.state.licenseNo}
+                                                onChangeText={(licenseNo) => { this.moveInputLabelUp(2, licenseNo), this.setState({ licenseNo: licenseNo }) }} />
                             </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate() }}
@@ -318,11 +335,13 @@ export default class AddDriver extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>License Validity</CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field3]}>
+                                                        License Validity</CustomText>
                                             <CustomEditText editable={false}
-                                                underlineColorAndroid='transparent'
-                                                inputTextStyle={{ marginHorizontal: 16 }}
-                                                value={this.state.date} />
+                                                            underlineColorAndroid='transparent'
+                                                            inputTextStyle={{ marginHorizontal: 16 }}
+                                                            placeholder={'License Validity'}
+                                                            value={this.state.date} />
                                         </View>
                                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -333,7 +352,8 @@ export default class AddDriver extends Component {
                                 </View>
                             </TouchableOpacity>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Truck Num</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>
+                                            Truck Num</CustomText>
                                 <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedTruckId}
@@ -343,12 +363,14 @@ export default class AddDriver extends Component {
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Salary Per Month</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field4]}>
+                                            Salary Per Month</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent'
-                                    keyboardType='numeric'
-                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                    value={this.state.salaryPM}
-                                    onChangeText={(salaryPM) => { this.moveInputLabelUp(4, salaryPM), this.setState({ salaryPM: salaryPM }) }} />
+                                                keyboardType='numeric'
+                                                inputTextStyle={{ marginHorizontal: 16 }}
+                                                placeholder={'Salary Per Month'}
+                                                value={this.state.salaryPM}
+                                                onChangeText={(salaryPM) => { this.moveInputLabelUp(4, salaryPM), this.setState({ salaryPM: salaryPM }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginLeft: 10, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CheckBox

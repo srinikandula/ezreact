@@ -81,7 +81,7 @@ export default class AddGroup extends Component {
         console.log('groupDetails ID',groupDetails._id);
         });
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
             
         }
     }
@@ -96,7 +96,7 @@ export default class AddGroup extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
     callAddGroupAPI(postdata){
@@ -242,38 +242,44 @@ export default class AddGroup extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}>
                                 Account Name*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Account Name*'}
                                             value={this.state.groupName}
                                             onChangeText={(groupName) => {this.moveInputLabelUp(0, groupName), this.setState({groupName:groupName})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field1]}>
                                 Group User Name*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Group User Name*'}
                                             value={this.state.groupUserName}
                                             onChangeText={(groupUserName) => {this.moveInputLabelUp(1, groupUserName), this.setState({groupUserName:groupUserName})}} />
                         </View>
                         
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field2]}>
                                 Password*</CustomText>
                             <CustomEditText underlineColorAndroid='transparent'
                                             secureTextEntry 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Password*'}
                                             value={this.state.password}
                                             onChangeText={(password) => {this.moveInputLabelUp(2, password), this.setState({password:password})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field3]}>
                                Confirm Password*</CustomText>
                             <CustomEditText underlineColorAndroid='transparent' 
                                             secureTextEntry
                                             inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Confirm Password*'}
                                             value={this.state.cpassword}
                                             onChangeText={(cpassword) => {this.moveInputLabelUp(3, cpassword), this.setState({cpassword:cpassword})}} />
                         </View>
@@ -284,11 +290,12 @@ export default class AddGroup extends Component {
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 5 }}>                                
-                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>
-                                         selected Vechile</CustomText>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field4]}>
+                                         selected Vechile *</CustomText>
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
                                             inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Num of Vehicles*'}
                                             value={this.state.numTrucks} />
                                             
                                     </View>
@@ -303,28 +310,33 @@ export default class AddGroup extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field5]}>
                                 Contact Person Name*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Contact Person Name*'}
                                             value={this.state.contactName}
                                             onChangeText={(contactName) => {this.moveInputLabelUp(5, contactName), this.setState({contactName:contactName})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field6]}>
                                         Contact Number*</CustomText>
                             <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
                                            maxLength={Config.limiters.mobileLength}
                                            keyboardType='numeric'
+                                           placeholder={'Contact Number*'}
                                             value={this.state.groupContact}
                                             onChangeText={(groupContact) => {this.moveInputLabelUp(6, groupContact), this.setState({groupContact:groupContact.trim()})}} />
                         </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field7]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field7]}>
                                 Locaiton</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            placeholder={'Locaiton'}
                                             value={this.state.location}
                                             onChangeText={(location) => {this.moveInputLabelUp(7, location), this.setState({location:location})}} />
                         </View>

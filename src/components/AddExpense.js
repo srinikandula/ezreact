@@ -131,7 +131,7 @@ export default class AddExpense extends Component {
             this.setState({ creditBool: 'none', cashBool: 'flex', paymentType: 'Cash', totalAmount: '' + expenseDetails.cost });
         }
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
         }
 
     }
@@ -196,7 +196,7 @@ export default class AddExpense extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
     onPickdate() {
@@ -445,11 +445,13 @@ export default class AddExpense extends Component {
                                     <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={{ flex: 5 }}>
-                                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}> Trip Date</CustomText>
+                                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}> 
+                                                        Trip Date</CustomText>
                                                 <CustomEditText underlineColorAndroid='transparent'
-                                                    editable={false}
-                                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                                    value={this.state.date} />
+                                                                placeholder={'Trip Date*'}
+                                                                editable={false}
+                                                                inputTextStyle={{ marginHorizontal: 16 }}
+                                                                value={this.state.date} />
 
                                             </View>
 
@@ -489,10 +491,13 @@ export default class AddExpense extends Component {
                                 </View>
                                 <View style={{ display: this.state.otherExpenseInputViewBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Other Expense Type </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field4]}>
+                                        Other Expense Type </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                        inputTextStyle={{ marginHorizontal: 16 }} value={this.state.otherExpense}
-                                        onChangeText={(otherExpense) => { this.moveInputLabelUp(4, otherExpense); this.setState({ otherExpense: otherExpense }); }} />
+                                                    placeholder={'Expense Name*'}
+                                                    inputTextStyle={{ marginHorizontal: 16 }} 
+                                                    value={this.state.otherExpense}
+                                                    onChangeText={(otherExpense) => { this.moveInputLabelUp(4, otherExpense); this.setState({ otherExpense: otherExpense }); }} />
                                 </View>
                                 <View style={[CustomStyles.row, CustomStyles.mTop10, CustomStyles.mBottom10]}>
                                     <CRadio label='Credit' activeStyle={{ display: this.state.creditBool, margin: 10 }}
@@ -518,37 +523,37 @@ export default class AddExpense extends Component {
 
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>Total Amount* </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field5]}>
+                                            Total Amount* </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                        keyboardType='numeric'
-                                        inputTextStyle={{ marginHorizontal: 16 }}
-                                        value={this.state.totalAmount}
-                                        onChangeText={(totalAmount) => { this.moveInputLabelUp(5, totalAmount); this.setState({ totalAmount: totalAmount.trim() }); }} />
+                                                    placeholder={'Total Amount*'}
+                                                    keyboardType='numeric'
+                                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                                    value={this.state.totalAmount}
+                                                    onChangeText={(totalAmount) => { this.moveInputLabelUp(5, totalAmount); this.setState({ totalAmount: totalAmount.trim() }); }} />
                                 </View>
 
                                 <View style={{ display: this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field6]}>Paid Amount* </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field6]}>
+                                        Paid Amount* </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                        keyboardType='numeric'
-                                        inputTextStyle={{ marginHorizontal: 16 }}
-                                        value={this.state.paidAmount}
-                                        onChangeText={(paidAmount) => { this.moveInputLabelUp(6, paidAmount); this.setState({ paidAmount: paidAmount.trim() }); }} />
+                                                    placeholder={'Paid Amount*'}
+                                                    keyboardType='numeric'
+                                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                                    value={this.state.paidAmount}
+                                                    onChangeText={(paidAmount) => { this.moveInputLabelUp(6, paidAmount); this.setState({ paidAmount: paidAmount.trim() }); }} />
                                 </View>
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field7]}>Remarks </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field7]}>
+                                            Remarks </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                        inputTextStyle={{ marginHorizontal: 16 }}
-                                        value={this.state.remark}
-                                        onChangeText={(remark) => { this.moveInputLabelUp(7, remark); this.setState({ remark: remark }); }} />
+                                                    placeholder={'Remarks'}
+                                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                                    value={this.state.remark}
+                                                    onChangeText={(remark) => { this.moveInputLabelUp(7, remark); this.setState({ remark: remark }); }} />
                                 </View>
-
-
-
-
-
-
                             </View>
                         </ScrollView>
                     </View>

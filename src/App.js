@@ -57,7 +57,7 @@ export default class App extends Component {
       let LoginValid = AppNavigation(true);
       return <LoginValid />;
     } else {
-      let LoginInvalid = AppNavigation(false);
+      let LoginInvalid = AppNavigation(false);//false
       return <LoginInvalid />;
     }
   }

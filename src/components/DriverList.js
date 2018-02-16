@@ -77,19 +77,11 @@ export default class DriverList extends Component {
 
 
     callSubCategoryScreen(truckContactNum) {
-
-        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-       /*  const self = this;
-        const args = {
-            number: '' + truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
+        if(truckContactNum.legth > 0){
+            RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+        }else{
+            Utils.ShowMessage('Mobile Number is Invalid');
         }
-
-        call(args)
-            .catch(
-            console.error) */
-
     }
 
 
@@ -136,7 +128,7 @@ export default class DriverList extends Component {
 
                                 <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
-                                        <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
+                                        <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
                                             <Image resizeMode="contain"
                                                 source={require('../images/truck_icon.png')}
                                                 style={CustomStyles.imageViewContainer} />

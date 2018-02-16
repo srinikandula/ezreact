@@ -119,7 +119,7 @@ export default class AddTruck extends Component {
             accountId: truckDetails.accountId
         });
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
 
         }
     }

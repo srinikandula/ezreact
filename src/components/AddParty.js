@@ -60,7 +60,7 @@ export default class AddParty extends Component {
                     self.setState({ spinnerBool:false });
                     let message ="";
                     if(response.data)
-                    response.data.message.forEach(function(current_value) {
+                    response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
                     Utils.ShowMessage(message);

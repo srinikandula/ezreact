@@ -1,13 +1,13 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,Animated,StyleSheet,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,Animated,StyleSheet,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker,Callout } from 'react-native-maps';
 const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
@@ -16,6 +16,9 @@ const CARD_WIDTH = CARD_HEIGHT - 50;
 export default class GPSTruckMap extends Component {
     state = {
         categoryBgColor: false,token:'',trucks:[],
+        showTrack:false,
+        frmDate:'',
+        toDate:'',
         aspectRatio :0,
         latitudeDelta : 1,
         longitudeDelta : 1,        
@@ -68,6 +71,8 @@ export default class GPSTruckMap extends Component {
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
           );
+          let currDate = new Date();
+          self.setState({frmDate:currDate.getDate(),toDate:currDate.getDate()});
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -109,19 +114,22 @@ export default class GPSTruckMap extends Component {
                                         const element = catgryarr[index];
                                         element.location = this.state.location[index];
                                         element.rememberme = false;
-                                        console.log(this.state.location[index], 'element.location');
+                                        //console.log(this.state.location[index], 'element.location');
                                         dump.push(element);
                                         this.setState({ trucks: dump });
                                     }
     
                                     console.log(catgryarr, 'vignesh == ', dump);
                                     var catgryarr1 = [];
-                                    for (let index = 0; index < catgryarr.length; index++) {
+                                    for (let index = 0; index < 5; index++) {//catgryarr.length
                                         if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                            // console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                             console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                             //latitude:0,longitude:0
-                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' } };
+                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                        registrationNo:catgryarr[index].registrationNo,
+                                                        speed:catgryarr[index].attrs.latestLocation.speed,
+                                                        date:catgryarr[index].attrs.latestLocation.updatedAt};
                                             catgryarr1.push(obj);
                                             this.setState({ latitude: element[1], longitude: element[0] });
                                             this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
@@ -201,8 +209,7 @@ export default class GPSTruckMap extends Component {
         console.log('nextProps====',nextProps);
     }
 
-    coordinate() {
-        
+    coordinate() {        
         //markers
         return this.state.markers.map((item,index)=>{           
             <Marker
@@ -231,7 +238,14 @@ export default class GPSTruckMap extends Component {
             
         }
     }
+    markerClick(markerData) {
+        console.log(markerData,'markerData');
+        this.ShowModalFunction(!this.state.showTrack);
+    }
 
+    ShowModalFunction(visible) {
+        this.setState({ showTrack: visible });
+    }
 
     getView(){
         switch ('mapShow') {
@@ -241,7 +255,7 @@ export default class GPSTruckMap extends Component {
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
                         style={CustomStyles.map}
-                        maxZoomLevel={6}
+                        zoomEnabled ={true}
                         initialRegion={{
                         latitude: this.state.latitude,
                         longitude: this.state.longitude,
@@ -253,12 +267,27 @@ export default class GPSTruckMap extends Component {
                         {this.state.markers.map((marker, index) => {
                         return (
                         <MapView.Marker key={index} 
-                        image={require('../images/greenTruck.png')}
-                        coordinate={marker.coordinate}>
-                           {/*  <Animated.View style={[styles.markerWrap]}>
-                            <Animated.View style={[styles.ring]} />
-                            <View style={styles.marker} />
-                            </Animated.View> */}
+                        image={require('../images/greenTrucks.png')}
+                        coordinate={marker.coordinate}
+                        >
+                            <MapView.Callout tooltip style={CustomStyles.mapcard}
+                             onPress={()=>{this.markerClick(marker)}}>
+                                    <View style={CustomStyles.mapContent}>
+                                    <Text>{'Reg.No :'}{marker.registrationNo}</Text>
+                                    <Text>{'Speed :'}{marker.speed }'-km/hr'</Text>   
+                                    <Text>{'Odemeter :'}{'*****km'}</Text>
+                                    <Text>{'Date :'}{marker.date}</Text>
+                                    <Text>{'Address :'}{''}</Text>                                  
+                                    
+                                                                     
+                                    </View>
+                                      <TouchableHighlight   
+                                            underlayColor='#dddddd'>
+                                          <View style={CustomStyles.erpFooterText}>
+                                              <Text>{'Track'}</Text>
+                                          </View>
+                                      </TouchableHighlight>
+                                    </MapView.Callout>
                         </MapView.Marker>
                         );
                     })}
@@ -321,7 +350,14 @@ export default class GPSTruckMap extends Component {
                     {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
                         {/* </View> */}
-                        
+                        <TrackModal 
+                            visible={this.state.showTrack}  cancel={'cancel'}
+                            onAccept={() => { this.ShowModalFunction(!this.state.showTrack) }}
+                            onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
+                            onPickFromdate={()=>{alert('from');}}
+                            onPickTodate={()=>{alert('to');}}
+                            frmDate = {this.state.frmDate}
+                            toDate={this.state.toDate} />
                 </View>
                 
             );           

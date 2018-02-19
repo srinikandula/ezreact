@@ -220,6 +220,11 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 						navigationOptions: {
 						}
 					},
+					GroupList:{
+						screen:GroupsList,
+						navigationOptions: {
+						}
+					},
 					AddGroup: {
 						screen: AddGroup,
 						navigationOptions: {

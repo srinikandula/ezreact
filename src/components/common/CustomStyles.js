@@ -783,8 +783,6 @@ markerWrap: {
     shadowRadius: 5,
     shadowOpacity: 0.3,
     shadowOffset: { x: 2, y: -2 },
-    height: 20,
-    width: 20,
     overflow: "hidden",
   },
   cardImage: {
@@ -812,6 +810,19 @@ markerWrap: {
    borderBottomWidth :0,
    borderBottomColor:'black'
 },
+mapContent:{
+    alignSelf:'stretch',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    //justifyContent: 'flex-start',
+   // backgroundColor: '#00ffff'
+   borderWidth:0,
+   borderBottomWidth :0,
+   borderBottomColor:'black',
+   overflow: "hidden"
+},
+
+
 };
 
 export default CustomStyles;

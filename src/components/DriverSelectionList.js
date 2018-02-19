@@ -128,6 +128,10 @@ export default class TruckList extends Component {
             navigation.goBack();
          }
 
+         showResult(){
+            if(this.state.drviersList.length == 0)
+             return 'No Driver Found';
+        }
     render() {
         const self=this;
         return(      
@@ -145,6 +149,11 @@ export default class TruckList extends Component {
                             </View>
                         </TouchableOpacity>
                       </View>
+                      <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                     <View style={{flexWrap: 'wrap',flexDirection:'row',margin:5,alignItems:'flex-start'}}>
                         {this.renderItems()}
                     </View> 

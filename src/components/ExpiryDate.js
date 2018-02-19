@@ -292,10 +292,10 @@ export default class ExpiryDate extends Component {
                                         source={require('../images/erp_mail.png')} />
                                 </TouchableOpacity>
                             </View>
-                            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                            {/* <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 <Image style={{ width: 24, height: 24,margin:5, resizeMode: 'contain' }} 
                                     source={require('../images/erp_download.png')} />
-                            </View>
+                            </View> */}
                         </View>
                     </View>
                     <View style={CustomStyles.erpCategoryHeaderItems}>

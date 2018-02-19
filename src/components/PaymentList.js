@@ -152,7 +152,7 @@ export default class PaymentList extends Component {
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                    <View style={CustomStyles.noResultView}>
+                        <View style={CustomStyles.noResultView}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {this.showResult()}</Text>
@@ -161,11 +161,11 @@ export default class PaymentList extends Component {
                             data={this.state.paymentsList}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                            <TouchableOpacity
-                            onPress={() => { this.setState({
-                                                categoryBgColor: !this.state.categoryBgColor
-                                                 });}}
-                            >
+                            // <TouchableOpacity
+                            // onPress={() => { this.setState({
+                            //                     categoryBgColor: !this.state.categoryBgColor
+                            //                      });}}
+                            // >
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
                                         <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
@@ -195,7 +195,7 @@ export default class PaymentList extends Component {
 
                                     </View>
                                 </View>
-                                </TouchableOpacity>
+                                // </TouchableOpacity>
                             }
                             keyExtractor={item => item._id} />
                         

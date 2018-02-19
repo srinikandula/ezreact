@@ -179,22 +179,31 @@ export default class TripList extends Component {
             this.getCredentailsData();
         }
     }
+
+    showResult(){
+        if(this.state.trips.length == 0)
+         return 'No Trip Found';
+    }
     render() {
         const self=this;
         return(      
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                       
+                        <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.trips}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                            <TouchableOpacity
-                            onPress={() => { this.setState({
-                                                categoryBgColor: !this.state.categoryBgColor
-                                                 });}}
-                            >
+                            // <TouchableOpacity
+                            // onPress={() => { this.setState({
+                            //                     categoryBgColor: !this.state.categoryBgColor
+                            //                      });}}
+                            // >
                         
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
@@ -261,7 +270,7 @@ export default class TripList extends Component {
                                         </View>                        
                                     </View>
                                 </View>
-                                </TouchableOpacity>
+                                // </TouchableOpacity>
                             }
                             keyExtractor={item => item._id} />
                         

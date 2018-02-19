@@ -1,13 +1,13 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
-
+import Utils from './common/Utils';
 
 
 export default class DriverList extends Component {
@@ -76,14 +76,23 @@ export default class DriverList extends Component {
     }
 
 
-    callSubCategoryScreen(truckContactNum) {
-        if(truckContactNum.legth > 0){
-            RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
+    callSubCategoryScreen(item){
+        if(this.getmobile(item).legth > 1){
+            RNImmediatePhoneCall.immediatePhoneCall(''+item.mobile);
         }else{
             Utils.ShowMessage('Mobile Number is Invalid');
         }
     }
 
+    getmobile(item){
+        var data ='-';
+        if(item.hasOwnProperty("mobile")){
+            data = '91 '+ item.mobile;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
@@ -126,14 +135,7 @@ export default class DriverList extends Component {
                         data={this.state.driver}
                         ItemSeparatorComponent={this.renderSeparator}
                         renderItem={({ item }) =>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({
-                                        categoryBgColor: !this.state.categoryBgColor
-                                    });
-                                }}
-                            >
-
+                           
                                 <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
@@ -146,7 +148,7 @@ export default class DriverList extends Component {
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
 
                                             <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>{item.fullName}</Text>
-                                            <Text style={CustomStyles.erpText}> +91 {item.mobile}</Text>
+                                            <Text style={CustomStyles.erpText}> {this.getmobile(item)}</Text>
 
                                             <Text style={CustomStyles.erpText}>{this.getParsedDate(item.licenseValidity)}</Text>
 
@@ -159,7 +161,7 @@ export default class DriverList extends Component {
                                                     source={require('../images/form_edit.png')}
                                                     style={CustomStyles.drivervEditIcons} />
                                             </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => { this.callSubCategoryScreen(item.mobile) }
+                                            <TouchableOpacity onPress={() => { this.callSubCategoryScreen(item) }
                                             }>
                                                 <Image resizeMode="contain"
                                                     source={require('../images/call_user.png')}
@@ -169,7 +171,6 @@ export default class DriverList extends Component {
 
                                     </View>
                                 </View>
-                            </TouchableOpacity>
                         }
                         keyExtractor={item => item._id} />
 

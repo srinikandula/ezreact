@@ -370,7 +370,7 @@ export default class AddGroup extends Component {
              <View style={{ flexDirection: 'row',bottom:0, position:'absolute',zIndex: 1  }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
-                        onPress={() => { Actions.Drivers() }}
+                        onPress={() => { this.props.navigation.goBack()}}
                     >
                         <View style={{ alignItems: 'stretch' }}>
                             <Text style={{ padding: 15, alignSelf: 'center' }}>

@@ -7,7 +7,7 @@ import { ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
-
+import Utils from './common/Utils';
 
 
 export default class TruckList extends Component {
@@ -76,14 +76,7 @@ export default class TruckList extends Component {
         }
 
 
-    callSubCategoryScreen(truckContactNum){
-        if(truckContactNum.legth > 0){
-            RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        }else{
-            Utils.ShowMessage('Mobile Number is Invalid');
-        }
-        
-    }
+    
 
 
     getcolorDate(item,dateType,typeLabel) {
@@ -150,7 +143,12 @@ export default class TruckList extends Component {
     getName(item){
         var data ='-';
         if(item.hasOwnProperty("attrs")){
-            data = item.attrs.fullName;
+            if(item.attrs.hasOwnProperty("fullName")){
+                data = item.attrs.fullName;
+            }else{
+                return data;
+            }
+           
         }else{
             data =  '-';
         }
@@ -159,14 +157,26 @@ export default class TruckList extends Component {
 
     getmobile(item){
         var data ='-';
-        if(item.hasOwnProperty("mobile")){
-            data = '91 '+ item.attrs.mobile;
+        if(item.hasOwnProperty("attrs")){
+            if(item.attrs.hasOwnProperty("mobile")){
+                data = '+91 '+ item.attrs.mobile;
+            }else{
+                return data;
+            }
+            
         }else{
             data =  '-';
         }
         return data;
     }
 
+    callSubCategoryScreen(item){
+        if(this.getmobile(item).length > 1){
+            RNImmediatePhoneCall.immediatePhoneCall(''+item.attrs.mobile);
+        }else{
+            Utils.ShowMessage('Mobile Number is Invalid');
+        }
+    }
     componentWillReceiveProps(nextProps){
         console.log('nextProps====',nextProps);
     }
@@ -200,7 +210,7 @@ export default class TruckList extends Component {
                             renderItem={({ item }) =>                      
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
-                                        <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
+                                        <View style={[CustomStyles.erpTextView,{flex:0.6,borderBottomWidth :0}]}>
                                             <Image resizeMode="contain"
                                                     source={require('../images/truck_icon.png')}
                                                     style={CustomStyles.imageWithoutradiusViewContainer} />    
@@ -228,7 +238,7 @@ export default class TruckList extends Component {
                                                                     style={CustomStyles.drivervEditIcons} />    
                                                     </TouchableOpacity>
                                                     <TouchableOpacity onPress={() => 
-                                                                {this.callSubCategoryScreen(item.mobile) }
+                                                                {this.callSubCategoryScreen(item) }
                                                             }>                
                                                         <Image resizeMode="contain"
                                                                 source={require('../images/call_user.png')}

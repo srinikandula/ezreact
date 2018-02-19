@@ -120,23 +120,32 @@ export default class ExpenseList extends Component {
             console.log('hurra=refresh',nextProps.refresh);
             this.getCredentailsData();
         }
-    }  
+    }
+    
+    showResult(){
+        if(this.state.expenses.length == 0)
+         return 'No Expense Found';
+    }
 
     render() {
         const self=this;
         return(              
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                       
+                         <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.expenses}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                            <TouchableOpacity
-                            onPress={() => { this.setState({
-                                                categoryBgColor: !this.state.categoryBgColor
-                                                 });}}
-                            >
+                            // <TouchableOpacity
+                            // onPress={() => { this.setState({
+                            //                     categoryBgColor: !this.state.categoryBgColor
+                            //                      });}}
+                            // >
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
@@ -176,7 +185,7 @@ export default class ExpenseList extends Component {
 
                                     </View>
                                 </View>
-                                </TouchableOpacity>
+                                // </TouchableOpacity>
                             }
                             keyExtractor={item => item._id} />
                         

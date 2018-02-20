@@ -88,6 +88,7 @@ let routes = {
     
     //GPS-module
     gpsTruckList:'/trucks/groupTrucks/?page=1&size=10&sort=%7B%22createdAt%22:-1%7D',
+    gpsTrackLocation:'/gps/gpsTrackingByTruck',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

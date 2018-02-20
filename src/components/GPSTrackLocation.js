@@ -13,7 +13,7 @@ const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
 
-export default class GPSTruckMap extends Component {
+export default class GPSTrackLocation extends Component {
     state = {
         categoryBgColor: false,token:'',trucks:[],
         showTrack:false,
@@ -21,7 +21,6 @@ export default class GPSTruckMap extends Component {
         fromPassdate:'',
         toDate:'',
         toPassdate:'',
-        passData:{},
         aspectRatio :0,
         latitudeDelta : 1,
         longitudeDelta : 1,        
@@ -58,23 +57,8 @@ export default class GPSTruckMap extends Component {
 
     componentWillMount() {
         const self = this;
-        console.log(self.props,"token");
+        console.log(self.props,"GPSTrackLocation=token");
         this.getCredentailsData();
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log("wokeeey");
-              console.log(position);
-              this.setState({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                error: null,
-              });
-            },
-            (error) => this.setState({ error: error.message }),
-            { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
-          );
-          let currDate = new Date();
-          self.setState({fromDate:currDate.toDateString(),toDate:currDate.toDateString(),fromPassdate:currDate.toDateString(),toPassdate:currDate.toDateString()});
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -92,9 +76,10 @@ export default class GPSTruckMap extends Component {
                     egObj = JSON.parse(value);
                     this.setState({ token: egObj.token });
                     Axios({
-                        method: 'get',
+                        method: 'POST',
                         headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.trucksList
+                        url: Config.routes.base + Config.routes.gpsTrackLocation,
+                        data:data
                     })
                         .then((response) => {
                             if (response.data.status) {
@@ -102,47 +87,12 @@ export default class GPSTruckMap extends Component {
                                 if (response.data.trucks.length == 0) {
                                     this.setState({ loadSpinner: false })
                                 } else {
-    
-                                    var catgryarr = response.data.trucks;
-                                    catgryarr = catgryarr.filter(function (item, index) {
-                                        if (item.hasOwnProperty('attrs'))
-                                            return item;
-                                    });
-    
-                                    this.setState({ trucks: catgryarr });
-    
-                                    var dump = [];
-                                    for (let index = 0; index < catgryarr.length; index++) {
-                                        const element = catgryarr[index];
-                                        element.location = this.state.location[index];
-                                        element.rememberme = false;
-                                        //console.log(this.state.location[index], 'element.location');
-                                        dump.push(element);
-                                        this.setState({ trucks: dump });
-                                    }
-    
-                                    console.log(catgryarr, 'vignesh == ', dump);
-                                    var catgryarr1 = [];
-                                    for (let index = 0; index < 5; index++) {//catgryarr.length
-                                        if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
-                                            const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                             console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
-                                            //latitude:0,longitude:0
-                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
-                                                        registrationNo:catgryarr[index].registrationNo,
-                                                        speed:catgryarr[index].attrs.latestLocation.speed,
-                                                        date:catgryarr[index].attrs.latestLocation.updatedAt};
-                                            catgryarr1.push(obj);
-                                            this.setState({ latitude: element[1], longitude: element[0] });
-                                            this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
-                                        }
-                                    }
                                 }
                                 this.setState({ loadSpinner: false })
     
                             } else {
                                 console.log('error in trucksList ==>', response);
-                                this.setState({ erpDashBroadData: [], expirydetails: [] });
+                                
                                 this.setState({ loadSpinner: false })
                             }
                         }).catch((error) => {
@@ -242,19 +192,9 @@ export default class GPSTruckMap extends Component {
     }
     markerClick(markerData) {
         console.log(markerData,'markerData');
-        const data = {truckId:markerData.registrationNo,startDate:this.getDateISo(this.state.fromPassdate),
-            endDate:this.getDateISo(this.state.toPassdate)}
-        this.setState({passData:data});
         this.ShowModalFunction(!this.state.showTrack);
     }
 
-    getDateISo(dateString) {
-        var date = new Date(dateString);
-        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-        console.log('passdateStr', passdateStr);
-        var passdate = new Date(passdateStr);
-        return passdate.toISOString();
-    }
     ShowModalFunction(visible) {
         this.setState({ showTrack: visible });
     }
@@ -308,46 +248,7 @@ export default class GPSTruckMap extends Component {
                   </View>
                 );
                 break;
-                case 'listshow':
-                   return( <FlatList style={{ alignSelf: 'stretch', flex: 1,display:this.state.listshow }}
-                    data={this.state.trucks}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    renderItem={({ item }) =>                      
-                        <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
-                            <View style={CustomStyles.erpDriverItems}>
-                                <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
-                                    <Image resizeMode="contain"
-                                            source={require('../images/truck_icon.png')}
-                                            style={CustomStyles.imageWithoutradiusViewContainer} />    
-                                    <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
-                                            {item.registrationNo}</Text>
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',fontSize:12}]}>
-                                                {this.getParsedDate(item.updatedAt)}</Text>
-                                            
-                                </View>
-                                <View style={{flex:1, flexDirection: 'column',padding:10}}>
-                                    <View style={{ flexDirection: 'row',padding:10}}>
-                                        <View style={{flex:1, flexDirection: 'column',padding:10}}>
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
-                                                Location {item.location}</Text>
-                                            <CheckBox
-                                            style={{width:10,height:10}}
-                                                label='Looking For Load'
-                                                color={'#000000'}
-                                                checked={item.rememberme}
-                                                onChange={() => this.lookingForLoad(item)}
-                                            />    
-                                        </View>
-                                        
-                                    </View>
-                                    
-                                </View>                        
-                            </View>
-                        </View>
-                    }
-                keyExtractor={item => item._id} 
-                extraData={this.state}/> );
-                break;
+                
             default:
                 break;
         }
@@ -401,8 +302,7 @@ export default class GPSTruckMap extends Component {
                         {/* </View> */}
                         <TrackModal 
                             visible={this.state.showTrack}  cancel={'cancel'}
-                            onAccept={() => { this.ShowModalFunction(!this.state.showTrack);
-                                this.props.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:this.state.passData}) }}
+                            onAccept={() => { this.ShowModalFunction(!this.state.showTrack) }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
                             onPickFromdate={()=>{this.onPickdate('fromDate') }}
                             onPickTodate={()=>{this.onPickdate('toDate') }}

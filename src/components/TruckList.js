@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems, CustomText ,CustomEditText} from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
@@ -12,7 +12,7 @@ import Utils from './common/Utils';
 
 export default class TruckList extends Component {
     state = {
-        categoryBgColor: false,token:'',trucks:[]
+        categoryBgColor: false,token:'',trucks:[],dummyTrucks:[],truckNumber:''
     };
 
     componentWillMount() {
@@ -20,64 +20,59 @@ export default class TruckList extends Component {
         console.log(self.props,"token");
         this.getCredentailsData();
     }
-        componentWillUnmount(){
-         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+    }
+
+    onBackAndroid() {
+        //Actions.pop();
+        //var value = await this.getCache('credientails');
         }
 
-        onBackAndroid() {
-            //Actions.pop();
-            //var value = await this.getCache('credientails');
-           }
-
-           async getCredentailsData() {
-            this.getCache((value) => {
-                if (value !== null) {
-                    var egObj = {};
-                    egObj = JSON.parse(value);
-                    this.setState({token:egObj.token});
-                    Axios({
-                        method: 'get',
-                        headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.trucksList
-                    })
-                        .then((response) => {
-                            if (response.data.status) {
-                                console.log('trucksList ==>', response.data);
-                                this.setState({trucks:response.data.trucks})
-                            } else {
-                                console.log('error in trucksList ==>', response);
-                                this.setState({ erpDashBroadData: [],expirydetails:[] });
-                            }
-    
-                        }).catch((error) => {
-                            console.log('error in trucksList ==>', error);
-                        })
+    async getCredentailsData() {
+    this.getCache((value) => {
+        if (value !== null) {
+            var egObj = {};
+            egObj = JSON.parse(value);
+            this.setState({token:egObj.token});
+            Axios({
+                method: 'get',
+                headers: { 'token': egObj.token },
+                url: Config.routes.base + Config.routes.trucksList
+            })
+            .then((response) => {
+                if (response.data.status) {
+                    console.log('trucksList ==>', response.data);
+                    this.setState({trucks:response.data.trucks,dummyTrucks:response.data.trucks})
                 } else {
-                    this.setState({ loading: false })
+                    console.log('error in trucksList ==>', response);
+                    this.setState({ erpDashBroadData: [],expirydetails:[] });
                 }
-            }
-            );
+            }).catch((error) => {
+                console.log('error in trucksList ==>', error);
+            })
+        } else {
+            this.setState({ loading: false })
         }
-        async getCache(callback) {
-            try {
-                var value = await AsyncStorage.getItem('credientails');
-                console.log('credientails', value);
-                if (value !== null) {
-                    console.log('riyaz', value);
-                } else {
-                    console.log('value', value);
-                }
-                callback(value);
+    }
+    );
+}
+    async getCache(callback) {
+        try {
+            var value = await AsyncStorage.getItem('credientails');
+            console.log('credientails', value);
+            if (value !== null) {
+                console.log('riyaz', value);
+            } else {
+                console.log('value', value);
             }
-            catch (e) {
-                console.log('caught error', e);
-                // Handle exceptions
-            }
+            callback(value);
         }
-
-
-    
-
+        catch (e) {
+            console.log('caught error', e);
+            // Handle exceptions
+        }
+    }
 
     getcolorDate(item,dateType,typeLabel) {
         var formattedDate = new Date(item);
@@ -193,19 +188,51 @@ export default class TruckList extends Component {
          return 'No Trucks Found';
     }
 
+    FilterList(truck){
+        const GetJsonArr = this.state.dummyTrucks;
+        let text = truck.toLowerCase();
+        this.setState({truckNumber:truck});
+        if(text.length != 0){
+            let catgryarr = [];
+             catgryarr = GetJsonArr.filter((item) =>{
+                if(item.registrationNo.toLowerCase().match(text))
+                {
+                    return item;
+                }
+              });
+              if(catgryarr.length > 0){
+                this.setState({trucks:catgryarr})
+              }else{
+                this.setState({trucks:this.state.dummyTrucks});
+              }
+        }else{
+            this.setState({trucks:this.state.dummyTrucks});
+        }
+    }
+
     render() {
         const self=this;
         return(      
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
+                       
+                        <View style={{alignSelf:'stretch'}}>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                    placeholder={'Enter Truck Number'}
+                                    value={this.state.truckNumber}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                    onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
+                            />
+                        </View>
                         <View style={CustomStyles.noResultView}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
-                                {this.showResult()}</Text>
+                                {self.state.trucks.length == 0?'No Trucks Found':''}</Text>
                         </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.trucks}
+                            extraData={this.state.trucks}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>                      
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
@@ -214,7 +241,7 @@ export default class TruckList extends Component {
                                             <Image resizeMode="contain"
                                                     source={require('../images/truck_icon.png')}
                                                     style={CustomStyles.imageWithoutradiusViewContainer} />    
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
+                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',numberOfLines:1,fontWeight:'bold',textDecorationLine:'underline'}]}>
                                                     {item.registrationNo}</Text>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
                                                     {this.getTonnage(item)}  {item.modelAndYear}</Text>

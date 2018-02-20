@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
@@ -12,7 +12,7 @@ import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
 export default class PaymentList extends Component {
     state = {
-        categoryBgColor: false,token:'',paymentsList:[]
+        categoryBgColor: false,token:'',paymentsList:[],dummyPaymentsList:[],partyName:''
     };
 
     componentWillMount() {
@@ -43,7 +43,7 @@ export default class PaymentList extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('PaymentList ==>', response.data);
-                                this.setState({paymentsList:response.data.paymentsCosts})
+                                this.setState({paymentsList:response.data.paymentsCosts,dummyPaymentsList:response.data.paymentsCosts})
                             } else {
                                 console.log('error in PaymentList ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
@@ -146,12 +146,44 @@ export default class PaymentList extends Component {
         if(this.state.paymentsList.length == 0)
          return 'No Payments Found';
     }
+
+    FilterList(truck){
+        const GetJsonArr = this.state.dummyPaymentsList;
+        let text = truck.toLowerCase();
+        this.setState({partyName:truck});
+        if(text.length != 0){
+            let catgryarr = [];
+             catgryarr = GetJsonArr.filter((item) =>{
+                if(this.getName(item).toLowerCase().match(text))
+                {
+                    return item;
+                }
+              });
+              if(catgryarr.length > 0){
+                this.setState({paymentList:catgryarr})
+              }else{
+                this.setState({paymentList:this.state.dummyPaymentsList});
+              }
+        }else{
+            this.setState({paymentList:this.state.dummyPaymentsList});
+        }
+    }
+
+
     render() {
         const self=this;
         return(      
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
+                        <View style={{alignSelf:'stretch'}}>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                    placeholder={'Enter Party Name'}
+                                    value={this.state.partyName}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                    onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
+                            />
+                        </View>
                         <View style={CustomStyles.noResultView}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>

@@ -40,6 +40,7 @@ import GPSTruckMap from './components/GPSTruckMap';
 import AddGroup from './components/AddGroup';
 import DriverSelectionList from './components/DriverSelectionList';
 import GroupsList from './components/GroupsList';
+import GPSTrackLocation from './components/GPSTrackLocation';
 
 class FooterTabs extends Component {
 	render () {
@@ -212,6 +213,11 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					},
 					GPSMAp:{
 						screen: GPSTruckMap,
+						navigationOptions: {
+						}
+					},
+					GPSTrack:{
+						screen:GPSTrackLocation,
 						navigationOptions: {
 						}
 					},

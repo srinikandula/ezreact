@@ -357,8 +357,6 @@ export default class ERPCategory extends Component {
                                 return;
                                 break;
                         }
-
-
                     }
                 }).catch((error) => {
                     console.log(error);
@@ -1856,10 +1854,5 @@ export default class ERPCategory extends Component {
 
 
         }
-
-
-
     }
-
-
 }

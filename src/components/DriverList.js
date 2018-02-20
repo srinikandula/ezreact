@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
@@ -12,7 +12,7 @@ import Utils from './common/Utils';
 
 export default class DriverList extends Component {
     state = {
-        categoryBgColor: false, token: '', driver: []
+        categoryBgColor: false, token: '', driver: [],dummydriver:[],DriverFullName:''
     };
 
     componentWillMount() {
@@ -43,7 +43,7 @@ export default class DriverList extends Component {
                     .then((response) => {
                         if (response.data.status) {
                             console.log('DriverList ==>', response.data);
-                            this.setState({ driver: response.data.drivers })
+                            this.setState({ driver: response.data.drivers,dummydriver: response.data.drivers })
                         } else {
                             console.log('error in DriverList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
@@ -120,13 +120,43 @@ export default class DriverList extends Component {
          return 'No Drivers Found';
     }
 
+    FilterList(truck){
+        const GetJsonArr = this.state.dummydriver;
+        let text = truck.toLowerCase();
+        this.setState({DriverFullName:truck});
+        if(text.length != 0){
+            let catgryarr = [];
+             catgryarr = GetJsonArr.filter((item) =>{
+                if(item.fullName.toLowerCase().match(text))
+                {
+                    return item;
+                }
+              });
+              if(catgryarr.length > 0){
+                this.setState({driver:catgryarr})
+              }else{
+                this.setState({driver:this.state.dummydriver});
+              }
+        }else{
+            this.setState({driver:this.state.dummydriver});
+        }
+    }
+
     render() {
         const self = this;
         return (
 
             <View style={CustomStyles.viewStyle}>
                 <View style={CustomStyles.erpCategory}>
-                <View style={CustomStyles.noResultView}>
+                    <View style={{alignSelf:'stretch'}}>
+                        <CustomEditText underlineColorAndroid='transparent' 
+                                placeholder={'Enter Driver Name'}
+                                value={this.state.DriverFullName}
+                                inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
+                        />
+                    </View>
+                    <View style={CustomStyles.noResultView}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {this.showResult()}</Text>

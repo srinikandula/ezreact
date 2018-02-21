@@ -203,7 +203,7 @@ export default class TruckList extends Component {
               if(catgryarr.length > 0){
                 this.setState({trucks:catgryarr})
               }else{
-                this.setState({trucks:this.state.dummyTrucks});
+                this.setState({trucks:[]});
               }
         }else{
             this.setState({trucks:this.state.dummyTrucks});
@@ -221,7 +221,7 @@ export default class TruckList extends Component {
                             <CustomEditText underlineColorAndroid='transparent' 
                                     placeholder={'Enter Truck Number'}
                                     value={this.state.truckNumber}
-                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
                                     onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                             />
                         </View>

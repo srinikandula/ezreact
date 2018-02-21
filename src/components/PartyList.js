@@ -131,7 +131,7 @@ export default class PartyList extends Component {
               if(catgryarr.length > 0){
                 this.setState({parties:catgryarr})
               }else{
-                this.setState({parties:this.state.dummyparties});
+                this.setState({parties:[]});
               }
         }else{
             this.setState({parties:this.state.dummyparties});
@@ -148,7 +148,7 @@ export default class PartyList extends Component {
                                 <CustomEditText underlineColorAndroid='transparent' 
                                         placeholder={'Enter Party Name'}
                                         value={this.state.partyName}
-                                        inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                        inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
                                         onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                                 />
                         </View>

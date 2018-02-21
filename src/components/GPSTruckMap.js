@@ -17,6 +17,7 @@ export default class GPSTruckMap extends Component {
     state = {
         categoryBgColor: false,token:'',trucks:[],
         showTrack:false,
+        showHeader:'none',
         fromDate:'',
         fromPassdate:'',
         toDate:'',
@@ -58,7 +59,13 @@ export default class GPSTruckMap extends Component {
 
     componentWillMount() {
         const self = this;
-        console.log(self.props,"token");
+        let showHeaderBool = self.props.showHeader;
+        if(self.props.showHeader === undefined || self.props.showHeader === 'undefined'){
+            showHeaderBool = self.props.navigation.state.params.showHeader;
+            console.log(self.props.navigation.state.params.showHeader,"GPSTruckMap-token");            
+        }
+        console.log(self.props.showHeader,"GPSTruckMap-token");
+        this.setState({showHeader: showHeaderBool ? 'flex':'none'});
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -260,7 +267,7 @@ export default class GPSTruckMap extends Component {
     }
 
     getView(){
-        switch ('mapShow') {
+        switch (this.state.view) {
             case 'mapShow':
             console.log(this.state.markers.length,'--99999--','item');
                 return(
@@ -389,20 +396,53 @@ export default class GPSTruckMap extends Component {
         }
     }
 
+    /*const data = {truckId:markerData.registrationNo,,
+    }
+    this.setState({passData:data})*/
+    moveToTrackScree(){
+        this.ShowModalFunction(!this.state.showTrack);
+        const Data = this.state.passData
+        Data.startDate = this.getDateISo(this.state.fromPassdate);
+        Data.endDate = this.getDateISo(this.state.toPassdate);
+        console.log('asd',Data.toString());
+        this.props.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)}) 
+    }
     render() {
         const self=this;
         const { region } = this.props; 
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-
-                    {/* <View style={CustomStyles.erpCategory}> */}
+                        <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
+                        top:5,
+                        right:10,
+                        zIndex: 1},{display:self.state.showHeader}]}>
+                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
+                                <TouchableOpacity onPress={() => {  this.setState({ view: 'listshow'});}}>
+                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                                ListView 
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>        
+                            <View style={{flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
+                                <TouchableOpacity onPress={() => { this.setState({ view:'mapShow'});}}>
+                                    <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                        Map View
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>                                                          
+                            </View>
+                     <View style={CustomStyles.erpCategory}> 
+                        <View style={[CustomStyles.noResultView,{alignSelf:'stretch',position:'absolute',top:20}]}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {self.state.trucks.length == 0?'No Trucks Found':''}</Text>
+                        </View>
                             {self.getView()}      
-                        {/* </View> */}
+                         </View> 
                         <TrackModal 
                             visible={this.state.showTrack}  cancel={'cancel'}
-                            onAccept={() => { this.ShowModalFunction(!this.state.showTrack);
-                                this.props.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:this.state.passData}) }}
+                            onAccept={() => {this.moveToTrackScree(); }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
                             onPickFromdate={()=>{this.onPickdate('fromDate') }}
                             onPickTodate={()=>{this.onPickdate('toDate') }}
@@ -411,8 +451,7 @@ export default class GPSTruckMap extends Component {
                 </View>
                 
             );           
-        }
-      
+        }      
     }
        
     const styles = StyleSheet.create({

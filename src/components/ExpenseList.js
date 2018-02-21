@@ -142,7 +142,7 @@ export default class ExpenseList extends Component {
               if(catgryarr.length > 0){
                 this.setState({expenses:catgryarr})
               }else{
-                this.setState({expenses:this.state.dummyexpenses});
+                this.setState({expenses:[]});
               }
         }else{
             this.setState({expenses:this.state.dummyexpenses});
@@ -158,7 +158,7 @@ export default class ExpenseList extends Component {
                             <CustomEditText underlineColorAndroid='transparent' 
                                     placeholder={'Enter Truck Number'}
                                     value={this.state.TruckNum}
-                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
                                     onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                             />
                         </View>

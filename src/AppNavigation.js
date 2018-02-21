@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image,Platform, Text,ScrollView,TouchableOpacity } from 'react-native';
+import { View, Image,Platform,Button, Text,ScrollView,TouchableOpacity } from 'react-native';
 import { StackNavigator, TabNavigator ,TabView} from 'react-navigation';
 
 //login related screens
@@ -43,6 +43,7 @@ import GroupsList from './components/GroupsList';
 import GPSTrackLocation from './components/GPSTrackLocation';
 
 class FooterTabs extends Component {
+	state ={changeState:true};
 	render () {
 		console.log('all props',this.props);
 	  return (
@@ -110,7 +111,7 @@ class FooterTabs extends Component {
 	  )
 	}
   }
-
+let changeState= true;
 //global navigator===> stack navigator
 export default AppNavigation = (loginStatus) => StackNavigator({
 	login: { screen: Login, navigationOptions: { header: null } },
@@ -209,12 +210,12 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					GPS:{
 						screen: GPSTruckList,
 						navigationOptions: {
+							headerStyle:{backgroundColor:'red'}
 						}
 					},
 					GPSMAp:{
 						screen: GPSTruckMap,
-						navigationOptions: {
-						}
+						
 					},
 					GPSTrack:{
 						screen:GPSTrackLocation,

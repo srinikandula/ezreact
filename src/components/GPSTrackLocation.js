@@ -7,7 +7,8 @@ import { ExpiryDateItems,TrackModal, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker,Callout } from 'react-native-maps';
+import MapView, { Marker,Polyline } from 'react-native-maps';
+import Utils from '../components/common/Utils';
 const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
@@ -15,7 +16,7 @@ const CARD_WIDTH = CARD_HEIGHT - 50;
 
 export default class GPSTrackLocation extends Component {
     state = {
-        categoryBgColor: false,token:'',trucks:[],
+        categoryBgColor: false,token:'',truckMakers:[],coordinates:[],
         showTrack:false,
         fromDate:'',
         fromPassdate:'',
@@ -27,31 +28,7 @@ export default class GPSTrackLocation extends Component {
         latitude: 17.46247,
         longitude: 78.3100319,
         animation : new Animated.Value(0),
-        markers:[{coordinate:{latitude:0,
-            longitude:0}}],
-            view:'mapShow',
-            location: ['Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi',
-            'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai',
-            'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune']
+        
 
     };
 
@@ -70,23 +47,40 @@ export default class GPSTrackLocation extends Component {
            }
 
            async getCredentailsData() {
+               const self  = this;
+               const data = JSON.parse(self.props.navigation.state.params.sendingDate);
             this.getCache((value) => {
                 if (value !== null) {
                     var egObj = {};
                     egObj = JSON.parse(value);
                     this.setState({ token: egObj.token });
                     Axios({
-                        method: 'POST',
+                        method: 'GET',
                         headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.gpsTrackLocation,
-                        data:data
+                        url: Config.routes.base + Config.routes.gpsTrackLocation +"/"+data.truckId+"/"+data.startDate+"/"+data.endDate,
+                        
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('trucksList ==>', response.data);
-                                if (response.data.trucks.length == 0) {
-                                    this.setState({ loadSpinner: false })
+                                console.log('truckMakers ==>', response.data);
+                                if (response.data.results.length > 0) {
+                                    var coordinateArr =[];
+                                    const arrList = response.data.results;
+                                    //arrList.length
+                                    for (let index = 0; index < arrList.length; index++) {
+                                        const element = arrList[index];
+                                        coordinateArr.push({ latitude: element.location.coordinates[0], longitude:element.location.coordinates[1], strokeColor: '#F00' });
+                                    }
+                                    this.setState({coordinates:coordinateArr, loadSpinner: false},()=>{
+                                        this.getView();
+                                        console.log(this.state.coordinates, ' ==>>>')});
                                 } else {
+                                    let message ='';
+                                    if (response.data)
+                                    response.data.messages.forEach(function (current_value) {
+                                        message = message + current_value;
+                                    });
+                                    Utils.ShowMessage(message);
                                 }
                                 this.setState({ loadSpinner: false })
     
@@ -202,48 +196,26 @@ export default class GPSTrackLocation extends Component {
     getView(){
         switch ('mapShow') {
             case 'mapShow':
-            console.log(this.state.markers.length,'--99999--','item');
                 return(
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
                         style={CustomStyles.map}
                         zoomEnabled ={true}
-                        initialRegion={{
-                        latitude: this.state.latitude,
-                        longitude: this.state.longitude,
-                        latitudeDelta: 0.021,
-                        longitudeDelta: 0.021,
-                       
-                        }}
-                    >
-                        {this.state.markers.map((marker, index) => {
-                        return (
-                        <MapView.Marker key={index} 
-                        image={require('../images/greenTruck.png')}
-                        coordinate={marker.coordinate}
                         >
-                            <MapView.Callout  style={CustomStyles.mapcard}
-                                 onPress={()=>{this.markerClick(marker)}}>
-                                    <View style={CustomStyles.mapContent}>
-                                    <Text>{'Reg.No :'}{marker.registrationNo}</Text>
-                                    <Text>{'Speed :'}{marker.speed }'-km/hr'</Text>   
-                                    <Text>{'Odemeter :'}{'*****km'}</Text>
-                                    <Text>{'Date :'}{marker.date}</Text>
-                                    <Text>{'Address :'}{''}</Text>                                  
-                                    
-                                                                     
-                                    </View>
-                                      <TouchableHighlight style={{alignSelf:'stretch'}}  
-                                       
-                                            underlayColor='#dddddd'>
-                                          <View style={CustomStyles.erpFooterText}>
-                                              <Text>{'Track'}</Text>
-                                          </View>
-                                      </TouchableHighlight>
-                                    </MapView.Callout>
-                        </MapView.Marker>
-                        );
-                    })}
+                        <Polyline
+                            coordinates={this.state.coordinates}
+                            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                            // strokeColors={[
+                            //     '#7F0000',
+                            //     '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+                            //     '#B24112',
+                            //     '#E5845C',
+                            //     '#238C23',
+                            //     '#7F0000'
+                            // ]}
+                            strokeWidth={6}
+                        />
+                        
                         </MapView>
                   </View>
                 );

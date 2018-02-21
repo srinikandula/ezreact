@@ -160,12 +160,12 @@ export default class PaymentList extends Component {
                 }
               });
               if(catgryarr.length > 0){
-                this.setState({paymentList:catgryarr})
+                this.setState({paymentsList:catgryarr})
               }else{
-                this.setState({paymentList:this.state.dummyPaymentsList});
+                this.setState({paymentsList:[]});
               }
         }else{
-            this.setState({paymentList:this.state.dummyPaymentsList});
+            this.setState({paymentsList:this.state.dummyPaymentsList});
         }
     }
 
@@ -180,7 +180,7 @@ export default class PaymentList extends Component {
                             <CustomEditText underlineColorAndroid='transparent' 
                                     placeholder={'Enter Party Name'}
                                     value={this.state.partyName}
-                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5}}
                                     onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                             />
                         </View>
@@ -191,6 +191,7 @@ export default class PaymentList extends Component {
                         </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.paymentsList}
+                            extraData={this.state.paymentsList}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
                             // <TouchableOpacity

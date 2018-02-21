@@ -610,7 +610,7 @@ headText: {
         width: '40%',
         height: 40 ,
         margin: 5,
-        borderRadius : 20
+        borderRadius : 0
     },
     imageWithoutradiusViewContainer: {
         width: '40%',

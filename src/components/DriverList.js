@@ -135,7 +135,7 @@ export default class DriverList extends Component {
               if(catgryarr.length > 0){
                 this.setState({driver:catgryarr})
               }else{
-                this.setState({driver:this.state.dummydriver});
+                this.setState({driver:[]});
               }
         }else{
             this.setState({driver:this.state.dummydriver});
@@ -152,7 +152,7 @@ export default class DriverList extends Component {
                         <CustomEditText underlineColorAndroid='transparent' 
                                 placeholder={'Enter Driver Name'}
                                 value={this.state.DriverFullName}
-                                inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6' }}
+                                inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
                                 onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                         />
                     </View>

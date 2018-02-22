@@ -7,9 +7,9 @@ import { LoadingSpinner, ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker,Callout } from 'react-native-maps';
 const { width, height } = Dimensions.get("window");
-
+import Utils from './common/Utils';
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
 
@@ -96,7 +96,7 @@ export default class GPSTruckList extends Component {
                 })
                     .then((response) => {
                         if (response.data.status) {
-                            console.log('trucksList ==>', response.data);
+                            //console.log('trucksList ==>', response.data);
                             if (response.data.trucks.length == 0) {
                                 this.setState({ loadSpinner: false })
                             } else {
@@ -114,7 +114,7 @@ export default class GPSTruckList extends Component {
                                     const element = catgryarr[index];
                                     element.location = this.state.location[index];
                                     element.rememberme = false;
-                                    console.log(this.state.location[index], 'element.location');
+                                    //console.log(this.state.location[index], 'element.location');
                                     dump.push(element);
                                     this.setState({ trucks: dump });
                                 }
@@ -136,12 +136,17 @@ export default class GPSTruckList extends Component {
                             this.setState({ loadSpinner: false })
 
                         } else {
-                            console.log('error in trucksList ==>', response);
-                            this.setState({ erpDashBroadData: [], expirydetails: [] });
+                            console.log('error in GPStrucksList ==>', response);
                             this.setState({ loadSpinner: false })
+                            let message ="";
+                            if(response.data)
+                            response.data.messages.forEach(function(current_value) {
+                                message = message+current_value;
+                            });
+                            Utils.ShowMessage(message);
                         }
                     }).catch((error) => {
-                        console.log('error in trucksList ==>', error);
+                        console.log('error in GPStrucksList ==>', error);
                     })
             } else {
                 this.setState({ loading: false })
@@ -215,7 +220,6 @@ export default class GPSTruckList extends Component {
 
 
     coordinate() {
-
         //markers
         return this.state.markers.map((item, index) => {
             <Marker
@@ -224,7 +228,13 @@ export default class GPSTruckList extends Component {
                     latitude: item.coordinate.latitude,
                     longitude: item.coordinate.longitude
                 }}
-            />
+            >
+            <Callout tooltip style={styles.customView}>
+                <View style={styles.calloutText}>
+                    <Text>{'Riyaz'}{"\n"}{'description'}</Text>
+                </View>
+            </Callout>
+            </Marker>
         });
     }
     lookingForLoad(items) {
@@ -241,7 +251,6 @@ export default class GPSTruckList extends Component {
                 this.setState({ trucks: this.state.trucks });
                 break;
             }
-
         }
     }
 
@@ -311,7 +320,6 @@ export default class GPSTruckList extends Component {
                                         {item.registrationNo}</Text>
                                     <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
                                         {this.getParsedDate(item.updatedAt)}</Text>
-
                                 </View>
                                 <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
                                     <View style={{ flexDirection: 'row', padding: 10 }}>
@@ -329,9 +337,7 @@ export default class GPSTruckList extends Component {
                                                 onChange={() => this.lookingForLoad(item)}
                                             />
                                         </View>
-
                                     </View>
-
                                 </View>
                             </View>
                         </View>
@@ -344,6 +350,11 @@ export default class GPSTruckList extends Component {
         }
     }
 
+    showResult(){
+        if(this.state.trucks.length == 0)
+         return 'No Trucks Found';
+    }
+
     render() {
         const self = this;
         const { region } = this.props;
@@ -352,6 +363,11 @@ export default class GPSTruckList extends Component {
         return (
             <View style={CustomStyles.viewStyle}>
                 {this.renderLoadingSpinner()}
+                <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                 <View style={CustomStyles.erpCategory}>
 
                     {self.getView()}
@@ -364,7 +380,6 @@ export default class GPSTruckList extends Component {
 
         );
     }
-
 }
 
 const styles = StyleSheet.create({

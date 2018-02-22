@@ -21,11 +21,12 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
-        //    userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
+            userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false
         };
-        //userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+        
     }
 
 
@@ -141,10 +142,6 @@ class Login extends Component {
             console.log('something went wrong');
         }
     }
-
-
-
-
     render() {
         const {
             signInTextStyle,
@@ -156,7 +153,8 @@ class Login extends Component {
             position: 'absolute',
             left: 0,
             //   fontFamily:'Gotham-Light',
-            top: !this.state.userNamelbl ? 18 : 0,
+            top:  0,
+            display: !this.state.userNamelbl ? 'none':'flex', 
             fontSize: !this.state.userNamelbl ? 16 : 14,
             color: !this.state.userNamelbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -165,9 +163,9 @@ class Login extends Component {
 
         const passwordlabelStyle = {
             position: 'absolute',
-            left: 0,
-            //   fontFamily:'Gotham-Light',
-            top: !this.state.passwordlbl ? 18 : 0,
+            left: 10,
+            display: !this.state.passwordlbl ? 'none':'flex', 
+            top:  0,
             fontSize: !this.state.passwordlbl ? 16 : 14,
             color: !this.state.passwordlbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -177,8 +175,9 @@ class Login extends Component {
         const phonelabelStyle = {
             position: 'absolute',
             left: 0,
+            display: !this.state.phoneNumberlbl ? 'none':'flex',  
             //   fontFamily:'Gotham-Light',
-            top: !this.state.phoneNumberlbl ? 18 : 0,
+            top:  0,
             fontSize: !this.state.phoneNumberlbl ? 16 : 14,
             color: !this.state.phoneNumberlbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -201,6 +200,9 @@ class Login extends Component {
                             </View>
 
                             <View style={CustomStyles.loginInputbox}>
+                               
+                            </View>
+                            <View style={CustomStyles.loginInputbox}>
                                 <Text style={namelabelStyle} >
                                     UserName
                                 </Text>
@@ -208,11 +210,20 @@ class Login extends Component {
                                 <CustomEditText
                                     //maxLength={Config.limiters.mobileLength}
                                     keyboardType='default'
+                                    placeholder={'UserName'}
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.userName}
-                                    onChangeText={(value) => {
-                                        this.setState({ userName: value, userNamelbl: true })
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
                                     }}
+                                    onBlur={() => {
+                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
+                                    }}
+                                    onChangeText={(value) => {
+                                        this.setState({ userName: value, userNamelbl:value ===''?false: true })
+                                    }}
+                                   
                                 />
                             </View>
                             <View style={CustomStyles.loginInputbox}>
@@ -221,11 +232,19 @@ class Login extends Component {
                                 </Text>
                                 <CustomEditText
                                     maxLength={Config.limiters.mobileLength}
+                                    placeholder={'Mobile Number'}
                                     keyboardType='numeric'
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.phoneNumber}
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                    }}
+                                    onBlur={() => {
+                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                    }}
                                     onChangeText={(value) => {
-                                        this.setState({ phoneNumber: value, phoneNumberlbl: true })
+                                        this.setState({phoneNumber: value, phoneNumberlbl: value===''?false:true})
                                     }}
                                 />
                             </View>
@@ -237,8 +256,16 @@ class Login extends Component {
                                     secureTextEntry
                                     inputTextStyle={CustomStyles.loginInputStyle}
                                     value={this.state.password}
+                                    placeholder={'Password'}
+                                    underlineColorAndroid={'#e1e1e1'}
+                                    onFocus={() => {
+                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                    }}
+                                    onBlur={() => {
+                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                    }}
                                     onChangeText={(value) => {
-                                        this.setState({ password: value, passwordlbl: true })
+                                        this.setState({ password: value, passwordlbl:value===''?false: true })
                                     }}
                                 />
                             </View>

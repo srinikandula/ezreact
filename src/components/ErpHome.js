@@ -17,7 +17,8 @@ const category = [
     }]
 
 export default class ErpHome extends Component {
-    state = { loadSpinner: false, categoryBgColor: false, token: '', erpDashBroadData: {}, expirydetails: [], update: false };
+    state = { loadSpinner: false, categoryBgColor: false, token: '', 
+    erpDashBroadData: {paybleAmount: 0, pendingDue: 0, expensesTotal:0, totalRevenue: 0}, expirydetails: [], update: false };
 
     componentWillMount() {
         const self = this;

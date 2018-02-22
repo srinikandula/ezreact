@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, BackHandler, Alert } from 'react-native';
-import GPSTruck from '../components/GPSTruckList';
+import GPSTruckMap from '../components/GPSTruckMap';
 var count=0;
 export default class ModulesHome extends Component {
     componentDidMount() {
@@ -22,7 +22,8 @@ export default class ModulesHome extends Component {
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('GPSMAp')}}>
+                        <TouchableOpacity onPress={() => {
+                                this.props.navigation.navigate('GPSMAp',{showHeader:true})}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}
@@ -75,7 +76,7 @@ export default class ModulesHome extends Component {
                     </ScrollView>
                 </View>
                 <View style={{flex: 1,alignSelf:'stretch'}}>
-                    <GPSTruck/>
+                    <GPSTruckMap showHeader={false}/>
                     </View>
             </View>
         );

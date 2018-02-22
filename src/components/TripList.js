@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
@@ -11,7 +11,7 @@ import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 
 export default class TripList extends Component {
     state = {
-        categoryBgColor: false,token:'',trips:[]
+        categoryBgColor: false,token:'',trips:[],dummytrips:[],tripID:''
     };
 
     componentWillMount() {
@@ -42,7 +42,7 @@ export default class TripList extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('trips ==>', response.data);
-                                this.setState({trips:response.data.trips})
+                                this.setState({trips:response.data.trips,dummytrips:response.data.trips})
                             } else {
                                 console.log('error in trips ==>', response);
                                 this.setState({ erpDashBroadData: [],expirydetails:[] });
@@ -76,18 +76,7 @@ export default class TripList extends Component {
 
 
     callSubCategoryScreen(truckContactNum){
-        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-        /* const self = this;
-        const args = {
-            number: ''+truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
-          }
-
-         call(args)
-         .catch(
-             console.error)   */
-        
+        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);        
     }
 
 
@@ -173,22 +162,68 @@ export default class TripList extends Component {
         return data;
     }
 
+    refreshFunction = (nextProps) => {
+        if(nextProps.refresh){
+            console.log('hurra=refresh',nextProps.refresh);
+            this.getCredentailsData();
+        }
+    }
+
+    showResult(){
+        if(this.state.trips.length == 0)
+         return 'No Trip Found';
+    }
+
+
+    FilterList(truck){
+        const GetJsonArr = this.state.dummytrips;
+        let text = truck.toLowerCase();
+        this.setState({tripID:truck});
+        if(text.length != 0){
+            let catgryarr = [];
+             catgryarr = GetJsonArr.filter((item) =>{
+                if(item.tripId.toLowerCase().match(text))
+                {
+                    return item;
+                }
+              });
+              if(catgryarr.length > 0){
+                this.setState({trips:catgryarr})
+              }else{
+                this.setState({trips:[]});
+              }
+        }else{
+            this.setState({trips:this.state.dummytrips});
+        }
+    }
     render() {
         const self=this;
         return(      
         
                 <View style={CustomStyles.viewStyle}>
                     <View style={CustomStyles.erpCategory}>
-                       
+                    <View style={{alignSelf:'stretch'}}>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                    placeholder={'Enter Trip ID'}
+                                    value={this.state.tripID}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
+                                    onChangeText={(tripID) => { this.FilterList(tripID) }}
+                            />
+                        </View>
+                        <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                         <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.trips}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                            <TouchableOpacity
-                            onPress={() => { this.setState({
-                                                categoryBgColor: !this.state.categoryBgColor
-                                                 });}}
-                            >
+                            // <TouchableOpacity
+                            // onPress={() => { this.setState({
+                            //                     categoryBgColor: !this.state.categoryBgColor
+                            //                      });}}
+                            // >
                         
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
@@ -204,7 +239,7 @@ export default class TripList extends Component {
                                                 </View>
                                                 <View style={[CustomStyles.erpTextView,{flex:0.2,alignItems:'flex-end',borderBottomWidth :0,paddingBottom:5}]}>
                                                     <TouchableOpacity onPress={() => 
-                                                                            {this.props.navigation.navigate('AddTrip',{token:this.state.token,id:item._id,edit:true}) }
+                                                                            {this.props.navigation.navigate('AddTrip',{token:this.state.token,id:item._id,edit:true,refresh: this.refreshFunction}) }
                                                                         }>
                                                         <Image resizeMode="contain"
                                                                 source={require('../images/form_edit.png')} 
@@ -255,7 +290,7 @@ export default class TripList extends Component {
                                         </View>                        
                                     </View>
                                 </View>
-                                </TouchableOpacity>
+                                // </TouchableOpacity>
                             }
                             keyExtractor={item => item._id} />
                         

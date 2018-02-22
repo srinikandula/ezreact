@@ -10,9 +10,6 @@ class Profile extends Component{
      state = {token:'',userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false};
 
-    
-
-
     componentWillMount() {
         this.setState({
             userNamelbl: true,
@@ -240,7 +237,7 @@ class Profile extends Component{
                 <View style={CustomStyles.profileaAddGroupImageStyle}>
                      <View style={CustomStyles.profileCircle} >
                         <TouchableOpacity
-                            onPress={() => { /* this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:false}) */}}
+                            onPress={() => {  this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:false})}}
                                     >
                             <Image source={require('../images/eg_addgroup.png')} 
                                 style= {{height:30,width:30,resizeMode: 'contain'}}/>

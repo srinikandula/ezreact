@@ -60,7 +60,7 @@ export default class AddParty extends Component {
                     self.setState({ spinnerBool:false });
                     let message ="";
                     if(response.data)
-                    response.data.message.forEach(function(current_value) {
+                    response.data.messages.forEach(function(current_value) {
                         message = message+current_value;
                     });
                     Utils.ShowMessage(message);
@@ -71,7 +71,8 @@ export default class AddParty extends Component {
     }
 
     updateViewdate(partyDetails){        
-        console.log('partyDetails',partyDetails);
+        console.log('partyDetails',partyDetails.accountId);
+        alert('partyDetails'+partyDetails.accountId);
         this.setState({partyName:partyDetails.name,
                         partyContact:''+partyDetails.contact,
                         PartyMailID:partyDetails.email,
@@ -92,7 +93,7 @@ export default class AddParty extends Component {
             });
         }
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
             
         }
     }
@@ -135,6 +136,12 @@ export default class AddParty extends Component {
                 if (response.data.status) {                    
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
@@ -166,7 +173,7 @@ export default class AddParty extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]:  { display: value === ''? 'none':'flex' }, selectedName: value });
     }
    
     //click--
@@ -220,21 +227,17 @@ export default class AddParty extends Component {
                             }
                         }
                         
-                    }else{                                Utils.ShowMessage('Please Select Notification Type ');
-
-             
+                    }else{
+                        Utils.ShowMessage('Please Select Notification Type ');
                     }
-                }else{                                Utils.ShowMessage('Please Select Role');
-
-
+                }else{
+                    Utils.ShowMessage('Please Select Role');
                 }
-            }else{                                Utils.ShowMessage('Please Enter Party Contact');
-
-
+            }else{
+                Utils.ShowMessage('Please Enter Party Contact');
             }            
-        }else{                                Utils.ShowMessage('Please Enter Party Name');
-
-
+        }else{
+            Utils.ShowMessage('Please Enter Party Name');
         }
     }
 
@@ -374,36 +377,44 @@ export default class AddParty extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2,display:'none', color: '#525252' }, this.state.field0]}>
                                 Party Name*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.partyName}
+                                            placeholder={'Party Name*'}
                                             onChangeText={(partyName) => {this.moveInputLabelUp(0, partyName), this.setState({partyName:partyName})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field1]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2,display:'none', color: '#525252' }, this.state.field1]}>
                                         Contact Number*</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
                                            maxLength={Config.limiters.mobileLength}
                                            keyboardType='numeric'
                                             value={this.state.partyContact}
+                                            placeholder={'Contact Number*'}
                                             onChangeText={(partyContact) => {this.moveInputLabelUp(1, partyContact), this.setState({partyContact:partyContact.trim()})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2,display:'none', color: '#525252' }, this.state.field2]}>
                                         Email Address</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.PartyMailID}
+                                            placeholder={'Email Address'}
                                             onChangeText={(PartyMailID) => {this.moveInputLabelUp(2, PartyMailID), this.setState({PartyMailID:PartyMailID})}} />
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2,display:'none', color: '#525252' }, this.state.field3]}>
                                         City</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.PartyCity}
+                                            placeholder={'City'}
                                             onChangeText={(PartyCity) => {this.moveInputLabelUp(3, PartyCity), this.setState({PartyCity:PartyCity})}} />
                         </View>
                         <View style={[CustomStyles.row, CustomStyles.mTop10,CustomStyles.mBottom10]}>

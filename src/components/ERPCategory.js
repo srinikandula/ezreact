@@ -357,8 +357,6 @@ export default class ERPCategory extends Component {
                                 return;
                                 break;
                         }
-
-
                     }
                 }).catch((error) => {
                     console.log(error);
@@ -571,9 +569,6 @@ export default class ERPCategory extends Component {
             case "payment":
                 if (this.state.selectedTruckId.includes('Select Parties') && this.state.pMinPassdate === '' && this.state.pMaxPassdate === '') {
                     Utils.ShowMessage("Please Select Dates or Vechicle");
-
-
-
 
                 } else {
                     var partyID = '';
@@ -1184,14 +1179,14 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_mail.png')} />
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendMail('Revenue', 'download') }}
                                         >
                                             <Image style={{ width: 24, height: 24, resizeMode: 'contain' }}
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
                                 </View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
@@ -1364,14 +1359,14 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_mail.png')} />
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendMail('Expense', 'download') }}
                                         >
                                             <Image style={{ width: 24, height: 24, resizeMode: 'contain' }}
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
                                 </View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
@@ -1561,14 +1556,14 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_mail.png')} />
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendMail('Payments', 'download') }}
                                         >
                                             <Image style={{ width: 24, height: 24, resizeMode: 'contain' }}
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
                                 </View>
                                 <View style={{ flex: 1, height: 100, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
@@ -1752,14 +1747,14 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_mail.png')} />
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendMail('Receivables', 'download') }}
                                         >
                                             <Image style={{ width: 24, height: 24, resizeMode: 'contain' }}
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View> */}
                                 </View>
                                 <View style={{ flex: 1, height: 100, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
@@ -1859,10 +1854,5 @@ export default class ERPCategory extends Component {
 
 
         }
-
-
-
     }
-
-
 }

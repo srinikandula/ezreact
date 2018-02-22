@@ -2,13 +2,15 @@ import React from 'react';
 import {TextInput, View, Image} from 'react-native';
 
 const CustomEditText = ({
-    underlineColorAndroid,
+                        underlineColorAndroid,
                          maxLength,
                          keyboardType,
                          inputContainerStyle,
                          inputTextStyle,
                          value,
                          onChangeText,
+                         onFocus,
+                         onBlur,
                          placeholder,
                          secureTextEntry,
                          imageSource,
@@ -19,8 +21,7 @@ const CustomEditText = ({
     return (
         <View style={[containerStyle, inputContainerStyle]}>
             <TextInput
-            underlineColorAndroid={underlineColorAndroid}
-            
+                underlineColorAndroid={underlineColorAndroid}            
                 editable={editable}
                 maxLength={maxLength}
                 keyboardType={keyboardType}
@@ -30,6 +31,9 @@ const CustomEditText = ({
                 style={[inputStyle, inputTextStyle]}
                 value={value}
                 onChangeText={onChangeText}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                
             />
         </View>
     );

@@ -32,7 +32,7 @@ export default class App extends Component {
                   this.setState({ signed: false, check: true });
               }
           }).catch((error) => {
-            if (error.response.status === 401) {
+            if (error.response.status === 401 || error.response.status === 502) {
                AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
             }
@@ -57,7 +57,7 @@ export default class App extends Component {
       let LoginValid = AppNavigation(true);
       return <LoginValid />;
     } else {
-      let LoginInvalid = AppNavigation(false);
+      let LoginInvalid = AppNavigation(false);//false
       return <LoginInvalid />;
     }
   }

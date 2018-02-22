@@ -79,7 +79,10 @@ export default class AddTrip extends Component {
                 }            
             } else {
                 console.log('error in add trip ==>', response);
-                this.setState({ partyList: [] });
+                this.setState({ partyList: [{name:'Select Party',_id:''}] });
+                if(this.props.navigation.state.params.edit){
+                    this.gettripDetails(this.props.navigation.state.params.id);
+                }
             }
 
 
@@ -146,7 +149,7 @@ export default class AddTrip extends Component {
         this.getTruckNum(paymentDetails.registrationNo);
         this.getDriverName(paymentDetails.driverId);
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
             
         }
 
@@ -175,6 +178,12 @@ export default class AddTrip extends Component {
                     
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
@@ -204,7 +213,7 @@ export default class AddTrip extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
     onPickdate() {
@@ -469,9 +478,10 @@ export default class AddTrip extends Component {
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 5 }}>                                
-                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}> Trip Date</CustomText>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2, display:'none', color: '#525252' }, this.state.field0]}> Trip Date</CustomText>
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
+                                            placeholder={'Trip Date'}
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.date} />
                                             
@@ -535,8 +545,9 @@ export default class AddTrip extends Component {
                         </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>Rate </CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2, display:'none', color: '#525252' }, this.state.field2]}>Rate </CustomText>
                             <CustomEditText underlineColorAndroid='transparent' 
+                                            placeholder={'Rate'}
                                             keyboardType='numeric'
                                             inputTextStyle={{ marginHorizontal: 16 }} value={this.state.rate}
                                 onChangeText={(rate) => {this.moveInputLabelUp(2, rate); this.setState({rate:rate.trim()}); this.updateFrieght()}} />
@@ -544,8 +555,9 @@ export default class AddTrip extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2, display:'none', color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
                             <CustomEditText underlineColorAndroid='transparent'
+                                            placeholder={'Tonnage'}
                                             keyboardType='numeric'
                                             inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
                                 onChangeText={(tonnage) => {this.moveInputLabelUp(3, tonnage); this.setState({tonnage:tonnage.trim()});this.updateFrieght()}} />
@@ -553,9 +565,10 @@ export default class AddTrip extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field4]}>Frieght Amount </CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2, display:'none', color: '#525252' }, this.state.field4]}>Frieght Amount </CustomText>
                             <CustomEditText underlineColorAndroid='transparent' 
                                             keyboardType='numeric'
+                                            placeholder={'Frieght Amount'}                                            
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.famount}
                                 onChangeText={(famount) => {this.moveInputLabelUp(4, famount), this.setState({famount:famount.trim()})}} />
@@ -563,9 +576,12 @@ export default class AddTrip extends Component {
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field5]}>Remark</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.remark}
-                                onChangeText={(remark) =>{ this.moveInputLabelUp(5, remark), this.setState({remark:remark})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,  top:2, display:'none', color: '#525252' }, this.state.field5]}>Description</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                            placeholder={'Description'}                                                                                        
+                                            inputTextStyle={{ marginHorizontal: 16 }} 
+                                            value={this.state.remark}
+                                            onChangeText={(remark) =>{ this.moveInputLabelUp(5, remark), this.setState({remark:remark})}} />
                         </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>

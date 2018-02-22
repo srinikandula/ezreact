@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image,Platform, Text,ScrollView,TouchableOpacity } from 'react-native';
+import { View, Image,Platform,Button, Text,ScrollView,TouchableOpacity } from 'react-native';
 import { StackNavigator, TabNavigator ,TabView} from 'react-navigation';
 
 //login related screens
@@ -40,8 +40,10 @@ import GPSTruckMap from './components/GPSTruckMap';
 import AddGroup from './components/AddGroup';
 import DriverSelectionList from './components/DriverSelectionList';
 import GroupsList from './components/GroupsList';
+import GPSTrackLocation from './components/GPSTrackLocation';
 
 class FooterTabs extends Component {
+	state ={changeState:true};
 	render () {
 		console.log('all props',this.props);
 	  return (
@@ -109,7 +111,7 @@ class FooterTabs extends Component {
 	  )
 	}
   }
-
+let changeState= true;
 //global navigator===> stack navigator
 export default AppNavigation = (loginStatus) => StackNavigator({
 	login: { screen: Login, navigationOptions: { header: null } },
@@ -169,15 +171,15 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 			headerTintColor: '#fff'
 		}
 	},
-	AddGroup: {
+	/*AddGroup: {
 		screen: AddGroup,
 		navigationOptions: {
-			headerTitle: 'Add Trip',
+			headerTitle: 'Add Group',
 			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
-	},
+},*/
 
 	homepage: {
 		screen: TabNavigator({
@@ -208,14 +210,37 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					GPS:{
 						screen: GPSTruckList,
 						navigationOptions: {
+							headerStyle:{backgroundColor:'red'}
 						}
 					},
 					GPSMAp:{
 						screen: GPSTruckMap,
+						
+					},
+					GPSTrack:{
+						screen:GPSTrackLocation,
 						navigationOptions: {
 						}
 					},
-
+					SelectDriver:{
+						screen:DriverSelectionList,
+						navigationOptions: {
+						}
+					},
+					GroupList:{
+						screen:GroupsList,
+						navigationOptions: {
+						}
+					},
+					AddGroup: {
+						screen: AddGroup,
+						navigationOptions: {
+							headerTitle: 'Add Group',
+							headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+							headerStyle: { backgroundColor: '#1e4495' },
+							headerTintColor: '#fff'
+						}
+					},
 					SubModule: {
 						screen: TabNavigator({
 							Dashboard: {

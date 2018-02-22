@@ -46,6 +46,9 @@ export default class AddPayment extends Component {
                 var tempPArtList=[];
                 tempPArtList.unshift({_id:"Select Party", name:"Select Party"});
                 this.setState({ partyList: tempPArtList });
+                if(this.props.navigation.state.params.edit){
+                    this.getPaymentDetails(this.props.navigation.state.params.id);
+                }
             }
 
         }).catch((error) => {
@@ -98,7 +101,7 @@ export default class AddPayment extends Component {
             console.log(this.state.selectedPartyId);
         });
         for (let index = 0; index < 10; index++) {
-            this.moveInputLabelUp(index, "")
+            this.moveInputLabelUp(index, "55")
             
         }
     }
@@ -126,6 +129,12 @@ export default class AddPayment extends Component {
                     
                     self.setState({ spinnerBool:false });
                     // Actions.pop();
+                    const {navigation} = this.props;
+                    const {state} = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if(typeof refreshFunc === 'function'){
+                        refreshFunc({refresh:true});
+                    }
                     this.props.navigation.goBack();
                     let message ="";
                     if(response.data)
@@ -152,7 +161,7 @@ export default class AddPayment extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { bottom: 50 }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
     }
 
     onPickdate() {
@@ -304,9 +313,10 @@ export default class AddPayment extends Component {
                             <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ flex: 5 }}>                                
-                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field0]}> Date</CustomText>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}> Date</CustomText>
                                         <CustomEditText underlineColorAndroid='transparent'
                                             editable={false} 
+                                            placeholder={'Date*'}
                                             inputTextStyle={{ marginHorizontal: 16 }} 
                                             value={this.state.date} />
                                             
@@ -329,9 +339,11 @@ export default class AddPayment extends Component {
                     </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field2]}>Amount</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} 
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field2]}>Amount</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                inputTextStyle={{ marginHorizontal: 16 }} 
                                 keyboardType='numeric'
+                                placeholder={'Amount*'}
                                 value={this.state.Amount}
                                 onChangeText={(Amount) => {this.moveInputLabelUp(2, Amount), this.setState({Amount:Amount})}} />
                         </View>
@@ -350,9 +362,12 @@ export default class AddPayment extends Component {
                             {this.getPaymentreferenceView()}
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 10, color: '#525252' }, this.state.field3]}>Remark</CustomText>
-                            <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }} value={this.state.remark}
-                                onChangeText={(remark) =>{ this.moveInputLabelUp(3, remark), this.setState({remark:remark})}} />
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field3]}>Description</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent' 
+                                    inputTextStyle={{ marginHorizontal: 16 }} 
+                                    placeholder={'Description'}
+                                    value={this.state.remark}
+                                    onChangeText={(remark) =>{ this.moveInputLabelUp(3, remark), this.setState({remark:remark})}} />
                         </View>
                         
                     </View>

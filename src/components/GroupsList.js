@@ -59,21 +59,25 @@ export default class GroupsList extends Component {
     
 
 
-    callSubCategoryScreen(truckContactNum) {
-
-        RNImmediatePhoneCall.immediatePhoneCall(''+truckContactNum);
-        
-       /*  const self = this;
-        const args = {
-            number: '' + truckContactNum, // String value with the number to call
-            prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
+    callSubCategoryScreen(item){
+        if(this.getmobile(item).legth > 1){
+            RNImmediatePhoneCall.immediatePhoneCall(''+item.contactPhone);
+        }else{
+            Utils.ShowMessage('Mobile Number is Invalid');
         }
-
-        call(args)
-            .catch(
-            console.error) */
-
     }
+
+    getmobile(item){
+        var data ='-';
+        if(item.hasOwnProperty("contactPhone")){
+            data = '91 '+ item.contactPhone;
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
+
+    
 
 
     getTruckCount(trucks) {
@@ -90,7 +94,16 @@ export default class GroupsList extends Component {
             }}
         />
     );
-
+    refreshFunction = (nextProps) => {
+        if(nextProps.refresh){
+            console.log('hurra=refresh',nextProps.refresh);
+            this.getCredentailsData();
+        }
+    }
+    showResult(){
+        if(this.state.groupsList.length == 0)
+         return 'No Accounts Found';
+    }
 
     render() {
         const self = this;
@@ -98,7 +111,11 @@ export default class GroupsList extends Component {
 
             <View style={CustomStyles.viewStyle}>
                 <View style={CustomStyles.erpCategory}>
-
+                    <View style={CustomStyles.noResultView}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {this.showResult()}</Text>
+                        </View>
                     <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                         data={this.state.groupsList}
                         ItemSeparatorComponent={this.renderSeparator}
@@ -126,10 +143,10 @@ export default class GroupsList extends Component {
                                                         {item.contactName}
                                             </Text>
                                             <Text style={CustomStyles.erpText}>{ this.getTruckCount(item.truckIds || item.truckId) }</Text>
-                                            <Text style={CustomStyles.erpText}> +91 {item.contactPhone}</Text>
+                                            <Text style={CustomStyles.erpText}> {this.getmobile(item)}</Text>
                                         </View>
                                         <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:true,id:item._id}) }
+                                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:true,id:item._id,refresh: this.refreshFunction}) }
                                             }>
                                                 <Image resizeMode="contain"
                                                     source={require('../images/form_edit.png')}

@@ -1,13 +1,13 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,Animated,StyleSheet,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,Animated,DatePickerAndroid,StyleSheet,Platform,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, CustomText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker,Callout } from 'react-native-maps';
 const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
@@ -16,6 +16,13 @@ const CARD_WIDTH = CARD_HEIGHT - 50;
 export default class GPSTruckMap extends Component {
     state = {
         categoryBgColor: false,token:'',trucks:[],
+        showTrack:false,
+        showHeader:'none',
+        fromDate:'',
+        fromPassdate:'',
+        toDate:'',
+        toPassdate:'',
+        passData:{},
         aspectRatio :0,
         latitudeDelta : 1,
         longitudeDelta : 1,        
@@ -51,9 +58,14 @@ export default class GPSTruckMap extends Component {
     };
 
     componentWillMount() {
-
         const self = this;
-        console.log(self.props,"token");
+        let showHeaderBool = self.props.showHeader;
+        if(self.props.showHeader === undefined || self.props.showHeader === 'undefined'){
+            showHeaderBool = self.props.navigation.state.params.showHeader;
+            console.log(self.props.navigation.state.params.showHeader,"GPSTruckMap-token");            
+        }
+        console.log(self.props.showHeader,"GPSTruckMap-token");
+        this.setState({showHeader: showHeaderBool ? 'flex':'none'});
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -68,6 +80,8 @@ export default class GPSTruckMap extends Component {
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
           );
+          let currDate = new Date();
+          self.setState({fromDate:currDate.toDateString(),toDate:currDate.toDateString(),fromPassdate:currDate.toDateString(),toPassdate:currDate.toDateString()});
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -109,19 +123,22 @@ export default class GPSTruckMap extends Component {
                                         const element = catgryarr[index];
                                         element.location = this.state.location[index];
                                         element.rememberme = false;
-                                        console.log(this.state.location[index], 'element.location');
+                                        //console.log(this.state.location[index], 'element.location');
                                         dump.push(element);
                                         this.setState({ trucks: dump });
                                     }
     
                                     console.log(catgryarr, 'vignesh == ', dump);
                                     var catgryarr1 = [];
-                                    for (let index = 0; index < catgryarr.length; index++) {
+                                    for (let index = 0; index < 5; index++) {//catgryarr.length
                                         if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                            // console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                             console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                             //latitude:0,longitude:0
-                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' } };
+                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                        registrationNo:catgryarr[index].registrationNo,
+                                                        speed:catgryarr[index].attrs.latestLocation.speed,
+                                                        date:catgryarr[index].attrs.latestLocation.updatedAt};
                                             catgryarr1.push(obj);
                                             this.setState({ latitude: element[1], longitude: element[0] });
                                             this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
@@ -201,8 +218,7 @@ export default class GPSTruckMap extends Component {
         console.log('nextProps====',nextProps);
     }
 
-    coordinate() {
-        
+    coordinate() {        
         //markers
         return this.state.markers.map((item,index)=>{           
             <Marker
@@ -231,17 +247,34 @@ export default class GPSTruckMap extends Component {
             
         }
     }
+    markerClick(markerData) {
+        console.log(markerData,'markerData');
+        const data = {truckId:markerData.registrationNo,startDate:this.getDateISo(this.state.fromPassdate),
+            endDate:this.getDateISo(this.state.toPassdate)}
+        this.setState({passData:data});
+        this.ShowModalFunction(!this.state.showTrack);
+    }
 
+    getDateISo(dateString) {
+        var date = new Date(dateString);
+        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+        console.log('passdateStr', passdateStr);
+        var passdate = new Date(passdateStr);
+        return passdate.toISOString();
+    }
+    ShowModalFunction(visible) {
+        this.setState({ showTrack: visible });
+    }
 
     getView(){
-        switch ('mapShow') {
+        switch (this.state.view) {
             case 'mapShow':
             console.log(this.state.markers.length,'--99999--','item');
                 return(
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
                         style={CustomStyles.map}
-                        maxZoomLevel={6}
+                        zoomEnabled ={true}
                         initialRegion={{
                         latitude: this.state.latitude,
                         longitude: this.state.longitude,
@@ -254,11 +287,27 @@ export default class GPSTruckMap extends Component {
                         return (
                         <MapView.Marker key={index} 
                         image={require('../images/greenTruck.png')}
-                        coordinate={marker.coordinate}>
-                           {/*  <Animated.View style={[styles.markerWrap]}>
-                            <Animated.View style={[styles.ring]} />
-                            <View style={styles.marker} />
-                            </Animated.View> */}
+                        coordinate={marker.coordinate}
+                        >
+                            <MapView.Callout  style={CustomStyles.mapcard}
+                                 onPress={()=>{this.markerClick(marker)}}>
+                                    <View style={CustomStyles.mapContent}>
+                                    <Text>{'Reg.No :'}{marker.registrationNo}</Text>
+                                    <Text>{'Speed :'}{marker.speed }'-km/hr'</Text>   
+                                    <Text>{'Odemeter :'}{'*****km'}</Text>
+                                    <Text>{'Date :'}{marker.date}</Text>
+                                    <Text>{'Address :'}{''}</Text>                                  
+                                    
+                                                                     
+                                    </View>
+                                      <TouchableHighlight style={{alignSelf:'stretch'}}  
+                                       
+                                            underlayColor='#dddddd'>
+                                          <View style={CustomStyles.erpFooterText}>
+                                              <Text>{'Track'}</Text>
+                                          </View>
+                                      </TouchableHighlight>
+                                    </MapView.Callout>
                         </MapView.Marker>
                         );
                     })}
@@ -311,22 +360,98 @@ export default class GPSTruckMap extends Component {
         }
     }
 
+    onPickdate(category) {
+        const self = this;
+        if (Platform.OS === 'ios') {
+            this.setState({ showModal: !this.state.showModal, str: str, category: category })
+        } else {
+            try {
+                const { action, year, month, day } = DatePickerAndroid.open({
+
+                    //minDate: str == 'min'? new Date() :new Date('1-1-2007'),
+                }).then((response) => {
+                    if (response.action === "dateSetAction") {
+                        var month = response.month + 1
+                        let date = response.day + "/" + month + "/" + response.year;
+                        switch (category) {
+                            case "fromDate":
+                                this.setState({ fromDate: date, fromPassdate: month + "/" + response.day + "/" + response.year });
+                                return;
+                            break;
+                            case "toDate":
+                                this.setState({ toDate: date, toPassdate: month + "/" + response.day + "/" + response.year });
+                                return;
+                            break;
+                            default:
+                            return ;
+                            break;
+                        }
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+            } catch ({ code, message }) {
+                console.warn('Cannot open date picker', message);
+            }
+        }
+    }
+
+    /*const data = {truckId:markerData.registrationNo,,
+    }
+    this.setState({passData:data})*/
+    moveToTrackScree(){
+        this.ShowModalFunction(!this.state.showTrack);
+        const Data = this.state.passData
+        Data.startDate = this.getDateISo(this.state.fromPassdate);
+        Data.endDate = this.getDateISo(this.state.toPassdate);
+        console.log('asd',Data.toString());
+        this.props.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)}) 
+    }
     render() {
         const self=this;
         const { region } = this.props; 
-        const {width, height} = Dimensions.get('window');
-         
+        const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-                    {/* <View style={CustomStyles.erpCategory}> */}
+                        <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
+                        top:5,
+                        right:10,
+                        zIndex: 1},{display:self.state.showHeader}]}>
+                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
+                                <TouchableOpacity onPress={() => {  this.setState({ view: 'listshow'});}}>
+                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                                ListView 
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>        
+                            <View style={{flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
+                                <TouchableOpacity onPress={() => { this.setState({ view:'mapShow'});}}>
+                                    <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                        Map View
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>                                                          
+                            </View>
+                     <View style={CustomStyles.erpCategory}> 
+                        <View style={[CustomStyles.noResultView,{alignSelf:'stretch',position:'absolute',top:20}]}>
+                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
+                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
+                                {self.state.trucks.length == 0?'No Trucks Found':''}</Text>
+                        </View>
                             {self.getView()}      
-                        {/* </View> */}
-                        
+                         </View> 
+                        <TrackModal 
+                            visible={this.state.showTrack}  cancel={'cancel'}
+                            onAccept={() => {this.moveToTrackScree(); }}
+                            onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
+                            onPickFromdate={()=>{this.onPickdate('fromDate') }}
+                            onPickTodate={()=>{this.onPickdate('toDate') }}
+                            frmDate = {this.state.fromDate}
+                            toDate={this.state.toDate} />
                 </View>
                 
             );           
-        }
-      
+        }      
     }
        
     const styles = StyleSheet.create({

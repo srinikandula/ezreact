@@ -13,10 +13,18 @@ const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
+const screen = Dimensions.get('window')
+
+const ASPECT_RATIO = screen.width / screen.height
+
+const LATITUDE_DELTA = 6
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
     state = {
+         _mapView: MapView,
         categoryBgColor: false,token:'',truckMakers:[],coordinates:[],
+        showDependable:'0',
         showTrack:false,
         fromDate:'',
         fromPassdate:'',
@@ -28,6 +36,16 @@ export default class GPSTrackLocation extends Component {
         latitude: 17.46247,
         longitude: 78.3100319,
         animation : new Animated.Value(0),
+        initialPoint:{
+            latitude:17.385044, 
+            longitude:78.486671, 
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+          },
+          coordinate: new MapView.AnimatedRegion({
+            latitude: 17.385044,
+            longitude: 78.486671,
+          }),
         
 
     };
@@ -36,6 +54,7 @@ export default class GPSTrackLocation extends Component {
         const self = this;
         console.log(self.props,"GPSTrackLocation=token");
         this.getCredentailsData();
+        self.setState({showDependable:'0'});
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -69,12 +88,23 @@ export default class GPSTrackLocation extends Component {
                                     //arrList.length
                                     for (let index = 0; index < arrList.length; index++) {
                                         const element = arrList[index];
-                                        coordinateArr.push({ latitude: element.location.coordinates[0], longitude:element.location.coordinates[1], strokeColor: '#F00' });
+                                        if(index == 2){
+                                            this.setState({initialPoint:{latitude:Number(element.location.coordinates[1]), 
+                                                longitude:Number(element.location.coordinates[0]), 
+                                                latitudeDelta:LATITUDE_DELTA,
+                                                longitudeDelta: LONGITUDE_DELTA}});
+                                        }
+                                        coordinateArr.push({ strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
+                                            longitude:Number(element.location.coordinates[0]) });
                                     }
-                                    this.setState({coordinates:coordinateArr, loadSpinner: false},()=>{
+                                    
+                                    this.setState({coordinates:coordinateArr,showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates, ' ==>>>')});
                                 } else {
+                                    this.setState({coordinates:[],showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
+                                        this.getView();
+                                        console.log(this.state.coordinates, ' ==>>>')});
                                     let message ='';
                                     if (response.data)
                                     response.data.messages.forEach(function (current_value) {
@@ -194,33 +224,40 @@ export default class GPSTrackLocation extends Component {
     }
 
     getView(){
-        switch ('mapShow') {
-            case 'mapShow':
+        switch (this.state.showDependable) {
+            case  '0':
+            console.log('this.state.coordinates',this.state.coordinates);
                 return(
+                    <Text>Loading Map..</Text> 
+                );
+                break;
+            case ''+this.state.coordinates.length :
+            console.log('this.state.coordinates',this.state.coordinates);
+                return(
+                    
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
+                         ref = {(mapView) => { _mapView = mapView; }}
                         style={CustomStyles.map}
+                        initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
-                        >
-                        <Polyline
-                            coordinates={this.state.coordinates}
-                            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-                            // strokeColors={[
-                            //     '#7F0000',
-                            //     '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
-                            //     '#B24112',
-                            //     '#E5845C',
-                            //     '#238C23',
-                            //     '#7F0000'
-                            // ]}
-                            strokeWidth={6}
-                        />
+                        maxZoomLevel={16}>
                         
+                         <MapView.Polyline 
+                            onPress={()=>{() => _mapView.animateToCoordinate({
+                                latitude: 17.46247,
+                                longitude: 78.3100319,
+                              }, 1000)
+                            
+                            }}
+                            coordinates={this.state.coordinates}
+                            strokeWidth={6}
+                            strokeColor="red"/>                                               
                         </MapView>
                   </View>
                 );
                 break;
-                
+               
             default:
                 break;
         }

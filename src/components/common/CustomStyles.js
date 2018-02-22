@@ -820,7 +820,19 @@ mapContent:{
    borderBottomWidth :0,
    borderBottomColor:'black',
    overflow: "hidden"
-},
+},bubble: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 20,
+  },
+  button: {
+    width: 80,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    marginHorizontal: 10,
+  }
 
 
 };

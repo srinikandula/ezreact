@@ -12,6 +12,10 @@ const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
+const ASPECT_RATIO = width / height
+
+const LATITUDE_DELTA = 10
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTruckMap extends Component {
     state = {
@@ -24,8 +28,8 @@ export default class GPSTruckMap extends Component {
         toPassdate:'',
         passData:{},
         aspectRatio :0,
-        latitudeDelta : 1,
-        longitudeDelta : 1,        
+        latitudeDelta : LATITUDE_DELTA,
+        longitudeDelta :LONGITUDE_DELTA,        
         latitude: 17.46247,
         longitude: 78.3100319,
         animation : new Animated.Value(0),
@@ -278,8 +282,8 @@ export default class GPSTruckMap extends Component {
                         initialRegion={{
                         latitude: this.state.latitude,
                         longitude: this.state.longitude,
-                        latitudeDelta: 0.021,
-                        longitudeDelta: 0.021,
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta:LONGITUDE_DELTA,
                        
                         }}
                     >
@@ -414,9 +418,9 @@ export default class GPSTruckMap extends Component {
         return(
                 <View style={CustomStyles.viewStyle}>
                         <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
-                        top:5,
-                        right:10,
-                        zIndex: 1},{display:self.state.showHeader}]}>
+                            top:5,
+                            right:10,
+                            zIndex: 1},{display:self.state.showHeader}]}>
                             <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
                                 <TouchableOpacity onPress={() => {  this.setState({ view: 'listshow'});}}>
                                         <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>

@@ -23,7 +23,7 @@ export default class ModulesHome extends Component {
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
                         <TouchableOpacity onPress={() => {
-                                this.props.navigation.navigate('GPSMAp',{showHeader:true})}}>
+                                this.props.navigation.navigate('GPSMAp',{ nav:this.props,showHeader:true})}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}
@@ -76,7 +76,7 @@ export default class ModulesHome extends Component {
                     </ScrollView>
                 </View>
                 <View style={{flex: 1,alignSelf:'stretch'}}>
-                    <GPSTruckMap showHeader={false}/>
+                    <GPSTruckMap nav={this.props} showHeader={false}/>
                     </View>
             </View>
         );

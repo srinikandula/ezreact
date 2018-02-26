@@ -63,6 +63,7 @@ export default class GPSTruckMap extends Component {
 
     componentWillMount() {
         const self = this;
+        console.log('this.props gpstractlocation',self.props)
         let showHeaderBool = self.props.showHeader;
         if(self.props.showHeader === undefined || self.props.showHeader === 'undefined'){
             showHeaderBool = self.props.navigation.state.params.showHeader;
@@ -134,7 +135,7 @@ export default class GPSTruckMap extends Component {
     
                                     console.log(catgryarr, 'vignesh == ', dump);
                                     var catgryarr1 = [];
-                                    for (let index = 0; index < 5; index++) {//catgryarr.length
+                                    for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
                                         if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
                                              console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
@@ -290,9 +291,9 @@ export default class GPSTruckMap extends Component {
                         {this.state.markers.map((marker, index) => {
                         return (
                         <MapView.Marker key={index} 
-                        image={require('../images/greenTruck.png')}
-                        coordinate={marker.coordinate}
-                        >
+                            image={require('../images/greenTruck.png')}
+                            coordinate={marker.coordinate}
+                            >
                             <MapView.Callout  style={CustomStyles.mapcard}
                                  onPress={()=>{this.markerClick(marker)}}>
                                     <View style={CustomStyles.mapContent}>
@@ -302,7 +303,6 @@ export default class GPSTruckMap extends Component {
                                     <Text>{'Date :'}{marker.date}</Text>
                                     <Text>{'Address :'}{''}</Text>                                  
                                     
-                                                                     
                                     </View>
                                       <TouchableHighlight style={{alignSelf:'stretch'}}  
                                        
@@ -403,13 +403,19 @@ export default class GPSTruckMap extends Component {
     /*const data = {truckId:markerData.registrationNo,,
     }
     this.setState({passData:data})*/
-    moveToTrackScree(){
+    moveToTrackScreen(){
         this.ShowModalFunction(!this.state.showTrack);
         const Data = this.state.passData
         Data.startDate = this.getDateISo(this.state.fromPassdate);
         Data.endDate = this.getDateISo(this.state.toPassdate);
         console.log('asd',Data.toString());
-        this.props.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)}) 
+        if(this.props.showHeader === undefined || this.props.showHeader === 'undefined'){
+            this.props.navigation.state.params.nav.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)})
+        }else{
+            
+            this.props.nav.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)})
+        }
+         
     }
     render() {
         const self=this;
@@ -446,7 +452,7 @@ export default class GPSTruckMap extends Component {
                          </View> 
                         <TrackModal 
                             visible={this.state.showTrack}  cancel={'cancel'}
-                            onAccept={() => {this.moveToTrackScree(); }}
+                            onAccept={() => {this.moveToTrackScreen(); }}
                             onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
                             onPickFromdate={()=>{this.onPickdate('fromDate') }}
                             onPickTodate={()=>{this.onPickdate('toDate') }}

@@ -7,7 +7,7 @@ import { ExpiryDateItems,TrackModal, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker,Polyline } from 'react-native-maps';
+import MapView, { Marker,Polyline,AnimatedRegion } from 'react-native-maps';
 import Utils from '../components/common/Utils';
 const { width, height } = Dimensions.get("window");
 
@@ -23,7 +23,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 export default class GPSTrackLocation extends Component {
     state = {
          _mapView: MapView,
-        categoryBgColor: false,token:'',truckMakers:[],coordinates:[],
+        categoryBgColor: false,token:'',truckMakers:[],coordinates:[],coordinates1:[],
         showDependable:'0',
         showTrack:false,
         fromDate:'',
@@ -51,6 +51,7 @@ export default class GPSTrackLocation extends Component {
     };
 
     componentWillMount() {
+        console.log('this.props gpstractlocation',this.props.nav)
         const self = this;
         console.log(self.props,"GPSTrackLocation=token");
         this.getCredentailsData();
@@ -82,8 +83,10 @@ export default class GPSTrackLocation extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('truckMakers ==>', response.data);
+                                var coordinateArr1 =[];
+                                var coordinateArr =[];
                                 if (response.data.results.length > 0) {
-                                    var coordinateArr =[];
+                                   
                                     const arrList = response.data.results;
                                     //arrList.length
                                     for (let index = 0; index < arrList.length; index++) {
@@ -96,13 +99,15 @@ export default class GPSTrackLocation extends Component {
                                         }
                                         coordinateArr.push({ strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
                                             longitude:Number(element.location.coordinates[0]) });
+                                        coordinateArr1.push({latitude: Number(element.location.coordinates[1]), 
+                                            longitude:Number(element.location.coordinates[0]) });
                                     }
                                     
-                                    this.setState({coordinates:coordinateArr,showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
+                                    this.setState({coordinates:coordinateArr,coordinates1:coordinateArr1,showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates, ' ==>>>')});
                                 } else {
-                                    this.setState({coordinates:[],showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
+                                    this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates, ' ==>>>')});
                                     let message ='';
@@ -115,15 +120,19 @@ export default class GPSTrackLocation extends Component {
                                 this.setState({ loadSpinner: false })
     
                             } else {
-                                console.log('error in trucksList ==>', response);
-                                
-                                this.setState({ loadSpinner: false })
+                                console.log('error in GPSTrackLocation ==>', response);
+                                this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                                    this.getView();});
                             }
                         }).catch((error) => {
-                            console.log('error in trucksList ==>', error);
+                            console.log('error in GPSTrackLocation ==>', error);
+                            this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                                this.getView();});
                         })
                 } else {
-                    this.setState({ loading: false })
+                    this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                        this.getView();});
+
                 }
             }
             );
@@ -226,15 +235,19 @@ export default class GPSTrackLocation extends Component {
     getView(){
         switch (this.state.showDependable) {
             case  '0':
-            console.log('this.state.coordinates',this.state.coordinates);
+                console.log('this.state.coordinates',this.state.coordinates);
                 return(
                     <Text>Loading Map..</Text> 
                 );
-                break;
+            break;
+            case 'No Data Found':
+                return(
+                    <Text>No Data Found</Text> 
+                );
+            break;
             case ''+this.state.coordinates.length :
             console.log('this.state.coordinates',this.state.coordinates);
                 return(
-                    
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
                          ref = {(mapView) => { _mapView = mapView; }}
@@ -242,7 +255,16 @@ export default class GPSTrackLocation extends Component {
                         initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
                         maxZoomLevel={16}>
-                        
+                        <MapView.Marker key={1} 
+                            image={require('../images/greenTruck.png')}
+                            coordinate={{latitude: this.state.coordinates[0].latitude,
+                                longitude:this.state.coordinates[0].longitude}}
+                            />
+                        <MapView.Marker key={2} 
+                            image={require('../images/greenTruck.png')}
+                            coordinate={{latitude: this.state.coordinates[this.state.coordinates.length-1].latitude,
+                                longitude:this.state.coordinates[this.state.coordinates.length-1].longitude}}
+                            />    
                          <MapView.Polyline 
                             onPress={()=>{() => _mapView.animateToCoordinate({
                                 latitude: 17.46247,
@@ -257,7 +279,27 @@ export default class GPSTrackLocation extends Component {
                   </View>
                 );
                 break;
-               
+            case  'Animate' :
+                return (
+                    <View style ={CustomStyles.mapcontainer}>
+                    <MapView
+                     ref = {(mapView) => { _mapView = mapView; }}
+                    style={CustomStyles.map}
+                    initialRegion={this.state.initialPoint}
+                    zoomEnabled ={true}
+                    maxZoomLevel={16}>
+                    {this.state.coordinates.map((marker, index) => {
+                        return (
+                        <MapView.Marker.Animated key={index} 
+                            image={require('../images/greenTruck.png')}
+                            coordinate={{latitude: marker[index].latitude,
+                                longitude:marker[index].longitude}}
+                        />)})
+                    }
+                    </MapView>
+              </View>
+                );
+                break;
             default:
                 break;
         }
@@ -305,7 +347,19 @@ export default class GPSTrackLocation extends Component {
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-
+                        <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
+                            top:5,
+                            right:10,
+                            zIndex: 1},{display:'flex'}]}>
+                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
+                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'Animate'});}}>
+                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                                Play 
+                                        </Text>
+                                </TouchableOpacity>
+                            </View>        
+                                                                                   
+                            </View>
                     {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
                         {/* </View> */}

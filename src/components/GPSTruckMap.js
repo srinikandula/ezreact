@@ -291,7 +291,7 @@ export default class GPSTruckMap extends Component {
                         {this.state.markers.map((marker, index) => {
                         return (
                         <MapView.Marker key={index} 
-                            image={require('../images/greenTruck.png')}
+                            image={require('../images/greenTrucks.png')}
                             coordinate={marker.coordinate}
                             >
                             <MapView.Callout  style={CustomStyles.mapcard}

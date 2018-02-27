@@ -83,8 +83,8 @@ export default class GPSTrackLocation extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('truckMakers ==>', response.data);
-                                var coordinateArr1 =[];
                                 var coordinateArr =[];
+                                var coordinateArr1 =[];
                                 if (response.data.results.length > 0) {
                                    
                                     const arrList = response.data.results;
@@ -99,13 +99,14 @@ export default class GPSTrackLocation extends Component {
                                         }
                                         coordinateArr.push({ strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
                                             longitude:Number(element.location.coordinates[0]) });
-                                        coordinateArr1.push({latitude: Number(element.location.coordinates[1]), 
-                                            longitude:Number(element.location.coordinates[0]) });
+                                        element.coordinate = { strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
+                                            longitude:Number(element.location.coordinates[0]) };
+                                        coordinateArr1.push(element);
                                     }
                                     
                                     this.setState({coordinates:coordinateArr,coordinates1:coordinateArr1,showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
                                         this.getView();
-                                        console.log(this.state.coordinates, ' ==>>>')});
+                                        console.log(this.state.coordinates1, ' coordinates1==>>>')});
                                 } else {
                                     this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
                                         this.getView();
@@ -255,16 +256,45 @@ export default class GPSTrackLocation extends Component {
                         initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
                         maxZoomLevel={16}>
-                        <MapView.Marker key={1} 
-                            image={require('../images/greenTruck.png')}
-                            coordinate={{latitude: this.state.coordinates[0].latitude,
-                                longitude:this.state.coordinates[0].longitude}}
-                            />
-                        <MapView.Marker key={2} 
-                            image={require('../images/greenTruck.png')}
-                            coordinate={{latitude: this.state.coordinates[this.state.coordinates.length-1].latitude,
-                                longitude:this.state.coordinates[this.state.coordinates.length-1].longitude}}
-                            />    
+                        {this.state.coordinates1.map((marker, index) => {
+                          
+                           if(index == 0){
+                            return(   <MapView.Marker key={index} 
+                                image={require('../images/start_flag.png')}
+                                coordinate={{latitude: marker.coordinate.latitude,
+                                    longitude:marker.coordinate.longitude}}
+                                />)
+                            }else if(index == (this.state.coordinates.length-1)){
+                                return(<MapView.Marker key={index} 
+                                image={require('../images/end_flag.png')}
+                                coordinate={{latitude: marker.coordinate.latitude,
+                                    longitude:marker.coordinate.longitude}}
+                                />)
+                            }else{
+                                if(marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')){
+                                    if(marker.isIdle){
+                                        return( <MapView.Marker key={index} 
+                                            image={require('../images/gps_truck_stop.png')}
+                                            coordinate={{latitude: marker.coordinate.latitude,
+                                                longitude:marker.coordinate.longitude}}
+                                        />    )                                  
+                                    }
+                                    if(marker.isStopped){                                      
+                                        return(   
+                                            <MapView.Marker key={index} 
+                                                image={require('../images/gps_truck_stop.png')}
+                                                coordinate={{latitude: marker.coordinate.latitude,
+                                                    longitude:marker.coordinate.longitude}}
+                                            />
+                                        )                                
+                                    }
+                                }
+                            }//close
+                           
+                            })
+                        }
+                       
+                        
                          <MapView.Polyline 
                             onPress={()=>{() => _mapView.animateToCoordinate({
                                 latitude: 17.46247,
@@ -292,8 +322,8 @@ export default class GPSTrackLocation extends Component {
                         return (
                         <MapView.Marker.Animated key={index} 
                             image={require('../images/greenTruck.png')}
-                            coordinate={{latitude: marker[index].latitude,
-                                longitude:marker[index].longitude}}
+                            coordinate={{latitude: marker.latitude,
+                                longitude:marker.longitude}}
                         />)})
                     }
                     </MapView>
@@ -350,9 +380,9 @@ export default class GPSTrackLocation extends Component {
                         <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
                             top:5,
                             right:10,
-                            zIndex: 1},{display:'flex'}]}>
+                            zIndex: 1},{display:'none'}]}>
                             <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'Animate'});}}>
+                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'Animate'},()=>{this.getView();});}}>
                                         <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
                                                 Play 
                                         </Text>

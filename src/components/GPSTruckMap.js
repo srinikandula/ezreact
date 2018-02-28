@@ -7,6 +7,7 @@ import { ExpiryDateItems,TrackModal, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
+import Utils from './common/Utils';
 import MapView, { Marker,Callout } from 'react-native-maps';
 const { width, height } = Dimensions.get("window");
 
@@ -159,6 +160,10 @@ export default class GPSTruckMap extends Component {
                             }
                         }).catch((error) => {
                             console.log('error in trucksList ==>', error);
+                            //504
+                            if (error.response.status === 504) {
+                                Utils.ShowMessage('Something went wrong. Please try later');
+                             }
                         })
                 } else {
                     this.setState({ loading: false })
@@ -291,7 +296,7 @@ export default class GPSTruckMap extends Component {
                         {this.state.markers.map((marker, index) => {
                         return (
                         <MapView.Marker key={index} 
-                            image={require('../images/greenTrucks.png')}
+                            image={require('../images/truck_running.png')}
                             coordinate={marker.coordinate}
                             >
                             <MapView.Callout  style={CustomStyles.mapcard}

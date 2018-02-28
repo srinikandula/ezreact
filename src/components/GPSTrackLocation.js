@@ -17,7 +17,7 @@ const screen = Dimensions.get('window')
 
 const ASPECT_RATIO = screen.width / screen.height
 
-const LATITUDE_DELTA = 6
+const LATITUDE_DELTA = 9
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
@@ -159,14 +159,19 @@ export default class GPSTrackLocation extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() +"  "+ formattedDate.getHours() +' : '+ formattedDate.getMinutes();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() ;
       }
+
+    getParsedtime(date){
+        var formattedDate = new Date(date);
+        return formattedDate.getHours() +':'+ formattedDate.getMinutes();
+    }  
 
       renderSeparator = () => (
         <View
           style={{
             backgroundColor: '#d6d6d6',
-            height: 0,
+            height: 1,
           }}
         />
       );
@@ -191,9 +196,6 @@ export default class GPSTrackLocation extends Component {
         return data;
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log('nextProps====',nextProps);
-    }
 
     coordinate() {        
         //markers
@@ -234,6 +236,7 @@ export default class GPSTrackLocation extends Component {
     }
 
     getView(){
+        console.log('this.state.showDependable',this.state.showDependable);
         switch (this.state.showDependable) {
             case  '0':
                 console.log('this.state.coordinates',this.state.coordinates);
@@ -257,44 +260,43 @@ export default class GPSTrackLocation extends Component {
                         zoomEnabled ={true}
                         maxZoomLevel={16}>
                         {this.state.coordinates1.map((marker, index) => {
-                          
                            if(index == 0){
-                            return(   <MapView.Marker key={index} 
-                                image={require('../images/start_flag.png')}
-                                coordinate={{latitude: marker.coordinate.latitude,
-                                    longitude:marker.coordinate.longitude}}
-                                />)
+                            return(   
+                                <MapView.Marker key={index} 
+                                    image={require('../images/track_strat_end.png')}
+                                    coordinate={{latitude: marker.coordinate.latitude,
+                                        longitude:marker.coordinate.longitude}}
+                                    />)
                             }else if(index == (this.state.coordinates.length-1)){
-                                return(<MapView.Marker key={index} 
-                                image={require('../images/end_flag.png')}
-                                coordinate={{latitude: marker.coordinate.latitude,
-                                    longitude:marker.coordinate.longitude}}
-                                />)
+                                return(
+                                    <MapView.Marker key={index} 
+                                    image={require('../images/track_strat_end.png')}
+                                    coordinate={{latitude: marker.coordinate.latitude,
+                                        longitude:marker.coordinate.longitude}}
+                                    />)
                             }else{
                                 if(marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')){
                                     if(marker.isIdle){
-                                        return( <MapView.Marker key={index} 
-                                            image={require('../images/gps_truck_stop.png')}
-                                            coordinate={{latitude: marker.coordinate.latitude,
-                                                longitude:marker.coordinate.longitude}}
-                                        />    )                                  
+                                        return( 
+                                            <MapView.Marker key={index} 
+                                                image={require('../images/track_idle.png')}
+                                                coordinate={{latitude: marker.coordinate.latitude,
+                                                    longitude:marker.coordinate.longitude}}
+                                            />)                                  
                                     }
                                     if(marker.isStopped){                                      
                                         return(   
                                             <MapView.Marker key={index} 
-                                                image={require('../images/gps_truck_stop.png')}
+                                                image={require('../images/track_stop.png')}
                                                 coordinate={{latitude: marker.coordinate.latitude,
                                                     longitude:marker.coordinate.longitude}}
-                                            />
-                                        )                                
+                                            />)                                
                                     }
                                 }
                             }//close
                            
                             })
                         }
-                       
-                        
                          <MapView.Polyline 
                             onPress={()=>{() => _mapView.animateToCoordinate({
                                 latitude: 17.46247,
@@ -309,6 +311,56 @@ export default class GPSTrackLocation extends Component {
                   </View>
                 );
                 break;
+            case 'stops' :
+                return(
+                    <View style ={{backgroundColor:'red'}}>
+                        
+                        <FlatList 
+                        data={this.state.coordinates1}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        removeClippedSubviews ={true}
+                        renderItem={({ item }) =>{
+                        if(item.isStopped){
+                           return( 
+                           <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                <View style={CustomStyles.erpDriverItems}>
+                                    <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
+                                        <Image resizeMode="contain"
+                                            source={require('../images/truck_stops.png')}
+                                            style={CustomStyles.imageViewContainer} />
+                                        
+                                    </View>
+                                    <View style={{ flex: 1, flexDirection: 'column', padding: 10}}>
+
+                                        <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Date</Text>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                {this.getParsedDate(item.updatedAt)}</Text>
+                                            </View>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Time</Text>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                { this.getParsedtime(item.updatedAt)} {}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>)}
+                            // }else{
+                            //     return(
+                            //         <View style={{height:10,backgroundColor:'orange'}}>
+                            //         </View>
+                            //     ) 
+                            // }
+                        }
+                    }
+                    keyExtractor={item => item._id} />
+                    </View>
+                );
+            break;
             case  'Animate' :
                 return (
                     <View style ={CustomStyles.mapcontainer}>
@@ -377,19 +429,24 @@ export default class GPSTrackLocation extends Component {
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-                        <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
+                         <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
                             top:5,
                             right:10,
-                            zIndex: 1},{display:'none'}]}>
+                            zIndex: 1},{display:'flex'}]}>
                             <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'Animate'},()=>{this.getView();});}}>
+                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'stops'});}}>
                                         <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                                Play 
+                                                Stops 
+                                        </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: ''+this.state.coordinates.length});}}>
+                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
+                                                Map 
                                         </Text>
                                 </TouchableOpacity>
                             </View>        
                                                                                    
-                            </View>
+                            </View> 
                     {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
                         {/* </View> */}

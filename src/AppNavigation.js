@@ -215,11 +215,14 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					},
 					GPSMAp:{
 						screen: GPSTruckMap,
-						
+						navigationOptions: {
+							header:null
+						}
 					},
 					GPSTrack:{
 						screen:GPSTrackLocation,
 						navigationOptions: {
+							header:null
 						}
 					},
 					SelectDriver:{

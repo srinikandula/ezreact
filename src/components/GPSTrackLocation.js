@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,Animated,DatePickerAndroid,StyleSheet,Platform,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,TrackModal, CustomText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText,CSpinner } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
@@ -17,7 +17,7 @@ const screen = Dimensions.get('window')
 
 const ASPECT_RATIO = screen.width / screen.height
 
-const LATITUDE_DELTA = 9
+const LATITUDE_DELTA = 12
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
@@ -26,6 +26,7 @@ export default class GPSTrackLocation extends Component {
         categoryBgColor: false,token:'',truckMakers:[],coordinates:[],coordinates1:[],
         showDependable:'0',
         showTrack:false,
+        truckNum:'',
         fromDate:'',
         fromPassdate:'',
         toDate:'',
@@ -46,7 +47,7 @@ export default class GPSTrackLocation extends Component {
             latitude: 17.385044,
             longitude: 78.486671,
           }),
-        
+          spinnerBool: false,
 
     };
 
@@ -68,7 +69,9 @@ export default class GPSTrackLocation extends Component {
 
            async getCredentailsData() {
                const self  = this;
+               self.setState({ spinnerBool:true });
                const data = JSON.parse(self.props.navigation.state.params.sendingDate);
+               self.setState({truckNum:data.truckId});
             this.getCache((value) => {
                 if (value !== null) {
                     var egObj = {};
@@ -104,11 +107,11 @@ export default class GPSTrackLocation extends Component {
                                         coordinateArr1.push(element);
                                     }
                                     
-                                    this.setState({coordinates:coordinateArr,coordinates1:coordinateArr1,showDependable:''+coordinateArr.length, loadSpinner: false},()=>{
+                                    this.setState({coordinates:coordinateArr,coordinates1:coordinateArr1,showDependable:''+coordinateArr.length, spinnerBool: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates1, ' coordinates1==>>>')});
                                 } else {
-                                    this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                                    this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates, ' ==>>>')});
                                     let message ='';
@@ -118,20 +121,21 @@ export default class GPSTrackLocation extends Component {
                                     });
                                     Utils.ShowMessage(message);
                                 }
-                                this.setState({ loadSpinner: false })
+                                this.setState({ spinnerBool: false })
     
                             } else {
                                 console.log('error in GPSTrackLocation ==>', response);
-                                this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                                this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
                                     this.getView();});
                             }
                         }).catch((error) => {
                             console.log('error in GPSTrackLocation ==>', error);
-                            this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                            this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
                                 this.getView();});
+
                         })
                 } else {
-                    this.setState({coordinates:[],showDependable:'No Data Found', loadSpinner: false},()=>{
+                    this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
                         this.getView();});
 
                 }
@@ -241,12 +245,20 @@ export default class GPSTrackLocation extends Component {
             case  '0':
                 console.log('this.state.coordinates',this.state.coordinates);
                 return(
+                    <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                    top:100,justifyContent:'center',
+                    zIndex: 1 ,width:'100%'},{display:'flex'}]}>
                     <Text>Loading Map..</Text> 
+                    </View>
                 );
             break;
             case 'No Data Found':
                 return(
-                    <Text>No Data Found</Text> 
+                    <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                    top:100,justifyContent:'center',
+                    zIndex: 1 ,width:'100%'},{display:'flex'}]}>
+                    <Text >No Data Found</Text> 
+                    </View>
                 );
             break;
             case ''+this.state.coordinates.length :
@@ -423,30 +435,57 @@ export default class GPSTrackLocation extends Component {
         }
     }
 
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
+    }
+
     render() {
         const self=this;
         const { region } = this.props; 
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-                         <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
-                            top:5,
-                            right:10,
-                            zIndex: 1},{display:'flex'}]}>
-                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'stops'});}}>
-                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                                Stops 
-                                        </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {  this.setState({ showDependable: ''+this.state.coordinates.length});}}>
-                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                                Map 
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>        
-                                                                                   
-                            </View> 
+                         <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                            top:0,justifyContent:'space-between',
+                            zIndex: 1,backgroundColor:'#1e4495',width:'100%'},{display:'flex'}]}>
+                            
+                                <View style={{alignSelf:'stretch',flexDirection:'row', alignItems:'flex-start',margin:5}}>
+                                    <TouchableOpacity onPress={() => {this.props.navigation.goBack(null);  }}>
+                                        <Image style={{ width: 25, height: 20, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/back_icon.png')} />                                    
+                                    </TouchableOpacity>
+                                    <Text style={[CustomStyles.erpText, {color:'white', fontFamily: 'Gotham-Medium', fontSize: 14,margin:10,marginLeft:3 }]}>
+                                                    Track {this.state.truckNum}</Text>
+                                </View>
+                                
+
+                                <View style={{flexDirection: 'row',alignItems:'flex-end',margin:5}}>
+                                    <TouchableOpacity onPress={() => {  alert('coming soon');}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_trip_info_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'stops'});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_trip_stops_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  alert('coming soon');}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_dist_rports_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  
+                                        this.state.coordinates.length == 0 ?this.setState({showDependable:'No Data Found'}):this.setState({ showDependable: ''+this.state.coordinates.length});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                            source={require('../images/gps_map_lap_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_map_icon.png')} />
+                                    </TouchableOpacity>
+                                </View>                                              
+                        </View> 
+                        {this.spinnerLoad()}
                     {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
                         {/* </View> */}

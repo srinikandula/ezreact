@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,Animated,DatePickerAndroid,StyleSheet,Platform,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,TrackModal, CustomText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText,CSpinner,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
@@ -20,9 +20,10 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTruckMap extends Component {
     state = {
-        categoryBgColor: false,token:'',trucks:[],
+        categoryBgColor: false,token:'',trucks:[],dummytrucks:[],
         showTrack:false,
         showHeader:'none',
+        truckNumber:'',
         fromDate:'',
         fromPassdate:'',
         toDate:'',
@@ -58,7 +59,8 @@ export default class GPSTruckMap extends Component {
             'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
             'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
             'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune']
+            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune'],
+        spinnerBool: false,
 
     };
 
@@ -99,6 +101,7 @@ export default class GPSTruckMap extends Component {
            }
 
            async getCredentailsData() {
+            this.setState({ spinnerBool:true });
             this.getCache((value) => {
                 if (value !== null) {
                     var egObj = {};
@@ -113,7 +116,7 @@ export default class GPSTruckMap extends Component {
                             if (response.data.status) {
                                 console.log('trucksList ==>', response.data);
                                 if (response.data.trucks.length == 0) {
-                                    this.setState({ loadSpinner: false })
+                                    this.setState({ spinnerBool: false })
                                 } else {
     
                                     var catgryarr = response.data.trucks;
@@ -131,7 +134,7 @@ export default class GPSTruckMap extends Component {
                                         element.rememberme = false;
                                         //console.log(this.state.location[index], 'element.location');
                                         dump.push(element);
-                                        this.setState({ trucks: dump });
+                                        this.setState({ trucks: dump,dummytrucks:dump });
                                     }
     
                                     console.log(catgryarr, 'vignesh == ', dump);
@@ -151,12 +154,11 @@ export default class GPSTruckMap extends Component {
                                         }
                                     }
                                 }
-                                this.setState({ loadSpinner: false })
+                                this.setState({ spinnerBool: false });
     
                             } else {
                                 console.log('error in trucksList ==>', response);
-                                this.setState({ erpDashBroadData: [], expirydetails: [] });
-                                this.setState({ loadSpinner: false })
+                                this.setState({ erpDashBroadData: [], expirydetails: [], spinnerBool: false });
                             }
                         }).catch((error) => {
                             console.log('error in trucksList ==>', error);
@@ -164,9 +166,11 @@ export default class GPSTruckMap extends Component {
                             if (error.response.status === 504) {
                                 Utils.ShowMessage('Something went wrong. Please try later');
                              }
+                             this.setState({ spinnerBool: false })
+                             
                         })
                 } else {
-                    this.setState({ loading: false })
+                    this.setState({ spinnerBool: false })
                 }
             }
             );
@@ -324,8 +328,21 @@ export default class GPSTruckMap extends Component {
                   </View>
                 );
                 break;
-                case 'listshow':
-                   return( <FlatList style={{ alignSelf: 'stretch', flex: 1,display:this.state.listshow }}
+        case 'listshow':
+                   return( 
+                   <View style={{flex:1,alignSelf:'stretch',flexDirection: 'column',
+                   top:50,
+                    justifyContent:'space-around'}}>
+                     <View style={{alignSelf:'stretch'}}>
+                        <CustomEditText underlineColorAndroid='transparent' 
+                                placeholder={'Enter Truck Number'}
+                                value={this.state.truckNumber}
+                                inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
+                                onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
+                        />
+                    </View>
+                   
+                   <FlatList style={{ alignSelf: 'stretch', flex: 1,display:'flex' }}
                     data={this.state.trucks}
                     ItemSeparatorComponent={this.renderSeparator}
                     renderItem={({ item }) =>                      
@@ -362,10 +379,33 @@ export default class GPSTruckMap extends Component {
                         </View>
                     }
                 keyExtractor={item => item._id} 
-                extraData={this.state}/> );
+                extraData={this.state}/> 
+                </View>);
                 break;
             default:
                 break;
+        }
+    }
+
+    FilterList(truck){
+        const GetJsonArr = this.state.dummytrucks;
+        let text = truck.toLowerCase();
+        this.setState({truckNumber:truck});
+        if(text.length != 0){
+            let catgryarr = [];
+             catgryarr = GetJsonArr.filter((item) =>{
+                if(item.registrationNo.toLowerCase().match(text))
+                {
+                    return item;
+                }
+              });
+              if(catgryarr.length > 0){
+                this.setState({trucks:catgryarr})
+              }else{
+                this.setState({trucks:[]});
+              }
+        }else{
+            this.setState({trucks:this.state.dummytrucks});
         }
     }
 
@@ -420,7 +460,12 @@ export default class GPSTruckMap extends Component {
             
             this.props.nav.navigation.navigate('GPSTrack',{token:this.state.token,sendingDate:JSON.stringify(Data)})
         }
-         
+    }
+
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
     }
     render() {
         const self=this;
@@ -428,31 +473,45 @@ export default class GPSTruckMap extends Component {
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
-                        <View style={[{ flexDirection: 'row',paddingTop:5,position:'absolute',
-                            top:5,
-                            right:10,
-                            zIndex: 1},{display:self.state.showHeader}]}>
-                            <View style={{alignSelf:'stretch', flexDirection: 'row',alignItems:'center' ,paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => {  this.setState({ view: 'listshow'});}}>
-                                        <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                                ListView 
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>        
-                            <View style={{flexDirection: 'row',paddingTop:5,paddingLeft:5}}>
-                                <TouchableOpacity onPress={() => { this.setState({ view:'mapShow'});}}>
-                                    <Text style={[CustomStyles.erpText,{margin:5,fontFamily:'Gotham-Medium',fontSize: 16,backgroundColor:'#1e4495'}]}>
-                                        Map View
-                                        </Text>
-                                </TouchableOpacity>
-                            </View>                                                          
-                            </View>
+                        <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                            top:0,justifyContent:'space-between',
+                            zIndex: 1,backgroundColor:'#1e4495',width:'100%'},{display:self.state.showHeader}]}>
+                            
+                                <View style={{alignSelf:'stretch',flexDirection:'row', alignItems:'flex-start',margin:5}}>
+                                    <TouchableOpacity onPress={() => {this.props.navigation.goBack(null);  }}>
+                                        <Image style={{ width: 25, height: 20, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/back_icon.png')} />                                    
+                                    </TouchableOpacity>
+                                    <Text style={[CustomStyles.erpText, {color:'white', fontFamily: 'Gotham-Medium', fontSize: 14,margin:10,marginLeft:3 }]}>
+                                    All Vehicles Location</Text>
+                                </View>
+                                
+
+                                <View style={{flexDirection: 'row',alignItems:'flex-end',margin:5}}>
+                                    
+                                    <TouchableOpacity onPress={() => {  this.setState({ view:'mapShow'});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_map_lap_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  
+                                        this.setState({ view: 'listshow'});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                            source={require('../images/gps_truck_list_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { alert('coming soon'); }}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_truck_reports.png')} />
+                                    </TouchableOpacity>
+                                </View>                                              
+                        </View>
+                        
                      <View style={CustomStyles.erpCategory}> 
-                        <View style={[CustomStyles.noResultView,{alignSelf:'stretch',position:'absolute',top:20}]}>
+                        <View style={[CustomStyles.noResultView,{alignSelf:'stretch',position:'absolute',top:20,backgroundColor:'transparent'}]}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {self.state.trucks.length == 0?'No Trucks Found':''}</Text>
                         </View>
+                        {this.spinnerLoad()}
                             {self.getView()}      
                          </View> 
                         <TrackModal 

@@ -83,7 +83,7 @@ export default class ExpenseList extends Component {
         getTruck(item){
             var data ='-';
             if(item.hasOwnProperty("attrs")){
-                data = item.attrs.truckName;
+                data = item.attrs.truckName ;
             }else{
                 data =  '-';
             }
@@ -179,11 +179,12 @@ export default class ExpenseList extends Component {
                         
                                 <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
-                                        <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
+                                        <View style={[CustomStyles.erpTextView,{flex:0.6,borderBottomWidth :0}]}>
                                             <Image resizeMode="contain"
                                                     source={require('../images/truck_icon.png')}
                                                     style={[CustomStyles.imageViewContainer,{borderRadius:0}]} />    
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
+                                            <Text style={[CustomStyles.erpText,{
+                                                 color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
                                                     {this.getTruck(item)}</Text>                
                                             
                                         </View>

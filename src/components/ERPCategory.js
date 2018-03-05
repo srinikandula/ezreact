@@ -1119,8 +1119,7 @@ export default class ERPCategory extends Component {
                                                 borderWidth: 0,
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: 'black',
-                                                borderColor: '#000', justifyContent: 'flex-end'
-                                            }}>
+                                                borderColor: '#000', justifyContent: 'flex-end'}}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', }}>
                                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
 

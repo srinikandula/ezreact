@@ -313,10 +313,9 @@ export default class GPSTruckMap extends Component {
                                     <Text>{'Address :'}{''}</Text>                                  
                                     
                                     </View>
-                                      <TouchableHighlight style={{alignSelf:'stretch'}}  
-                                       
+                                      <TouchableHighlight style={{alignSelf:'stretch'}}                                         
                                             underlayColor='#dddddd'>
-                                          <View style={CustomStyles.erpFooterText}>
+                                          <View style={{alignSelf:'stretch',alignItems:'center',padding:2,borderBottomWidth :0,}}>
                                               <Text>{'Track'}</Text>
                                           </View>
                                       </TouchableHighlight>

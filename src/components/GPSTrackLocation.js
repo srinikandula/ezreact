@@ -88,9 +88,9 @@ export default class GPSTrackLocation extends Component {
                                 console.log('truckMakers ==>', response.data);
                                 var coordinateArr =[];
                                 var coordinateArr1 =[];
-                                if (response.data.results.length > 0) {
+                                if (response.data.results.positions.length > 0) {
                                    
-                                    const arrList = response.data.results;
+                                    const arrList = response.data.results.positions;
                                     //arrList.length
                                     for (let index = 0; index < arrList.length; index++) {
                                         const element = arrList[index];
@@ -288,14 +288,6 @@ export default class GPSTrackLocation extends Component {
                                     />)
                             }else{
                                 if(marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')){
-                                    if(marker.isIdle){
-                                        return( 
-                                            <MapView.Marker key={index} 
-                                                image={require('../images/track_idle.png')}
-                                                coordinate={{latitude: marker.coordinate.latitude,
-                                                    longitude:marker.coordinate.longitude}}
-                                            />)                                  
-                                    }
                                     if(marker.isStopped){                                      
                                         return(   
                                             <MapView.Marker key={index} 
@@ -304,6 +296,15 @@ export default class GPSTrackLocation extends Component {
                                                     longitude:marker.coordinate.longitude}}
                                             />)                                
                                     }
+                                    if(marker.isIdle && !marker.isStopped){
+                                        return( 
+                                            <MapView.Marker key={index} 
+                                                image={require('../images/track_idle.png')}
+                                                coordinate={{latitude: marker.coordinate.latitude,
+                                                    longitude:marker.coordinate.longitude}}
+                                            />)                                  
+                                    }
+                                    
                                 }
                             }//close
                            
@@ -394,6 +395,42 @@ export default class GPSTrackLocation extends Component {
               </View>
                 );
                 break;
+            case 'info' :
+            return (
+                <View style ={{top:55}}>
+                    <View style={{  flexDirection: 'column', padding: 10}}>
+
+                                        <View style={{ alignSelf:'stretch', flexDirection: 'column', padding: 10 }}>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Truck Reg No</Text>
+                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                  TS4521DD22</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Distance Travelled</Text>
+                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                283 km</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Time Travelled </Text>
+                                                <Text style={[CustomStyles.erpText, {textAlign:'center',alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                10 hours</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between',flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Average Speed </Text>
+                                                <Text style={[CustomStyles.erpText, {textAlign:'center', alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                 28Km/Hr</Text>
+                                            </View>
+                                            
+                                        </View>
+                                    </View>
+                </View>
+            );
+            break;
             default:
                 break;
         }
@@ -462,7 +499,7 @@ export default class GPSTrackLocation extends Component {
                                 
 
                                 <View style={{flexDirection: 'row',alignItems:'flex-end',margin:5}}>
-                                    <TouchableOpacity onPress={() => {  alert('coming soon');}}>
+                                    <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'info'});}}>
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/gps_trip_info_icon.png')} />
                                     </TouchableOpacity>

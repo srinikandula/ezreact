@@ -14,6 +14,7 @@ import {
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Axios from 'axios';
+import {NoInternetModal} from './common';
 
 class Login extends Component {
     state = {};
@@ -24,7 +25,7 @@ class Login extends Component {
             // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
-            phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false
+            phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false,showMail: false,
         };
         
     }
@@ -306,6 +307,8 @@ class Login extends Component {
                                 </CustomText>
                                 </CustomButton>
                             </View>
+
+                            <NoInternetModal visible={this.state.showMail}/>
                         </View>
                     </ScrollView>
                 </View>

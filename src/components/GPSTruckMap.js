@@ -110,16 +110,16 @@ export default class GPSTruckMap extends Component {
                     Axios({
                         method: 'get',
                         headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.trucksList
+                        url: Config.routes.base + Config.routes.gpsTrackingByMapView
                     })
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('trucksList ==>', response.data);
-                                if (response.data.trucks.length == 0) {
+                                if (response.data.data.length == 0) {
                                     this.setState({ spinnerBool: false })
                                 } else {
     
-                                    var catgryarr = response.data.trucks;
+                                    var catgryarr = response.data.data;
                                     catgryarr = catgryarr.filter(function (item, index) {
                                         if (item.hasOwnProperty('attrs'))
                                             return item;
@@ -132,6 +132,7 @@ export default class GPSTruckMap extends Component {
                                         const element = catgryarr[index];
                                         element.location = this.state.location[index];
                                         element.rememberme = false;
+
                                         //console.log(this.state.location[index], 'element.location');
                                         dump.push(element);
                                         this.setState({ trucks: dump,dummytrucks:dump });

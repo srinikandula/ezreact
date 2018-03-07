@@ -41,6 +41,7 @@ import AddGroup from './components/AddGroup';
 import DriverSelectionList from './components/DriverSelectionList';
 import GroupsList from './components/GroupsList';
 import GPSTrackLocation from './components/GPSTrackLocation';
+import DistanceReport from './components/DistanceReport';
 
 class FooterTabs extends Component {
 	state ={changeState:true};
@@ -221,6 +222,12 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					},
 					GPSTrack:{
 						screen:GPSTrackLocation,
+						navigationOptions: {
+							header:null
+						}
+					},
+					GPSDistReport:{
+						screen:DistanceReport,
 						navigationOptions: {
 							header:null
 						}

@@ -148,7 +148,9 @@ export default class GPSTruckMap extends Component {
                                             var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
                                                         registrationNo:catgryarr[index].registrationNo,
                                                         speed:catgryarr[index].attrs.latestLocation.speed,
-                                                        date:catgryarr[index].attrs.latestLocation.updatedAt};
+                                                        date:catgryarr[index].attrs.latestLocation.updatedAt,
+                                                        isStopped:catgryarr[index].attrs.latestLocation.isStopped,
+                                                        isIdle:catgryarr[index].attrs.latestLocation.isIdle};
                                             catgryarr1.push(obj);
                                             this.setState({ latitude: element[1], longitude: element[0] });
                                             this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
@@ -299,9 +301,17 @@ export default class GPSTruckMap extends Component {
                         }}
                     >
                         {this.state.markers.map((marker, index) => {
+                            var imgsrc = require('../images/truck_running.png');
+                            if(marker.isStopped){                                      
+                                imgsrc = require('../images/truck_stopped.png');
+                            }
+                            if(marker.isIdle && !marker.isStopped){
+                                imgsrc = require('../images/truck_idle.png');       
+                            }
+
                         return (
                         <MapView.Marker key={index} 
-                            image={require('../images/truck_running.png')}
+                            image={imgsrc}
                             coordinate={marker.coordinate}
                             >
                             <MapView.Callout  style={CustomStyles.mapcard}
@@ -462,6 +472,13 @@ export default class GPSTruckMap extends Component {
         }
     }
 
+    refreshFunction = (nextProps) => {
+        if(nextProps.view){
+            console.log('hurra=refresh',nextProps.view);
+            this.setState({ view: nextProps.view});
+        }
+    }
+
     spinnerLoad() {
         if (this.state.spinnerBool)
             return <CSpinner/>;
@@ -498,7 +515,7 @@ export default class GPSTruckMap extends Component {
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                             source={require('../images/gps_truck_list_icon.png')} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => { alert('coming soon'); }}>
+                                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) }}>
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/gps_truck_reports.png')} />
                                     </TouchableOpacity>

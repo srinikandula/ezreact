@@ -48,6 +48,10 @@ export default class GPSTrackLocation extends Component {
             longitude: 78.486671,
           }),
           spinnerBool: false,
+          truckNum:'',
+          averageSpeed:'',
+          distanceTravelled:'',
+          timeTravelled:''
 
     };
 
@@ -121,7 +125,11 @@ export default class GPSTrackLocation extends Component {
                                     });
                                     Utils.ShowMessage(message);
                                 }
-                                this.setState({ spinnerBool: false })
+
+                                
+
+                                this.setState({ spinnerBool: false,truckNum:data.truckId,distanceTravelled:response.data.results.distanceTravelled,
+                                    timeTravelled:response.data.results.timeTravelled,averageSpeed:response.data.results.averageSpeed })
     
                             } else {
                                 console.log('error in GPSTrackLocation ==>', response);
@@ -239,6 +247,21 @@ export default class GPSTrackLocation extends Component {
         this.setState({ showTrack: visible });
     }
 
+
+    gettimeTravelled(time){
+        var timeStr = time.toString();
+        var travelTime = time;
+        if(timeStr.length > 0 ){
+            if(timeStr.length > 6){
+                return timeStr.substr(0,5);
+            }else{
+                return timeStr;
+            }
+        }else{
+            travelTime = '';
+        }
+        return travelTime;
+    }
     getView(){
         console.log('this.state.showDependable',this.state.showDependable);
         switch (this.state.showDependable) {
@@ -405,25 +428,25 @@ export default class GPSTrackLocation extends Component {
                                                 <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                     Truck Reg No</Text>
                                                 <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                  TS4521DD22</Text>
+                                                  {this.state.truckNum}</Text>
                                             </View>
                                             <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                                 <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                 Distance Travelled</Text>
                                                 <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                283 km</Text>
+                                                {this.state.distanceTravelled}</Text>
                                             </View>
                                             <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                                 <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                 Time Travelled </Text>
                                                 <Text style={[CustomStyles.erpText, {textAlign:'center',alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                10 hours</Text>
+                                                {this.gettimeTravelled(this.state.timeTravelled) } hours</Text>
                                             </View>
                                             <View style={{ alignSelf:'stretch',justifyContent:'space-between',flexDirection: 'row', marginHorizontal: 10 }}>
                                                 <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                 Average Speed </Text>
                                                 <Text style={[CustomStyles.erpText, {textAlign:'center', alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                 28Km/Hr</Text>
+                                                 {this.gettimeTravelled(this.state.averageSpeed)}</Text>
                                             </View>
                                             
                                         </View>

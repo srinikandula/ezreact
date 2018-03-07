@@ -3,21 +3,30 @@
 import React, { Component } from 'react';
 import { View, ScrollView,Animated,DatePickerAndroid,StyleSheet,Platform,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,TrackModal, CustomText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText,CSpinner } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker,Polyline } from 'react-native-maps';
+import MapView, { Marker,Polyline,AnimatedRegion } from 'react-native-maps';
 import Utils from '../components/common/Utils';
 const { width, height } = Dimensions.get("window");
 
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
+const screen = Dimensions.get('window')
+
+const ASPECT_RATIO = screen.width / screen.height
+
+const LATITUDE_DELTA = 12
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
     state = {
-        categoryBgColor: false,token:'',truckMakers:[],coordinates:[],
+         _mapView: MapView,
+        categoryBgColor: false,token:'',truckMakers:[],coordinates:[],coordinates1:[],
+        showDependable:'0',
         showTrack:false,
+        truckNum:'',
         fromDate:'',
         fromPassdate:'',
         toDate:'',
@@ -28,14 +37,30 @@ export default class GPSTrackLocation extends Component {
         latitude: 17.46247,
         longitude: 78.3100319,
         animation : new Animated.Value(0),
-        
+        initialPoint:{
+            latitude:17.385044, 
+            longitude:78.486671, 
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+          },
+          coordinate: new MapView.AnimatedRegion({
+            latitude: 17.385044,
+            longitude: 78.486671,
+          }),
+          spinnerBool: false,
+          truckNum:'',
+          averageSpeed:'',
+          distanceTravelled:'',
+          timeTravelled:''
 
     };
 
     componentWillMount() {
+        console.log('this.props gpstractlocation',this.props.nav)
         const self = this;
         console.log(self.props,"GPSTrackLocation=token");
         this.getCredentailsData();
+        self.setState({showDependable:'0'});
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -48,7 +73,9 @@ export default class GPSTrackLocation extends Component {
 
            async getCredentailsData() {
                const self  = this;
+               self.setState({ spinnerBool:true });
                const data = JSON.parse(self.props.navigation.state.params.sendingDate);
+               self.setState({truckNum:data.truckId});
             this.getCache((value) => {
                 if (value !== null) {
                     var egObj = {};
@@ -63,18 +90,34 @@ export default class GPSTrackLocation extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('truckMakers ==>', response.data);
-                                if (response.data.results.length > 0) {
-                                    var coordinateArr =[];
-                                    const arrList = response.data.results;
+                                var coordinateArr =[];
+                                var coordinateArr1 =[];
+                                if (response.data.results.positions.length > 0) {
+                                   
+                                    const arrList = response.data.results.positions;
                                     //arrList.length
                                     for (let index = 0; index < arrList.length; index++) {
                                         const element = arrList[index];
-                                        coordinateArr.push({ latitude: element.location.coordinates[0], longitude:element.location.coordinates[1], strokeColor: '#F00' });
+                                        if(index == 2){
+                                            this.setState({initialPoint:{latitude:Number(element.location.coordinates[1]), 
+                                                longitude:Number(element.location.coordinates[0]), 
+                                                latitudeDelta:LATITUDE_DELTA,
+                                                longitudeDelta: LONGITUDE_DELTA}});
+                                        }
+                                        coordinateArr.push({ strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
+                                            longitude:Number(element.location.coordinates[0]) });
+                                        element.coordinate = { strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
+                                            longitude:Number(element.location.coordinates[0]) };
+                                        coordinateArr1.push(element);
                                     }
-                                    this.setState({coordinates:coordinateArr, loadSpinner: false},()=>{
+                                    
+                                    this.setState({coordinates:coordinateArr,coordinates1:coordinateArr1,showDependable:''+coordinateArr.length, spinnerBool: false},()=>{
+                                        this.getView();
+                                        console.log(this.state.coordinates1, ' coordinates1==>>>')});
+                                } else {
+                                    this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
                                         this.getView();
                                         console.log(this.state.coordinates, ' ==>>>')});
-                                } else {
                                     let message ='';
                                     if (response.data)
                                     response.data.messages.forEach(function (current_value) {
@@ -82,18 +125,27 @@ export default class GPSTrackLocation extends Component {
                                     });
                                     Utils.ShowMessage(message);
                                 }
-                                this.setState({ loadSpinner: false })
+
+                                
+
+                                this.setState({ spinnerBool: false,truckNum:data.truckId,distanceTravelled:response.data.results.distanceTravelled,
+                                    timeTravelled:response.data.results.timeTravelled,averageSpeed:response.data.results.averageSpeed })
     
                             } else {
-                                console.log('error in trucksList ==>', response);
-                                
-                                this.setState({ loadSpinner: false })
+                                console.log('error in GPSTrackLocation ==>', response);
+                                this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
+                                    this.getView();});
                             }
                         }).catch((error) => {
-                            console.log('error in trucksList ==>', error);
+                            console.log('error in GPSTrackLocation ==>', error);
+                            this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
+                                this.getView();});
+
                         })
                 } else {
-                    this.setState({ loading: false })
+                    this.setState({coordinates:[],showDependable:'No Data Found', spinnerBool: false},()=>{
+                        this.getView();});
+
                 }
             }
             );
@@ -119,14 +171,19 @@ export default class GPSTrackLocation extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() +"  "+ formattedDate.getHours() +' : '+ formattedDate.getMinutes();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() ;
       }
+
+    getParsedtime(date){
+        var formattedDate = new Date(date);
+        return formattedDate.getHours() +':'+ formattedDate.getMinutes();
+    }  
 
       renderSeparator = () => (
         <View
           style={{
             backgroundColor: '#d6d6d6',
-            height: 0,
+            height: 1,
           }}
         />
       );
@@ -151,9 +208,6 @@ export default class GPSTrackLocation extends Component {
         return data;
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log('nextProps====',nextProps);
-    }
 
     coordinate() {        
         //markers
@@ -193,34 +247,213 @@ export default class GPSTrackLocation extends Component {
         this.setState({ showTrack: visible });
     }
 
+
+    gettimeTravelled(time){
+        var timeStr = time.toString();
+        var travelTime = time;
+        if(timeStr.length > 0 ){
+            if(timeStr.length > 6){
+                return timeStr.substr(0,5);
+            }else{
+                return timeStr;
+            }
+        }else{
+            travelTime = '';
+        }
+        return travelTime;
+    }
     getView(){
-        switch ('mapShow') {
-            case 'mapShow':
+        console.log('this.state.showDependable',this.state.showDependable);
+        switch (this.state.showDependable) {
+            case  '0':
+                console.log('this.state.coordinates',this.state.coordinates);
+                return(
+                    <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                    top:100,justifyContent:'center',
+                    zIndex: 1 ,width:'100%'},{display:'flex'}]}>
+                    <Text>Loading Map..</Text> 
+                    </View>
+                );
+            break;
+            case 'No Data Found':
+                return(
+                    <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                    top:100,justifyContent:'center',
+                    zIndex: 1 ,width:'100%'},{display:'flex'}]}>
+                    <Text >No Data Found</Text> 
+                    </View>
+                );
+            break;
+            case ''+this.state.coordinates.length :
+            console.log('this.state.coordinates',this.state.coordinates);
                 return(
                     <View style ={CustomStyles.mapcontainer}>
                         <MapView
+                         ref = {(mapView) => { _mapView = mapView; }}
                         style={CustomStyles.map}
+                        initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
-                        >
-                        <Polyline
+                        maxZoomLevel={16}>
+                        {this.state.coordinates1.map((marker, index) => {
+                           if(index == 0){
+                            return(   
+                                <MapView.Marker key={index} 
+                                    image={require('../images/track_strat_end.png')}
+                                    coordinate={{latitude: marker.coordinate.latitude,
+                                        longitude:marker.coordinate.longitude}}
+                                    />)
+                            }else if(index == (this.state.coordinates.length-1)){
+                                return(
+                                    <MapView.Marker key={index} 
+                                    image={require('../images/track_strat_end.png')}
+                                    coordinate={{latitude: marker.coordinate.latitude,
+                                        longitude:marker.coordinate.longitude}}
+                                    />)
+                            }else{
+                                if(marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')){
+                                    if(marker.isStopped){                                      
+                                        return(   
+                                            <MapView.Marker key={index} 
+                                                image={require('../images/track_stop.png')}
+                                                coordinate={{latitude: marker.coordinate.latitude,
+                                                    longitude:marker.coordinate.longitude}}
+                                            />)                                
+                                    }
+                                    if(marker.isIdle && !marker.isStopped){
+                                        return( 
+                                            <MapView.Marker key={index} 
+                                                image={require('../images/track_idle.png')}
+                                                coordinate={{latitude: marker.coordinate.latitude,
+                                                    longitude:marker.coordinate.longitude}}
+                                            />)                                  
+                                    }
+                                    
+                                }
+                            }//close
+                           
+                            })
+                        }
+                         <MapView.Polyline 
+                            onPress={()=>{() => _mapView.animateToCoordinate({
+                                latitude: 17.46247,
+                                longitude: 78.3100319,
+                              }, 1000)
+                            
+                            }}
                             coordinates={this.state.coordinates}
-                            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-                            // strokeColors={[
-                            //     '#7F0000',
-                            //     '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
-                            //     '#B24112',
-                            //     '#E5845C',
-                            //     '#238C23',
-                            //     '#7F0000'
-                            // ]}
                             strokeWidth={6}
-                        />
-                        
+                            strokeColor="red"/>                                               
                         </MapView>
                   </View>
                 );
                 break;
-                
+            case 'stops' :
+                return(
+                    <View style ={{backgroundColor:'red'}}>
+                        
+                        <FlatList 
+                        data={this.state.coordinates1}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        removeClippedSubviews ={true}
+                        renderItem={({ item }) =>{
+                        if(item.isStopped){
+                           return( 
+                           <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                <View style={CustomStyles.erpDriverItems}>
+                                    <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
+                                        <Image resizeMode="contain"
+                                            source={require('../images/truck_stops.png')}
+                                            style={CustomStyles.imageViewContainer} />
+                                        
+                                    </View>
+                                    <View style={{ flex: 1, flexDirection: 'column', padding: 10}}>
+
+                                        <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Date</Text>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                {this.getParsedDate(item.updatedAt)}</Text>
+                                            </View>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Time</Text>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                { this.getParsedtime(item.updatedAt)} {}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>)}
+                            // }else{
+                            //     return(
+                            //         <View style={{height:10,backgroundColor:'orange'}}>
+                            //         </View>
+                            //     ) 
+                            // }
+                        }
+                    }
+                    keyExtractor={item => item._id} />
+                    </View>
+                );
+            break;
+            case  'Animate' :
+                return (
+                    <View style ={CustomStyles.mapcontainer}>
+                    <MapView
+                     ref = {(mapView) => { _mapView = mapView; }}
+                    style={CustomStyles.map}
+                    initialRegion={this.state.initialPoint}
+                    zoomEnabled ={true}
+                    maxZoomLevel={16}>
+                    {this.state.coordinates.map((marker, index) => {
+                        return (
+                        <MapView.Marker.Animated key={index} 
+                            image={require('../images/greenTruck.png')}
+                            coordinate={{latitude: marker.latitude,
+                                longitude:marker.longitude}}
+                        />)})
+                    }
+                    </MapView>
+              </View>
+                );
+                break;
+            case 'info' :
+            return (
+                <View style ={{top:55}}>
+                    <View style={{  flexDirection: 'column', padding: 10}}>
+
+                                        <View style={{ alignSelf:'stretch', flexDirection: 'column', padding: 10 }}>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                    Truck Reg No</Text>
+                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                  {this.state.truckNum}</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Distance Travelled</Text>
+                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                {this.state.distanceTravelled}</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Time Travelled </Text>
+                                                <Text style={[CustomStyles.erpText, {textAlign:'center',alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                {this.gettimeTravelled(this.state.timeTravelled) } hours</Text>
+                                            </View>
+                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between',flexDirection: 'row', marginHorizontal: 10 }}>
+                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                Average Speed </Text>
+                                                <Text style={[CustomStyles.erpText, {textAlign:'center', alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                 {this.gettimeTravelled(this.state.averageSpeed)}</Text>
+                                            </View>
+                                            
+                                        </View>
+                                    </View>
+                </View>
+            );
+            break;
             default:
                 break;
         }
@@ -262,13 +495,57 @@ export default class GPSTrackLocation extends Component {
         }
     }
 
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
+    }
+
     render() {
         const self=this;
         const { region } = this.props; 
         const {width, height} = Dimensions.get('window');         
         return(
                 <View style={CustomStyles.viewStyle}>
+                         <View style={[{ alignSelf:'stretch',flexDirection: 'row',paddingTop:5,position:'absolute',
+                            top:0,justifyContent:'space-between',
+                            zIndex: 1,backgroundColor:'#1e4495',width:'100%'},{display:'flex'}]}>
+                            
+                                <View style={{alignSelf:'stretch',flexDirection:'row', alignItems:'flex-start',margin:5}}>
+                                    <TouchableOpacity onPress={() => {this.props.navigation.goBack(null);  }}>
+                                        <Image style={{ width: 25, height: 20, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/back_icon.png')} />                                    
+                                    </TouchableOpacity>
+                                    <Text style={[CustomStyles.erpText, {color:'white', fontFamily: 'Gotham-Medium', fontSize: 14,margin:10,marginLeft:3 }]}>
+                                                    Track {this.state.truckNum}</Text>
+                                </View>
+                                
 
+                                <View style={{flexDirection: 'row',alignItems:'flex-end',margin:5}}>
+                                    <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'info'});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_trip_info_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  this.setState({ showDependable: 'stops'});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_trip_stops_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  alert('coming soon');}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_dist_rports_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {  
+                                        this.state.coordinates.length == 0 ?this.setState({showDependable:'No Data Found'}):this.setState({ showDependable: ''+this.state.coordinates.length});}}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                            source={require('../images/gps_map_lap_icon.png')} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_map_icon.png')} />
+                                    </TouchableOpacity>
+                                </View>                                              
+                        </View> 
+                        {this.spinnerLoad()}
                     {/* <View style={CustomStyles.erpCategory}> */}
                             {self.getView()}      
                         {/* </View> */}

@@ -699,8 +699,6 @@ class ReportsSetting extends Component {
                                 "filterType": "custom"
                             };
                             this.sendReportsData();
-
-
                         } else {
                             Utils.ShowMessage("Please Check Mini./Max. Date");
                         }

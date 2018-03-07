@@ -558,7 +558,7 @@ headText: {
         //backgroundColor: '#ff00ff'
     },
     epiryButtons: {
-    width:100,
+    width:110,
     // fontFamily:'Gotham-Light',
     justifyContent:'center',
         alignSelf:'center',
@@ -571,10 +571,11 @@ headText: {
         borderRadius:25,
         borderWidth: 1,
         borderColor: 'black',
-        height:45
+        paddingVertical: 8
+        // height:45
         },
     epirySelectedButtons: {
-        width:100,
+        width:110,
         // fontFamily:'Gotham-Light',
         justifyContent:'center',
         alignSelf:'center',
@@ -586,8 +587,9 @@ headText: {
         backgroundColor:'#1e4495',
         borderRadius:25,
         borderWidth: 1,
-        borderColor: 'transparent',
-        height:45
+        borderColor: '#1e4495',
+        paddingVertical: 8
+        // height:45
     },    
     separator: {
         height: 0.5,
@@ -820,7 +822,19 @@ mapContent:{
    borderBottomWidth :0,
    borderBottomColor:'black',
    overflow: "hidden"
-},
+},bubble: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 20,
+  },
+  button: {
+    width: 80,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    marginHorizontal: 10,
+  }
 
 
 };

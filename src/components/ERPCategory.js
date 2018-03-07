@@ -1119,29 +1119,25 @@ export default class ERPCategory extends Component {
                                                 borderWidth: 0,
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: 'black',
-                                                borderColor: '#000', justifyContent: 'flex-end'
-                                            }}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', }}>
-                                                    <View style={{ flex: 4, justifyContent: 'flex-end' }}>
-
+                                                borderColor: '#000', justifyContent: 'flex-end'}}>
+                                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                                    <View style={{ flex: 4, justifyContent: 'flex-end'}}>
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
                                                             placeholder={'Select Date'}
                                                             inputContainerStyle={{ justifyContent: 'flex-end', height: 30 }}
                                                             inputTextStyle={{ fontSize: 11, justifyContent: 'flex-end', marginHorizontal: 16, lineHeight: 5 }}
                                                             value={this.state.rMinDate} />
-
                                                     </View>
-
                                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                                         <Image style={{ width: 18, height: 18, resizeMode: 'contain' }}
                                                             source={require('../images/down_arrow.png')} />
                                                     </View>
-
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
                                     </View>
+                                    
                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.onPickdate('max', 'revenue') }}
@@ -1188,23 +1184,23 @@ export default class ERPCategory extends Component {
                                         </TouchableOpacity>
                                     </View> */}
                                 </View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                                     <View style={{
-                                        width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: '#000'
+                                         width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
+                                         borderBottomWidth: 1,
+                                         borderBottomColor: '#000'
                                     }}>
                                         <Picker
-                                            style={{ width: 200, height: 45 }}
+                                            style={{width: 200, height: 45 }}
                                             selectedValue={this.state.selectedTruckId}
                                             onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
                                             <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
                                             {this.renderTrucksRegNo()}
                                         </Picker>
                                     </View>
-                                    <View style={{ marginTop: 5, marginLeft: 2 }}>
+                                    <View style={{ marginTop: 5, marginLeft: 2}}>
                                         <TouchableOpacity
-                                            onPress={() => { this.sendSettingData('revenue') }}>
+                                            onPress={() => { this.sendSettingData('revenue') }}>{/* //RR */}
                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
                                                 <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     Go
@@ -1299,29 +1295,25 @@ export default class ERPCategory extends Component {
                                                 borderWidth: 0,
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: 'black',
-                                                borderColor: '#000', justifyContent: 'flex-end'
-                                            }}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', }}>
+                                                borderColor: '#000', justifyContent: 'flex-end'}}>
+                                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
-
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
                                                             placeholder={'Select Date'}
                                                             inputContainerStyle={{ justifyContent: 'flex-end', height: 30 }}
                                                             inputTextStyle={{ fontSize: 11, justifyContent: 'flex-end', marginHorizontal: 16, lineHeight: 5 }}
                                                             value={this.state.expMinDate} />
-
                                                     </View>
-
                                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                                         <Image style={{ width: 18, height: 18, resizeMode: 'contain' }}
                                                             source={require('../images/down_arrow.png')} />
                                                     </View>
-
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
                                     </View>
+                                   
                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.onPickdate('max', 'expense') }}
@@ -1351,7 +1343,7 @@ export default class ERPCategory extends Component {
                                             </View>
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={{ alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
                                         >
@@ -1367,26 +1359,26 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
                                     </View> */}
-                                </View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                </View> 
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                                     <View style={{
                                         width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
                                         borderBottomWidth: 1,
                                         borderBottomColor: '#000'
                                     }}>
                                         <Picker
-                                            style={{ width: 200, height: 30 }}
+                                            style={{width: 200, height: 45}}
                                             selectedValue={this.state.selectedTruckId}
                                             onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
                                             <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
                                             {this.renderTrucksRegNo()}
                                         </Picker>
                                     </View>
-                                    <View style={{ marginTop: 5, marginLeft: 2 }}>
+                                    <View style={{ marginTop: 5, marginLeft: 2}}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('expense') }}>
-                                            <View style={{ backgroundColor: "#e83b13", justifyContent: 'center', alignItems: 'flex-end' }}>
-                                                <Text style={{ color: '#fff', padding: 5, width: 60, height: 45, alignSelf: 'center' }}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
+                                                <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     GO
                                                 </Text>
                                             </View>
@@ -1504,7 +1496,7 @@ export default class ERPCategory extends Component {
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
                                                             placeholder={'Select Date'}
-                                                            inputContainerStyle={{ justifyContent: 'flex-end', height: 20 }}
+                                                            inputContainerStyle={{ justifyContent: 'flex-end', height: 30 }}
                                                             inputTextStyle={{ fontSize: 14, justifyContent: 'flex-end', marginHorizontal: 16, lineHeight: 5 }}
                                                             value={this.state.pMinDate} />
 
@@ -1531,11 +1523,10 @@ export default class ERPCategory extends Component {
                                             }}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
-
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
                                                             placeholder={'Select Date'}
-                                                            inputContainerStyle={{ justifyContent: 'flex-end', height: 20 }}
+                                                            inputContainerStyle={{ justifyContent: 'flex-end', height: 30 }}
                                                             inputTextStyle={{ fontSize: 14, justifyContent: 'flex-end', marginHorizontal: 16, lineHeight: 5 }}
                                                             value={this.state.pMaxDate} />
                                                     </View>
@@ -1543,15 +1534,12 @@ export default class ERPCategory extends Component {
                                                         <Image style={{ width: 18, height: 18, resizeMode: 'contain' }}
                                                             source={require('../images/down_arrow.png')} />
                                                     </View>
-
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
                                     </View>
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                                        <TouchableOpacity
-                                            onPress={() => { this.ShowModalFunction(!this.state.showMail) }}
-                                        >
+                                        <TouchableOpacity onPress={() => { this.ShowModalFunction(!this.state.showMail) }}>
                                             <Image style={{ width: 24, height: 24, resizeMode: 'contain' }}
                                                 source={require('../images/erp_mail.png')} />
                                         </TouchableOpacity>
@@ -1582,10 +1570,10 @@ export default class ERPCategory extends Component {
                                     <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('payment') }}>
-                                            <View style={{ backgroundColor: "#e83b13", justifyContent: 'center', alignItems: 'flex-end' }}>
-                                                <Text style={{ color: '#fff', padding: 5, width: 60, height: 45, alignSelf: 'center' }}>
+                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
+                                              <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     GO
-                                            </Text>
+                                                </Text>
                                             </View>
                                         </TouchableOpacity>
                                     </View>
@@ -1773,8 +1761,8 @@ export default class ERPCategory extends Component {
                                     <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('receivables') }}>
-                                            <View style={{ backgroundColor: "#e83b13", justifyContent: 'center', alignItems: 'flex-end' }}>
-                                                <Text style={{ color: '#fff', padding: 5, width: 60, height: 45, alignSelf: 'center' }}>
+                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
+                                             <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     GO
                                                 </Text>
                                             </View>

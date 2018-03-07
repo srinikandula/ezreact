@@ -237,11 +237,13 @@ export default class TruckList extends Component {
                             renderItem={({ item }) =>                      
                                 <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
-                                        <View style={[CustomStyles.erpTextView,{flex:0.6,borderBottomWidth :0}]}>
+                                        <View style={[CustomStyles.erpTextView,{flex:0.6,borderBottomWidth :0,
+                                             alignItems:'flex-start'}]}>
                                             <Image resizeMode="contain"
                                                     source={require('../images/truck_icon.png')}
                                                     style={CustomStyles.imageWithoutradiusViewContainer} />    
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',numberOfLines:1,fontWeight:'bold',textDecorationLine:'underline'}]}>
+                                            <Text style={[CustomStyles.erpText,{
+                                                color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
                                                     {item.registrationNo}</Text>
                                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
                                                     {this.getTonnage(item)}  {item.modelAndYear}</Text>

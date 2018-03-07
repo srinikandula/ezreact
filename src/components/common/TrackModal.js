@@ -38,10 +38,10 @@ const TrackModal =({visible, onAccept, onDecline,onPickFromdate,onPickTodate,can
           
 
                 <View style={{flexDirection:'row',justifyContent:'flex-end',margin:20}}>
-                    <TouchableOpacity style={{margin:2,width:80,backgroundColor:'#454545',borderRadius:8,alignItems:'center'}}  onPress={onDecline} >
+                    <TouchableOpacity style={{margin:2,width:110,backgroundColor:'#454545',borderRadius:8,alignItems:'center'}}  onPress={onDecline} >
                         <Text style={{fontSize:15,margin:15,color:'white'}}>Cancel</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{margin:2,width:80,backgroundColor:'#454545',borderRadius:8,alignItems:'center'}}  onPress={ onAccept } >
+                    <TouchableOpacity style={{margin:2,width:110,backgroundColor:'#454545',borderRadius:8,alignItems:'center'}}  onPress={ onAccept } >
                         <Text style={{fontSize:15,margin:15,color:'white'}}>Track</Text>
                     </TouchableOpacity>
                 </View>

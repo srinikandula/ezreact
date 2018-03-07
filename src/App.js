@@ -36,7 +36,7 @@ export default class App extends Component {
                AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
             }
-              //console.log('error in APP ==>', error);
+              console.log('error in APP ==>', error);
           })
         });
     }).catch((error) => {

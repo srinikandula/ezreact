@@ -349,9 +349,9 @@ export default class GPSTrackLocation extends Component {
                 break;
             case 'stops' :
                 return(
-                    <View style ={{backgroundColor:'red'}}>
+                    <View style ={{backgroundColor:'red',top:50}}>
                         
-                        <FlatList 
+                        <FlatList style={{marginTop:10}}
                         data={this.state.coordinates1}
                         ItemSeparatorComponent={this.renderSeparator}
                         removeClippedSubviews ={true}
@@ -368,14 +368,14 @@ export default class GPSTrackLocation extends Component {
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', padding: 10}}>
 
-                                        <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
-                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                        <View style={{ flex: 1, flexDirection: 'row', padding: 5 }}>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 5 }}>
                                                 <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                     Date</Text>
                                                 <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                 {this.getParsedDate(item.updatedAt)}</Text>
                                             </View>
-                                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                            <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
                                                 <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                     Time</Text>
                                                 <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
@@ -516,7 +516,7 @@ export default class GPSTrackLocation extends Component {
                                         <Image style={{ width: 25, height: 20, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/back_icon.png')} />                                    
                                     </TouchableOpacity>
-                                    <Text style={[CustomStyles.erpText, {color:'white', fontFamily: 'Gotham-Medium', fontSize: 14,margin:10,marginLeft:3 }]}>
+                                    <Text style={[CustomStyles.erpText, {color:'white', paddingVertical:3, fontFamily: 'Gotham-Medium', fontSize: 12,margin:10,marginLeft:3 }]}>
                                                     Track {this.state.truckNum}</Text>
                                 </View>
                                 

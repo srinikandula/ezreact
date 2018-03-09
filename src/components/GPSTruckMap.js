@@ -265,12 +265,11 @@ export default class GPSTruckMap extends Component {
         }
     }
     markerClick(markerData) {
-        this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) ;
         console.log(markerData,'markerData');
-        // const data = {truckId:markerData.registrationNo,startDate:this.getDateISo(this.state.fromPassdate),
-        //     endDate:this.getDateISo(this.state.toPassdate)}
-        // this.setState({passData:data});
-        // this.ShowModalFunction(!this.state.showTrack);
+        const data = {truckId:markerData.registrationNo,startDate:this.getDateISo(this.state.fromPassdate),
+            endDate:this.getDateISo(this.state.toPassdate)}
+        this.setState({passData:data});
+        this.ShowModalFunction(!this.state.showTrack);
     }
 
     getDateISo(dateString) {

@@ -91,6 +91,11 @@ let routes = {
     gpsTrackLocation:'/gps/gpsTrackingByTruck',
     gpsTrackingByMapView:'/gps/gpsTrackingByMapView',
 
+
+    //Profile
+    getProfileDetails:'/admin/userProfile',
+    getProfilePic:'http://demo.easygaadi.com/images/profile-pics/',
+
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
     setPasswordRoute: '/v1/user/reset',

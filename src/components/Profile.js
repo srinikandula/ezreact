@@ -5,19 +5,16 @@ import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import CustomStyles from './common/CustomStyles';
+import Axios from 'axios';
 
 class Profile extends Component{
-     state = {token:'',userName: ' ',phoneNumber: '',emailId:'.com',grups:'', password: '',confpassword:'', message: '',userNamelbl:true,
-           phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false};
+     state = {token:'',userName: ' ',phoneNumber: '',emailId:'', password: '',confpassword:'',
+            message: '',userNamelbl:true,
+           phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false,
+           accountGroupsCount:'',accountTrucksCount:'',oldpassword:'',currentpassword:'',
+           authPassword:true,profilePic:'',userImage:'../images/eg_user.png'};
 
     componentWillMount() {
-        this.setState({
-            userNamelbl: true,
-             phoneNumberlbl:true,
-             passwordlbl:false,
-             cpasswordlbl:false,
-             userName: 'Riyazuddin ',phoneNumber: '8801715086',emailId:'Riyaz@Mtwlabs.com',grups:'My Groups -60'
-        });
        this.getCredentailsData();
        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
@@ -28,6 +25,29 @@ class Profile extends Component{
                 var egObj = {};
                 egObj = JSON.parse(value);
                 this.setState({token:egObj.token});
+                if(egObj.hasOwnProperty('profilePic')){
+                    this.setState({token:egObj.token,profilePic:Config.routes.getProfilePic+egObj.profilePic},()=>{console.log(this.state.profilePic,'dinesshhhh')});
+                }
+                Axios({
+                    method: 'get',
+                    headers: { 'token': egObj.token },
+                    url: Config.routes.base + Config.routes.getProfileDetails
+                })
+                .then((response) => {
+                    if (response.data.status) {
+                        console.log('getProfileDetails ==>', response.data);
+                        this.setState({accountGroupsCount:''+response.data.result.accountGroupsCount,
+                            accountTrucksCount:''+response.data.result.accountTrucksCount,
+                            phoneNumber: ''+response.data.result.profile.contactPhone,
+                            userName:response.data.result.profile.userName,
+                            currentpassword:response.data.result.profile.password})
+                    } else {
+                        console.log('no  getProfileDetails ==>', response);
+                       // this.setState({ trucks: [] });
+                    }
+                }).catch((error) => {
+                    console.log('error in getProfileDetails ==>', error);
+                })
                 
             } else {
                 this.setState({ loading: false })
@@ -61,7 +81,34 @@ class Profile extends Component{
     //  Actions.pop();
     }
 
-        
+    moveInputLabelUp(id, value) {
+        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
+    }
+
+
+checkPassword(){
+    if(this.state.confpassword.length == this.state.password.length){
+        if(this.state.confpassword === this.state.password){
+
+            this.setState({authPassword:true});
+        }else{
+            this.setState({authPassword:false});
+        }
+    }else{
+        this.setState({authPassword:false});
+    }
+}
+
+getProfileImage(){
+    console.log(this.state.profilePic.length,'getProfileImage');
+    if(this.state.profilePic.length == 0){
+        return(<Image source={require('../images/eg_user.png')} 
+                    style= {{height:100,width:110,resizeMode: 'contain'}}/>);
+    }else{
+        return(<Image source={{uri:this.state.profilePic}} 
+            style= {{height:100,width:110,resizeMode: 'contain'}}/>);
+    }
+}
 
  render() {
         const {
@@ -108,13 +155,15 @@ class Profile extends Component{
                   position: 'absolute',
                   left: 0,
                 //   fontFamily:'Gotham-Light',
-                  top: ! this.state.phoneNumberlbl ? 16 : 0,
-                  fontSize: ! this.state.phoneNumberlbl ? 14 : 12,
-                  color: ! this.state.phoneNumberlbl ? '#aaa' : '#000',
+                  top:  this.state.phoneNumberlbl ? 16 : 0,
+                  fontSize:  this.state.phoneNumberlbl ? 14 : 12,
+                  color:  this.state.phoneNumberlbl ? '#aaa' : '#000',
                 //   fontFamily:'Gotham-Light',
                   padding:3
                 }                
 
+
+                
 
         return (
             <View style={CustomStyles.profileviewStyle}>
@@ -129,56 +178,68 @@ class Profile extends Component{
                 <ScrollView style={CustomStyles.profileScroll}>
                     <View style={CustomStyles.profileScrollcontainerStyle}>                        
                        <Card styles={{paddingLeft:10}}>
-                            <View style={CustomStyles.profileInputBox}>
-                                <Text style={namelabelStyle} >
-                                        UserName
-                                </Text>
-                                <CustomEditText
-                                    maxLength={Config.limiters.mobileLength}
-                                    keyboardType='default'                                    
-                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
-                                    value={this.state.userName}
-                                />
-                            </View>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={namelabelStyle} >
-                                        Phone Number
-                                </Text>
-                            
-                                <CustomEditText
-                                    maxLength={Config.limiters.mobileLength}
-                                    keyboardType='numeric'
-                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
-                                    value={this.state.phoneNumber}
-                                />
-                            </View>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={namelabelStyle} >
-                                        Email
-                                </Text>
-                            
-                                <CustomEditText
-                                    keyboardType='email-address'
-                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
-                                    value={this.state.emailId}
-                                />
-                            </View>
 
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                               <Text style={namelabelStyle} >
-                                Number OF members
-                                </Text>                     
-                                <CustomEditText
-                                    keyboardType='default'
-                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    editable = {false}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
-                                    value={this.state.grups}
-                                />
-                            </View>
+                        <View style={CustomStyles.profileInputBox}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field0]}>
+                                UserName</CustomText>
+                            <CustomEditText 
+                                inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                editable = {false}
+                                inputTextStyle={CustomStyles.profileInputStyle }
+                                value={this.state.userName}                                    
+                                 />
+                        </View>
+                        <View style={CustomStyles.profileInputBox}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field1]}>
+                            Phone Number</CustomText>
+                            <CustomEditText 
+                                inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                editable = {true}
+                                inputTextStyle={CustomStyles.profileInputStyle }
+                                value={this.state.phoneNumber}
+                                onChangeText={(phoneNumber) => { this.moveInputLabelUp(1, phoneNumber),
+                                    this.setState({ phoneNumber: phoneNumber }) }}
+                                                                   
+                                 />
+                        </View>
+
+                        <View style={CustomStyles.profileInputBox}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field2]}>
+                                Email</CustomText>
+                            <CustomEditText 
+                                inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                placeholder={'Enter Email ID'}
+                                editable = {true}
+                                inputTextStyle={CustomStyles.profileInputStyle }
+                                value={this.state.emailId}
+                                onChangeText={(emailId) => { this.moveInputLabelUp(2, emailId),
+                                    this.setState({ emailId: emailId }) }}
+                                                                   
+                                 />
+                        </View>
+
+                        <View style={CustomStyles.profileInputBox}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field3]}>
+                            Total Groups</CustomText>
+                            <CustomEditText 
+                                inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                placeholder={'0'}
+                                editable = {false}
+                                inputTextStyle={CustomStyles.profileInputStyle }
+                                value={this.state.accountGroupsCount}
+                                 />
+                        </View>
+                        <View style={CustomStyles.profileInputBox}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field4]}>
+                            Total Vehicles</CustomText>
+                            <CustomEditText 
+                                inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                placeholder={'0'}
+                                editable = {false}
+                                inputTextStyle={CustomStyles.profileInputStyle }
+                                value={this.state.accountTrucksCount}
+                                 />
+                        </View>
                        </Card>
 
                        <Card styles={{paddingLeft:10}}>
@@ -187,31 +248,49 @@ class Profile extends Component{
                                     Reset Password
                                 </Text>
                             </View>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={passwordlabelStyle} >
-                                       New Password
-                                </Text>
-                            
-                                <CustomEditText
-                                    keyboardType='numeric'
+                            <View style={CustomStyles.profileInputBox}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field5]}>
+                                    Old Password </CustomText>
+                                <CustomEditText 
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
+                                    placeholder={'Enter Old Password'}
+                                    editable = {true}
+                                    inputTextStyle={CustomStyles.profileInputStyle }
+                                    value={this.state.oldpassword}
+                                    onChangeText={(oldpassword) => { this.moveInputLabelUp(5, oldpassword),
+                                        this.setState({ oldpassword: ''+oldpassword }) }}
+                                                                    
+                                    />
+                            </View>
+                            <View style={CustomStyles.profileInputBox}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field6]}>
+                                New Password </CustomText>
+                                <CustomEditText 
+                                    inputContainerStyle={CustomStyles.profileInputContainerStyle}
+                                    placeholder={'Enter New Password'}
+                                    editable = {true}
+                                    inputTextStyle={CustomStyles.profileInputStyle }
                                     value={this.state.password}
-                                />
+                                    onChangeText={(password) => { this.moveInputLabelUp(6, password),
+                                        this.setState({ password: ''+password }) }}
+                                                                    
+                                    />
                             </View>
-                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-start', padding:3}}>
-                                <Text style={confirmpasswordlbl} >
-                                        Retype Password
-                                </Text>
-                            
-                                <CustomEditText
-                                    keyboardType='numeric'
+                            <View style={CustomStyles.profileInputBox}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field7]}>
+                                Retype Password </CustomText>
+                                <CustomEditText 
+                                    secureTextEntry
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
-                                    inputTextStyle={CustomStyles.profileInputStyle}
+                                    placeholder={'Enter Retype Password'}
+                                    editable = {true}
+                                    inputTextStyle={CustomStyles.profileInputStyle }
                                     value={this.state.confpassword}
-                                />
+                                    onChangeText={(confpassword) => { this.moveInputLabelUp(7, confpassword),
+                                        this.setState({ confpassword: ''+confpassword }),this.checkPassword() }}
+                                                                    
+                                    />
                             </View>
-
                             <View style={CustomStyles.profileViewActionStyle}>
                                     <TouchableOpacity style={CustomStyles.profileactionStyle} >
                                         <CustomText customTextStyle={CustomStyles.profileButtonTextStyle}>
@@ -226,8 +305,7 @@ class Profile extends Component{
                     </View>
                </ScrollView>
                 <View  style={CustomStyles.profileImageStyle}>
-                    <Image source={require('../images/eg_user.png')} 
-                        style= {{height:100,width:110,resizeMode: 'contain'}}/>
+                {this.getProfileImage()}
                 </View>
                 <View  style={editProfileImageStyle}>
                     <Image source={require('../images/eg_edit.png')} 

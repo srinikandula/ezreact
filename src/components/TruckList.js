@@ -45,8 +45,8 @@ export default class TruckList extends Component {
                     console.log('trucksList ==>', response.data);
                     this.setState({trucks:response.data.trucks,dummyTrucks:response.data.trucks})
                 } else {
-                    console.log('error in trucksList ==>', response);
-                    this.setState({ erpDashBroadData: [],expirydetails:[] });
+                    console.log('no in trucksList ==>', response);
+                    this.setState({ trucks: [] });
                 }
             }).catch((error) => {
                 console.log('error in trucksList ==>', error);

@@ -20,7 +20,7 @@ export default class App extends Component {
           egObj = JSON.parse(resp);
           Axios({
               method: 'get',
-              headers: { 'token': egObj.token },
+              headers: { 'token': egObj.token},
               url: Config.routes.base + Config.routes.easygaadiDashBroad
           }).then((response) => {
             console.log('APP ==>', response.status);

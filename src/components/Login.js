@@ -134,7 +134,8 @@ class Login extends Component {
             gpsEnabled: data.gpsEnabled,
             erpEnabled: data.erpEnabled,
             loadEnabled: data.loadEnabled,
-            editAccounts: data.editAccounts
+            editAccounts: data.editAccounts,
+            profilePic:data.profilePic
         }
         try {
             AsyncStorage.setItem('credientails', JSON.stringify(easyGaadi));

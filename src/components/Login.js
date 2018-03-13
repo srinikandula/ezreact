@@ -8,7 +8,7 @@ import {
     renderIf,
     CustomEditText,
     CustomButton,
-    CustomText,
+    CustomText,CSpinner,
     CommonBackground
 } from './common';
 import Config from '../config/Config';
@@ -22,10 +22,11 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+             userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
-            userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+            //userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false,showMail: false,
+            spinnerBool: false
         };
         
     }
@@ -80,6 +81,8 @@ class Login extends Component {
         if (this.state.password.length < 4) {
             return Utils.ShowMessage('Enter valid password');
         }
+
+        self.setState({spinnerBool:true});
         Axios({
             method: 'post',
             url: Config.routes.base + Config.routes.loginRoute,
@@ -102,10 +105,12 @@ class Login extends Component {
                         message = message + current_value;
                     });
                 Utils.ShowMessage(message);
-
             }
+            self.setState({spinnerBool:false});
         }).catch((error) => {
+            self.setState({spinnerBool:false});
             console.log('login post error--->', error)
+            Utils.ShowMessage("Something went wrong.Please try after sometime");
         })
 
     }
@@ -143,6 +148,12 @@ class Login extends Component {
         } catch (error) {
             console.log('something went wrong');
         }
+    }
+
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner/>;
+        return false;
     }
     render() {
         const {
@@ -194,6 +205,7 @@ class Login extends Component {
                     <CustomText style={CustomStyles.logintext}>
                         Login
                             </CustomText>
+                            {this.spinnerLoad()}
                     <ScrollView >
                         <View style={CustomStyles.loginContainerStyle}>
 

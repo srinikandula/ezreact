@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
 import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
+import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CSpinner,CommonBackground} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
+import Utils from './common/Utils';
 
 class Profile extends Component{
      state = {token:'',userName: ' ',phoneNumber: '',emailId:'', password: '',confpassword:'',
             message: '',userNamelbl:true,
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false,
            accountGroupsCount:'',accountTrucksCount:'',oldpassword:'',currentpassword:'',
-           authPassword:true,profilePic:'',userImage:'../images/eg_user.png'};
+           authPassword:true,profilePic:'',userImage:'../images/eg_user.png',accountId:'',
+           spinnerBool: false};
 
     componentWillMount() {
        this.getCredentailsData();
@@ -28,6 +30,7 @@ class Profile extends Component{
                 if(egObj.hasOwnProperty('profilePic')){
                     this.setState({token:egObj.token,profilePic:Config.routes.getProfilePic+egObj.profilePic},()=>{console.log(this.state.profilePic,'dinesshhhh')});
                 }
+                this.setState({ spinnerBool:true });
                 Axios({
                     method: 'get',
                     headers: { 'token': egObj.token },
@@ -40,17 +43,21 @@ class Profile extends Component{
                             accountTrucksCount:''+response.data.result.accountTrucksCount,
                             phoneNumber: ''+response.data.result.profile.contactPhone,
                             userName:response.data.result.profile.userName,
-                            currentpassword:response.data.result.profile.password})
+                            currentpassword:response.data.result.profile.password,
+                            accountId:response.data.result.profile._id,
+                            emailId:response.data.result.profile.email})
                     } else {
                         console.log('no  getProfileDetails ==>', response);
                        // this.setState({ trucks: [] });
                     }
+                    this.setState({ spinnerBool:false });
                 }).catch((error) => {
                     console.log('error in getProfileDetails ==>', error);
+                    this.setState({ spinnerBool:false });
                 })
                 
             } else {
-                this.setState({ loading: false })
+                this.setState({ spinnerBool: false })
             }
         }
         );
@@ -90,14 +97,15 @@ checkPassword(){
     if(this.state.confpassword.length == this.state.password.length){
         if(this.state.confpassword === this.state.password){
 
-            this.setState({authPassword:true});
+            
         }else{
-            this.setState({authPassword:false});
+            
         }
     }else{
-        this.setState({authPassword:false});
+        
     }
 }
+
 
 getProfileImage(){
     console.log(this.state.profilePic.length,'getProfileImage');
@@ -109,62 +117,140 @@ getProfileImage(){
             style= {{height:100,width:110,resizeMode: 'contain'}}/>);
     }
 }
+ isValidEmail(email) {
+    return email && /^\S+@\S+\.\S+/.test(email);
+ };
+
+onSubmitProfileDetails() {
+
+    if(this.state.userName.trim().length == 0){
+        return  Utils.ShowMessage('Please Enter  User Name');
+    }
+
+    if(this.state.phoneNumber.trim().length != 10){
+        return  Utils.ShowMessage('Please Enter 10 digits Mobile Number');
+    }
+
+    if(!this.isValidEmail(this.state.emailId.trim())){
+        return   Utils.ShowMessage('Please Enter Email ID');
+    }
+
+
+    if(this.state.oldpassword.trim().length == 0 ){
+
+        if(this.state.password.trim().length > 0 ){
+            return   Utils.ShowMessage('Please Enter Old password');
+        }
+
+        if(this.state.confpassword.trim().length > 0 ){
+            return   Utils.ShowMessage('Please Enter Old password');
+        }
+        
+        var postData = {
+            'userName': this.state.userName,
+            'contactPhone': this.state.phoneNumber,
+            'email': this.state.emailId,
+            'oldPassword':'',
+            'confirmPassword': '',
+            'newPassword': '',
+            'accountGroupsCount': this.state.accountGroupsCount,
+            'accountTrucksCount':this.state.accountTrucksCount,
+            'accountId':this.state.accountId
+        };
+
+        console.log(postData,'update paaword without password');
+        this.callupdateProfileAPI(postData);
+    }else{
+
+        if(this.state.currentpassword.trim() === this.state.oldpassword.trim() ){
+            if(this.state.password.trim().length > 0 ){
+                if(this.state.confpassword.trim().length > 0 ){
+                    if(this.state.confpassword === this.state.password){
+                        Utils.ShowMessage('Under Progress...');
+                        var postData = {
+                            'userName': this.state.userName,
+                            'contactPhone': this.state.phoneNumber,
+                            'email': this.state.emailId,
+                            'oldPassword': this.state.currentpassword,
+                            'confirmPassword': this.state.confirmPassword,
+                            'newPassword': this.state.password,
+                            'accountGroupsCount': this.state.accountGroupsCount,
+                            'accountTrucksCount':this.state.accountTrucksCount,
+                            'accountId':this.state.accountId
+                        };
+                        this.callupdateProfileAPI(postData);
+                        console.log(postData,'update paaword with password');
+                    }else{
+                        Utils.ShowMessage('Confirm Password does not match');
+                    }
+                }else{
+                    Utils.ShowMessage('Please Enter Retype Password ');
+                }
+            }else{
+                Utils.ShowMessage('Please Enter New Password ');
+            }
+        }else{
+            Utils.ShowMessage('Password does not matach with Current Password ');
+        }
+
+    }
+
+
+}
+
+callupdateProfileAPI(postdata){
+    const self = this;
+    self.setState({ spinnerBool:true });
+    var methodType = 'put';
+    var url = Config.routes.base + Config.routes.updateProfile
+    Axios({
+        method: methodType,
+        headers: { 'token': self.state.token },
+        url: url,
+        data: postdata
+    })
+        .then((response) => {
+            console.log(Config.routes.base + Config.routes.updateProfile,"URL");
+            console.log(postdata,'<--update Profile ==>', response.data);
+            if (response.data.status) {                    
+                self.setState({ spinnerBool:false });
+                
+                let message ="";
+                if(response.data)
+                response.data.messages.forEach(function(current_value) {
+                    message = message+current_value;
+                });
+                Utils.ShowMessage(message);
+                
+            } else {
+                self.setState({ spinnerBool:false });
+                let message ="";
+                if(response.data)
+                response.data.messages.forEach(function(current_value) {
+                    message = message+current_value;
+                });
+                Utils.ShowMessage(message);                    
+            }
+        }).catch((error) => {
+            console.log('error in update Profile ==>', error);
+            self.setState({ spinnerBool:false });
+            Utils.ShowMessage("Something went wrong.Please try after sometime");
+        })
+}
+
+spinnerLoad() {
+    if (this.state.spinnerBool)
+        return <CSpinner/>;
+    return false;
+}
 
  render() {
         const {
             editProfileImageStyle
         } = styles;
 
-
-        const namelabelStyle = {
-                  position: 'absolute',
-                  left: 0,
-                  //fontFamily:'Gotham-Light',
-                  top: ! this.state.userNamelbl ? 6 : 0,
-                  fontSize: ! this.state.userNamelbl ? 14 : 10,
-                  color: ! this.state.userNamelbl ? '#aaa' : '#000',
-                  //fontFamily:'Gotham-Light',
-                  padding:1,
-                  height:30,
-                }
-
-        const passwordlabelStyle = {
-                  position: 'absolute',
-                  left: 0,
-                //   fontFamily:'Gotham-Light',
-                  top: ! this.state.passwordlbl ? 16 : 0,
-                  fontSize: ! this.state.passwordlbl ? 18 : 14,
-                  color: ! this.state.passwordlbl ? '#aaa' : '#000',
-                //   fontFamily:'Gotham-Light',
-                  padding:3
-                }
-
-
-        const confirmpasswordlbl= {
-                  position: 'absolute',
-                  left: 0,
-                //   fontFamily:'Gotham-Light',
-                  top: ! this.state.cpasswordlbl ? 16 : 0,
-                  fontSize: ! this.state.cpasswordlbl ? 18 : 14,
-                  color: ! this.state.cpasswordlbl ? '#aaa' : '#000',
-                //   fontFamily:'Gotham-Light',
-                  padding:3
-                }
         
-        const phonelabelStyle = {
-                  position: 'absolute',
-                  left: 0,
-                //   fontFamily:'Gotham-Light',
-                  top:  this.state.phoneNumberlbl ? 16 : 0,
-                  fontSize:  this.state.phoneNumberlbl ? 14 : 12,
-                  color:  this.state.phoneNumberlbl ? '#aaa' : '#000',
-                //   fontFamily:'Gotham-Light',
-                  padding:3
-                }                
-
-
-                
-
+ 
         return (
             <View style={CustomStyles.profileviewStyle}>
                 <View style={CustomStyles.profileheaderStyle}>
@@ -174,7 +260,7 @@ getProfileImage(){
                         <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
                     </TouchableOpacity>
                 </View>            
-                
+                {this.spinnerLoad()}
                 <ScrollView style={CustomStyles.profileScroll}>
                     <View style={CustomStyles.profileScrollcontainerStyle}>                        
                        <Card styles={{paddingLeft:10}}>
@@ -195,6 +281,7 @@ getProfileImage(){
                             <CustomEditText 
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 editable = {true}
+                                keyboardType='numeric'
                                 inputTextStyle={CustomStyles.profileInputStyle }
                                 value={this.state.phoneNumber}
                                 onChangeText={(phoneNumber) => { this.moveInputLabelUp(1, phoneNumber),
@@ -292,7 +379,7 @@ getProfileImage(){
                                     />
                             </View>
                             <View style={CustomStyles.profileViewActionStyle}>
-                                    <TouchableOpacity style={CustomStyles.profileactionStyle} >
+                                    <TouchableOpacity style={CustomStyles.profileactionStyle} onPress={() => {this.onSubmitProfileDetails()}}>
                                         <CustomText customTextStyle={CustomStyles.profileButtonTextStyle}>
                                             RESET
                                         </CustomText>   

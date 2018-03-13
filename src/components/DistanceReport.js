@@ -20,7 +20,7 @@ const ASPECT_RATIO = screen.width / screen.height
 const LATITUDE_DELTA = 12
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-export default class GPSTrackLocation extends Component {
+export default class DistanceReport extends Component {
     state = {
          _mapView: MapView,
         categoryBgColor: false,token:'',truckMakers:[],coordinates:[],coordinates1:[],
@@ -62,39 +62,8 @@ export default class GPSTrackLocation extends Component {
                     var egObj = {};
                     egObj = JSON.parse(value);
                     this.setState({ token: egObj.token });
-                    Axios({
-                        method: 'GET',
-                        headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.groupTrucks,
-                        
-                    })
-                        .then((response) => {
-                            if (response.data.status) {
-                                console.log('Dist Reports ==>', response.data);
-                                //if (response.data.results.positions.length > 0) {
-                                   
-                                    
-                                // } else {
-                                   
-                                //     let message ='';
-                                //     if (response.data)
-                                //     response.data.messages.forEach(function (current_value) {
-                                //         message = message + current_value;
-                                //     });
-                                //     Utils.ShowMessage(message);
-                                // }
-
-                                this.setState({ spinnerBool: false})
-    
-                            } else {
-                                console.log('error in Dist Reports ==>', response);
-                                this.setState({ spinnerBool: false });
-                            }
-                        }).catch((error) => {
-                            console.log('error in Dist Reports ==>', error);
-                            this.setState({ spinnerBool: false });
-
-                        })
+                    let currDate = new Date();
+                    this.fetchDistanceReports(currDate.toDateString(),currDate.toDateString());
                 } else {
                     this.setState({spinnerBool: false});
 
@@ -118,7 +87,43 @@ export default class GPSTrackLocation extends Component {
                 // Handle exceptions
             }
         }
+    
+    fetchDistanceReports(fromdate,todate){
+        console.log(fromdate+'-fromdate',todate+'-todate');
+        Axios({
+            method: 'GET',
+            headers: { 'token': this.state.token },
+            url: Config.routes.base + Config.routes.getTruckReport,
+            
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    console.log('Dist Reports ==>', response.data);
+                    if (response.data.results.length > 0) {
+                       
+                        
+                    } else {
+                       
+                        let message ='';
+                        if (response.data)
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                        Utils.ShowMessage(message);
+                    }
 
+                    this.setState({ spinnerBool: false})
+
+                } else {
+                    console.log('error in Dist Reports ==>', response);
+                    this.setState({ spinnerBool: false });
+                }
+            }).catch((error) => {
+                console.log('error in Dist Reports ==>', error);
+                this.setState({ spinnerBool: false });
+
+            })
+    }
     
 
     getParsedDate(date){
@@ -139,10 +144,6 @@ export default class GPSTrackLocation extends Component {
           }}
         />
       );
-
-    
-   
-
 
     gettimeTravelled(time){
         var timeStr = time.toString();

@@ -36,6 +36,13 @@ export default class App extends Component {
                AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
             }
+
+
+            if (error.response.status === 504 ) {
+              AsyncStorage.clear();// AsyncStorage.clear();
+             this.setState({ signed: false, check: true });
+             alert("Something went Wrong.Please try after some time");
+           }
               console.log('error in APP ==>', error);
           })
         });

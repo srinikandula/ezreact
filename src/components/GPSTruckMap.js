@@ -38,28 +38,6 @@ export default class GPSTruckMap extends Component {
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
             view:'mapShow',
-            location: ['Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi',
-            'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai',
-            'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune'],
         spinnerBool: false,
 
     };
@@ -77,8 +55,6 @@ export default class GPSTruckMap extends Component {
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
-              console.log("wokeeey");
-              console.log(position);
               this.setState({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -130,7 +106,6 @@ export default class GPSTruckMap extends Component {
                                     var dump = [];
                                     for (let index = 0; index < catgryarr.length; index++) {
                                         const element = catgryarr[index];
-                                        element.location = this.state.location[index];
                                         element.rememberme = false;
 
                                         //console.log(this.state.location[index], 'element.location');
@@ -141,6 +116,8 @@ export default class GPSTruckMap extends Component {
                                     console.log(catgryarr, 'vignesh == ', dump);
                                     var catgryarr1 = [];
                                     for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
+                                        const truckElement = this.state.trucks[index];
+                                        
                                         if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
                                              console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
@@ -152,12 +129,15 @@ export default class GPSTruckMap extends Component {
                                                         isStopped:catgryarr[index].attrs.latestLocation.isStopped,
                                                         isIdle:catgryarr[index].attrs.latestLocation.isIdle};
                                             catgryarr1.push(obj);
+                                            truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                            truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
                                             this.setState({ latitude: element[1], longitude: element[0] });
                                             this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
                                         }
+                                        this.state.trucks[index] = truckElement;
                                     }
                                 }
-                                this.setState({ spinnerBool: false });
+                                this.setState({ spinnerBool: false,trucks: this.state.trucks});
     
                             } else {
                                 console.log('error in trucksList ==>', response);
@@ -199,7 +179,7 @@ export default class GPSTruckMap extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() +"  "+ formattedDate.getHours() +' : '+ formattedDate.getMinutes();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() +" \n "+ formattedDate.getHours() +' : '+ formattedDate.getMinutes();
       }
 
       renderSeparator = () => (
@@ -283,6 +263,46 @@ export default class GPSTruckMap extends Component {
         this.setState({ showTrack: visible });
     }
 
+    getSpeed(speed){
+        var strSpeed = speed;
+        if(strSpeed.length > 4){
+            strSpeed = strSpeed.substring(0,5)+"..."
+        }
+        return strSpeed;
+    }
+
+    getAddress(item){
+        var data ='-';
+        if(item.hasOwnProperty("attrs")){
+            if(item.attrs.hasOwnProperty('latestLocation')){
+                var address='';
+                if(item.attrs.latestLocation.hasOwnProperty('address')){
+                    address  = item.attrs.latestLocation.address;
+                }
+                 if(address.length > 30){
+                    address = address.substring(0,30)+"..."
+                 }
+                data = address;
+            }else{
+                data = '-'
+            }
+        }else{
+            data =  '-';
+        }
+        return data;
+    }
+
+    //this.getParsedDate(item.updatedAt)
+    getupdateDate(item){
+        var data ='Date : \n'+'';
+        if(item.hasOwnProperty("updatedAt")){
+            data = 'Date : \n'+ this.getParsedDate(item.updatedAt);
+        }else{
+            data =  'Date : \n'+'';
+        }
+        return data;
+    }
+
     getView(){
         switch (this.state.view) {
             case 'mapShow':
@@ -356,35 +376,35 @@ export default class GPSTruckMap extends Component {
                     data={this.state.trucks}
                     ItemSeparatorComponent={this.renderSeparator}
                     renderItem={({ item }) =>                      
-                        <View style={[CustomStyles.erpCategoryCardItems,{  backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                        <View style={[CustomStyles.erpCategoryCardItems,{flexDirection:'column' }]}>
                             <View style={CustomStyles.erpDriverItems}>
+                                
                                 <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
                                     <Image resizeMode="contain"
                                             source={require('../images/truck_icon.png')}
-                                            style={CustomStyles.imageWithoutradiusViewContainer} />    
+                                            style={CustomStyles.imageWithoutradiusViewContainer} />
+                                </View>
+                               
+                                <View style={{flex:1, flexDirection: 'column',padding:2 }}>
                                     <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',textDecorationLine:'underline'}]}>
                                             {item.registrationNo}</Text>
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',fontSize:12}]}>
-                                                {this.getParsedDate(item.updatedAt)}</Text>
-                                            
-                                </View>
-                                <View style={{flex:1, flexDirection: 'column',padding:10}}>
-                                    <View style={{ flexDirection: 'row',padding:10}}>
-                                        <View style={{flex:1, flexDirection: 'column',padding:10}}>
-                                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',}]}>
-                                                Location {item.location}</Text>
-                                            <CheckBox
-                                            style={{width:10,height:10}}
-                                                label='Looking For Load'
-                                                color={'#000000'}
-                                                checked={item.rememberme}
-                                                onChange={() => this.lookingForLoad(item)}
-                                            />    
-                                        </View>
-                                        
-                                    </View>
+                                    <Text style={[CustomStyles.erpText,{color:'#1e4495', fontSize:10}]}>
+                                        Location :{this.getAddress(item)}</Text>
                                     
                                 </View>                        
+                            </View>
+                            <View style={{alignSelf:'stretch', flexDirection: 'row',justifyContent:'space-between',padding:2,alignItems:'center' }}>
+                                <Text style={[CustomStyles.erpText,{textAlign:'center', color:'#1e4495',fontWeight:'bold',fontSize:12}]}>
+                                        {this.getupdateDate(item)}</Text>  
+                                <Text style={[CustomStyles.erpText,{textAlign:'center', color:'#1e4495',fontWeight:'bold',fontSize:12}]}>
+                                        {'speed \n'+ this.getSpeed(item.speed)}</Text>  
+                                <CheckBox style={{width:10,height:10,fontSize:12}}
+                                        label='Looking For Load'
+                                        color={'#000000'}
+                                        checked={item.rememberme}
+                                        onChange={() => this.lookingForLoad(item)}
+                                    />      
+
                             </View>
                         </View>
                     }
@@ -515,10 +535,10 @@ export default class GPSTruckMap extends Component {
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                             source={require('../images/gps_truck_list_icon.png')} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) }}>
+                                    {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) }}>
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/gps_truck_reports.png')} />
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
                                 </View>                                              
                         </View>
                         

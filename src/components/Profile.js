@@ -14,7 +14,8 @@ class Profile extends Component{
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false,
            accountGroupsCount:'',accountTrucksCount:'',oldpassword:'',currentpassword:'',
            authPassword:true,profilePic:'',userImage:'../images/eg_user.png',accountId:'',
-           spinnerBool: false};
+           spinnerBool: false,
+          };
 
     componentWillMount() {
        this.getCredentailsData();
@@ -39,13 +40,14 @@ class Profile extends Component{
                 .then((response) => {
                     if (response.data.status) {
                         console.log('getProfileDetails ==>', response.data);
-                        this.setState({accountGroupsCount:''+response.data.result.accountGroupsCount,
+                        this.setState({
+                            accountGroupsCount:''+response.data.result.accountGroupsCount,
                             accountTrucksCount:''+response.data.result.accountTrucksCount,
                             phoneNumber: ''+response.data.result.profile.contactPhone,
                             userName:response.data.result.profile.userName,
                             currentpassword:response.data.result.profile.password,
                             accountId:response.data.result.profile._id,
-                            emailId:response.data.result.profile.email})
+                            emailId:response.data.result.profile.email});
                     } else {
                         console.log('no  getProfileDetails ==>', response);
                        // this.setState({ trucks: [] });
@@ -146,17 +148,17 @@ onSubmitProfileDetails() {
             return   Utils.ShowMessage('Please Enter Old password');
         }
         
-        var postData = {
+        var postData = {profile:{
             'userName': this.state.userName,
-            'contactPhone': this.state.phoneNumber,
+            'contactPhone': Number(this.state.phoneNumber),
             'email': this.state.emailId,
             'oldPassword':'',
             'confirmPassword': '',
             'newPassword': '',
-            'accountGroupsCount': this.state.accountGroupsCount,
-            'accountTrucksCount':this.state.accountTrucksCount,
-            'accountId':this.state.accountId
-        };
+            'accountGroupsCount': Number(this.state.accountGroupsCount),
+            'accountTrucksCount':Number(this.state.accountTrucksCount),
+            '_id':this.state.accountId
+        }};
 
         console.log(postData,'update paaword without password');
         this.callupdateProfileAPI(postData);
@@ -167,17 +169,17 @@ onSubmitProfileDetails() {
                 if(this.state.confpassword.trim().length > 0 ){
                     if(this.state.confpassword === this.state.password){
                         Utils.ShowMessage('Under Progress...');
-                        var postData = {
+                        var postData = {profile:{
                             'userName': this.state.userName,
-                            'contactPhone': this.state.phoneNumber,
+                            'contactPhone':Number(this.state.phoneNumber),
                             'email': this.state.emailId,
                             'oldPassword': this.state.currentpassword,
                             'confirmPassword': this.state.confirmPassword,
                             'newPassword': this.state.password,
-                            'accountGroupsCount': this.state.accountGroupsCount,
-                            'accountTrucksCount':this.state.accountTrucksCount,
-                            'accountId':this.state.accountId
-                        };
+                            'accountGroupsCount': Number(this.state.accountGroupsCount),
+                            'accountTrucksCount':Number(this.state.accountTrucksCount),
+                            '_id':this.state.accountId
+                        }};
                         this.callupdateProfileAPI(postData);
                         console.log(postData,'update paaword with password');
                     }else{
@@ -215,6 +217,10 @@ callupdateProfileAPI(postdata){
             if (response.data.status) {                    
                 self.setState({ spinnerBool:false });
                 
+                if(this.state.oldpassword.length>0){
+                    self.setState({currentpassword:self.state.confpassword,oldpassword:'',password:'',confpassword:''});
+                }
+
                 let message ="";
                 if(response.data)
                 response.data.messages.forEach(function(current_value) {

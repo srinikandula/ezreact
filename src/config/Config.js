@@ -1,8 +1,8 @@
 let routes = {
     base: 'http://demo.easygaadi.com/v1',getProfilePic:'http://demo.easygaadi.com/images/profile-pics/',
    // base: 'http://erp.easygaadi.com/v1',getProfilePic:'http://erp.easygaadi.com/images/profile-pics/',
-    //base: 'http://192.168.0.181:3000/v1',
-
+    //base: 'http://192.168.0.181:3000/v1',getProfilePic:'http:// 192.168.0.181:3000/images/profile-pics/',
+   
 
 
 

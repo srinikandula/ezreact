@@ -37,21 +37,22 @@ export default class GPSTruckMap extends Component {
         animation : new Animated.Value(0),
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
-            view:'mapShow',
+            view:'no',
         spinnerBool: false,
 
     };
 
     componentWillMount() {
         const self = this;
-        console.log('this.props gpstractlocation',self.props)
+        console.log('this.props gpstractlocation',self.props);
+        let currDate = new Date();
         let showHeaderBool = self.props.showHeader;
         if(self.props.showHeader === undefined || self.props.showHeader === 'undefined'){
             showHeaderBool = self.props.navigation.state.params.showHeader;
             console.log(self.props.navigation.state.params.showHeader,"GPSTruckMap-token");            
         }
         console.log(self.props.showHeader,"GPSTruckMap-token");
-        this.setState({showHeader: showHeaderBool ? 'flex':'none'});
+        this.setState({showHeader: showHeaderBool ? 'flex':'none',fromDate:currDate.toDateString(),toDate:currDate.toDateString(),fromPassdate:currDate.toDateString(),toPassdate:currDate.toDateString()});
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -64,8 +65,8 @@ export default class GPSTruckMap extends Component {
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
           );
-          let currDate = new Date();
-          self.setState({fromDate:currDate.toDateString(),toDate:currDate.toDateString(),fromPassdate:currDate.toDateString(),toPassdate:currDate.toDateString()});
+          
+          
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -91,10 +92,10 @@ export default class GPSTruckMap extends Component {
                         .then((response) => {
                             if (response.data.status) {
                                 console.log('trucksList ==>', response.data);
-                                if (response.data.data.length == 0) {
-                                    this.setState({ spinnerBool: false })
+                                if (response.data.data.length == 10) {
+                                    this.setState({ spinnerBool: false,view:'no' });
                                 } else {
-    
+                                    this.setState({ spinnerBool: false,view:'mapShow' });
                                     var catgryarr = response.data.data;
                                     catgryarr = catgryarr.filter(function (item, index) {
                                         if (item.hasOwnProperty('attrs'))
@@ -107,7 +108,6 @@ export default class GPSTruckMap extends Component {
                                     for (let index = 0; index < catgryarr.length; index++) {
                                         const element = catgryarr[index];
                                         element.rememberme = false;
-
                                         //console.log(this.state.location[index], 'element.location');
                                         dump.push(element);
                                         this.setState({ trucks: dump,dummytrucks:dump });
@@ -116,11 +116,10 @@ export default class GPSTruckMap extends Component {
                                     console.log(catgryarr, 'vignesh == ', dump);
                                     var catgryarr1 = [];
                                     for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
-                                        const truckElement = this.state.trucks[index];
-                                        
+                                        const truckElement = this.state.trucks[index];                                        
                                         if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                             console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                             //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                             //latitude:0,longitude:0
                                             var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
                                                         registrationNo:catgryarr[index].registrationNo,
@@ -411,6 +410,12 @@ export default class GPSTruckMap extends Component {
                 keyExtractor={item => item._id} 
                 extraData={this.state}/> 
                 </View>);
+                break;
+                
+
+            case 'no':
+             return (<Text style={[CustomStyles.erpText,{textAlign:'center', color:'#1e4495',fontWeight:'bold',fontSize:12,top:50}]}>
+                No Data Found</Text>);
                 break;
             default:
                 break;

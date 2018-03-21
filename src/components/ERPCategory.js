@@ -10,8 +10,7 @@ import Utils from './common/Utils';
 import {LoadingSpinner, ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
-import RNCOpenDoc from 'react-native-open-doc';
-import RNFetchBlob from 'react-native-fetch-blob';
+
 
 export default class ERPCategory extends Component {
     state = {

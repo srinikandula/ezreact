@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "334149388691",
+    "firebase_url": "https://easygaadi-2018.firebaseio.com",
+    "project_id": "easygaadi-2018",
+    "storage_bucket": "easygaadi-2018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334149388691:android:615fdc5754a6a4a4",
+        "android_client_info": {
+          "package_name": "com.easygaadi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334149388691-kvfhd5e477n419kolf1cqpp1hivcfcfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJJw47N9F15m5B3a_DlO2UKve7Oo5wQ2E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

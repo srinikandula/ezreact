@@ -288,12 +288,17 @@ export default class GPSTrackLocation extends Component {
             console.log('this.state.coordinates',this.state.coordinates);
                 return(
                     <View style ={CustomStyles.mapcontainer}>
-                        <MapView
-                         ref = {(mapView) => { _mapView = mapView; }}
+                        <MapView                         
+                        ref = {(mapView) => { _mapView = mapView; }}
                         style={CustomStyles.map}
                         initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
                         maxZoomLevel={16}>
+                        <MapView.Marker.Animated key={0} 
+                                    image={require('../images/track_strat_end.png')}
+                                    coordinate={{latitude: this.state.coordinates1[1].coordinate.latitude,
+                                        longitude:this.state.coordinates1[1].coordinate.longitude}}
+                                    />
                         {this.state.coordinates1.map((marker, index) => {
                            if(index == 0){
                             return(   
@@ -301,7 +306,8 @@ export default class GPSTrackLocation extends Component {
                                     image={require('../images/track_strat_end.png')}
                                     coordinate={{latitude: marker.coordinate.latitude,
                                         longitude:marker.coordinate.longitude}}
-                                    />)
+                                    />
+                                 )
                             }else if(index == (this.state.coordinates.length-1)){
                                 return(
                                     <MapView.Marker key={index} 
@@ -328,6 +334,7 @@ export default class GPSTrackLocation extends Component {
                                             />)                                  
                                     }
                                     
+                                    
                                 }
                             }//close
                            
@@ -342,7 +349,8 @@ export default class GPSTrackLocation extends Component {
                             }}
                             coordinates={this.state.coordinates}
                             strokeWidth={6}
-                            strokeColor="red"/>                                               
+                            strokeColor="red"/>     
+                               
                         </MapView>
                   </View>
                 );
@@ -398,59 +406,76 @@ export default class GPSTrackLocation extends Component {
                 );
             break;
             case  'Animate' :
-                return (
-                    <View style ={CustomStyles.mapcontainer}>
-                    <MapView
-                     ref = {(mapView) => { _mapView = mapView; }}
+            return(
+                <View style ={CustomStyles.mapcontainer}>
+                    <MapView                         
+                    
                     style={CustomStyles.map}
                     initialRegion={this.state.initialPoint}
                     zoomEnabled ={true}
-                    maxZoomLevel={16}>
-                    {this.state.coordinates.map((marker, index) => {
-                        return (
-                        <MapView.Marker.Animated key={index} 
-                            image={require('../images/greenTruck.png')}
-                            coordinate={{latitude: marker.latitude,
-                                longitude:marker.longitude}}
-                        />)})
-                    }
+                    maxZoomLevel={25}
+                    image={require('../images/truck_stop.png')}>
+                    
+                    <MapView.Polyline 
+                            onPress={()=>{() => _mapView.animateToCoordinate({
+                                latitude: 17.46247,
+                                longitude: 78.3100319,
+                              }, 1000)
+                            
+                            }}
+                            coordinates={this.state.coordinates}
+                            strokeWidth={2}
+                            strokeColor="red"/> 
+                        {this.state.coordinates1.map((marker, index) => {
+                            if(index = 0){
+                                return(   
+                                    <MapView.Marker.Animated key={index} 
+                                        ref = {(mapView) => { _mapView = mapView; }}
+                                        image={require('../images/track_strat_end.png')}
+                                        coordinate={{latitude: marker.coordinate.latitude,
+                                            longitude:marker.coordinate.longitude}}
+                                        />
+                                        )
+                            }
+                        
+                        })
+                        }
                     </MapView>
               </View>
-                );
+            );
                 break;
             case 'info' :
             return (
                 <View style ={{top:55}}>
                     <View style={{  flexDirection: 'column', padding: 10}}>
-
-                                        <View style={{ alignSelf:'stretch', flexDirection: 'column', padding: 10 }}>
-                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
-                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                    Truck Reg No</Text>
-                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                  {this.state.truckNum}</Text>
-                                            </View>
-                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
-                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                Distance Travelled</Text>
-                                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                {this.state.distanceTravelled}</Text>
-                                            </View>
-                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
-                                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                Time Travelled </Text>
-                                                <Text style={[CustomStyles.erpText, {textAlign:'center',alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                {this.gettimeTravelled(this.state.timeTravelled) } hours</Text>
-                                            </View>
-                                            <View style={{ alignSelf:'stretch',justifyContent:'space-between',flexDirection: 'row', marginHorizontal: 10 }}>
-                                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                Average Speed </Text>
-                                                <Text style={[CustomStyles.erpText, {textAlign:'center', alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                 {this.gettimeTravelled(this.state.averageSpeed)}</Text>
-                                            </View>
-                                            
-                                        </View>
-                                    </View>
+                        <View style={{ alignSelf:'stretch', flexDirection: 'column', padding: 10 }}>
+                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                    Truck Reg No</Text>
+                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                    {this.state.truckNum}</Text>
+                            </View>
+                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                Distance Travelled</Text>
+                                <Text style={[CustomStyles.erpText, { textAlign:'center',alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                {this.state.distanceTravelled}</Text>
+                            </View>
+                            <View style={{ alignSelf:'stretch',justifyContent:'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                <Text style={[CustomStyles.erpText, {alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                Time Travelled </Text>
+                                <Text style={[CustomStyles.erpText, {textAlign:'center',alignSelf:'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                {this.gettimeTravelled(this.state.timeTravelled) } hours</Text>
+                            </View>
+                            <View style={{ alignSelf:'stretch',justifyContent:'space-between',flexDirection: 'row', marginHorizontal: 10 }}>
+                                <Text style={[CustomStyles.erpText, { alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                Average Speed </Text>
+                                <Text style={[CustomStyles.erpText, {textAlign:'center', alignSelf:'stretch',fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                    {this.gettimeTravelled(this.state.averageSpeed)}</Text>
+                            </View>
+                            
+                        </View>
+                    </View>
                 </View>
             );
             break;
@@ -501,6 +526,19 @@ export default class GPSTrackLocation extends Component {
         return false;
     }
 
+    playRoute(){
+        this.state.coordinates.map((marker, index) => {
+            console.log(
+                "latitude:"+marker.latitude,
+                "longitude:"+ marker.longitude
+            )
+            _mapView.animateToCoordinate({
+                latitude: Number(marker.latitude+ this.statelatitudeDelta * 0.01),
+                longitude: Number(marker.longitude+ this.state.latitudeDelta * 0.01)
+              }, 6000)
+            })
+    }
+
     render() {
         const self=this;
         const { region } = this.props; 
@@ -530,7 +568,7 @@ export default class GPSTrackLocation extends Component {
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/gps_trip_stops_icon.png')} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => {  alert('coming soon');}}>
+                                    <TouchableOpacity onPress={() => { this.setState({ showDependable: 'Animate'});}}>
                                         <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
                                         source={require('../images/gps_dist_rports_icon.png')} />
                                     </TouchableOpacity>

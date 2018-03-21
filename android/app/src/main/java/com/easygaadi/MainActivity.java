@@ -1,5 +1,6 @@
 package com.easygaadi;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
@@ -13,6 +14,13 @@ public class MainActivity extends ReactActivity {
         SplashScreen.show(this);  // here
         super.onCreate(savedInstanceState);
 
+    }
+
+
+     @Override
+     public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     /**

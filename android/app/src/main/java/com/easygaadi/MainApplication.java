@@ -3,10 +3,9 @@ package com.easygaadi;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.evollu.react.fcm.FIRMessagingPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
-import com.vinzscam.reactnativefileviewer.RNFileViewerPackage;
-import com.capriza.reactlibrary.RNCOpenDocPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
 import com.github.wumke.RNImmediatePhoneCall.RNImmediatePhoneCallPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.ReactNativeHost;
@@ -28,12 +27,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FIRMessagingPackage(),
+            new ImagePickerPackage(),
             new MapsPackage(),
-            new RNFileViewerPackage(),
-            new RNCOpenDocPackage(),
-            new RNFetchBlobPackage(),
             new RNImmediatePhoneCallPackage(),
-            new SplashScreenReactPackage()
+            new SplashScreenReactPackage(),
+            new ReactActivityStarter()
       );
     }
 

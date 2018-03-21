@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,NativeModules} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CSpinner,CommonBackground} from './common';
 import Config from '../config/Config';
@@ -7,6 +7,21 @@ import CheckBox from 'react-native-checkbox';
 import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
 import Utils from './common/Utils';
+import ImagePicker  from 'react-native-image-picker';
+
+const imgPickerOptions = {
+    title: 'Select image',
+    storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    },
+    maxWidth: 1024,  
+    maxHeight: 512,
+    // maxWidth: 200,
+    // maxHeight: 220,
+    quality: 1,
+    noData: true
+  };
 
 class Profile extends Component{
      state = {token:'',userName: ' ',phoneNumber: '',emailId:'', password: '',confpassword:'',
@@ -14,7 +29,7 @@ class Profile extends Component{
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false,
            accountGroupsCount:'',accountTrucksCount:'',oldpassword:'',currentpassword:'',
            authPassword:true,profilePic:'',userImage:'../images/eg_user.png',accountId:'',
-           spinnerBool: false,
+           spinnerBool: false,addPostImgUrl:''
           };
 
     componentWillMount() {
@@ -95,18 +110,8 @@ class Profile extends Component{
     }
 
 
-checkPassword(){
-    if(this.state.confpassword.length == this.state.password.length){
-        if(this.state.confpassword === this.state.password){
 
-            
-        }else{
-            
-        }
-    }else{
-        
-    }
-}
+    
 
 
 getProfileImage(){
@@ -250,6 +255,70 @@ spinnerLoad() {
     return false;
 }
 
+onPickImage() {
+    const self=this;
+    ImagePicker.showImagePicker(imgPickerOptions, response => {
+      //console.warn(response)
+      if (!response.didCancel && !response.error) {
+        self.setState({ imageUploadBool: true });
+        NativeModules.FetchData.GetImg(response.uri, (resp) => {
+          self.setState({ addPostImgUrl: '' + resp, profilePic:  response.uri }, () => {
+            //console.log(self.state.addPostImgUrl);
+            var postdata = {"image":"data:"+response.type+";base64,"+resp};
+            self.sendPicToServer(postdata)
+          });
+        });
+      } else if (response.didCancel) {
+        self.setState({ addPostImgUrl: '', addPostImage: '', imageUploadBool: false });
+      } else {
+        alert('Could not select image');
+      }
+    })
+  } 
+
+
+  sendPicToServer(postData){
+    const self = this;
+    console.log('sendPicToServer(',postData);
+    self.setState({ spinnerBool:true });
+    var methodType = 'post';
+    var url = Config.routes.base + Config.routes.uploadProfilePic
+    Axios({
+        method: methodType,
+        headers: { 'token': self.state.token },
+        url: url,
+        data: postData
+    })
+        .then((response) => {
+           // console.log(Config.routes.base + Config.routes.uploadProfilePic,"URL");
+            //console.log(postData,'<--update Profile pic ==>', response.data);
+            if (response.data.status) {                    
+                self.setState({ spinnerBool:false });
+
+                let message ="";
+                if(response.data)
+                //response.data.messages.forEach(function(current_value) {
+                //    message = message+current_value;
+                //});
+                Utils.ShowMessage(response.data.message);
+                
+            } else {
+                self.setState({ spinnerBool:false });
+                let message ="";
+                if(response.data)
+                response.data.messages.forEach(function(current_value) {
+                    message = message+current_value;
+                });
+                Utils.ShowMessage(message);                    
+            }
+        }).catch((error) => {
+            console.log('error in update Profile pic==>', error);
+            self.setState({ spinnerBool:false });
+            Utils.ShowMessage("Something went wrong.Please try after sometime");
+        })
+  }
+
+
  render() {
         const {
             editProfileImageStyle
@@ -380,7 +449,7 @@ spinnerLoad() {
                                     inputTextStyle={CustomStyles.profileInputStyle }
                                     value={this.state.confpassword}
                                     onChangeText={(confpassword) => { this.moveInputLabelUp(7, confpassword),
-                                        this.setState({ confpassword: ''+confpassword }),this.checkPassword() }}
+                                        this.setState({ confpassword: ''+confpassword })}}
                                                                     
                                     />
                             </View>
@@ -401,8 +470,9 @@ spinnerLoad() {
                 {this.getProfileImage()}
                 </View>
                 <View  style={editProfileImageStyle}>
-                    <Image source={require('../images/eg_edit.png')} 
-                        style= {{height:20,width:30,resizeMode: 'contain'}}/>
+                    <TouchableOpacity onPress={() => {  this.onPickImage()}}>
+                        <Image source={require('../images/eg_edit.png')}  style= {{height:20,width:30,resizeMode: 'contain'}}/>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={CustomStyles.profileaAddGroupImageStyle}>

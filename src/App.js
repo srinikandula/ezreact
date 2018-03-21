@@ -20,7 +20,7 @@ export default class App extends Component {
           egObj = JSON.parse(resp);
           Axios({
               method: 'get',
-              headers: { 'token': egObj.token},
+              headers: { 'token': egObj.token+1},
               url: Config.routes.base + Config.routes.easygaadiDashBroad
           }).then((response) => {
             console.log('APP ==>', response.status);
@@ -52,9 +52,12 @@ export default class App extends Component {
     });
   }
 
+  
+
   getItem() {
     return AsyncStorage.getItem('credientails');
   }
+
 
   render() {
     if (!this.state.check) {

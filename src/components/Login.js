@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage, Text,  TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler } from 'react-native';
+import { View, Image, AsyncStorage, Text,  TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler,NativeModules } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import Utils from './common/Utils';
@@ -15,6 +15,7 @@ import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Axios from 'axios';
 import {NoInternetModal} from './common';
+import FCM, {FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType} from 'react-native-fcm';
 
 class Login extends Component {
     state = {};
@@ -49,12 +50,11 @@ class Login extends Component {
     getCache(key) {
         try {
             //console.log('login-riyaz',key);
-            var value = AsyncStorage.getItem('credientails');
+            var value = AsyncStorage.getItem('fcmStorage');
             //console.log('credientails',key);
             if (value !== null) {
-                var egObj = {};
-                egObj = JSON.parse(value);
-               this.setState({userName:egObj.userName,userNamelbl:true,rememberme:true});
+                this.runFCMService();
+               
               } else {
                 console.log('value',value.json())
               }
@@ -116,21 +116,6 @@ class Login extends Component {
 
     }
 
-    getUserToken() {
-        Utils.ShowMessage('wrong');
-
-        AsyncStorage.getItem('advaitha:usertoken', (err, token) => {
-            console.log('asdfasdfasdfgad', err, token);
-            if (err) {
-                Utils.ShowMessage('Something went wrong');
-            } else {
-                Utils.ShowMessage('Some');
-
-                callback(token);
-            }
-        });
-    }
-
 
     storeData(data) {
         console.log('in store data', data);
@@ -156,6 +141,74 @@ class Login extends Component {
             return <CSpinner/>;
         return false;
     }
+
+
+    runFCMService(){
+        FCM.requestPermissions().then(()=>console.log('granted')).catch(()=>console.log('notification permission rejected'));
+        var refreshedToken = FCM.on('FCMTokenRefreshed', (refreshedToken) => {
+            // console.log(refreshedToken)
+            // this.setState({ fcmToken: refreshedToken });
+        });
+        FCM.getFCMToken().then(token => {
+            // store fcm token in your server
+            // setFcmToken(token);
+            // this.setState({ fcmToken: token });
+            console.log('refreshedToken',token);
+            NativeModules.FetchData.GetDeviceId((imeiResp) => {
+                // alert(JSON.stringify(imeiResp));
+                console.log(imeiResp,'imeiResp');
+                console.log('test-url',Config.routes.base + Config.routes.registerToServer);
+                Axios({
+                    method: 'post',
+                    url: Config.routes.base + Config.routes.registerToServer,
+                    data: {
+                        imei: token,
+                        deviceId: imeiResp,
+                    }
+                }).then((response) => {
+                    console.log("registerToServer-response", response.data);
+                    if (response.data.status) {
+                        console.log("response.data",response.data);
+                        
+                    } else {
+                        let message = "";
+                        
+                    }
+                    this.setState({spinnerBool:false});
+                }).catch((error) => {
+                    this.setState({spinnerBool:false});
+                    console.log('registerToServer post error--->', error)
+                    Utils.ShowMessage("Something went wrong.Please try after sometime");
+                })
+
+
+            }); // Native modules end
+        });
+       
+
+        this.notificationListener = FCM.on(FCMEvent.Notification, async (notif) => {
+            // optional, do some component related stuff
+            console.log("notify",notif);
+            this.sendRemote(notif);
+        });
+
+        FCM.getInitialNotification().then(notif => {
+            console.log(notif)
+         });
+    }
+
+    sendRemote(notif) {
+        console.log('send');
+        FCM.presentLocalNotification({
+          title: notif.title,
+          body: notif.body,
+          priority: "high",
+          click_action: notif.click_action,
+          show_in_foreground: true,
+          local: true
+        });
+      }
+
     render() {
         const {
             signInTextStyle,

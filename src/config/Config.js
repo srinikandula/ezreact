@@ -1,7 +1,7 @@
 let routes = {
-    base: 'http://demo.easygaadi.com/v1',getProfilePic:'http://demo.easygaadi.com/images/profile-pics/',
+   base: 'http://demoerp.easygaadi.com/v1',getProfilePic:'http://demoerp.easygaadi.com/images/profile-pics/',
    // base: 'http://erp.easygaadi.com/v1',getProfilePic:'http://erp.easygaadi.com/images/profile-pics/',
-    //base: 'http://192.168.0.181:3000/v1',getProfilePic:'http:// 192.168.0.181:3000/images/profile-pics/',
+    // base: 'http://192.168.1.70:3000/v1',getProfilePic:'http://192.168.1.70:3000/images/profile-pics/',
    
 
 
@@ -100,6 +100,10 @@ let routes = {
     //Profile
     getProfileDetails:'/admin/userProfile',
     updateProfile:'/admin/accounts/update',
+    uploadProfilePic:'/admin/uploadUserProfilePic',
+
+    //Notification
+    registerToServer:'/notifications/saveDeviceDetails',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

@@ -91,7 +91,7 @@ export default class GPSTruckMap extends Component {
                     })
                         .then((response) => {
                             if (response.data.status) {
-                                console.log('trucksList ==>', response.data);
+                                console.log('GPSTruckMap-trucksList ==>', response.data);
                                 if (response.data.data.length == 10) {
                                     this.setState({ spinnerBool: false,view:'no' });
                                 } else {
@@ -124,6 +124,7 @@ export default class GPSTruckMap extends Component {
                                             var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
                                                         registrationNo:catgryarr[index].registrationNo,
                                                         speed:catgryarr[index].attrs.latestLocation.speed,
+                                                        address:catgryarr[index].attrs.latestLocation.address,
                                                         date:catgryarr[index].attrs.latestLocation.updatedAt,
                                                         isStopped:catgryarr[index].attrs.latestLocation.isStopped,
                                                         isIdle:catgryarr[index].attrs.latestLocation.isIdle};
@@ -340,7 +341,7 @@ export default class GPSTruckMap extends Component {
                                     <Text>{'Speed :'}{marker.speed }'-km/hr'</Text>   
                                     <Text>{'Odemeter :'}{'*****km'}</Text>
                                     <Text>{'Date :'}{marker.date}</Text>
-                                    <Text>{'Address :'}{''}</Text>                                  
+                                    <Text>{'Address :'}{marker.address}</Text>                                  
                                     
                                     </View>
                                       <TouchableHighlight style={{alignSelf:'stretch'}}                                         

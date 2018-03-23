@@ -532,8 +532,8 @@ export default class GPSTrackLocation extends Component {
                 "latitude:"+marker.latitude,
                 "longitude:"+ marker.longitude
             )
-            _mapView.animateToCoordinate({
-                latitude: Number(marker.latitude+ this.statelatitudeDelta * 0.01),
+            _mapView.animateMarkerToCoordinate({
+                latitude: Number(marker.latitude+ this.state.latitudeDelta * 0.01),
                 longitude: Number(marker.longitude+ this.state.latitudeDelta * 0.01)
               }, 6000)
             })

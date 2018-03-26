@@ -32,8 +32,8 @@ export default class GPSTruckMap extends Component {
         aspectRatio :0,
         latitudeDelta : LATITUDE_DELTA,
         longitudeDelta :LONGITUDE_DELTA,        
-        latitude: 17.46247,
-        longitude: 78.3100319,
+        latitude: Number(17.46247),
+        longitude: Number(78.3100319),
         animation : new Animated.Value(0),
         markers:[{coordinate:{latitude:0,
             longitude:0}}],
@@ -57,8 +57,8 @@ export default class GPSTruckMap extends Component {
         navigator.geolocation.getCurrentPosition(
             (position) => {
               this.setState({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
+                latitude: Number(position.coords.latitude),
+                longitude: Number(position.coords.longitude),
                 error: null,
               });
             },
@@ -121,7 +121,7 @@ export default class GPSTruckMap extends Component {
                                             const element = catgryarr[index].attrs.latestLocation.location.coordinates;
                                              //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                             //latitude:0,longitude:0
-                                            var obj = { coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                            var obj = { coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
                                                         registrationNo:catgryarr[index].registrationNo,
                                                         speed:catgryarr[index].attrs.latestLocation.speed,
                                                         address:catgryarr[index].attrs.latestLocation.address,
@@ -313,8 +313,8 @@ export default class GPSTruckMap extends Component {
                         style={CustomStyles.map}
                         zoomEnabled ={true}
                         initialRegion={{
-                        latitude: this.state.latitude,
-                        longitude: this.state.longitude,
+                        latitude: Number(this.state.latitude),
+                        longitude: Number(this.state.longitude),
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta:LONGITUDE_DELTA,
                        

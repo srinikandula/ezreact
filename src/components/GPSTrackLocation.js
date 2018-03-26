@@ -294,11 +294,7 @@ export default class GPSTrackLocation extends Component {
                         initialRegion={this.state.initialPoint}
                         zoomEnabled ={true}
                         maxZoomLevel={16}>
-                        <MapView.Marker.Animated key={0} 
-                                    image={require('../images/track_strat_end.png')}
-                                    coordinate={{latitude: this.state.coordinates1[1].coordinate.latitude,
-                                        longitude:this.state.coordinates1[1].coordinate.longitude}}
-                                    />
+                        
                         {this.state.coordinates1.map((marker, index) => {
                            if(index == 0){
                             return(   

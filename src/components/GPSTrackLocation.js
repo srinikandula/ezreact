@@ -317,6 +317,7 @@ export default class GPSTrackLocation extends Component {
                             initialRegion={this.state.initialPoint}
                             zoomEnabled={true}
                             maxZoomLevel={16}>
+                           
                             {this.state.coordinates1.map((marker, index) => {
                                 if (index == 0) {
                                     return (
@@ -326,7 +327,8 @@ export default class GPSTrackLocation extends Component {
                                                 latitude: marker.coordinate.latitude,
                                                 longitude: marker.coordinate.longitude
                                             }}
-                                        />)
+                                        />
+                                    )
                                 } else if (index == (this.state.coordinates.length - 1)) {
                                     return (
                                         <MapView.Marker key={index}
@@ -359,19 +361,20 @@ export default class GPSTrackLocation extends Component {
                                                 />)
                                         }
 
+
                                     }
                                 }//close
 
                             })
                             }
                             <MapView.Polyline
-                                /* onPress={() => {
+                                onPress={() => {
                                     () => _mapView.animateToCoordinate({
                                         latitude: 17.46247,
                                         longitude: 78.3100319,
                                     }, 1000)
 
-                                }} */
+                                }}
                                 coordinates={this.state.coordinates}
                                 strokeWidth={1}
                                 fillColor="rgba(255,0,0,0.5)"
@@ -379,20 +382,17 @@ export default class GPSTrackLocation extends Component {
                                 lineCap="round"
                                 lineJoin="round"
                                 geodesic={true}
-                                // miterLimit={50}
+                            />
 
-
-
-                                 />
                         </MapView>
                     </View>
                 );
                 break;
             case 'stops':
                 return (
-                    <View style={{ backgroundColor: 'red' }}>
+                    <View style={{ backgroundColor: 'red', top: 50 }}>
 
-                        <FlatList
+                        <FlatList style={{ marginTop: 10 }}
                             data={this.state.coordinates1}
                             ItemSeparatorComponent={this.renderSeparator}
                             removeClippedSubviews={true}
@@ -409,14 +409,14 @@ export default class GPSTrackLocation extends Component {
                                                 </View>
                                                 <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
 
-                                                    <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
-                                                        <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                    <View style={{ flex: 1, flexDirection: 'row', padding: 5 }}>
+                                                        <View style={{ flex: 1, flexDirection: 'column', padding: 5 }}>
                                                             <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                                 Date</Text>
                                                             <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                                 {this.getParsedDate(item.updatedAt)}</Text>
                                                         </View>
-                                                        <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                                                        <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
                                                             <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                                 Time</Text>
                                                             <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
@@ -437,26 +437,45 @@ export default class GPSTrackLocation extends Component {
                             }
                             keyExtractor={item => item._id} />
                     </View>
+
                 );
                 break;
             case 'Animate':
                 return (
                     <View style={CustomStyles.mapcontainer}>
                         <MapView
-                            ref={(mapView) => { _mapView = mapView; }}
+
                             style={CustomStyles.map}
                             initialRegion={this.state.initialPoint}
                             zoomEnabled={true}
-                            maxZoomLevel={16}>
-                            {this.state.coordinates.map((marker, index) => {
-                                return (
-                                    <MapView.Marker.Animated key={index}
-                                        image={require('../images/greenTruck.png')}
-                                        coordinate={{
-                                            latitude: marker.latitude,
-                                            longitude: marker.longitude
-                                        }}
-                                    />)
+                            maxZoomLevel={25}
+                            image={require('../images/truck_stop.png')}>
+
+                            <MapView.Polyline
+                                onPress={() => {
+                                    () => _mapView.animateToCoordinate({
+                                        latitude: 17.46247,
+                                        longitude: 78.3100319,
+                                    }, 1000)
+
+                                }}
+                                coordinates={this.state.coordinates}
+                                strokeWidth={2}
+                                strokeColor="red" />
+                            {this.state.coordinates1.map((marker, index) => {
+                                if (index = 0) {
+                                    return (
+                                        <MapView.Marker.Animated key={index}
+                                            ref={(mapView) => { _mapView = mapView; }}
+                                            image={require('../images/track_strat_end.png')}
+                                            coordinate={{
+                                                latitude: marker.coordinate.latitude,
+                                                longitude: marker.coordinate.longitude
+                                            }}
+                                        />
+                                    )
+                                }
+
                             })
                             }
                         </MapView>
@@ -467,7 +486,6 @@ export default class GPSTrackLocation extends Component {
                 return (
                     <View style={{ top: 55 }}>
                         <View style={{ flexDirection: 'column', padding: 10 }}>
-
                             <View style={{ alignSelf: 'stretch', flexDirection: 'column', padding: 10 }}>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
@@ -560,6 +578,19 @@ export default class GPSTrackLocation extends Component {
         return false;
     }
 
+    playRoute() {
+        this.state.coordinates.map((marker, index) => {
+            console.log(
+                "latitude:" + marker.latitude,
+                "longitude:" + marker.longitude
+            )
+            _mapView.animateMarkerToCoordinate({
+                latitude: Number(marker.latitude + this.state.latitudeDelta * 0.01),
+                longitude: Number(marker.longitude + this.state.latitudeDelta * 0.01)
+            }, 6000)
+        })
+    }
+
     render() {
         const self = this;
         const { region } = this.props;
@@ -577,7 +608,7 @@ export default class GPSTrackLocation extends Component {
                             <Image style={{ width: 25, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
-                        <Text style={[CustomStyles.erpText, { color: 'white', fontFamily: 'Gotham-Medium', fontSize: 14, margin: 10, marginLeft: 3 }]}>
+                        <Text style={[CustomStyles.erpText, { color: 'white', paddingVertical: 3, fontFamily: 'Gotham-Medium', fontSize: 12, margin: 10, marginLeft: 3 }]}>
                             Track {this.state.truckNum}</Text>
                     </View>
 
@@ -591,7 +622,7 @@ export default class GPSTrackLocation extends Component {
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_trip_stops_icon.png')} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { alert('coming soon'); }}>
+                        <TouchableOpacity onPress={() => { this.setState({ showDependable: 'Animate' }); }}>
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_dist_rports_icon.png')} />
                         </TouchableOpacity>
@@ -608,9 +639,10 @@ export default class GPSTrackLocation extends Component {
                     </View>
                 </View>
                 {this.spinnerLoad()}
-                {/* <View style={CustomStyles.erpCategory}> */}
+
                 {self.getView()}
-                {/* </View> */}
+
+
                 <TrackModal
                     visible={this.state.showTrack} cancel={'cancel'}
                     onAccept={() => { this.ShowModalFunction(!this.state.showTrack) }}

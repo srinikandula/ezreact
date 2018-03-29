@@ -1,8 +1,10 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
-    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import {
+    View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
+    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
+} from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText, Confirm } from './common';
 import Config from '../config/Config';
@@ -21,10 +23,10 @@ const ASPECT_RATIO = screen.width / screen.height
 const LATITUDE_DELTA = 12
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-export default class GPSTrackLocation extends Component {
+export default class DistanceReport extends Component {
     state = {
-        showModal: false, date: '',
         _mapView: MapView,
+        showModal: false, date: '',
         categoryBgColor: false, token: '', truckMakers: [], coordinates: [], coordinates1: [],
         showDependable: '0',
         showTrack: false,
@@ -33,20 +35,18 @@ export default class GPSTrackLocation extends Component {
         fromPassdate: '',
         toDate: '',
         toPassdate: '',
-
         spinnerBool: false,
-
+        records: [{ _id: 1, trucknum: 'TS36AA5432', localArea: 'madhapur', City: 'Hyderabad', dist: '542.00KMS' },
+        { _id: 2, trucknum: '0D96AA1532', localArea: 'madhapur', City: 'Ordisha', dist: '632.00KMS' },
+        { _id: 3, trucknum: 'AP52AA9532', localArea: 'Vishka', City: 'Vijayawad', dist: '258.00KMS' },
+        { _id: 4, trucknum: 'CH87AA6332', localArea: 'Otty', City: 'Hyderabad', dist: '784.00KMS' }]
     };
 
     componentWillMount() {
-        console.log('this.props gpstractlocation', this.props.nav)
+        console.log('this.props distanceReport', this.props.nav)
         const self = this;
-        console.log(self.props, "GPSTrackLocation=token");
-        this.getCredentailsData();
-        self.setState({ showDependable: '0' });
-    }
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+        console.log(self.props, "distanceReport=token");
+        // this.getCredentailsData();
     }
 
     onBackAndroid() {
@@ -63,39 +63,8 @@ export default class GPSTrackLocation extends Component {
                 var egObj = {};
                 egObj = JSON.parse(value);
                 this.setState({ token: egObj.token });
-                Axios({
-                    method: 'GET',
-                    headers: { 'token': egObj.token },
-                    url: Config.routes.base + Config.routes.groupTrucks,
-
-                })
-                    .then((response) => {
-                        if (response.data.status) {
-                            console.log('Dist Reports ==>', response.data);
-                            //if (response.data.results.positions.length > 0) {
-
-
-                            // } else {
-
-                            //     let message ='';
-                            //     if (response.data)
-                            //     response.data.messages.forEach(function (current_value) {
-                            //         message = message + current_value;
-                            //     });
-                            //     Utils.ShowMessage(message);
-                            // }
-
-                            this.setState({ spinnerBool: false })
-
-                        } else {
-                            console.log('error in Dist Reports ==>', response);
-                            this.setState({ spinnerBool: false });
-                        }
-                    }).catch((error) => {
-                        console.log('error in Dist Reports ==>', error);
-                        this.setState({ spinnerBool: false });
-
-                    })
+                let currDate = new Date();
+                this.fetchDistanceReports(currDate.toDateString(), currDate.toDateString());
             } else {
                 this.setState({ spinnerBool: false });
 
@@ -120,6 +89,43 @@ export default class GPSTrackLocation extends Component {
         }
     }
 
+    fetchDistanceReports(fromdate, todate) {
+        console.log(fromdate + '-fromdate', todate + '-todate');
+        Axios({
+            method: 'GET',
+            headers: { 'token': this.state.token },
+            url: Config.routes.base + Config.routes.getTruckReport,
+
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    console.log('Dist Reports ==>', response.data);
+                    if (response.data.results.length > 0) {
+
+
+                    } else {
+
+                        let message = '';
+                        if (response.data)
+                            response.data.messages.forEach(function (current_value) {
+                                message = message + current_value;
+                            });
+                        Utils.ShowMessage(message);
+                    }
+
+                    this.setState({ spinnerBool: false })
+
+                } else {
+                    console.log('error in Dist Reports ==>', response);
+                    this.setState({ spinnerBool: false });
+                }
+            }).catch((error) => {
+                console.log('error in Dist Reports ==>', error);
+                this.setState({ spinnerBool: false });
+
+            })
+    }
+
 
 
     getParsedDate(date) {
@@ -135,13 +141,11 @@ export default class GPSTrackLocation extends Component {
     renderSeparator = () => (
         <View
             style={{
-                backgroundColor: '#d6d6d6',
+                backgroundColor: 'transparent',
                 height: 1,
             }}
         />
     );
-
-
 
 
 
@@ -208,9 +212,9 @@ export default class GPSTrackLocation extends Component {
         }
     }
     onAccept() {
-       
-            this.setState({ showModal: false })
-        
+
+        this.setState({ showModal: false })
+
     }
 
     onDecline() {
@@ -234,7 +238,6 @@ export default class GPSTrackLocation extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: '#1e4495', width: '100%'
                 }, { display: 'flex' }]}>
-
                     <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 5 }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
                             <Image style={{ width: 25, height: 20, resizeMode: 'contain', marginTop: 20, margin: 10, marginHorizontal: 5 }}
@@ -243,11 +246,7 @@ export default class GPSTrackLocation extends Component {
                         <Text style={[CustomStyles.erpText, { color: 'white', fontFamily: 'Gotham-Light', fontSize: 16, marginTop: 20, margin: 10, marginLeft: 3 }]}>
                             Distance Report</Text>
                     </View>
-
-
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end', margin: 5 }}>
-
-
                         <TouchableOpacity onPress={() => { this.returToScreen('listshow') }}>
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_dist_rports_icon.png')} />
@@ -293,7 +292,6 @@ export default class GPSTrackLocation extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
                         <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate('toDate') }}
@@ -333,56 +331,56 @@ export default class GPSTrackLocation extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
+                        <View style={{
+                            flex: 1, alignSelf: 'stretch', flexDirection: 'column', paddingTop: 5, justifyContent: 'space-between',
+                            backgroundColor: '#f8f8f8', width: '100%', paddingHorizontal: 10, paddingTop: 10,
+                            height: 50
+                        }}>
+                        </View>
                     </View>
 
-                </View>
 
-                {this.spinnerLoad()}
-                <FlatList
-                    data={this.state.coordinates1}
-                    ItemSeparatorComponent={this.renderSeparator}
-                    removeClippedSubviews={true}
-                    renderItem={({ item }) => {
-                        if (item.isStopped) {
+                    {console.log(this.state.records)}
+                    <FlatList style={{ backgroundColor: '#ffffff', flex: 1 }}
+                        data={this.state.records}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        removeClippedSubviews={true}
+                        renderItem={({ item }) => {
+                            { console.log(item) }
                             return (
-                                <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+
+                                <View style={[CustomStyles.erpCategoryItems, { backgroundColor: '#ffffff' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
-                                        <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
-                                            <Image resizeMode="contain"
-                                                source={require('../images/truck_stops.png')}
-                                                style={CustomStyles.imageViewContainer} />
 
-                                        </View>
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-
-                                            <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
-                                                <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                                    <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                        Date</Text>
-                                                    <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                        {this.getParsedDate(item.updatedAt)}</Text>
+                                            <View style={{ flex: 1, flexDirection: 'row', padding: 5 }}>
+                                                <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
+                                                    <Text numberOfLines={1} style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 12, }]}>
+                                                        {item.trucknum}</Text>
                                                 </View>
-                                                <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                                    <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                        Time</Text>
-                                                    <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                                        {this.getParsedtime(item.updatedAt)} {}</Text>
+                                                <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
+                                                    <Text numberOfLines={1} style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 12, }]}>
+                                                        {item.localArea} </Text>
+                                                </View>
+                                                <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
+                                                    <Text numberOfLines={3} style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 12, }]}>
+                                                        {item.City} </Text>
+                                                </View>
+                                                <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
+                                                    <Text numberOfLines={1} style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 12, }]}>
+                                                        {item.dist} </Text>
                                                 </View>
                                             </View>
                                         </View>
                                     </View>
                                 </View>)
                         }
-                        // }else{
-                        //     return(
-                        //         <View style={{height:10,backgroundColor:'orange'}}>
-                        //         </View>
-                        //     ) 
-                        // }
-                    }
-                    }
-                    keyExtractor={item => item._id} />
+                        }
+
+                        keyExtractor={item => item._id} />
+
+                </View>
+                {this.spinnerLoad()}
                 <Confirm visible={this.state.showModal}
                     onAccept={this.onAccept.bind(this)}
                     onDecline={this.onDecline.bind(this)}
@@ -411,4 +409,6 @@ export default class GPSTrackLocation extends Component {
     }
 
 }
+
+
 

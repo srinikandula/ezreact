@@ -1,10 +1,12 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
-    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import {
+    View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
+    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
+} from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText,Confirm } from './common';
+import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
@@ -21,6 +23,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTruckMap extends Component {
     state = {
+        truckTypeIs: '',
+        registrationNumber: '',
+        lookLoadIcon: false,
+        dispLookLoad: 'none',
+        lookLoadSource: '',
+        dispDatePicker: 'none',
         showModal: false, date: '',
         categoryBgColor: false, token: '', trucks: [], dummytrucks: [],
         showTrack: false,
@@ -43,48 +51,25 @@ export default class GPSTruckMap extends Component {
                 longitude: 0
             }
         }],
-        view: 'mapShow',
-        location: ['Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi',
-            'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai',
-            'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna',
-            'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad',
-            'patna', 'mumbai', 'Delhi', 'Pune', 'Hyderabad', 'patna', 'mumbai', 'Delhi', 'Pune'],
+        view: 'no',
         spinnerBool: false,
 
     };
 
     componentWillMount() {
         const self = this;
-        console.log('this.props gpstractlocation', self.props)
+        console.log('this.props gpstractlocation', self.props);
+        let currDate = new Date();
         let showHeaderBool = self.props.showHeader;
         if (self.props.showHeader === undefined || self.props.showHeader === 'undefined') {
             showHeaderBool = self.props.navigation.state.params.showHeader;
             console.log(self.props.navigation.state.params.showHeader, "GPSTruckMap-token");
         }
         console.log(self.props.showHeader, "GPSTruckMap-token");
-        this.setState({ showHeader: showHeaderBool ? 'flex' : 'none' });
+        this.setState({ showHeader: showHeaderBool ? 'flex' : 'none', fromDate: currDate.toDateString(), toDate: currDate.toDateString(), fromPassdate: currDate.toDateString(), toPassdate: currDate.toDateString() });
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                console.log("wokeeey");
-                console.log(position);
                 this.setState({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -94,11 +79,8 @@ export default class GPSTruckMap extends Component {
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
         );
-        let currDate = new Date();
-        self.setState({ fromDate: currDate.toDateString(), toDate: currDate.toDateString(), fromPassdate: currDate.toDateString(), toPassdate: currDate.toDateString() });
-    }
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+
+
     }
 
     onBackAndroid() {
@@ -120,11 +102,11 @@ export default class GPSTruckMap extends Component {
                 })
                     .then((response) => {
                         if (response.data.status) {
-                            console.log('trucksList ==>', response.data);
-                            if (response.data.data.length == 0) {
-                                this.setState({ spinnerBool: false })
+                            console.log('GPSTruckMap-trucksList ==>', response.data);
+                            if (response.data.data.length == 10) {
+                                this.setState({ spinnerBool: false, view: 'no' });
                             } else {
-
+                                this.setState({ spinnerBool: false, view: 'mapShow' });
                                 var catgryarr = response.data.data;
                                 catgryarr = catgryarr.filter(function (item, index) {
                                     if (item.hasOwnProperty('attrs'))
@@ -136,9 +118,7 @@ export default class GPSTruckMap extends Component {
                                 var dump = [];
                                 for (let index = 0; index < catgryarr.length; index++) {
                                     const element = catgryarr[index];
-                                    element.location = this.state.location[index];
                                     element.rememberme = false;
-
                                     //console.log(this.state.location[index], 'element.location');
                                     dump.push(element);
                                     this.setState({ trucks: dump, dummytrucks: dump });
@@ -147,30 +127,38 @@ export default class GPSTruckMap extends Component {
                                 console.log(catgryarr, 'vignesh == ', dump);
                                 var catgryarr1 = [];
                                 for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
+                                    const truckElement = this.state.trucks[index];
                                     if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
                                         const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                        console.log(element, 'attrs.latestLocation.location.coordinates', element[0], element[1]);
+                                        //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
                                         //latitude:0,longitude:0
                                         var obj = {
-                                            coordinate: { latitude: element[1], longitude: element[0], image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                            coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
                                             registrationNo: catgryarr[index].registrationNo,
                                             speed: catgryarr[index].attrs.latestLocation.speed,
+                                            address: catgryarr[index].attrs.latestLocation.address,
                                             date: catgryarr[index].attrs.latestLocation.updatedAt,
                                             isStopped: catgryarr[index].attrs.latestLocation.isStopped,
                                             isIdle: catgryarr[index].attrs.latestLocation.isIdle
                                         };
                                         catgryarr1.push(obj);
+                                        truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                        truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
                                         this.setState({ latitude: element[1], longitude: element[0] });
                                         this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
                                     }
+                                    this.state.trucks[index] = truckElement;
                                 }
                             }
-                            this.setState({ spinnerBool: false });
+                            this.setState({ spinnerBool: false, trucks: this.state.trucks });
 
                         } else {
                             console.log('error in trucksList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [], spinnerBool: false });
                         }
+                        this.setState({ spinnerBool: false });
+
+
                     }).catch((error) => {
                         console.log('error in trucksList ==>', error);
                         //504
@@ -207,7 +195,7 @@ export default class GPSTruckMap extends Component {
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + "  " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
     }
 
     renderSeparator = () => (
@@ -255,22 +243,28 @@ export default class GPSTruckMap extends Component {
             />
         });
     }
-    lookingForLoad(items) {
-        var temparr = [];
-        for (let index = 0; index < this.state.trucks.length; index++) {
-            const element = this.state.trucks[index];
-            if (items._id == element._id) {
-                if (element.rememberme) {
-                    element.rememberme = false;
-                } else {
-                    element.rememberme = true;
+    lookingForLoad(items, val) {
+        if (val) {
+            this.setState({ registrationNumber: items.registrationNo, truckTypeIs: items.truckType, showModal: true, dispLookLoad: 'flex' });
+            console.log('val', val)
+            console.log('items', items)
+            var temparr = [];
+            for (let index = 0; index < this.state.trucks.length; index++) {
+                const element = this.state.trucks[index];
+                if (items._id == element._id) {
+                    if (element.rememberme) {
+                        element.rememberme = false;
+                    } else {
+                        element.rememberme = true;
+                    }
+                    this.state.trucks[index] = element;
+                    this.setState({ trucks: this.state.trucks });
+                    break;
                 }
-                this.state.trucks[index] = element;
-                this.setState({ trucks: this.state.trucks });
-                break;
             }
 
         }
+
     }
     markerClick(markerData) {
         console.log(markerData, 'markerData');
@@ -293,6 +287,54 @@ export default class GPSTruckMap extends Component {
         this.setState({ showTrack: visible });
     }
 
+    getSpeed(speed) {
+        var strSpeed = speed;
+        // if (strSpeed.length > 4) {
+        strSpeed = Math.round(Number(strSpeed) * 100) / 100
+        // }
+        return strSpeed;
+    }
+
+    getAddress(item) {
+        var data = '-';
+        if (item.hasOwnProperty("attrs")) {
+            if (item.attrs.hasOwnProperty('latestLocation')) {
+                var address = '';
+                if (item.attrs.latestLocation.hasOwnProperty('address')) {
+                    address = item.attrs.latestLocation.address;
+                }
+                if (address.length > 30) {
+                    address = address.substring(0, 30) + "..."
+                }
+                data = address;
+            } else {
+                data = '-'
+            }
+        } else {
+            data = '-';
+        }
+        return data;
+    }
+
+    //this.getParsedDate(item.updatedAt)
+    getupdateDate(item) {
+        var data = 'Date : \n' + '';
+        if (item.hasOwnProperty("updatedAt")) {
+            data = 'Date : \n' + this.getParsedDate(item.updatedAt);
+        } else {
+            data = 'Date : \n' + '';
+        }
+        return data;
+    }
+
+    renderlookLoadIcon(value) {
+        if (this.state.lookLoadIcon)
+            return require('../images/ic_trip.png')
+        else {
+            return require('../images/unchecked.png')
+        }
+    }
+
     getView() {
         switch (this.state.view) {
             case 'mapShow':
@@ -303,11 +345,10 @@ export default class GPSTruckMap extends Component {
                             style={CustomStyles.map}
                             zoomEnabled={true}
                             initialRegion={{
-                                latitude: this.state.latitude,
-                                longitude: this.state.longitude,
+                                latitude: Number(this.state.latitude),
+                                longitude: Number(this.state.longitude),
                                 latitudeDelta: LATITUDE_DELTA,
                                 longitudeDelta: LONGITUDE_DELTA,
-
                             }}
                         >
                             {this.state.markers.map((marker, index) => {
@@ -331,7 +372,7 @@ export default class GPSTruckMap extends Component {
                                                 <Text>{'Speed :'}{marker.speed}'-km/hr'</Text>
                                                 <Text>{'Odemeter :'}{'*****km'}</Text>
                                                 <Text>{'Date :'}{marker.date}</Text>
-                                                <Text>{'Address :'}{''}</Text>
+                                                <Text>{'Address :'}{marker.address}</Text>
 
                                             </View>
                                             <TouchableHighlight style={{ alignSelf: 'stretch' }}
@@ -368,42 +409,50 @@ export default class GPSTruckMap extends Component {
                             data={this.state.trucks}
                             ItemSeparatorComponent={this.renderSeparator}
                             renderItem={({ item }) =>
-                                <View style={[CustomStyles.erpCategoryCardItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                <View style={[CustomStyles.erpCategoryCardItems, { flexDirection: 'column' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
+
                                         <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
                                             <Image resizeMode="contain"
                                                 source={require('../images/truck_icon.png')}
                                                 style={CustomStyles.imageWithoutradiusViewContainer} />
+                                        </View>
+
+                                        <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
                                             <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', textDecorationLine: 'underline' }]}>
                                                 {item.registrationNo}</Text>
-                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
-                                                {this.getParsedDate(item.updatedAt)}</Text>
+                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontSize: 10 }]}>
+                                                Location :{this.getAddress(item)}</Text>
 
                                         </View>
-                                        <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                            <View style={{ flexDirection: 'row', padding: 10 }}>
-                                                <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                                    <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', }]}>
-                                                        Location {item.location}</Text>
-                                                    <CheckBox
-                                                    checkboxStyle={{width: 15, height: 15 }}
-                                                        style={{ width: 10, height: 10 }}
-                                                        label='Looking For Load'
-                                                        color={'#000000'}
-                                                        checked={item.rememberme}
-                                                        onChange={() => this.lookingForLoad(item)}
-                                                    />
-                                                </View>
+                                    </View>
+                                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', padding: 2, alignItems: 'center' }}>
+                                        <Text style={[CustomStyles.erpText, { textAlign: 'center', color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
+                                            {this.getupdateDate(item)}</Text>
+                                        <Text style={[CustomStyles.erpText, { textAlign: 'center', color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
+                                            {'speed \n' + `${this.getSpeed(item.speed)} kmph`}</Text>
+                                        <CheckBox style={{ width: 10, height: 10, fontSize: 12 }}
+                                            label='Looking For Load'
+                                            color={'#000000'}
+                                            checkboxStyle={{ width: 15, height: 15 }}
+                                            checkedImage={this.renderlookLoadIcon(true)}
+                                            uncheckedImage={require('../images/unchecked.png')}
+                                            // checked={item.rememberme}
+                                            onChange={(val) => this.lookingForLoad(item, val)}
+                                        />
 
-                                            </View>
-
-                                        </View>
                                     </View>
                                 </View>
                             }
                             keyExtractor={item => item._id}
                             extraData={this.state} />
                     </View>);
+                break;
+
+
+            case 'no':
+                return (<Text style={[CustomStyles.erpText, { textAlign: 'center', color: '#1e4495', fontWeight: 'bold', fontSize: 12, top: 50 }]}>
+                    No Data Found</Text>);
                 break;
             default:
                 break;
@@ -434,7 +483,7 @@ export default class GPSTruckMap extends Component {
     onPickdate(category) {
         const self = this;
         if (Platform.OS === 'ios') {
-            this.setState({ showModal: true,showTrack: false, category: category })
+            this.setState({ showModal: true, dispDatePicker: 'flex', showTrack: false, category: category })
 
         } else {
             try {
@@ -469,15 +518,55 @@ export default class GPSTruckMap extends Component {
     }
 
     onAccept() {
-        if (this.state.fromDate === '' ||this.state.toDate === '' ) {
-            alert('Select a date');
-        } else {
-            this.setState({ showModal: false, showTrack: true })
+        if (this.state.dispDatePicker === 'flex') {
+            if (this.state.fromDate === '' || this.state.toDate === '') {
+                alert('Select a date');
+            } else {
+                this.setState({ dispDatePicker: 'none', showModal: false, showTrack: true })
+            }
+        } else if (this.state.dispLookLoad === 'flex') {
+            if (this.state.lookLoadSource === '' || this.state.lookLoadDestination === '' || this.state.lookLoadPrice === '') {
+                alert('All fields mandatory');
+            } else if (!isNaN(this.state.lookLoadSource) || !isNaN(this.state.lookLoadDestination)) {
+                alert('Number')
+            } else {
+                console.log(
+                    'sourceAddress', this.state.lookLoadSource,
+                    'destinationAddress', this.state.lookLoadDestination,
+                    'truckType', this.state.truckTypeIs,
+                    'registrationNo', this.state.registrationNumber,
+                    'pricePerTon', Number(this.state.lookLoadPrice)
+                )
+                Axios({
+                    url: Config.routes.base + Config.routes.lookingForLoad,
+                    method: 'POST',
+                    headers: { 'token': this.state.token },
+                    data: {
+                        sourceAddress: this.state.lookLoadSource,
+                        destinationAddress: this.state.lookLoadDestination,
+                        truckType: this.state.truckTypeIs,
+                        registrationNo: this.state.registrationNumber,
+                        pricePerTon: Number(this.state.lookLoadPrice)
+                    }
+                }).then((response) => {
+                    console.log('response', response);
+                    if (response.data.status) {
+
+                        // alert('Update successfull')
+                        this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: true, dispLookLoad: 'none', showModal: false })
+                    } else {
+                        alert(response.data.messages)
+                    }
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            }
+
         }
     }
 
     onDecline() {
-        this.setState({ showModal: false, date: '' });
+        this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: false, dispLookLoad: 'none', dispDatePicker: 'none', showModal: false, date: '' });
 
     }
 
@@ -521,19 +610,15 @@ export default class GPSTruckMap extends Component {
                     top: 0, justifyContent: 'space-between',
                     zIndex: 1, backgroundColor: '#1e4495', width: '100%'
                 }, { display: self.state.showHeader }]}>
-
-                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 5 }}>
+                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', marginTop: 15 }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
-                            <Image style={{ width: 25, height: 20, resizeMode: 'contain',marginTop:20, margin: 10, marginHorizontal: 5 }}
+                            <Image style={{ width: 20, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
-                        <Text style={[CustomStyles.erpText, { color: 'white', fontFamily: 'Gotham-Light', fontSize: 16, marginTop:20, margin: 10, marginLeft: 3 }]}>
+                        <Text style={[CustomStyles.erpText, { color: 'white', fontFamily: 'Gotham-Light', fontSize: 16, margin: 10, marginLeft: 3 }]}>
                             All Vehicles Location</Text>
                     </View>
-
-
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', margin: 5 }}>
-
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 10, margin: 5 }}>
                         <TouchableOpacity onPress={() => { this.setState({ view: 'mapShow' }); }}>
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_map_lap_icon.png')} />
@@ -544,13 +629,12 @@ export default class GPSTruckMap extends Component {
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_truck_list_icon.png')} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport', { refresh: this.refreshFunction }) }}>
-                            <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
-                                source={require('../images/gps_truck_reports.png')} />
-                        </TouchableOpacity>
+                        {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) }}>
+                                        <Image style={{ width: 26, height: 25, resizeMode: 'contain',margin:10,marginHorizontal:5 }}
+                                        source={require('../images/gps_truck_reports.png')} />
+                                    </TouchableOpacity> */}
                     </View>
                 </View>
-
                 <View style={CustomStyles.erpCategory}>
                     <View style={[CustomStyles.noResultView, { alignSelf: 'stretch', position: 'absolute', top: 20, backgroundColor: 'transparent' }]}>
                         <Text style={[CustomStyles.erpText, {
@@ -570,6 +654,7 @@ export default class GPSTruckMap extends Component {
                     onPickTodate={() => { this.onPickdate('toDate') }}
                     frmDate={this.state.fromDate}
                     toDate={this.state.toDate} />
+
                 <Confirm visible={this.state.showModal}
                     onAccept={this.onAccept.bind(this)}
                     onDecline={this.onDecline.bind(this)}
@@ -578,21 +663,54 @@ export default class GPSTruckMap extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
+                            style={{ display: this.state.dispDatePicker }}
                             date={new Date()}
                             onDateChange={(pickedDate) => {
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 // console.warn(month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear())
                                 // let passdate='';
-                                if(this.state.category==='fromDate'){
+                                if (this.state.category === 'fromDate') {
                                     this.setState({ fromDate: date, fromPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
-                                }else{
+                                } else {
                                     this.setState({ toDate: date, toPassdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
                                 }
                                 // this.moveInputLabelUp(3, date)
                             }}
                             mode="date"
                         />
+                        <View style={{ display: this.state.dispLookLoad }}>
+                            <View>
+
+                                <CustomEditText
+                                    underlineColorAndroid='transparent'
+                                    placeholder={'Enter Source'}
+                                    value={this.state.lookLoadSource}
+                                    inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}
+                                    onChangeText={(lookLoadSource) => { this.setState({ lookLoadSource }) }}
+                                />
+                            </View>
+                            <View>
+
+                                <CustomEditText
+                                    underlineColorAndroid='transparent'
+                                    placeholder={'Enter Destination'}
+                                    value={this.state.lookLoadDestination}
+                                    inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}
+                                    onChangeText={(lookLoadDestination) => { this.setState({ lookLoadDestination }) }}
+                                />
+                            </View>
+                            <View>
+
+                                <CustomEditText
+                                    underlineColorAndroid='transparent'
+                                    placeholder={'Enter Price'}
+                                    value={this.state.lookLoadPrice}
+                                    inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}
+                                    onChangeText={(lookLoadPrice) => { this.setState({ lookLoadPrice }) }}
+                                />
+                            </View>
+                        </View>
                     </View>
                 </Confirm>
             </View>

@@ -10,23 +10,29 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,19 +41,34 @@
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
         <activity android:name=".SplashScreen_Activity"></activity>
-        <provider
-            android:name="com.vinzscam.reactnativefileviewer.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_viewer_provider_paths"
-            />
-        </provider>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCd0ifbJjaQoMN66oY3Vyjh43r2gH9kPxA" />
+
+            <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/easygaadi_notify"/>
+
+           <service android:name="com.evollu.react.fcm.MessagingService" android:enabled="true" android:exported="true">
+             <intent-filter>
+               <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+             </intent-filter>
+           </service>
+
+           <service android:name="com.evollu.react.fcm.InstanceIdService" android:exported="false">
+             <intent-filter>
+                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+             </intent-filter>
+           </service>
+          <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher"/>
+          <receiver android:enabled="true" android:exported="true"  android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver">
+              <intent-filter>
+                  <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                  <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                  <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                  <category android:name="android.intent.category.DEFAULT" />
+              </intent-filter>
+          </receiver>
     </application>
 
 </manifest>

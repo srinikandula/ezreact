@@ -16,14 +16,16 @@
 		"react": "16.2.0",
 		"react-native": "0.51.0",
 		"react-native-checkbox": "^2.0.0",
-		"react-native-fetch-blob": "^0.10.8",
-		"react-native-file-viewer": "^1.0.1",
+		"react-native-fcm": "^14.1.3",
+		"react-native-file-type": "0.0.2",
+		"react-native-fs": "^2.9.11",
 		"react-native-hideable-view": "^1.0.3",
+		"react-native-image-picker": "^0.26.7",
 		"react-native-immediate-phone-call": "^1.0.0",
-		"react-native-maps": "^0.19.0",
-		"react-native-open-doc": "^1.0.4",
+		"react-native-maps": "^0.20.0",
 		"react-native-router-flux": "^4.0.0-beta.24",
-		"react-native-splash-screen": "^3.0.6"
+		"react-native-splash-screen": "^3.0.6",
+		"react-navigation": "github:react-community/react-navigation#fe4b1e2"
 	},
 	"devDependencies": {
 		"babel-jest": "22.0.4",

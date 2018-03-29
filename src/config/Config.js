@@ -1,7 +1,11 @@
 let routes = {
-    base: 'http://demo.easygaadi.com/v1',
-     //base: 'http://erp.easygaadi.com/v1',
-    //base: 'http://192.168.0.181:3000/v1',
+   base: 'http://demoerp.easygaadi.com/v1',getProfilePic:'http://demoerp.easygaadi.com/images/profile-pics/',
+   // base: 'http://erp.easygaadi.com/v1',getProfilePic:'http://erp.easygaadi.com/images/profile-pics/',
+    // base: 'http://192.168.1.70:3000/v1',getProfilePic:'http://192.168.1.70:3000/images/profile-pics/',
+   
+
+
+
     loginRoute: '/group/login',
     easygaadiDashBroad: '/admin/erpDashboard',
     erpSettingData:'/admin/getErpSettings',
@@ -90,6 +94,16 @@ let routes = {
     gpsTruckList:'/trucks/groupTrucks/?page=1&size=10&sort=%7B%22createdAt%22:-1%7D',
     gpsTrackLocation:'/gps/gpsTrackingByTruck',
     gpsTrackingByMapView:'/gps/gpsTrackingByMapView',
+    getTruckReport:'/gps/getTruckReport/',
+
+
+    //Profile
+    getProfileDetails:'/admin/userProfile',
+    updateProfile:'/admin/accounts/update',
+    uploadProfilePic:'/admin/uploadUserProfilePic',
+
+    //Notification
+    registerToServer:'/notifications/saveDeviceDetails',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
@@ -119,6 +133,7 @@ let routes = {
     signOtpVerifyRoute: '/v1/user/signin/otp/verify',
     bannersFetch: '/v1/user/banners/fetch',
 
+    lookingForLoad: '/trucks/lookingForLoad',
 };
 
 let limiters = {

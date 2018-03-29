@@ -1,5 +1,6 @@
 export * from './CustomButton';
 export * from './CustomText';
+export * from './CPicker';
 export * from './CustomInput';
 export * from './Check';
 export * from './Confirm';

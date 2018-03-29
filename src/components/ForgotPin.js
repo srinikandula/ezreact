@@ -50,6 +50,10 @@ class ForgotPin extends Component{
                 }
             }).catch((error) => {
                 console.log('error in forgotPassword ==>', error);
+                if (error.response.status === 504 ) {
+                   this.setState({ spinnerBool: false });
+                   alert("Something went Wrong.Please try after some time");
+                 }
             })
     }
    

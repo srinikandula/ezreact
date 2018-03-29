@@ -8,7 +8,7 @@ export default class Notifications extends Component {
     render() {
         return (
             <View style={[CustomStyles.viewStyle, { backgroundColor: '#ddd' }]}>
-             <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+             <View style={{flexDirection: 'row',height: 60, paddingTop:20, backgroundColor: '#1e4495',alignItems: 'center'}}>
                     <Text style={{fontSize: 14, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
                         NOTIFICATIONS
                         </Text>

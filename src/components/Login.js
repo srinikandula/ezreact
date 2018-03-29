@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage, Text,  TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler } from 'react-native';
+import { View, Image, AsyncStorage, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import Utils from './common/Utils';
@@ -8,13 +8,14 @@ import {
     renderIf,
     CustomEditText,
     CustomButton,
-    CustomText,
+    CustomText, CSpinner,
     CommonBackground
 } from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Axios from 'axios';
-import {NoInternetModal} from './common';
+import { NoInternetModal } from './common';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 
 class Login extends Component {
     state = {};
@@ -22,12 +23,14 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
-            userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
-            phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false,showMail: false,
+            //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
+            // userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+            phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,
+            spinnerBool: false
         };
-        
+
     }
 
 
@@ -47,15 +50,14 @@ class Login extends Component {
     getCache(key) {
         try {
             //console.log('login-riyaz',key);
-            var value = AsyncStorage.getItem('credientails');
+            var value = AsyncStorage.getItem('fcmStorage');
             //console.log('credientails',key);
             if (value !== null) {
-                var egObj = {};
-                egObj = JSON.parse(value);
-               this.setState({userName:egObj.userName,userNamelbl:true,rememberme:true});
-              } else {
-                console.log('value',value.json())
-              }
+                // this.runFCMService();
+
+            } else {
+                console.log('value', value.json())
+            }
 
             return value.json();
         }
@@ -80,6 +82,8 @@ class Login extends Component {
         if (this.state.password.length < 4) {
             return Utils.ShowMessage('Enter valid password');
         }
+
+        self.setState({ spinnerBool: true });
         Axios({
             method: 'post',
             url: Config.routes.base + Config.routes.loginRoute,
@@ -102,27 +106,14 @@ class Login extends Component {
                         message = message + current_value;
                     });
                 Utils.ShowMessage(message);
-
             }
+            self.setState({ spinnerBool: false });
         }).catch((error) => {
+            self.setState({ spinnerBool: false });
             console.log('login post error--->', error)
+            Utils.ShowMessage("Something went wrong.Please try after sometime");
         })
 
-    }
-
-    getUserToken() {
-        Utils.ShowMessage('wrong');
-
-        AsyncStorage.getItem('advaitha:usertoken', (err, token) => {
-            console.log('asdfasdfasdfgad', err, token);
-            if (err) {
-                Utils.ShowMessage('Something went wrong');
-            } else {
-                Utils.ShowMessage('Some');
-
-                callback(token);
-            }
-        });
     }
 
 
@@ -134,7 +125,8 @@ class Login extends Component {
             gpsEnabled: data.gpsEnabled,
             erpEnabled: data.erpEnabled,
             loadEnabled: data.loadEnabled,
-            editAccounts: data.editAccounts
+            editAccounts: data.editAccounts,
+            profilePic: data.profilePic
         }
         try {
             AsyncStorage.setItem('credientails', JSON.stringify(easyGaadi));
@@ -143,6 +135,80 @@ class Login extends Component {
             console.log('something went wrong');
         }
     }
+
+    spinnerLoad() {
+        if (this.state.spinnerBool)
+            return <CSpinner />;
+        return false;
+    }
+
+
+    runFCMService() {
+        FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
+        var refreshedToken = FCM.on('FCMTokenRefreshed', (refreshedToken) => {
+            // console.log(refreshedToken)
+            // this.setState({ fcmToken: refreshedToken });
+        });
+        FCM.getFCMToken().then(token => {
+            // store fcm token in your server
+            // setFcmToken(token);
+            // this.setState({ fcmToken: token });
+            console.log('refreshedToken', token);
+            NativeModules.FetchData.GetDeviceId((imeiResp) => {
+                // alert(JSON.stringify(imeiResp));
+                console.log(imeiResp, 'imeiResp');
+                console.log('test-url', Config.routes.base + Config.routes.registerToServer);
+                Axios({
+                    method: 'post',
+                    url: Config.routes.base + Config.routes.registerToServer,
+                    data: {
+                        imei: token,
+                        deviceId: imeiResp,
+                    }
+                }).then((response) => {
+                    console.log("registerToServer-response", response.data);
+                    if (response.data.status) {
+                        console.log("response.data", response.data);
+
+                    } else {
+                        let message = "";
+
+                    }
+                    this.setState({ spinnerBool: false });
+                }).catch((error) => {
+                    this.setState({ spinnerBool: false });
+                    console.log('registerToServer post error--->', error)
+                    Utils.ShowMessage("Something went wrong.Please try after sometime");
+                })
+
+
+            }); // Native modules end
+        });
+
+
+        this.notificationListener = FCM.on(FCMEvent.Notification, async (notif) => {
+            // optional, do some component related stuff
+            console.log("notify", notif);
+            this.sendRemote(notif);
+        });
+
+        FCM.getInitialNotification().then(notif => {
+            console.log(notif)
+        });
+    }
+
+    sendRemote(notif) {
+        console.log('send');
+        FCM.presentLocalNotification({
+            title: notif.title,
+            body: notif.body,
+            priority: "high",
+            click_action: notif.click_action,
+            show_in_foreground: true,
+            local: true
+        });
+    }
+
     render() {
         const {
             signInTextStyle,
@@ -152,10 +218,10 @@ class Login extends Component {
 
         const namelabelStyle = {
             position: 'absolute',
-            left: 0,
+            left: 5,
             //   fontFamily:'Gotham-Light',
-            top:  0,
-            display: !this.state.userNamelbl ? 'none':'flex', 
+            top: 0,
+            display: !this.state.userNamelbl ? 'none' : 'flex',
             fontSize: !this.state.userNamelbl ? 16 : 14,
             color: !this.state.userNamelbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -164,9 +230,9 @@ class Login extends Component {
 
         const passwordlabelStyle = {
             position: 'absolute',
-            left: 10,
-            display: !this.state.passwordlbl ? 'none':'flex', 
-            top:  0,
+            left: 5,
+            display: !this.state.passwordlbl ? 'none' : 'flex',
+            top: 0,
             fontSize: !this.state.passwordlbl ? 16 : 14,
             color: !this.state.passwordlbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -175,10 +241,10 @@ class Login extends Component {
 
         const phonelabelStyle = {
             position: 'absolute',
-            left: 0,
-            display: !this.state.phoneNumberlbl ? 'none':'flex',  
+            left: 5,
+            display: !this.state.phoneNumberlbl ? 'none' : 'flex',
             //   fontFamily:'Gotham-Light',
-            top:  0,
+            top: 0,
             fontSize: !this.state.phoneNumberlbl ? 16 : 14,
             color: !this.state.phoneNumberlbl ? '#aaa' : '#000',
             //   fontFamily:'Gotham-Light',
@@ -190,9 +256,10 @@ class Login extends Component {
             <CommonBackground>
                 <View style={CustomStyles.loginViewStyle}>
 
-                    <CustomText style={CustomStyles.logintext}>
+                    <CustomText customTextStyle={[CustomStyles.logintext]}>
                         Login
-                            </CustomText>
+                    </CustomText>
+                    {this.spinnerLoad()}
                     <ScrollView >
                         <View style={CustomStyles.loginContainerStyle}>
 
@@ -201,7 +268,7 @@ class Login extends Component {
                             </View>
 
                             <View style={CustomStyles.loginInputbox}>
-                               
+
                             </View>
                             <View style={CustomStyles.loginInputbox}>
                                 <Text style={namelabelStyle} >
@@ -216,15 +283,15 @@ class Login extends Component {
                                     value={this.state.userName}
                                     underlineColorAndroid={'#e1e1e1'}
                                     onFocus={() => {
-                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
+                                        this.setState({ userNamelbl: this.state.userName === '' ? false : true })
                                     }}
                                     onBlur={() => {
-                                        this.setState({userNamelbl:this.state.userName ===''?false: true })
+                                        this.setState({ userNamelbl: this.state.userName === '' ? false : true })
                                     }}
                                     onChangeText={(value) => {
-                                        this.setState({ userName: value, userNamelbl:value ===''?false: true })
+                                        this.setState({ userName: value, userNamelbl: value === '' ? false : true })
                                     }}
-                                   
+
                                 />
                             </View>
                             <View style={CustomStyles.loginInputbox}>
@@ -239,13 +306,13 @@ class Login extends Component {
                                     value={this.state.phoneNumber}
                                     underlineColorAndroid={'#e1e1e1'}
                                     onFocus={() => {
-                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                        this.setState({ phoneNumberlbl: this.state.phoneNumber === '' ? false : true })
                                     }}
                                     onBlur={() => {
-                                        this.setState({phoneNumberlbl:this.state.phoneNumber ===''?false:true})
+                                        this.setState({ phoneNumberlbl: this.state.phoneNumber === '' ? false : true })
                                     }}
                                     onChangeText={(value) => {
-                                        this.setState({phoneNumber: value, phoneNumberlbl: value===''?false:true})
+                                        this.setState({ phoneNumber: value, phoneNumberlbl: value === '' ? false : true })
                                     }}
                                 />
                             </View>
@@ -260,13 +327,13 @@ class Login extends Component {
                                     placeholder={'Password'}
                                     underlineColorAndroid={'#e1e1e1'}
                                     onFocus={() => {
-                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                        this.setState({ passwordlbl: this.state.password === '' ? false : true })
                                     }}
                                     onBlur={() => {
-                                        this.setState({passwordlbl:this.state.password ===''?false: true })
+                                        this.setState({ passwordlbl: this.state.password === '' ? false : true })
                                     }}
                                     onChangeText={(value) => {
-                                        this.setState({ password: value, passwordlbl:value===''?false: true })
+                                        this.setState({ password: value, passwordlbl: value === '' ? false : true })
                                     }}
                                 />
                             </View>
@@ -275,6 +342,7 @@ class Login extends Component {
                             <View style={CustomStyles.loginCheckForgotStyle}>
                                 <View>
                                     <CheckBox
+                                    checkboxStyle={{width:15, height:15}}
                                         label='Remember Me'
                                         color={'#000000'}
                                         checked={this.state.rememberme}
@@ -308,7 +376,7 @@ class Login extends Component {
                                 </CustomButton>
                             </View>
 
-                            <NoInternetModal visible={this.state.showMail}/>
+                            <NoInternetModal visible={this.state.showMail} />
                         </View>
                     </ScrollView>
                 </View>

@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 
+
 import com.android.build.OutputFile
 
 /**
@@ -150,10 +151,18 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+     
     compile project(':react-native-maps')
-    compile project(':react-native-file-viewer')
-    compile project(':react-native-open-doc')
-    compile project(':react-native-fetch-blob')
+    compile(project(':react-native-fcm')) {
+        exclude module: 'react-native'
+        exclude group: "com.google.firebase"
+    }
+    compile 'com.google.firebase:firebase-core:10.2.4' //this decides your firebase SDK version
+    compile 'com.google.firebase:firebase-messaging:10.2.4'
+    
+    compile project(':react-native-image-picker')
+
     compile project(':react-native-immediate-phone-call')
     compile project(':react-native-splash-screen')
     compile fileTree(dir: "libs", include: ["*.jar"])
@@ -168,3 +177,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'

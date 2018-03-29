@@ -104,10 +104,10 @@ export default class GPSTrackLocation extends Component {
                                                 latitudeDelta:LATITUDE_DELTA,
                                                 longitudeDelta: LONGITUDE_DELTA}});
                                         }
-                                        coordinateArr.push({ strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
-                                            longitude:Number(element.location.coordinates[0]) });
-                                        element.coordinate = { strokeColor: "#00ff00",latitude: Number(element.location.coordinates[1]), 
-                                            longitude:Number(element.location.coordinates[0]) };
+                                        coordinateArr.push({ strokeColor: "#00ff00",latitude: element.location.coordinates[1], 
+                                            longitude:element.location.coordinates[0] });
+                                        element.coordinate = { strokeColor: "#00ff00",latitude:  element.location.coordinates[1] , 
+                                            longitude:element.location.coordinates[0]  };
                                         coordinateArr1.push(element);
                                     }
                                     
@@ -529,8 +529,8 @@ export default class GPSTrackLocation extends Component {
                 "longitude:"+ marker.longitude
             )
             _mapView.animateMarkerToCoordinate({
-                latitude: Number(marker.latitude+ this.state.latitudeDelta * 0.01),
-                longitude: Number(marker.longitude+ this.state.latitudeDelta * 0.01)
+                latitude:  marker.latitude+ this.state.latitudeDelta * 0.01 ,
+                longitude:  marker.longitude+ this.state.latitudeDelta * 0.01 
               }, 6000)
             })
     }

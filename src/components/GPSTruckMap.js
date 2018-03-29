@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView,Animated,DatePickerAndroid,StyleSheet,Platform,TouchableHighlight,BackHandler,Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,TrackModal, CustomText,CSpinner,CustomEditText } from './common';
+import { ExpiryDateItems,TrackModal, CustomText,CSpinner,CustomEditText, NoInternetModal } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
@@ -84,6 +84,12 @@ export default class GPSTruckMap extends Component {
                     var egObj = {};
                     egObj = JSON.parse(value);
                     this.setState({ token: egObj.token });
+                    if(Utils.checkInternetConnection())
+                    {
+                        console.log(Utils.checkInternetConnection(),'network')
+                        return (<NoInternetModal visible={true}/>);
+                    }
+
                     Axios({
                         method: 'get',
                         headers: { 'token': egObj.token },
@@ -241,7 +247,6 @@ export default class GPSTruckMap extends Component {
                 this.setState({trucks:this.state.trucks});
                 break;
             }
-            
         }
     }
     markerClick(markerData) {

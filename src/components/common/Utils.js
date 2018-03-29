@@ -1,4 +1,4 @@
-import {Platform,ToastAndroid, Alert} from 'react-native';
+import {Platform,ToastAndroid,NetInfo, Alert} from 'react-native';
 import AppNavigation from '../../AppNavigation';
 var Utils = function() {};
 
@@ -15,6 +15,17 @@ Utils.prototype.TokenunAuthorized = function (error){
      }
 }
 
+Utils.prototype.checkInternetConnection = function () {
+    const status = false;
+    NetInfo.isConnected.fetch().then(isConnected => {
+        console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+        if(isConnected === 'online')
+          {  
+              status = true;
+          }
+      });
+    return status;
+};
 
 
 export default new Utils();

@@ -116,11 +116,12 @@ class Profile extends Component{
 
 
 getProfileImage(){
-    console.log(this.state.profilePic.length,'getProfileImage');
+    console.log(this.state.profilePic+"<-->"+this.state.profilePic.length,'getProfileImage');
     if(this.state.profilePic.length == 0){
         return(<Image source={require('../images/eg_user.png')} 
                     style= {{height:100,width:110,resizeMode: 'contain'}}/>);
     }else{
+        console.log(this.state.profilePic+"<-url->"+this.state.profilePic.length,'getProfileImage');
         return(<Image source={{uri:this.state.profilePic}} 
             style= {{height:100,width:100, borderRadius:50,resizeMode: 'contain'}}/>);
     }
@@ -403,8 +404,7 @@ onLogout(){
                                 inputTextStyle={CustomStyles.profileInputStyle }
                                 value={this.state.emailId}
                                 onChangeText={(emailId) => { this.moveInputLabelUp(2, emailId),
-                                    this.setState({ emailId: emailId }) }}
-                                                                   
+                                    this.setState({ emailId: emailId }) }}                                                                   
                                  />
                         </View>
 
@@ -468,7 +468,7 @@ onLogout(){
                             </View>
                             <View style={CustomStyles.profileInputBox}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 0, top:2, display:'flex',color: '#525252' }, this.state.field7]}>
-                                Retype Password </CustomText>
+                                    Retype Password </CustomText>
                                 <CustomEditText 
                                     secureTextEntry
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
@@ -495,7 +495,16 @@ onLogout(){
                     </View>
                </ScrollView>
                 <View  style={CustomStyles.profileImageStyle}>
-                {this.getProfileImage()}
+                {console.log("-->"+this.state.profilePic+"\n "+"this.state.profilePic")}
+                { 
+                    this.state.profilePic.trim().length > 0 ?
+                        <Image source={{uri:this.state.profilePic.trim()}} 
+                        style= {{height:100,width:110,resizeMode: 'contain'}}/>
+                         :
+                         <Image source={ require('../images/eg_user.png')} 
+                            style= {{height:100,width:110,resizeMode: 'contain'}}/>
+                        }
+                    
                 </View>
                 <View  style={editProfileImageStyle}>
                     <TouchableOpacity onPress={() => {  this.onPickImage()}}>

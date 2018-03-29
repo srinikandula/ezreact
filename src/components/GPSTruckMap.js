@@ -30,28 +30,25 @@ export default class GPSTruckMap extends Component {
         lookLoadSource: '',
         dispDatePicker: 'none',
         showModal: false, date: '',
-        categoryBgColor: false, token: '', trucks: [], dummytrucks: [],
-        showTrack: false,
-        showHeader: 'none',
-        truckNumber: '',
-        fromDate: '',
-        fromPassdate: '',
-        toDate: '',
-        toPassdate: '',
-        passData: {},
-        aspectRatio: 0,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-        latitude: 17.46247,
-        longitude: 78.3100319,
-        animation: new Animated.Value(0),
-        markers: [{
-            coordinate: {
-                latitude: 0,
-                longitude: 0
-            }
-        }],
-        view: 'no',
+        categoryBgColor: false,token:'',trucks:[],dummytrucks:[],
+        showTrack:false,
+        showHeader:'none',
+        truckNumber:'',
+        fromDate:'',
+        fromPassdate:'',
+        toDate:'',
+        toPassdate:'',
+        passData:{},
+        aspectRatio :0,
+        latitudeDelta : LATITUDE_DELTA,
+        longitudeDelta :LONGITUDE_DELTA,        
+        latitude: Number(17.46247),
+        longitude: Number(78.3100319),
+        animation : new Animated.Value(0),
+        markers:[{coordinate:{latitude:0,
+            longitude:0}}],
+            view:'no',
+        
         spinnerBool: false,
 
     };
@@ -70,11 +67,11 @@ export default class GPSTruckMap extends Component {
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                this.setState({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    error: null,
-                });
+              this.setState({
+                latitude: Number(position.coords.latitude),
+                longitude: Number(position.coords.longitude),
+                error: null,
+              });
             },
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
@@ -83,71 +80,66 @@ export default class GPSTruckMap extends Component {
 
     }
 
-    onBackAndroid() {
-        //Actions.pop();
-        //var value = await this.getCache('credientails');
-    }
 
-    async getCredentailsData() {
-        this.setState({ spinnerBool: true });
-        this.getCache((value) => {
-            if (value !== null) {
-                var egObj = {};
-                egObj = JSON.parse(value);
-                this.setState({ token: egObj.token });
-                Axios({
-                    method: 'get',
-                    headers: { 'token': egObj.token },
-                    url: Config.routes.base + Config.routes.gpsTrackingByMapView
-                })
-                    .then((response) => {
-                        if (response.data.status) {
-                            console.log('GPSTruckMap-trucksList ==>', response.data);
-                            if (response.data.data.length == 10) {
-                                this.setState({ spinnerBool: false, view: 'no' });
-                            } else {
-                                this.setState({ spinnerBool: false, view: 'mapShow' });
-                                var catgryarr = response.data.data;
-                                catgryarr = catgryarr.filter(function (item, index) {
-                                    if (item.hasOwnProperty('attrs'))
-                                        return item;
-                                });
-
-                                this.setState({ trucks: catgryarr });
-
-                                var dump = [];
-                                for (let index = 0; index < catgryarr.length; index++) {
-                                    const element = catgryarr[index];
-                                    element.rememberme = false;
-                                    //console.log(this.state.location[index], 'element.location');
-                                    dump.push(element);
-                                    this.setState({ trucks: dump, dummytrucks: dump });
-                                }
-
-                                console.log(catgryarr, 'vignesh == ', dump);
-                                var catgryarr1 = [];
-                                for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
-                                    const truckElement = this.state.trucks[index];
-                                    if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
-                                        const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                        //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
-                                        //latitude:0,longitude:0
-                                        var obj = {
-                                            coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
-                                            registrationNo: catgryarr[index].registrationNo,
-                                            speed: catgryarr[index].attrs.latestLocation.speed,
-                                            address: catgryarr[index].attrs.latestLocation.address,
-                                            date: catgryarr[index].attrs.latestLocation.updatedAt,
-                                            isStopped: catgryarr[index].attrs.latestLocation.isStopped,
-                                            isIdle: catgryarr[index].attrs.latestLocation.isIdle
-                                        };
-                                        catgryarr1.push(obj);
-                                        truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
-                                        truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
-                                        this.setState({ latitude: element[1], longitude: element[0] });
-                                        this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+           async getCredentailsData() {
+            this.setState({ spinnerBool:true });
+            this.getCache((value) => {
+                if (value !== null) {
+                    var egObj = {};
+                    egObj = JSON.parse(value);
+                    this.setState({ token: egObj.token });
+                    Axios({
+                        method: 'get',
+                        headers: { 'token': egObj.token },
+                        url: Config.routes.base + Config.routes.gpsTrackingByMapView
+                    })
+                        .then((response) => {
+                            if (response.data.status) {
+                                console.log('GPSTruckMap-trucksList ==>', response.data);
+                                if (response.data.data.length == 10) {
+                                    this.setState({ spinnerBool: false,view:'no' });
+                                } else {
+                                    this.setState({ spinnerBool: false,view:'mapShow' });
+                                    var catgryarr = response.data.data;
+                                    catgryarr = catgryarr.filter(function (item, index) {
+                                        if (item.hasOwnProperty('attrs'))
+                                            return item;
+                                    });
+    
+                                    this.setState({ trucks: catgryarr });
+    
+                                    var dump = [];
+                                    for (let index = 0; index < catgryarr.length; index++) {
+                                        const element = catgryarr[index];
+                                        element.rememberme = false;
+                                        //console.log(this.state.location[index], 'element.location');
+                                        dump.push(element);
+                                        this.setState({ trucks: dump,dummytrucks:dump });
                                     }
-                                    this.state.trucks[index] = truckElement;
+    
+                                    console.log(catgryarr, 'vignesh == ', dump);
+                                    var catgryarr1 = [];
+                                    for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
+                                        const truckElement = this.state.trucks[index];                                        
+                                        if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
+                                            const element = catgryarr[index].attrs.latestLocation.location.coordinates;
+                                             //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                            //latitude:0,longitude:0
+                                            var obj = { coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                        registrationNo:catgryarr[index].registrationNo,
+                                                        speed:catgryarr[index].attrs.latestLocation.speed,
+                                                        address:catgryarr[index].attrs.latestLocation.address,
+                                                        date:catgryarr[index].attrs.latestLocation.updatedAt,
+                                                        isStopped:catgryarr[index].attrs.latestLocation.isStopped,
+                                                        isIdle:catgryarr[index].attrs.latestLocation.isIdle};
+                                            catgryarr1.push(obj);
+                                            truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                            truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
+                                            this.setState({ latitude: element[1], longitude: element[0] });
+                                            this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                        }
+                                        this.state.trucks[index] = truckElement;
+                                    
                                 }
                             }
                             this.setState({ spinnerBool: false, trucks: this.state.trucks });
@@ -342,23 +334,24 @@ export default class GPSTruckMap extends Component {
                 return (
                     <View style={CustomStyles.mapcontainer}>
                         <MapView
-                            style={CustomStyles.map}
-                            zoomEnabled={true}
-                            initialRegion={{
-                                latitude: Number(this.state.latitude),
-                                longitude: Number(this.state.longitude),
-                                latitudeDelta: LATITUDE_DELTA,
-                                longitudeDelta: LONGITUDE_DELTA,
-                            }}
-                        >
-                            {this.state.markers.map((marker, index) => {
-                                var imgsrc = require('../images/truck_running.png');
-                                if (marker.isStopped) {
-                                    imgsrc = require('../images/truck_stopped.png');
-                                }
-                                if (marker.isIdle && !marker.isStopped) {
-                                    imgsrc = require('../images/truck_idle.png');
-                                }
+                        style={CustomStyles.map}
+                        zoomEnabled ={true}
+                        initialRegion={{
+                        latitude: Number(this.state.latitude),
+                        longitude: Number(this.state.longitude),
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta:LONGITUDE_DELTA,
+                       
+                        }}
+                    >
+                        {this.state.markers.map((marker, index) => {
+                            var imgsrc = require('../images/truck_running.png');
+                            if(marker.isStopped){                                      
+                                imgsrc = require('../images/truck_stopped.png');
+                            }
+                            if(marker.isIdle && !marker.isStopped){
+                                imgsrc = require('../images/truck_idle.png');       
+                            }
 
                                 return (
                                     <MapView.Marker key={index}

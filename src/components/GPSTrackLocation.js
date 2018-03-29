@@ -317,7 +317,7 @@ export default class GPSTrackLocation extends Component {
                             initialRegion={this.state.initialPoint}
                             zoomEnabled={true}
                             maxZoomLevel={16}>
-                           
+
                             {this.state.coordinates1.map((marker, index) => {
                                 if (index == 0) {
                                     return (
@@ -364,6 +364,8 @@ export default class GPSTrackLocation extends Component {
 
                                     }
                                 }//close
+
+
 
                             })
                             }

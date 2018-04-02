@@ -104,6 +104,12 @@ let routes = {
 
     //Notification
     registerToServer:'/notifications/saveDeviceDetails',
+    getPushNotifications:'/notifications/getPushNotifications',
+
+    //GPS-setting
+    gpsSetting:'/gps/getGpsSettings',
+    updateGpsSettings:'/gps/updateGpsSettings',
+    getAccountRoutes:'/admin/getAccountRoutes',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',
@@ -133,6 +139,7 @@ let routes = {
     signOtpVerifyRoute: '/v1/user/signin/otp/verify',
     bannersFetch: '/v1/user/banners/fetch',
 
+    lookingForLoad: '/trucks/lookingForLoad',
 };
 
 let limiters = {

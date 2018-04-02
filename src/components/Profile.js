@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,NativeModules} from 'react-native';
+import {View,Image,AsyncStorage,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler,NativeModules,Platform} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CSpinner,CommonBackground} from './common';
 import Config from '../config/Config';
@@ -8,6 +8,7 @@ import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
 import Utils from './common/Utils';
 import ImagePicker  from 'react-native-image-picker';
+//import fileType from 'react-native-file-type'
 
 const imgPickerOptions = {
     title: 'Select image',
@@ -20,7 +21,7 @@ const imgPickerOptions = {
     // maxWidth: 200,
     // maxHeight: 220,
     quality: 1,
-    noData: true
+    noData: false
   };
 
 class Profile extends Component{
@@ -122,7 +123,7 @@ getProfileImage(){
     }else{
         console.log(this.state.profilePic+"<-url->"+this.state.profilePic.length,'getProfileImage');
         return(<Image source={{uri:this.state.profilePic}} 
-            style= {{height:100,width:110,resizeMode: 'contain'}}/>);
+            style= {{height:100,width:100, borderRadius:50,resizeMode: 'contain'}}/>);
     }
 }
  isValidEmail(email) {
@@ -259,16 +260,32 @@ spinnerLoad() {
 onPickImage() {
     const self=this;
     ImagePicker.showImagePicker(imgPickerOptions, response => {
-      //console.warn(response)
+      console.log(response)
       if (!response.didCancel && !response.error) {
-        self.setState({ imageUploadBool: true });
+        console.log('response.uri',response.uri, ':::::response',response);
+        console.log('response.data',response.data,response.type);
+       if(Platform.OS === 'android'){
         NativeModules.FetchData.GetImg(response.uri, (resp) => {
-          self.setState({ addPostImgUrl: '' + resp, profilePic:  response.uri }, () => {
-            //console.log(self.state.addPostImgUrl);
-            var postdata = {"image":"data:"+response.type+";base64,"+resp};
-            self.sendPicToServer(postdata)
+            self.setState({ addPostImgUrl: '' + resp, profilePic:  response.uri }, () => {
+              console.log(self.state.addPostImgUrl);
+              var postdata = {"image":"data:"+response.type+";base64,"+resp};
+              console.log('postdata',postdata);
+              self.sendPicToServer(postdata)
+            });
           });
-        });
+       }else{
+        
+        self.setState({ addPostImgUrl: '' + response.data, profilePic:  response.uri }, () => {
+            console.log(self.state.addPostImgUrl);
+            fileType(response.uri).then((type) => {
+                var postdata = {"image":"data:"+type.mime+";base64,"+response.data};
+                console.log('postdata',postdata);
+                self.sendPicToServer(postdata)
+            })
+           
+          });
+       }
+        
       } else if (response.didCancel) {
         self.setState({ addPostImgUrl: '', addPostImage: '', imageUploadBool: false });
       } else {
@@ -318,7 +335,10 @@ onPickImage() {
             Utils.ShowMessage("Something went wrong.Please try after sometime");
         })
   }
-
+onLogout(){
+    AsyncStorage.clear();
+    this.props.navigation.navigate('login');
+}
 
  render() {
         const {
@@ -330,11 +350,19 @@ onPickImage() {
         return (
             <View style={CustomStyles.profileviewStyle}>
                 <View style={CustomStyles.profileheaderStyle}>
+                    
+                    <View style={{marginTop: 15, flexDirection: 'row', alignItems: 'center'}}>
                     <TouchableOpacity
                             onPress={() => { this.props.navigation.navigate('GroupList',{token:this.state.token,edit:false})}}
                                     >
                         <Image source={require('../images/eg_profile.png')} style= {CustomStyles.profileUserImage}/>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                            onPress={() => { this.onLogout()}}
+                                    >
+                        <CustomText customTextStyle={{marginLeft:10,fontSize: 14}}>Logout</CustomText>
+                    </TouchableOpacity>
+                    </View>
                 </View>            
                 {this.spinnerLoad()}
                 <ScrollView style={CustomStyles.profileScroll}>

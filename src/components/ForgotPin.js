@@ -50,7 +50,7 @@ class ForgotPin extends Component{
                 }
             }).catch((error) => {
                 console.log('error in forgotPassword ==>', error);
-                if (error.response.status === 504 ) {
+                if (error.response.status === 504 || error.response.status === 401 || error.response.status === 502) {
                    this.setState({ spinnerBool: false });
                    alert("Something went Wrong.Please try after some time");
                  }
@@ -122,7 +122,7 @@ class ForgotPin extends Component{
                                
                                      <TouchableOpacity style={CustomStyles.forgotActionpadding}  onPress={() => {
                                                                 Keyboard.dismiss();
-                                                                //Actions.pop();
+                                                                this.props.navigation.goBack();
                                                             }}>
                                         <CustomText customTextStyle={CustomStyles.forgotcancelTextStyle}>
                                             CANCEL

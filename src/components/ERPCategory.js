@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
-import {LoadingSpinner, ExpiryDateItems, Card, MailBox, CustomEditText, Ctoggle, CustomText, Confirm } from './common';
+import { LoadingSpinner, ExpiryDateItems, Card, MailBox, CustomEditText, CPicker, Ctoggle, CustomText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 
@@ -177,7 +177,7 @@ export default class ERPCategory extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.registrationNo}
-                value={truckItem._id}
+                value={truckItem._id + "###" + truckItem.registrationNo}
             />
         );
     }
@@ -187,7 +187,7 @@ export default class ERPCategory extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.name}
-                value={truckItem._id}
+                value={truckItem._id + "###" + truckItem.name}
             />
         );
     }
@@ -367,7 +367,7 @@ export default class ERPCategory extends Component {
     }
 
     onAccept() {
-      
+
         switch (this.state.category) {
             case "revenue":
                 if (this.state.str === 'max' && this.state.rMaxDate === '') {
@@ -384,7 +384,7 @@ export default class ERPCategory extends Component {
                     alert('Select a date');
                 } else if (this.state.str !== 'max' && this.state.expMinDate === '') {
                     alert('Select a date');
-                }else {
+                } else {
                     this.setState({ showModal: false })
                 }
                 return;
@@ -394,7 +394,7 @@ export default class ERPCategory extends Component {
                     alert('Select a date');
                 } else if (this.state.str !== 'max' && this.state.pMinDate === '') {
                     alert('Select a date');
-                }else {
+                } else {
                     this.setState({ showModal: false })
                 }
                 return;
@@ -403,7 +403,7 @@ export default class ERPCategory extends Component {
                     alert('Select a date');
                 } else if (this.state.str !== 'max' && this.state.recMinDate === '') {
                     alert('Select a date');
-                }else {
+                } else {
                     this.setState({ showModal: false })
                 }
                 return;
@@ -506,12 +506,12 @@ export default class ERPCategory extends Component {
     sendSettingData(category) {
         switch (category) {
             case "revenue":
-                if (this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
+                if (this.state.selectedTruckId.includes('Select  Vehicles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
                     Utils.ShowMessage("Please Select Dates or Vechicle");
 
                 } else {
 
-                    if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                    if (this.state.selectedTruckId.includes('Select  Vehicles')) {
                         this.setState({ selectedTruckId: '' });
                     }
                     var sort = { "createdAt": -1 };
@@ -534,14 +534,14 @@ export default class ERPCategory extends Component {
                 return;
                 break;
             case "expense":
-                if (this.state.selectedTruckId.includes('Select  Vechiles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
+                if (this.state.selectedTruckId.includes('Select  Vehicles') && this.state.rMinPassdate === '' && this.state.rMaxPassdate === '') {
                     Utils.ShowMessage("Please Select Dates or Vechicle");
 
 
 
 
                 } else {
-                    if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                    if (this.state.selectedTruckId.includes('Select  Vehicles')) {
                         this.setState({ selectedTruckId: '' });
                     }
                     var sort = { "createdAt": -1 };
@@ -779,7 +779,7 @@ export default class ERPCategory extends Component {
             case "Revenue":
 
 
-                if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                if (this.state.selectedTruckId.includes('Select  Vehicles')) {
                     this.setState({ selectedTruckId: '' });
                 }
 
@@ -823,7 +823,7 @@ export default class ERPCategory extends Component {
                 return;
                 break;
             case "Expense":
-                if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                if (this.state.selectedTruckId.includes('Select  Vehicles')) {
                     this.setState({ selectedTruckId: '' });
                 }
 
@@ -937,7 +937,7 @@ export default class ERPCategory extends Component {
                 return;
                 break;
             case "Expense":
-                if (this.state.selectedTruckId.includes('Select  Vechiles')) {
+                if (this.state.selectedTruckId.includes('Select  Vehicles')) {
                     this.setState({ selectedTruckId: '' });
                 }
 
@@ -1118,9 +1118,10 @@ export default class ERPCategory extends Component {
                                                 borderWidth: 0,
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: 'black',
-                                                borderColor: '#000', justifyContent: 'flex-end'}}>
-                                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                                                    <View style={{ flex: 4, justifyContent: 'flex-end'}}>
+                                                borderColor: '#000', justifyContent: 'flex-end'
+                                            }}>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                                    <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
                                                             placeholder={'Select Date'}
@@ -1136,7 +1137,7 @@ export default class ERPCategory extends Component {
                                             </View>
                                         </TouchableOpacity>
                                     </View>
-                                    
+
                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.onPickdate('max', 'revenue') }}
@@ -1183,21 +1184,24 @@ export default class ERPCategory extends Component {
                                         </TouchableOpacity>
                                     </View> */}
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
-                                         width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
-                                         borderBottomWidth: 1,
-                                         borderBottomColor: '#000'
+                                        width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#000'
                                     }}>
-                                        <Picker
-                                            style={{width: 200, height: 45 }}
-                                            selectedValue={this.state.selectedTruckId}
-                                            onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                            <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
+                                        <CPicker
+                                            placeholder="Select  Vehicles"
+                                            cStyle={{ width: 200, height: 150 }}
+                                            selectedValue={this.state.truckText}
+                                            onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] }, () => {
+                                                console.log('itemValue, itemIndex', itemValue, itemIndex)
+                                            })}>
+                                            <Picker.Item label="Select Vehicles" value="Select  Vehicles" />
                                             {this.renderTrucksRegNo()}
-                                        </Picker>
+                                        </CPicker>
                                     </View>
-                                    <View style={{ marginTop: 5, marginLeft: 2}}>
+                                    <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('revenue') }}>{/* //RR */}
                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
@@ -1294,8 +1298,9 @@ export default class ERPCategory extends Component {
                                                 borderWidth: 0,
                                                 borderBottomWidth: 1,
                                                 borderBottomColor: 'black',
-                                                borderColor: '#000', justifyContent: 'flex-end'}}>
-                                                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                                borderColor: '#000', justifyContent: 'flex-end'
+                                            }}>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                                         <CustomEditText underlineColorAndroid='transparent'
                                                             editable={false}
@@ -1312,7 +1317,7 @@ export default class ERPCategory extends Component {
                                             </View>
                                         </TouchableOpacity>
                                     </View>
-                                   
+
                                     <View style={{ flex: 4, justifyContent: 'flex-end' }}>
                                         <TouchableOpacity
                                             onPress={() => { this.onPickdate('max', 'expense') }}
@@ -1358,22 +1363,32 @@ export default class ERPCategory extends Component {
                                                 source={require('../images/erp_download.png')} />
                                         </TouchableOpacity>
                                     </View> */}
-                                </View> 
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <View style={{
                                         width: 200, height: 45, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5,
                                         borderBottomWidth: 1,
                                         borderBottomColor: '#000'
                                     }}>
-                                        <Picker
+                                        <CPicker
+                                            placeholder="Select  Vehicles"
+                                            cStyle={{ width: 200, height: 150 }}
+                                            selectedValue={this.state.truckText}
+                                            onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] }, () => {
+                                                console.log('itemValue, itemIndex', itemValue, itemIndex)
+                                            })}>
+                                            <Picker.Item label="Select Vehicles" value="Select  Vehicles" />
+                                            {this.renderTrucksRegNo()}
+                                        </CPicker>
+                                        {/* <CPicker
                                             style={{width: 200, height: 45}}
                                             selectedValue={this.state.selectedTruckId}
                                             onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
-                                            <Picker.Item label="Select Vechiles" value="Select  Vechiles" />
+                                            <Picker.Item label="Select Vehicles" value="Select  Vehicles" />
                                             {this.renderTrucksRegNo()}
-                                        </Picker>
+                                        </CPicker> */}
                                     </View>
-                                    <View style={{ marginTop: 5, marginLeft: 2}}>
+                                    <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('expense') }}>
                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
@@ -1468,7 +1483,7 @@ export default class ERPCategory extends Component {
                         <View style={CustomStyles.erpCategory}>
                             <View style={[CustomStyles.row]}>
                                 <Ctoggle label='Payables' activeStyle={{ backgroundColor: this.state.payablesBool }}
-                                    labelStyle={{ color: 'black' }}
+                                    labelStyle={{ color: 'white' }}
                                     onPress={() => this.changeRoleStatus('P')}
                                 />
                                 <Ctoggle label='Receivables' activeStyle={{ backgroundColor: this.state.receiveablesBool }}
@@ -1558,19 +1573,27 @@ export default class ERPCategory extends Component {
                                         borderBottomWidth: 1,
                                         borderBottomColor: '#000'
                                     }}>
-                                        <Picker
+                                        <CPicker
+                                            placeholder="Select Parties"
+                                            style={{ width: 200, height: 150 }}
+                                            selectedValue={this.state.truckText}
+                                            onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] })}>
+                                            <Picker.Item label="Select Parties" value="Select Parties" />
+                                            {this.renderPartyList()}
+                                        </CPicker>
+                                        {/* <Picker
                                             style={{ width: 200, height: 45 }}
                                             selectedValue={this.state.selectedTruckId}
                                             onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
                                             <Picker.Item label="Select Parties" value="Select Parties" />
                                             {this.renderPartyList()}
-                                        </Picker>
+                                        </Picker> */}
                                     </View>
                                     <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('payment') }}>
-                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
-                                              <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
+                                                <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     GO
                                                 </Text>
                                             </View>
@@ -1659,7 +1682,7 @@ export default class ERPCategory extends Component {
                                     onPress={() => this.changeRoleStatus('P')}
                                 />
                                 <Ctoggle label='Receivables' activeStyle={{ backgroundColor: this.state.receiveablesBool }}
-                                    labelStyle={{ color: 'black' }}
+                                    labelStyle={{ color: 'white' }}
                                     onPress={() => this.changeRoleStatus('R')}
                                 />
                             </View>
@@ -1749,19 +1772,20 @@ export default class ERPCategory extends Component {
                                         borderBottomWidth: 1,
                                         borderBottomColor: '#000'
                                     }}>
-                                        <Picker
-                                            style={{ width: 200, height: 45 }}
-                                            selectedValue={this.state.selectedTruckId}
-                                            onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
+                                        <CPicker
+                                            placeholder="Select Parties"
+                                            style={{ width: 200, height: 150 }}
+                                            selectedValue={this.state.truckText}
+                                            onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] })}>
                                             <Picker.Item label="Select Parties" value="Select Parties" />
                                             {this.renderPartyList()}
-                                        </Picker>
+                                        </CPicker>
                                     </View>
                                     <View style={{ marginTop: 5, marginLeft: 2 }}>
                                         <TouchableOpacity
                                             onPress={() => { this.sendSettingData('receivables') }}>
-                                             <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
-                                             <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center', width: 60, height: 45, backgroundColor: "#e83b13" }}>
+                                                <Text style={{ color: '#fff', padding: 5, alignSelf: 'center' }}>
                                                     GO
                                                 </Text>
                                             </View>

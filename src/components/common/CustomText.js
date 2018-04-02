@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text} from 'react-native';
+import {Text, Platform} from 'react-native';
 
 class CustomText extends Component {
     render() {
@@ -16,7 +16,8 @@ const styles = {
     textStyle: {
         fontSize: 16,
         // fontFamily:'Gotham-Light',
-        color: '#ffffff'
+        color: '#ffffff',
+        //backgroundColor: Platform.OS==='ios'? 'transparent': 'none'
     }
 };
 

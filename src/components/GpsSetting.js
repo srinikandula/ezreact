@@ -1,36 +1,135 @@
 import React, {Component} from 'react';
-import {View,Button,Image,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Button,Image,Text,TouchableOpacity,ScrollView,Keyboard, Dimensions,AsyncStorage} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {CustomInput,Card,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
+import Axios from 'axios';
 class GpsSetting extends Component{
-     state = {};
+     state = {mstop: ' ',OverSpeed: '',interval:'',stopTime:'', source: '',destination:'', message: '',accountId:''};
 
     constructor(props) {
         super(props);
-        this.state = {
-            mstop: ' ',OverSpeed: '',interval:'',stopTime:'', source: '',destination:'', message: '',
+        this.state = {            
             mstoplbl: false,OverSpeedlbl: false,intervallbl:false,stopTimelbl:false, sourcelbl: false,destinationlbl:false
         };
     }
 
 
     componentWillMount() {
-      // do stuff while splash screen is shown
-        // After having done stuff (such as async tasks) hide the splash screen
-       SplashScreen.hide();
-       BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+        this.getCredentailsData();        
+     }
+
+     async getCredentailsData() {
+        this.getCache((value) => {
+            if (value !== null) {
+                var egObj = {};
+                egObj = JSON.parse(value);
+                this.setState({token:egObj.token});
+                if(egObj.hasOwnProperty('GpsSetting')){
+                    this.setState({token:egObj.token,});
+                }
+                this.setState({ spinnerBool:true });
+                Axios({
+                    method: 'get',
+                    headers: { 'token': egObj.token },
+                    url: Config.routes.base + Config.routes.gpsSetting
+                })
+                .then((response) => {
+                    if (response.data.status) {
+                        console.log('GpsSetting ==>', response.data);
+                       if(response.data.results){
+                            this.setState({ 
+                                            //accountId:response.data.results.accountId,                
+                                            mstop: ''+response.data.results.idleTime,
+                                            OverSpeed: ''+response.data.results.overSpeedLimit,
+                                            interval:''+response.data.results.routeNotificationInterval,
+                                            stopTime:''+response.data.results.stopTime,
+                                            mstoplbl: true,OverSpeedlbl: true,intervallbl:true,stopTimelbl:true});
+                       }
+                    } else {
+                        
+                    }
+                    this.setState({ spinnerBool:false });
+                }).catch((error) => {
+                    console.log('error in GpsSetting ==>', error);
+                    this.setState({ spinnerBool:false });
+                })
+                
+            } else {
+                this.setState({ spinnerBool: false })
+            }
+        }
+        );
     }
-    componentWillUnmount(){
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+    async getCache(callback) {
+        try {
+            var value = await AsyncStorage.getItem('credientails');
+            console.log('credientails=Notification', value);
+            if (value !== null) {
+                console.log('riyaz=Notification', value);
+            } else {
+                console.log('value=Notification', value);
+            }
+            callback(value);
+        }
+        catch (e) {
+            console.log('caught error=Notification', e);
+            // Handle exceptions
+        }
     }
 
-    onBackAndroid() {
-    //  Actions.pop();
+    UpdateSetting(){
+        var postData = {
+            'idleTime':Number(this.state.mstop),
+            'overSpeedLimit': Number(this.state.OverSpeed),
+            'routeNotificationInterval':Number(this.state.interval),
+            'stopTime': Number(this.state.stopTime),
+            'accountId':this.state.accountId
+        };
+        this.callupdateGPSAPI(postData)
     }
 
+    callupdateGPSAPI(postdata){
+        const self = this;
+        self.setState({ spinnerBool:true });
+        var methodType = 'POST';
+        var url = Config.routes.base + Config.routes.updateGpsSettings
+        Axios({
+            method: methodType,
+            headers: { 'token': self.state.token },
+            url: url,
+            data: postdata
+        })
+            .then((response) => {
+                console.log(Config.routes.base + Config.routes.updateGpsSettings,"URL");
+                console.log(postdata,'<- updateGpsSettings ==>', response.data);
+                if (response.data.status) {                    
+                    self.setState({ spinnerBool:false });
+    
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    Utils.ShowMessage(message);
+                    
+                } else {
+                    self.setState({ spinnerBool:false });
+                    let message ="";
+                    if(response.data)
+                    response.data.messages.forEach(function(current_value) {
+                        message = message+current_value;
+                    });
+                    Utils.ShowMessage(message);                    
+                }
+            }).catch((error) => {
+                console.log('error in update updateGpsSettings ==>', error);
+                self.setState({ spinnerBool:false });
+                Utils.ShowMessage("Something went wrong.Please try after sometime");
+            })
+    }
         
 
  render() {
@@ -139,7 +238,7 @@ class GpsSetting extends Component{
                                     inputTextStyle={inputStyle}
                                     value={this.state.mstop}
                                     onChangeText={(value) => {
-                                        this.setState({mstop: value,mstoplbl:true})
+                                        this.setState({mstop: value,mstoplbl:value.Length==0? false:true})
                                     }}
                                 />
                             </View>
@@ -155,7 +254,7 @@ class GpsSetting extends Component{
                                     inputTextStyle={inputStyle}
                                     value={this.state.OverSpeed}
                                     onChangeText={(value) => {
-                                        this.setState({OverSpeed: value,OverSpeedlbl:true})
+                                        this.setState({OverSpeed: value,OverSpeedlbl:value.Length==0? false:true})
                                     }}
                                 />
                             </View>
@@ -170,7 +269,7 @@ class GpsSetting extends Component{
                                     inputTextStyle={inputStyle}
                                     value={this.state.interval}
                                     onChangeText={(value) => {
-                                        this.setState({interval: value,intervallbl:true})
+                                        this.setState({interval: value,intervallbl:value.Length==0? false:true})
                                     }}
                                 />
                             </View>
@@ -185,10 +284,18 @@ class GpsSetting extends Component{
                                     inputTextStyle={inputStyle}
                                     value={this.state.stopTime}
                                     onChangeText={(value) => {
-                                        this.setState({stopTime: value,stopTimelbl:true})
+                                        this.setState({stopTime: value,stopTimelbl:value.Length==0? false:true})
                                     }}
                                 />
                             </View>
+                            <View style={{justifyContent:'flex-start',alignSelf:'stretch',alignItems:'flex-end', padding:3}}>
+                                <TouchableOpacity style={actionStyle} onPress={()=>{this.UpdateSetting()}}>
+                                <CustomText customTextStyle={sendTextStyle}>
+                                    Submit
+                                </CustomText>   
+                                </TouchableOpacity>
+                            </View>
+
                        </Card>
 
                        <Card>

@@ -16,7 +16,7 @@ Utils.prototype.TokenunAuthorized = function (error){
 }
 
 Utils.prototype.checkInternetConnection = function () {
-    const status = false;
+    var status = false;
     NetInfo.isConnected.fetch().then(isConnected => {
         console.log('First, is ' + (isConnected ? 'online' : 'offline'));
         if(isConnected === 'online')

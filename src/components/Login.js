@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules } from 'react-native';
+import { View, Image, AsyncStorage, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules,NetInfo } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import Utils from './common/Utils';
@@ -82,39 +82,46 @@ class Login extends Component {
         if (this.state.password.length < 4) {
             return Utils.ShowMessage('Enter valid password');
         }
-
-        self.setState({ spinnerBool: true });
-        Axios({
-            method: 'post',
-            url: Config.routes.base + Config.routes.loginRoute,
-            data: {
-                userName: this.state.userName,
-                password: this.state.password,
-                contactPhone: this.state.phoneNumber
-            }
-        }).then((response) => {
-            console.log("messages", response.data.messages);
-            console.log("response", response.data);
-            if (response.data.status) {
-                //console.log("response.data",response.data);
-                this.storeData(response.data);
-                this.runFCMService(response.data.token);
-                //this.props.navigation.navigate('homepage');
-            } else {
-                let message = "";
-                if (response.data)
-                    response.data.messages.forEach(function (current_value) {
-                        message = message + current_value;
-                    });
-                Utils.ShowMessage(message);
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({showMail:false});
+            self.setState({ spinnerBool: true });
+            Axios({
+                method: 'post',
+                url: Config.routes.base + Config.routes.loginRoute,
+                data: {
+                    userName: this.state.userName,
+                    password: this.state.password,
+                    contactPhone: this.state.phoneNumber
+                }
+            }).then((response) => {
+                console.log("messages", response.data.messages);
+                console.log("response", response.data);
+                if (response.data.status) {
+                    //console.log("response.data",response.data);
+                    this.storeData(response.data);
+                    this.runFCMService(response.data.token);
+                    //this.props.navigation.navigate('homepage');
+                } else {
+                    let message = "";
+                    if (response.data)
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                    Utils.ShowMessage(message);
+                    self.setState({ spinnerBool: false });
+                }
+            
+            }).catch((error) => {
                 self.setState({ spinnerBool: false });
-            }
-           
-        }).catch((error) => {
-            self.setState({ spinnerBool: false });
-            console.log('login post error--->', error)
-            Utils.ShowMessage("Something went wrong.Please try after sometime");
-        })
+                console.log('login post error--->', error)
+                Utils.ShowMessage("Something went wrong.Please try after sometime");
+            })
+        } else {
+            return this.setState({showMail:true});
+        }
+    });
 
     }
 
@@ -208,6 +215,8 @@ class Login extends Component {
             local: true
         });
     }
+
+   
 
     render() {
         const {
@@ -376,7 +385,8 @@ class Login extends Component {
                                 </CustomButton>
                             </View>
                             {this.spinnerLoad()}
-                            <NoInternetModal visible={this.state.showMail} />
+                            <NoInternetModal visible={this.state.showMail} 
+                                            onAccept={() => {this.setState({ showMail: false }) }}/>
                         </View>
                     </ScrollView>
                 </View>

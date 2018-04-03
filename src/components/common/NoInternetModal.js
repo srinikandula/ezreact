@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {StyleSheet,Text,View, Image,TextInput,Button,TouchableOpacity,Platform,DatePickerAndroid,Modal,Dimensions} from 'react-native';
 
-const NoInternetModal =({visible})=>{
+const NoInternetModal =({visible,onAccept})=>{
     const { containerStyle, textStyle, cardSectionStyle, viewContainerStyle } = styles;
   
     return ( 
@@ -11,7 +11,18 @@ const NoInternetModal =({visible})=>{
         visible={visible}
         onRequestClose={ () => {} }>  
         <View style={containerStyle}>
+                
             <View style={[viewContainerStyle,cardSectionStyle,{backgroundColor:'#ffffff'}]}>
+                <View style={{justifyContent: 'flex-end',alignItems: 'flex-end',postion:'absolute',right:10,top:5,margin:2}}>
+                    <TouchableOpacity
+                        onPress={onAccept}
+                        
+                    >
+                    <Text style={{color:'red',fontWeight:'bold',marginBottom:25,fontSize:15,alignContent:'center'}}>
+                                X </Text>
+                    </TouchableOpacity>            
+                </View>
+
                 <View style={[viewContainerStyle,cardSectionStyle,{backgroundColor:'#ffffff',borderBottomWidth: 0,borderBottomColor: 'black',alignItems:'center'}]}>
                     <Image style={{ width: 50, height: 60, resizeMode: 'contain',marginTop:15 }}
                             source={require('../../images/no_internet.png')} />
@@ -22,11 +33,12 @@ const NoInternetModal =({visible})=>{
            
             <View style={{borderBottomWidth: 0,borderBottomColor: 'black',margin:10,flexDirection:'column',
                 borderColor: '#000', alignItems:'center'}}>                
-                    <Text style={{fontSize:15,marginTop:15}}>SLOW OR NO </Text>
+                    <Text style={{fontSize:15,marginTop:15}}> </Text>
                     <Text style={{fontSize:15,marginBottom:15}}>NETWORK CONNECTION </Text>
                    
             </View> 
             </View>
+            
         </View>
     </Modal>
     );

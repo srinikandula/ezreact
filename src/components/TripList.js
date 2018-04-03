@@ -206,11 +206,11 @@ export default class TripList extends Component {
                             <CustomEditText underlineColorAndroid='transparent' 
                                     placeholder={'Enter Trip ID'}
                                     value={this.state.tripID}
-                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5 }}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderBottomWidth:1,borderColor:'#727272' }}
                                     onChangeText={(tripID) => { this.FilterList(tripID) }}
                             />
                         </View>
-                        <View style={CustomStyles.noResultView}>
+                        <View style={[{ display: self.state.trips.length === 0 ? 'flex' : 'none' }, CustomStyles.noResultView]}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {this.showResult()}</Text>

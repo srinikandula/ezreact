@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import { View, BackHandler, NetInfo, ScrollView, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { LoadingSpinner, ExpiryDateItems} from './common';
-import  Utils from './common/Utils';
+import { LoadingSpinner, ExpiryDateItems, CustomText } from './common';
+import Utils from './common/Utils';
 import { NavigationActions } from 'react-navigation';
 import Config from '../config/Config';
 import Axios from 'axios';
@@ -17,8 +17,10 @@ const category = [
     }]
 
 export default class ErpHome extends Component {
-    state = { loadSpinner: false, categoryBgColor: false, token: '', 
-    erpDashBroadData: {paybleAmount: 0, pendingDue: 0, expensesTotal:0, totalRevenue: 0}, expirydetails: [], update: false };
+    state = {
+        loadSpinner: false, categoryBgColor: false, token: '',
+        erpDashBroadData: { paybleAmount: 0, pendingDue: 0, expensesTotal: 0, totalRevenue: 0 }, expirydetails: [], update: false
+    };
 
     componentWillMount() {
         const self = this;
@@ -84,7 +86,7 @@ export default class ErpHome extends Component {
                             tempObj.count = temp.taxExpiryCount;
                             Aarr.push(tempObj);
                             //this.onChange();
-                            this.setState({ erpDashBroadData: response.data.result, expirydetails: Aarr,loadSpinner: false  });
+                            this.setState({ erpDashBroadData: response.data.result, expirydetails: Aarr, loadSpinner: false });
                             //console.log('expiry ==>', this.state.expirydetails);
                         } else {
                             console.log('error in ErpHome ==>', response);
@@ -95,8 +97,8 @@ export default class ErpHome extends Component {
                         if (error.response.status === 401) {
                             AsyncStorage.clear();// AsyncStorage.clear();
                             this.reset();
-                           
-                         }
+
+                        }
                     })
                 });
 
@@ -110,14 +112,14 @@ export default class ErpHome extends Component {
     reset() {
         const { navigate } = this.props.navigation
         const resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'login' })
-          ],
-          key: null
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'login' })
+            ],
+            key: null
         });
         this.props.navigation.dispatch(resetAction);
-      }
+    }
     async getCache(callback) {
         try {
             var value = await AsyncStorage.getItem('credientails');
@@ -186,11 +188,11 @@ export default class ErpHome extends Component {
     render() {
         return (
 
-            <View style={CustomStyles.ViewStyle}>
-            {this.renderLoadingSpinner()}
+            <View style={CustomStyles.viewStyle}>
+                {this.renderLoadingSpinner()}
                 <ScrollView>
                     <TouchableOpacity
-                        onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }); this.callcategoryScreen('Revenue') }}
+                        onPress={() => { this.callcategoryScreen('Revenue') }}
                     >
                         <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                             <Image
@@ -199,21 +201,21 @@ export default class ErpHome extends Component {
                                 source={require('../images/revenue.png')}
                             />
                             <View style={CustomStyles.textContainer}>
-                                <Text style={CustomStyles.headingTextColor}>
+                                <CustomText customTextStyle={CustomStyles.headingTextColor}>
                                     Revenue
-                        </Text>
-                                <Text style={CustomStyles.subHeadingTextColor}>
+                        </CustomText>
+                                <CustomText customTextStyle={CustomStyles.subHeadingTextColor}>
                                     From all vehicles
-                        </Text>
-                                <Text style={CustomStyles.amountColor}>
+                        </CustomText>
+                                <CustomText customTextStyle={CustomStyles.amountColor}>
                                     {`₹${this.state.erpDashBroadData.totalRevenue}`}
-                                </Text>
+                                </CustomText>
                             </View>
                         </View>
                     </TouchableOpacity>
                     {/* this.renderCategories() */}
                     <TouchableOpacity
-                        onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }); this.callcategoryScreen('Expense') }}
+                        onPress={() => { this.callcategoryScreen('Expense') }}
                     >
                         <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                             <Image
@@ -222,20 +224,20 @@ export default class ErpHome extends Component {
                                 source={require('../images/expenses.png')}
                             />
                             <View style={CustomStyles.textContainer}>
-                                <Text style={CustomStyles.headingTextColor}>
+                                <CustomText customTextStyle={CustomStyles.headingTextColor}>
                                     Expenses
-                        </Text>
-                                <Text style={CustomStyles.subHeadingTextColor}>
+                        </CustomText>
+                                <CustomText customTextStyle={CustomStyles.subHeadingTextColor}>
                                     From all vehicles
-                        </Text>
-                                <Text style={CustomStyles.amountColor}>
+                        </CustomText>
+                                <CustomText customTextStyle={CustomStyles.amountColor}>
                                     {`₹${this.state.erpDashBroadData.expensesTotal}`}
-                                </Text>
+                                </CustomText>
                             </View>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }); this.callcategoryScreen('Payments') }}
+                        onPress={() => { this.callcategoryScreen('Payments') }}
                     >
                         <View style={[CustomStyles.Category, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                             <Image
@@ -244,50 +246,50 @@ export default class ErpHome extends Component {
                                 source={require('../images/payments.png')}
                             />
                             <View style={CustomStyles.textContainer}>
-                                <Text style={CustomStyles.headingTextColor}>
-                                    payments
-                                </Text>
-                                <Text style={CustomStyles.subHeadingTextColor}>
+                                <CustomText customTextStyle={CustomStyles.headingTextColor}>
+                                    Payments
+                                </CustomText>
+                                <CustomText customTextStyle={CustomStyles.subHeadingTextColor}>
                                     From all vehicles
-                                </Text>
-                                <Text style={CustomStyles.amountColor}>
-                                    {`payables    ₹${this.state.erpDashBroadData.paybleAmount}`}
-                                </Text>
-                                <Text style={CustomStyles.amountColor}>
+                                </CustomText>
+                                <CustomText customTextStyle={CustomStyles.amountColor}>
+                                    {`payables        ₹${this.state.erpDashBroadData.paybleAmount}`}
+                                </CustomText>
+                                <CustomText customTextStyle={CustomStyles.amountColor}>
 
-                                    {`Receivables      ₹${this.state.erpDashBroadData.pendingDue}`}
-                                </Text>
+                                    {`Receivables    ₹${this.state.erpDashBroadData.pendingDue}`}
+                                </CustomText>
                             </View>
-                            </View>
+                        </View>
                     </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => { this.setState({ categoryBgColor: !this.state.categoryBgColor }); this.callcategoryScreen('Expiry') }}
-                        >
-                            <View style={[CustomStyles.ECategory, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
-                                <Image
-                                    style={CustomStyles.imageDimensions}
-                                    resizeMode="contain"
-                                    source={require('../images/expirydetails.png')}
-                                />
-                                <View style={CustomStyles.EtextContainer}>
-                                    <Text style={CustomStyles.headingTextColor}>
-                                        Expiry Details
-                            </Text>
-                                    <Text style={CustomStyles.subHeadingTextColor}>
-                                        From all vehicles
-                            </Text>
-                                    <ScrollView horizontal={true}>
-                                        {/* <View style={{alignSelf: 'stretch',alignItems: 'stretch',  flexDirection:'row',padding:2}}> */}
-                                        <View style={CustomStyles.expiryDateView}>
-                                            {this.getExpiryDateView()}
-                                        </View>
-                                    </ScrollView>
-                                </View>
+                    <TouchableOpacity
+                        onPress={() => { this.callcategoryScreen('Expiry') }}
+                    >
+                        <View style={[CustomStyles.ECategory, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                            <Image
+                                style={CustomStyles.imageDimensions}
+                                resizeMode="contain"
+                                source={require('../images/expirydetails.png')}
+                            />
+                            <View style={CustomStyles.EtextContainer}>
+                                <CustomText customTextStyle={CustomStyles.headingTextColor}>
+                                    Expiry Details
+                            </CustomText>
+                                <CustomText customTextStyle={CustomStyles.subHeadingTextColor}>
+                                    From all vehicles
+                            </CustomText>
+                                <ScrollView horizontal={true}>
+                                    {/* <View style={{alignSelf: 'stretch',alignItems: 'stretch',  flexDirection:'row',padding:2}}> */}
+                                    <View style={CustomStyles.expiryDateView}>
+                                        {this.getExpiryDateView()}
+                                    </View>
+                                </ScrollView>
                             </View>
-                        </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
                 </ScrollView>
             </View>
-                );
+        );
     }
 
 

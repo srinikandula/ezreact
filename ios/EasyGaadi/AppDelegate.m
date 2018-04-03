@@ -11,7 +11,8 @@
 #import "RNFIRMessaging.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-
+@import GooglePlaces;
+@import GoogleMaps;
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -33,6 +34,8 @@
   [self.window makeKeyAndVisible];
   [FIRApp configure];
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+  [GMSPlacesClient provideAPIKey:@"AIzaSyCwLdr96uSxFIQeO4ngDGi295sabaScD_I"];
+  [GMSServices provideAPIKey:@"AIzaSyCwLdr96uSxFIQeO4ngDGi295sabaScD_I"];
   return YES;
 }
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler

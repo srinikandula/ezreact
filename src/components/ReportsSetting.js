@@ -842,7 +842,7 @@ class ReportsSetting extends Component {
     render() {
 
         return (
-            <View style={CustomStyles.viewStyle}>
+            <View style={[CustomStyles.viewStyle, {backgroundColor: 'rgba(255,255,255,0)'}]}>
                 <ScrollView style={{ alignSelf: 'stretch', flex: 1, marginBottom: 10 }}>
                     <View style={CustomStyles.containerStyle}>
                         {this.spinnerLoad()}

@@ -3,7 +3,7 @@ import {
     View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import { CustomInput, renderIf, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
+import { CustomInput, CPicker, renderIf, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
 import Config from '../config/Config';
 import Utils from '../components/common/Utils';
 import Axios from 'axios';
@@ -90,11 +90,18 @@ export default class AddDriver extends Component {
     }
 
     updateViewdate(driverDetails) {
-
+        const self = this;
+        let trucksList = self.state.trucks;
         let truckID = driverDetails.truckId;
         if (driverDetails.truckId === null) {
 
             truckID = 'Select Truck';
+        } else {
+            for (let i = 0; i < trucksList.length; i++) {
+                if (trucksList[i]._id === truckID) {
+                    self.setState({ truckText: trucksList[i].registrationNo })
+                }
+            }
         }
         this.setState({
             name: driverDetails.fullName,
@@ -130,7 +137,7 @@ export default class AddDriver extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === '' ? 'none' : 'flex' }, selectedName: value });
     }
 
 
@@ -248,11 +255,11 @@ export default class AddDriver extends Component {
                             message = message + current_value;
                         });
                     Utils.ShowMessage(message);
-                    const {navigation} = this.props;
-                    const {state} = navigation;
+                    const { navigation } = this.props;
+                    const { state } = navigation;
                     let refreshFunc = state.params.refresh;
-                    if(typeof refreshFunc === 'function'){
-                        refreshFunc({refresh:true});
+                    if (typeof refreshFunc === 'function') {
+                        refreshFunc({ refresh: true });
                     }
                     this.props.navigation.goBack();
                 } else {
@@ -275,7 +282,7 @@ export default class AddDriver extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.registrationNo}
-                value={truckItem._id}
+                value={truckItem._id + "###" + truckItem.registrationNo}
             />
         );
     }
@@ -283,8 +290,8 @@ export default class AddDriver extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#1e4495', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 5, backgroundColor: '#1e4495', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
                         <Image
                             style={{ width: 20, marginLeft: 20 }}
@@ -293,41 +300,41 @@ export default class AddDriver extends Component {
                         />
                     </TouchableOpacity>
                     <Text style={{ fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light' }}>
-                        Add Driver
+                        ADD DRIVER
                         </Text>
                 </View>
-                <View>
+                <View style={{ flex: 1, justifyContent: 'flex-start' }}>
                     <ScrollView>
                         <View style={{ backgroundColor: '#ffffff', margin: 5 }}>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}>
-                                            Full Name</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field0]}>
+                                    Full Name</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent'
-                                                inputTextStyle={{ marginHorizontal: 16 }} 
-                                                placeholder={'Full Name'}
-                                                value={this.state.name}
-                                                onChangeText={(name) => { this.moveInputLabelUp(0, name), this.setState({ name: name }) }} />
+                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                    placeholder={'Full Name'}
+                                    value={this.state.name}
+                                    onChangeText={(name) => { this.moveInputLabelUp(0, name), this.setState({ name: name }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field1]}>
-                                            Contact Number</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field1]}>
+                                    Contact Number</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent'
-                                                keyboardType='numeric'
-                                                inputTextStyle={{ marginHorizontal: 16 }} 
-                                                placeholder={'Contact Number'}
-                                                value={this.state.mobile}
-                                                onChangeText={(mobile) => { this.moveInputLabelUp(1, mobile), this.setState({ mobile: mobile }) }} />
+                                    keyboardType='numeric'
+                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                    placeholder={'Contact Number'}
+                                    value={this.state.mobile}
+                                    onChangeText={(mobile) => { this.moveInputLabelUp(1, mobile), this.setState({ mobile: mobile }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field2]}>
-                                            License Number</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' 
-                                                inputTextStyle={{ marginHorizontal: 16 }} 
-                                                placeholder={'License Number'}
-                                                value={this.state.licenseNo}
-                                                onChangeText={(licenseNo) => { this.moveInputLabelUp(2, licenseNo), this.setState({ licenseNo: licenseNo }) }} />
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field2]}>
+                                    License Number</CustomText>
+                                <CustomEditText underlineColorAndroid='transparent'
+                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                    placeholder={'License Number'}
+                                    value={this.state.licenseNo}
+                                    onChangeText={(licenseNo) => { this.moveInputLabelUp(2, licenseNo), this.setState({ licenseNo: licenseNo }) }} />
                             </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate() }}
@@ -335,13 +342,13 @@ export default class AddDriver extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field3]}>
-                                                        License Validity</CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>
+                                                License Validity</CustomText>
                                             <CustomEditText editable={false}
-                                                            underlineColorAndroid='transparent'
-                                                            inputTextStyle={{ marginHorizontal: 16 }}
-                                                            placeholder={'License Validity'}
-                                                            value={this.state.date} />
+                                                underlineColorAndroid='transparent'
+                                                inputTextStyle={{ marginHorizontal: 16 }}
+                                                placeholder={'License Validity'}
+                                                value={this.state.date} />
                                         </View>
                                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -351,29 +358,41 @@ export default class AddDriver extends Component {
                                     </View>
                                 </View>
                             </TouchableOpacity>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>
-                                            Truck Num</CustomText>
-                                <Picker
-                                    style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    Truck Num</CustomText>
+                                <CPicker
+                                    placeholder="Select  Vehicles"
+                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
+                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    selectedValue={this.state.truckText}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    <Picker.Item label="Select Driver" value="Select Driver" />
+                                    {this.renderTrucksRegNo()}
+
+                                </CPicker>
+                                {/*  <CPicker
+                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedTruckId}
                                     onValueChange={(itemValue, itemIndex) => this.setState({ selectedTruckId: itemValue })}>
                                     {this.renderTrucksRegNo()}
-                                </Picker>
+                                </CPicker> */}
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field4]}>
-                                            Salary Per Month</CustomText>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>
+                                    Salary Per Month</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent'
-                                                keyboardType='numeric'
-                                                inputTextStyle={{ marginHorizontal: 16 }}
-                                                placeholder={'Salary Per Month'}
-                                                value={this.state.salaryPM}
-                                                onChangeText={(salaryPM) => { this.moveInputLabelUp(4, salaryPM), this.setState({ salaryPM: salaryPM }) }} />
+                                    keyboardType='numeric'
+                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                    placeholder={'Salary Per Month'}
+                                    value={this.state.salaryPM}
+                                    onChangeText={(salaryPM) => { this.moveInputLabelUp(4, salaryPM), this.setState({ salaryPM: salaryPM }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginLeft: 10, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CheckBox
+                                    checkboxStyle={{ width: 15, height: 15 }}
+
                                     label='Active'
                                     color={'#000000'}
                                     checked={this.state.activeMe}
@@ -386,7 +405,7 @@ export default class AddDriver extends Component {
                     </ScrollView>
 
                 </View>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                     <TouchableOpacity
                         style={{ flex: 1, backgroundColor: "#dfdfdf", alignSelf: 'stretch' }}
                         onPress={() => { this.props.navigation.goBack() }}

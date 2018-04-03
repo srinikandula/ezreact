@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Picker, Platform, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Picker, Platform, TouchableOpacity, TextInput, Modal, Image } from 'react-native';
 import styles from './CustomStyles';
 import { CustomInput, Confirm, CustomText } from './index';
 
@@ -32,8 +32,9 @@ class CPicker extends Component {
     renderPicker() {
         if (Platform.OS === 'ios') {
             return (
-                <TouchableOpacity onPress={() => { this.setState({ showModal: true })}} style={[styles.inputStyle,{ justifyContent: 'center'}]}>
-                    <CustomText customTextStyle={{color: '#000'}}>{this.getCourseValue()}</CustomText>
+                <TouchableOpacity onPress={() => { this.setState({ showModal: true })}} style={[styles.inputStyle,{ justifyContent: 'center', marginLeft:20}]}>
+                    <CustomText customTextStyle={{color: '#000'}}>{this.getCourseValue()} </CustomText>
+                    {/* <Image style={{alignSelf: 'flex-end',resizeMode:'contain', width: 20, height: 20 }} source={require('../../images/down_arrow.png')}/>  */}
                 </TouchableOpacity>
             );
         } else {

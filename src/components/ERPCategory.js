@@ -13,6 +13,7 @@ import Axios from 'axios';
 
 
 export default class ERPCategory extends Component {
+   
     state = {
         loadSpinner: false,
         showModal: false,
@@ -55,7 +56,15 @@ export default class ERPCategory extends Component {
         payablesBool: '#1e4495',
         receiveablesBool: '#ffffff'
     };
+    /* static navigationOptions = ({navigation})=> ({
+        title: navigation.state.params.mode.toUpperCase(),
+        headerTitleStyle: {marginLeft: -20, alignSelf:'flex-start', fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+        // headerStyle: { backgroundColor: '#1e4495' },
+        headerTintColor: '#fff'
+        // title: "Revenue",
+      }); */
     componentWillMount() {
+        
         const self = this;
         Axios({
             method: 'get',

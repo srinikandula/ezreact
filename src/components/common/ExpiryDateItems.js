@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import{Text,Dimensions,Alert,Show,TextInput,Modal,TouchableOpacity,View,TabNavigator,Button,Image,StyleSheet} from 'react-native';
 import CustomStyles from './CustomStyles';
+import {CustomText} from './index';
  const ExpiryDateItems=(props)=>{
     return (
       <View style={CustomStyles.expiryMainContainer} >
             <View style={[CustomStyles.expirySubContainer]}>
-                <Text style={CustomStyles.expiryCount}>{props.count}</Text>
-                <Text style={CustomStyles.expiryLabel}>{props.label}</Text>
+                <CustomText customTextStyle={CustomStyles.expiryCount}>{props.count}</CustomText>
+                <CustomText customTextStyle={CustomStyles.expiryLabel}>{props.label}</CustomText>
+                
             </View>  
       </View>
     );

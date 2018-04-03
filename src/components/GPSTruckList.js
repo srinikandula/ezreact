@@ -7,7 +7,7 @@ import { LoadingSpinner, ExpiryDateItems, CustomText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker,Callout } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 const { width, height } = Dimensions.get("window");
 import Utils from './common/Utils';
 const CARD_HEIGHT = height / 4;
@@ -138,11 +138,11 @@ export default class GPSTruckList extends Component {
                         } else {
                             console.log('error in GPStrucksList ==>', response);
                             this.setState({ loadSpinner: false })
-                            let message ="";
-                            if(response.data)
-                            response.data.messages.forEach(function(current_value) {
-                                message = message+current_value;
-                            });
+                            let message = "";
+                            if (response.data)
+                                response.data.messages.forEach(function (current_value) {
+                                    message = message + current_value;
+                                });
                             Utils.ShowMessage(message);
                         }
                     }).catch((error) => {
@@ -229,11 +229,11 @@ export default class GPSTruckList extends Component {
                     longitude: item.coordinate.longitude
                 }}
             >
-            <Callout tooltip style={styles.customView}>
-                <View style={styles.calloutText}>
-                    <Text>{'Riyaz'}{"\n"}{'description'}</Text>
-                </View>
-            </Callout>
+                <Callout tooltip style={styles.customView}>
+                    <View style={styles.calloutText}>
+                        <Text>{'Riyaz'}{"\n"}{'description'}</Text>
+                    </View>
+                </Callout>
             </Marker>
         });
     }
@@ -330,7 +330,7 @@ export default class GPSTruckList extends Component {
                                             <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', }]}>
                                                 {this.getName(item)} km/hr</Text>
                                             <CheckBox
-                                                checkboxStyle={{ width: 12, height: 12 }}
+                                                checkboxStyle={{ width: 15, height: 15 }}
                                                 label='Looking For Load'
                                                 color={'#000000'}
                                                 checked={item.rememberme}
@@ -350,9 +350,9 @@ export default class GPSTruckList extends Component {
         }
     }
 
-    showResult(){
-        if(this.state.trucks.length == 0)
-         return 'No Trucks Found';
+    showResult() {
+        if (this.state.trucks.length == 0)
+            return 'No Trucks Found';
     }
 
     render() {
@@ -364,10 +364,12 @@ export default class GPSTruckList extends Component {
             <View style={CustomStyles.viewStyle}>
                 {this.renderLoadingSpinner()}
                 <View style={CustomStyles.noResultView}>
-                            <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
-                                textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
-                                {this.showResult()}</Text>
-                        </View>
+                    <Text style={[CustomStyles.erpText, {
+                        color: '#1e4495', fontWeight: 'bold',
+                        textDecorationLine: 'underline', alignSelf: 'stretch', alignItems: 'center',
+                    }]}>
+                        {this.showResult()}</Text>
+                </View>
                 <View style={CustomStyles.erpCategory}>
 
                     {self.getView()}

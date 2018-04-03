@@ -1,13 +1,15 @@
-import React, {Component} from 'react';
-import {View,Text,Image,CheckBox,TouchableOpacity,ScrollView, Dimensions} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, Image, CheckBox, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {CustomInput,renderIf,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
+import { CustomInput, renderIf, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import Config from '../config/Config';
 
-class Login extends Component{
-     state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
-           phoneNumberlbl:false,isFocused: false,
-           passwordlbl:false,rememberme:false};
+class Login extends Component {
+    state = {
+        userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
+        phoneNumberlbl: false, isFocused: false,
+        passwordlbl: false, rememberme: false
+    };
 
     constructor(props) {
         super(props);
@@ -17,15 +19,15 @@ class Login extends Component{
     }
 
 
-	componentWillMount() {
-      // do stuff while splash screen is shown
+    componentWillMount() {
+        // do stuff while splash screen is shown
         // After having done stuff (such as async tasks) hide the splash screen
-       SplashScreen.hide();
+        SplashScreen.hide();
     }
 
-    handleTextChange = (newText) => this.setState({ value: newText,isFocused:true });
+    handleTextChange = (newText) => this.setState({ value: newText, isFocused: true });
 
- render() {
+    render() {
         const {
             viewStyle,
             loginbuttonStyle,
@@ -48,20 +50,20 @@ class Login extends Component{
                 <View style={viewStyle}>
 
                     <CustomText style={text}>
-                               Login
+                        Login
                             </CustomText>
-                 <ScrollView >
-                    <View style={containerStyle}>
-                    
-                        <View style={logoStyle}>
-                            <Image source={require('../images/logo_icon.png')} style= {backgroundImage}/>
-                        </View>
-                         
-                         
-                                <Text style={labelStyle} >
-                                        UserName
+                    <ScrollView >
+                        <View style={containerStyle}>
+
+                            <View style={logoStyle}>
+                                <Image source={require('../images/logo_icon.png')} style={backgroundImage} />
+                            </View>
+
+
+                            <Text style={labelStyle} >
+                                UserName
                                 </Text>
-                            
+
                             <CustomEditText
                                 maxLength={Config.limiters.mobileLength}
                                 keyboardType='default'
@@ -69,24 +71,24 @@ class Login extends Component{
                                 inputTextStyle={inputStyle}
                                 value={this.state.userName}
                                 onChangeText={(value) => {
-                                                this.setState({userName: value,userNamelbl:true})
-                                            }}
+                                    this.setState({ userName: value, userNamelbl: true })
+                                }}
                             />
                             <CustomText customTextStyle={rememberTextStyle}>
-                                    Password
-                            </CustomText> 
+                                Password
+                            </CustomText>
                             <CustomEditText
                                 secureTextEntry
                                 placeholder='Password'
                                 inputTextStyle={inputStyle}
                                 value={this.state.password}
                                 onChangeText={(value) => {
-                                    this.setState({password: value})
+                                    this.setState({ password: value })
                                 }}
                             />
-                             <CustomText customTextStyle={rememberTextStyle}>
-                                    Mobile Number
-                            </CustomText>  
+                            <CustomText customTextStyle={rememberTextStyle}>
+                                Mobile Number
+                            </CustomText>
                             <CustomEditText
                                 maxLength={Config.limiters.mobileLength}
                                 keyboardType='numeric'
@@ -94,65 +96,65 @@ class Login extends Component{
                                 inputTextStyle={inputStyle}
                                 value={this.state.phoneNumber}
                                 onChangeText={(value) => {
-                                                this.setState({phoneNumber: value})
-                                            }}
+                                    this.setState({ phoneNumber: value })
+                                }}
                             />
-                            
+
                             <View style={checkForgotStyle}>
                                 <View >
-                                    
-                                     <CheckBox style={checkboxStyle}
-                                          title='remember Me'
-                                          checked={this.state.rememberme}
-                                            onPress={() => this.setState({ rememberme: !this.state.rememberme })}
-                                        />
+
+                                    <CheckBox style={checkboxStyle}
+                                        title='remember Me'
+                                        checked={this.state.rememberme}
+                                        onPress={() => this.setState({ rememberme: !this.state.rememberme })}
+                                    />
                                 </View>
-                                <View >     
+                                <View >
                                     <TouchableOpacity >
                                         <CustomText customTextStyle={forgotTextStyle}>
                                             Forgot Password?
-                                        </CustomText>   
-                                     </TouchableOpacity>
-                                </View>     
-                        </View>
-                         <View style={loginbuttonStyle}>   
-                            <CustomButton
-                                customButtonStyle={signInButtonStyle}
-                                onPress={() => {
-                                    Keyboard.dismiss();
-                                    this.onSignIn()
-                                }}
-                            >
-                                <CustomText
-                                    customTextStyle={signInTextStyle}
+                                        </CustomText>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={loginbuttonStyle}>
+                                <CustomButton
+                                    customButtonStyle={signInButtonStyle}
+                                    onPress={() => {
+                                        Keyboard.dismiss();
+                                        this.onSignIn()
+                                    }}
                                 >
-                                    LOGIN
+                                    <CustomText
+                                        customTextStyle={signInTextStyle}
+                                    >
+                                        LOGIN
                                 </CustomText>
-                            </CustomButton>
-                        </View>   
-                    </View>
-                </ScrollView>
-                    
-                 </View>   
-             </CommonBackground>   
+                                </CustomButton>
+                            </View>
+                        </View>
+                    </ScrollView>
+
+                </View>
+            </CommonBackground>
         );
     }
 }
 const winW = Dimensions.get('window').width;
 const winH = Dimensions.get('window').width;
 const styles = {
-	backgroundImage: {
-         width:winW - 100,
-         height:50,
-         resizeMode: 'contain'
-	},
+    backgroundImage: {
+        width: winW - 100,
+        height: 50,
+        resizeMode: 'contain'
+    },
     viewStyle: {
-        flex:1,
+        flex: 1,
         justifyContent: 'space-between',
-        flexDirection:'column',
-        alignItems:'center',
-        paddingBottom:10
-        
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingBottom: 10
+
     },
     containerStyle: {
         flex: 1,
@@ -161,29 +163,29 @@ const styles = {
         marginBottom: 50,
         marginLeft: 20,
         marginRight: 20,
-        paddingLeft:10,
-        paddingRight:10,
+        paddingLeft: 10,
+        paddingRight: 10,
         justifyContent: 'center',
-        alignItems:'flex-start',
+        alignItems: 'flex-start',
 
     },
-    loginbuttonStyle:{
-        alignSelf:'stretch',
+    loginbuttonStyle: {
+        alignSelf: 'stretch',
         backgroundColor: '#d9d9d9',
-        
+
     },
     signInButtonStyle: {
-        alignSelf:'stretch',
+        alignSelf: 'stretch',
         backgroundColor: '#ffffff',
-        marginTop:1
+        marginTop: 1
     },
     signInTextStyle: {
-         alignSelf:'stretch',
+        alignSelf: 'stretch',
         textAlign: 'center',
-         color: '#e83a13',
+        color: '#e83a13',
         fontSize: 14,
         padding: 10,
-        backgroundColor:'#ffffff'
+        backgroundColor: '#ffffff'
     },
     forgotTextStyle: {
         textAlign: 'right',
@@ -198,40 +200,40 @@ const styles = {
         height: 30
     },
     text: {
-        flex:1,
-        alignItems:'center',
+        flex: 1,
+        alignItems: 'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
         fontSize: 32
     },
-    rememberTextStyle:{
+    rememberTextStyle: {
         textAlign: 'center',
         color: '#3B3B3B',
         paddingTop: 2
     },
-    logoStyle:{
-        padding:20,
+    logoStyle: {
+        padding: 20,
     },
-    checkForgotStyle:{
+    checkForgotStyle: {
         flex: 1,
-        alignSelf:'stretch',
+        alignSelf: 'stretch',
         flexDirection: 'row',
-        marginTop:10,
-        marginBottom:20,
+        marginTop: 10,
+        marginBottom: 20,
         justifyContent: 'space-between'
     },
-    checkboxStyle:{
+    checkboxStyle: {
         color: '#3B3B3B',
     },
-     labelStyle : {
-      position: 'absolute',
-      left: 0,
-      top: !this.state.isFocused ? 18 : 0,
-      fontSize: !this.state.isFocused ? 20 : 14,
-      color: !this.state.isFocused ? '#aaa' : '#000',
+    labelStyle: {
+        position: 'absolute',
+        left: 0,
+        top: !this.state.isFocused ? 18 : 0,
+        fontSize: !this.state.isFocused ? 20 : 14,
+        color: !this.state.isFocused ? '#aaa' : '#000',
     }
-    
-    
+
+
 
 };
 

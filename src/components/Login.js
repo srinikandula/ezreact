@@ -23,10 +23,10 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
-             userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+            //  userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,
             spinnerBool: false
         };
@@ -264,26 +264,15 @@ class Login extends Component {
         return (
             <CommonBackground>
                 <View style={CustomStyles.loginViewStyle}>
-
-                    <CustomText customTextStyle={[CustomStyles.logintext]}>
-                        Login
-                    </CustomText>
-                  
-                    <ScrollView >
+                    <CustomText customTextStyle={[CustomStyles.logintext]}>Login</CustomText>
+                    {this.spinnerLoad()}
+                    <ScrollView>
                         <View style={CustomStyles.loginContainerStyle}>
-
                             <View style={CustomStyles.loginlogoStyle}>
                                 <Image source={require('../images/logo_icon.png')} style={loginlogoImage} />
                             </View>
-
                             <View style={CustomStyles.loginInputbox}>
-
-                            </View>
-                            <View style={CustomStyles.loginInputbox}>
-                                <Text style={namelabelStyle} >
-                                    UserName
-                                </Text>
-
+                                <Text style={namelabelStyle} >UserName</Text>
                                 <CustomEditText
                                     //maxLength={Config.limiters.mobileLength}
                                     keyboardType='default'
@@ -351,7 +340,7 @@ class Login extends Component {
                             <View style={CustomStyles.loginCheckForgotStyle}>
                                 <View>
                                     <CheckBox
-                                    checkboxStyle={{width:15, height:15}}
+                                        checkboxStyle={{ width: 15, height: 15 }}
                                         label='Remember Me'
                                         color={'#000000'}
                                         checked={this.state.rememberme}

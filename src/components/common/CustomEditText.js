@@ -58,9 +58,9 @@ const styles = {
         flex: 3,
         // fontFamily:'Gotham-Light',
         color: '#000',
-        fontSize: 18,
+        fontSize: 16,
         lineHeight: 23,
-        height: 48,
+        height: 36,
         paddingLeft: 5,
         justifyContent: 'center',
         

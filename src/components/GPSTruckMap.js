@@ -6,18 +6,17 @@ import {
     BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems,TrackModal, CustomText,CSpinner,CustomEditText, NoInternetModal,Confirm } from './common';
+import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText, NoInternetModal, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
 import MapView, { Marker, Callout } from 'react-native-maps';
-const { width, height } = Dimensions.get("window");
 
+const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
 const ASPECT_RATIO = width / height
-
 const LATITUDE_DELTA = 10
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
@@ -30,25 +29,29 @@ export default class GPSTruckMap extends Component {
         lookLoadSource: '',
         dispDatePicker: 'none',
         showModal: false, date: '',
-        categoryBgColor: false,token:'',trucks:[],dummytrucks:[],
-        showTrack:false,
-        showHeader:'none',
-        truckNumber:'',
-        fromDate:'',
-        fromPassdate:'',
-        toDate:'',
-        toPassdate:'',
-        passData:{},
-        aspectRatio :0,
-        latitudeDelta : LATITUDE_DELTA,
-        longitudeDelta :LONGITUDE_DELTA,        
+        categoryBgColor: false, token: '', trucks: [], dummytrucks: [],
+        showTrack: false,
+        showHeader: 'none',
+        truckNumber: '',
+        fromDate: '',
+        fromPassdate: '',
+        toDate: '',
+        toPassdate: '',
+        passData: {},
+        aspectRatio: 0,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
         latitude: Number(17.46247),
         longitude: Number(78.3100319),
-        animation : new Animated.Value(0),
-        markers:[{coordinate:{latitude:0,
-            longitude:0}}],
-            view:'no',
-        
+        animation: new Animated.Value(0),
+        markers: [{
+            coordinate: {
+                latitude: 0,
+                longitude: 0
+            }
+        }],
+        view: 'no',
+
         spinnerBool: false,
 
     };
@@ -67,11 +70,11 @@ export default class GPSTruckMap extends Component {
         this.getCredentailsData();
         navigator.geolocation.getCurrentPosition(
             (position) => {
-              this.setState({
-                latitude: Number(position.coords.latitude),
-                longitude: Number(position.coords.longitude),
-                error: null,
-              });
+                this.setState({
+                    latitude: Number(position.coords.latitude),
+                    longitude: Number(position.coords.longitude),
+                    error: null,
+                });
             },
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
@@ -81,76 +84,77 @@ export default class GPSTruckMap extends Component {
     }
 
 
-           async getCredentailsData() {
-            this.setState({ spinnerBool:true });
-            this.getCache((value) => {
-                if (value !== null) {
-                    var egObj = {};
-                    egObj = JSON.parse(value);
-                    this.setState({ token: egObj.token });
-                    if(Utils.checkInternetConnection())
-                    {
-                        console.log(Utils.checkInternetConnection(),'network')
-                        return (<NoInternetModal visible={true}/>);
-                    }
+    async getCredentailsData() {
+    this.setState({ spinnerBool:true });
+    this.getCache((value) => {
+        if (value !== null) {
+            var egObj = {};
+            egObj = JSON.parse(value);
+            this.setState({ token: egObj.token });
+            if(Utils.checkInternetConnection())
+            {
+                console.log(Utils.checkInternetConnection(),'network')
+                return (<NoInternetModal visible={true}/>);
+            }
 
-                    Axios({
-                        method: 'get',
-                        headers: { 'token': egObj.token },
-                        url: Config.routes.base + Config.routes.gpsTrackingByMapView
-                    })
-                        .then((response) => {
-                            if (response.data.status) {
-                                console.log('GPSTruckMap-trucksList ==>', response.data);
-                                if (response.data.data.length == 0) {
-                                    this.setState({ spinnerBool: false,view:'no' });
-                                } else {
-                                    this.setState({ spinnerBool: false,view:'mapShow' });
-                                    var catgryarr = response.data.data;
-                                    catgryarr = catgryarr.filter(function (item, index) {
-                                        if (item.hasOwnProperty('attrs'))
-                                            return item;
-                                    });
-    
-                                    this.setState({ trucks: catgryarr });
-    
-                                    var dump = [];
-                                    for (let index = 0; index < catgryarr.length; index++) {
-                                        const element = catgryarr[index];
-                                        element.rememberme = false;
-                                        //console.log(this.state.location[index], 'element.location');
-                                        dump.push(element);
-                                        this.setState({ trucks: dump,dummytrucks:dump });
-                                    }
-    
-                                    console.log(catgryarr, 'vignesh == ', dump);
-                                    var catgryarr1 = [];
-                                    for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
-                                        const truckElement = this.state.trucks[index];                                        
-                                        if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
-                                            const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                             //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
-                                            //latitude:0,longitude:0
-                                            var obj = { coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
-                                                        registrationNo:catgryarr[index].registrationNo,
-                                                        speed:catgryarr[index].attrs.latestLocation.speed,
-                                                        address:catgryarr[index].attrs.latestLocation.address,
-                                                        date:catgryarr[index].attrs.latestLocation.updatedAt,
-                                                        isStopped:catgryarr[index].attrs.latestLocation.isStopped,
-                                                        isIdle:catgryarr[index].attrs.latestLocation.isIdle};
-                                            catgryarr1.push(obj);
-                                            truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
-                                            truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
-                                            this.setState({ latitude: element[1], longitude: element[0] });
-                                            this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
-                                        }
-                                        this.state.trucks[index] = truckElement;
+            Axios({
+                method: 'get',
+                headers: { 'token': egObj.token },
+                url: Config.routes.base + Config.routes.gpsTrackingByMapView
+            })
+                .then((response) => {
+                    if (response.data.status) {
+                        console.log('GPSTruckMap-trucksList ==>', response.data);
+                        if (response.data.data.length == 0) {
+                            this.setState({ spinnerBool: false,view:'no' });
+                        } else {
+                            this.setState({ spinnerBool: false,view:'mapShow' });
+                            var catgryarr = response.data.data;
+                            catgryarr = catgryarr.filter(function (item, index) {
+                                if (item.hasOwnProperty('attrs'))
+                                    return item;
+                            });
+
+                            this.setState({ trucks: catgryarr });
+
+                            var dump = [];
+                            for (let index = 0; index < catgryarr.length; index++) {
+                                const element = catgryarr[index];
+                                element.rememberme = false;
+                                //console.log(this.state.location[index], 'element.location');
+                                dump.push(element);
+                                this.setState({ trucks: dump,dummytrucks:dump });
+                            }
+
+                            console.log(catgryarr, 'vignesh == ', dump);
+                            var catgryarr1 = [];
+                            for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
+                                const truckElement = this.state.trucks[index];                                        
+                                if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
+                                    const element = catgryarr[index].attrs.latestLocation.location.coordinates;
+                                        //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                    //latitude:0,longitude:0
+                                    var obj = { coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                registrationNo:catgryarr[index].registrationNo,
+                                                speed:catgryarr[index].attrs.latestLocation.speed,
+                                                address:catgryarr[index].attrs.latestLocation.address,
+                                                date:catgryarr[index].attrs.latestLocation.updatedAt,
+                                                isStopped:catgryarr[index].attrs.latestLocation.isStopped,
+                                                isIdle:catgryarr[index].attrs.latestLocation.isIdle};
+                                    catgryarr1.push(obj);
+                                    truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                    truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
+                                    this.setState({ latitude: element[1], longitude: element[0] });
+                                    this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                }
+                                this.state.trucks[index] = truckElement;
                                     
                                 }
-                            }
-                            this.setState({ spinnerBool: false, trucks: this.state.trucks });
+                                this.setState({ spinnerBool: false, trucks: this.state.trucks });
 
-                        } else {
+                            }
+                        }
+                        else {
                             console.log('error in trucksList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [], spinnerBool: false });
                         }
@@ -339,24 +343,24 @@ export default class GPSTruckMap extends Component {
                 return (
                     <View style={CustomStyles.mapcontainer}>
                         <MapView
-                        style={CustomStyles.map}
-                        zoomEnabled ={true}
-                        initialRegion={{
-                        latitude: Number(this.state.latitude),
-                        longitude: Number(this.state.longitude),
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta:LONGITUDE_DELTA,
-                       
-                        }}
-                    >
-                        {this.state.markers.map((marker, index) => {
-                            var imgsrc = require('../images/truck_running.png');
-                            if(marker.isStopped){                                      
-                                imgsrc = require('../images/truck_stopped.png');
-                            }
-                            if(marker.isIdle && !marker.isStopped){
-                                imgsrc = require('../images/truck_idle.png');       
-                            }
+                            style={CustomStyles.map}
+                            zoomEnabled={true}
+                            initialRegion={{
+                                latitude: Number(this.state.latitude),
+                                longitude: Number(this.state.longitude),
+                                latitudeDelta: LATITUDE_DELTA,
+                                longitudeDelta: LONGITUDE_DELTA,
+
+                            }}
+                        >
+                            {this.state.markers.map((marker, index) => {
+                                var imgsrc = require('../images/truck_running.png');
+                                if (marker.isStopped) {
+                                    imgsrc = require('../images/truck_stopped.png');
+                                }
+                                if (marker.isIdle && !marker.isStopped) {
+                                    imgsrc = require('../images/truck_idle.png');
+                                }
 
                                 return (
                                     <MapView.Marker key={index}
@@ -398,7 +402,7 @@ export default class GPSTruckMap extends Component {
                             <CustomEditText underlineColorAndroid='transparent'
                                 placeholder={'Enter Truck Number'}
                                 value={this.state.truckNumber}
-                                inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}
+                                inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderBottomWidth: 1, borderColor: '#727272' }}
                                 onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                             />
                         </View>
@@ -614,7 +618,7 @@ export default class GPSTruckMap extends Component {
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
                         <Text style={[CustomStyles.erpText, { color: 'white', fontFamily: 'Gotham-Light', fontSize: 16, margin: 10, marginLeft: 3 }]}>
-                            All Vehicles Location</Text>
+                            {`All Vehicles Location`.toUpperCase()}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 10, margin: 5 }}>
                         <TouchableOpacity onPress={() => { this.setState({ view: 'mapShow' }); }}>
@@ -634,10 +638,8 @@ export default class GPSTruckMap extends Component {
                     </View>
                 </View>
                 <View style={CustomStyles.erpCategory}>
-                    <View style={[CustomStyles.noResultView, { alignSelf: 'stretch', position: 'absolute', top: 20, backgroundColor: 'transparent' }]}>
-                        <Text style={[CustomStyles.erpText, {
-                            color: '#1e4495', fontWeight: 'bold',
-                            textDecorationLine: 'underline', alignSelf: 'stretch', alignItems: 'center',
+                    <View style={[CustomStyles.noResultView, { alignSelf: 'center', position: 'absolute', top: 20, backgroundColor: 'transparent' }]}>
+                        <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', textDecorationLine: 'underline', alignSelf: 'stretch', alignItems: 'center',
                         }]}>
                             {self.state.trucks.length == 0 ? 'No Trucks Found' : ''}</Text>
                     </View>

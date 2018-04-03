@@ -110,6 +110,7 @@ let routes = {
     gpsSetting:'/gps/getGpsSettings',
     updateGpsSettings:'/gps/updateGpsSettings',
     getAccountRoutes:'/admin/getAccountRoutes',
+    updateAccountRoutes: '/admin/updateAccountRoutes',
 
     communitiesRoute: '/v1/user/communities',
     otpRoute: '/v1/user/forgot',

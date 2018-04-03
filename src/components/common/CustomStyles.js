@@ -338,7 +338,7 @@ const iosStyles = {
         marginLeft: 10
 
     },
-    profileInputBox: { justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', paddingTop: 3, marginTop: 5 },
+    profileInputBox: { justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', paddingTop: 3, marginTop: 5 ,borderBottomWidth: 1, borderBottomColor: '#ddd'},
     profileInputContainerStyle: {
         marginTop: 10,
         marginBottom: 0
@@ -361,6 +361,7 @@ const iosStyles = {
     profileResettext: {
         flex: 1,
         // fontFamily:'Gotham-Light',
+        marginLeft: 5,
         color: '#000000',
         fontSize: 18
     },
@@ -395,21 +396,13 @@ const iosStyles = {
         color: '#ffffff',
         padding: 5
     },
-
-    viewStyle: {
-        flex: 1,
-        backgroundColor: '#ffffff'
-    },
-    headingTextColor: {
-        // fontFamily:'Gotham-Light',
-        color: '#494949'
-    },
     subHeadingTextColor: {
         // fontFamily:'Gotham-Light',
         color: '#404040'
     },
     amountColor: {
-        // fontFamily:'Gotham-Light',
+        fontSize: 16,
+        fontWeight: 'bold',
         color: '#1e4495',
         marginTop: 10
     },
@@ -421,13 +414,15 @@ const iosStyles = {
         flexDirection: 'row',
         //justifyContent: 'space-around',
         alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 15,
         padding: 10,
         backgroundColor: '#ffffff'
     },
     headingTextColor: {
+        fontWeight: 'bold',
         alignSelf: 'stretch',
-        // fontFamily:'Gotham-Light',
-        color: '#494949'
+        color: '#000'
     },
     EtextContainer: {
         alignSelf: 'stretch',
@@ -449,9 +444,9 @@ const iosStyles = {
     },
     expiryDateView: { flexDirection: 'row', justifyContent: 'space-around' },
     expiryMainContainer: { alignSelf: 'stretch', padding: 2 },
-    expirySubContainer: { justifyContent: 'space-around', height: 60, alignSelf: 'stretch', padding: 3, borderWidth: 1, borderColor: '#ddd', flex: 1 },
-    expiryCount: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 16, color: 'blue', flex: 1 },
-    expiryLabel: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 12, flex: 1 },
+    expirySubContainer: { marginTop:5,borderRadius: 5, justifyContent: 'space-around',  alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
+    expiryCount: {  alignSelf: 'center', fontSize: 16, color: 'blue' },
+    expiryLabel: { marginTop:2,alignSelf: 'center', fontSize: 12 ,color: '#000'},
     headText: {
         // fontFamily:'Gotham-Light',
         alignItems: 'center',
@@ -575,40 +570,58 @@ const iosStyles = {
         padding: 10
         //backgroundColor: '#ff00ff'
     },
-    epiryButtons: {
+    /* epirySelectedButtons: {
         width: 110,
         // fontFamily:'Gotham-Light',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        margin: 5,
-        padding: 15,
-        color: 'black',
-        backgroundColor: '#ffffff',
-        borderRadius: 25,
-        borderWidth: 1,
-        borderColor: 'black',
-        paddingVertical: 8
-        // height:45
-    },
-    epirySelectedButtons: {
-        width: 110,
-        // fontFamily:'Gotham-Light',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
+        // alignItems: 'center',
         textAlign: 'center',
         margin: 5,
         padding: 15,
         color: 'white',
         backgroundColor: '#1e4495',
-        borderRadius: 25,
+        borderRadius: 20,
         borderWidth: 1,
         borderColor: '#1e4495',
         paddingVertical: 8
         // height:45
+    }, */
+    epirySelectedButtons: {
+        width: 110,
+        // fontFamily:'Gotham-Light',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
+        // alignItems: 'center',
+        textAlign: 'center',
+        
+        padding: 3,
+        color: 'white',
+        // backgroundColor: '#1e4495',
+        // borderRadius: 20,
+        // borderWidth: 1,
+        // borderColor: '#1e4495',
+        // paddingVertical: 8
+        // height:45
     },
+    epiryButtons: {
+        width: 110,
+        // fontFamily:'Gotham-Light',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
+        // alignItems: 'center',
+        textAlign: 'center',
+        margin: 5,
+        padding: 15,
+        color: 'black',
+        backgroundColor: '#ffffff',
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'black',
+        paddingVertical: 8
+        // height:45
+    },
+   
     separator: {
         height: 0.5,
         width: "80%",
@@ -646,6 +659,8 @@ const iosStyles = {
     },
     drivervCallIcons: {
         width: 30,
+        marginTop:5,
+
         height: 32,
         padding: 5,
     },
@@ -693,16 +708,15 @@ const iosStyles = {
         justifyContent: 'space-around',
         //justifyContent: 'flex-start',
         // backgroundColor: '#00ffff'
-        borderWidth: 1,
-        borderRadius: 2,
-        borderColor: '#ddd',
-        borderBottomWidth: 0,
+        // borderWidth: 1,
+        // borderRadius: 2,
+        // borderColor: '#ddd',
+        // borderBottomWidth: 0,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.6,
         shadowRadius: 2,
-        elevation: 1,
-        margin: 5
+        marginVertical: 5
     },
     globalTabs: {
         flexDirection: 'row',
@@ -738,7 +752,7 @@ const iosStyles = {
 
     viewStyle: {
         flex: 1,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#fff'
     },
     mLt10: { marginLeft: 10 },
     row: { flexDirection: 'row' },
@@ -878,23 +892,26 @@ const androidStyles = {
     },
     loginViewStyle: {
         flex: 1,
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingBottom: 10
+       justifyContent: 'space-between',
+       flexDirection: 'column',
+       alignItems: 'center',
+       paddingBottom: 10
     },
     logintext: {
-        flex: 1,
+        justifyContent: 'flex-start',
+        flex: 0.2,
         //fontFamily:'Gotham-Light',
         alignItems: 'center',
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 32
+        fontSize: 20,
+        marginTop:20
+
     },
     loginContainerStyle: {
-        flex: 1,
+        flex: 0.8,
         backgroundColor: '#ffffff',
-        marginTop: 60,
+        // marginTop: 60,
         marginBottom: 50,
         marginLeft: 20,
         marginRight: 20,
@@ -1201,6 +1218,7 @@ const androidStyles = {
         flex: 1,
         // fontFamily:'Gotham-Light',
         color: '#000000',
+        marginLeft: 5,
         fontSize: 18
     },
     profileCircle: {
@@ -1237,18 +1255,16 @@ const androidStyles = {
 
     viewStyle: {
         flex: 1,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#fff'
     },
-    headingTextColor: {
-        // fontFamily:'Gotham-Light',
-        color: '#494949'
-    },
+   
     subHeadingTextColor: {
         // fontFamily:'Gotham-Light',
         color: '#404040'
     },
     amountColor: {
-        // fontFamily:'Gotham-Light',
+        fontSize: 16,
+        fontWeight: 'bold',
         color: '#1e4495',
         marginTop: 10
     },
@@ -1260,13 +1276,14 @@ const androidStyles = {
         flexDirection: 'row',
         //justifyContent: 'space-around',
         alignItems: 'center',
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 15,
         backgroundColor: '#ffffff'
     },
     headingTextColor: {
+        fontWeight: 'bold',
         alignSelf: 'stretch',
-        // fontFamily:'Gotham-Light',
-        color: '#494949'
+        color: '#000'
     },
     EtextContainer: {
         alignSelf: 'stretch',
@@ -1288,9 +1305,9 @@ const androidStyles = {
     },
     expiryDateView: { flexDirection: 'row', justifyContent: 'space-around' },
     expiryMainContainer: { alignSelf: 'stretch', padding: 2 },
-    expirySubContainer: { justifyContent: 'space-around', height: 60, alignSelf: 'stretch', padding: 3, borderWidth: 1, borderColor: '#ddd', flex: 1 },
-    expiryCount: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 16, color: 'blue', flex: 1 },
-    expiryLabel: { textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', fontSize: 12, flex: 1 },
+    expirySubContainer: { marginTop:5,borderRadius: 5, justifyContent: 'space-around',  alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
+    expiryCount: {  alignSelf: 'center', fontSize: 16, color: 'blue' },
+    expiryLabel: { marginTop:2,alignSelf: 'center', fontSize: 12 ,color: '#000'},
     headText: {
         // fontFamily:'Gotham-Light',
         alignItems: 'center',
@@ -1486,6 +1503,7 @@ const androidStyles = {
     drivervCallIcons: {
         width: 30,
         height: 32,
+        marginTop:5,
         padding: 5,
     },
     separator: {
@@ -1532,16 +1550,15 @@ const androidStyles = {
         justifyContent: 'space-around',
         //justifyContent: 'flex-start',
         // backgroundColor: '#00ffff'
-        borderWidth: 1,
-        borderRadius: 2,
-        borderColor: '#ddd',
-        borderBottomWidth: 0,
+        // borderWidth: 1,
+        // borderRadius: 2,
+        // borderColor: '#ddd',
+        // borderBottomWidth: 0,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 2, height: 3 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
-        elevation: 1,
-        margin: 5
+        marginVertical: 5
     },
     globalTabs: {
         flexDirection: 'row',
@@ -1573,11 +1590,6 @@ const androidStyles = {
     nTextRowOne: {
         flexDirection: 'row',
         justifyContent: 'space-between'
-    },
-
-    viewStyle: {
-        flex: 1,
-        backgroundColor: '#ffffff'
     },
     mLt10: { marginLeft: 10 },
     row: { flexDirection: 'row' },

@@ -26,7 +26,7 @@ class Login extends Component {
             userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
-            // userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+            //  userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,
             spinnerBool: false
         };
@@ -53,7 +53,7 @@ class Login extends Component {
             var value = AsyncStorage.getItem('fcmStorage');
             //console.log('credientails',key);
             if (value !== null) {
-                // this.runFCMService();
+                 //this.runFCMService();
 
             } else {
                 console.log('value', value.json())
@@ -98,7 +98,8 @@ class Login extends Component {
             if (response.data.status) {
                 //console.log("response.data",response.data);
                 this.storeData(response.data);
-                this.props.navigation.navigate('homepage');
+                this.runFCMService(response.data.token);
+                //this.props.navigation.navigate('homepage');
             } else {
                 let message = "";
                 if (response.data)
@@ -106,8 +107,9 @@ class Login extends Component {
                         message = message + current_value;
                     });
                 Utils.ShowMessage(message);
+                self.setState({ spinnerBool: false });
             }
-            self.setState({ spinnerBool: false });
+           
         }).catch((error) => {
             self.setState({ spinnerBool: false });
             console.log('login post error--->', error)
@@ -143,12 +145,9 @@ class Login extends Component {
     }
 
 
-    runFCMService() {
+    runFCMService(jwttoken) {
         FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
-        var refreshedToken = FCM.on('FCMTokenRefreshed', (refreshedToken) => {
-            // console.log(refreshedToken)
-            // this.setState({ fcmToken: refreshedToken });
-        });
+        
         FCM.getFCMToken().then(token => {
             // store fcm token in your server
             // setFcmToken(token);
@@ -160,16 +159,17 @@ class Login extends Component {
                 console.log('test-url', Config.routes.base + Config.routes.registerToServer);
                 Axios({
                     method: 'post',
+                    headers: { 'token': jwttoken },
                     url: Config.routes.base + Config.routes.registerToServer,
                     data: {
-                        imei: token,
-                        deviceId: imeiResp,
+                        fcmDeviceId: token,
+                        imei: imeiResp,
                     }
                 }).then((response) => {
                     console.log("registerToServer-response", response.data);
                     if (response.data.status) {
                         console.log("response.data", response.data);
-
+                        this.props.navigation.navigate('homepage');
                     } else {
                         let message = "";
 
@@ -255,26 +255,15 @@ class Login extends Component {
         return (
             <CommonBackground>
                 <View style={CustomStyles.loginViewStyle}>
-
-                    <CustomText customTextStyle={[CustomStyles.logintext]}>
-                        Login
-                    </CustomText>
+                    <CustomText customTextStyle={[CustomStyles.logintext]}>Login</CustomText>
                     {this.spinnerLoad()}
-                    <ScrollView >
+                    <ScrollView>
                         <View style={CustomStyles.loginContainerStyle}>
-
                             <View style={CustomStyles.loginlogoStyle}>
                                 <Image source={require('../images/logo_icon.png')} style={loginlogoImage} />
                             </View>
-
                             <View style={CustomStyles.loginInputbox}>
-
-                            </View>
-                            <View style={CustomStyles.loginInputbox}>
-                                <Text style={namelabelStyle} >
-                                    UserName
-                                </Text>
-
+                                <Text style={namelabelStyle} >UserName</Text>
                                 <CustomEditText
                                     //maxLength={Config.limiters.mobileLength}
                                     keyboardType='default'
@@ -342,7 +331,7 @@ class Login extends Component {
                             <View style={CustomStyles.loginCheckForgotStyle}>
                                 <View>
                                     <CheckBox
-                                    checkboxStyle={{width:15, height:15}}
+                                        checkboxStyle={{ width: 15, height: 15 }}
                                         label='Remember Me'
                                         color={'#000000'}
                                         checked={this.state.rememberme}
@@ -375,7 +364,7 @@ class Login extends Component {
                                 </CustomText>
                                 </CustomButton>
                             </View>
-
+                            {this.spinnerLoad()}
                             <NoInternetModal visible={this.state.showMail} />
                         </View>
                     </ScrollView>

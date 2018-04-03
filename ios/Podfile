@@ -7,12 +7,15 @@ target 'EasyGaadi' do
 
   # Pods for EasyGaadi
   pod 'Firebase/Messaging'
+  pod 'GooglePlaces'
+  pod 'GoogleMaps'
+  pod 'GooglePlacePicker'
   # target 'EasyGaadi-tvOSTests' do
   #   inherit! :search_paths
   #   # Pods for testing
   # end
 
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  # pod 'RNFS', :path => '../node_modules/react-native-fs'
 
   target 'EasyGaadiTests' do
     inherit! :search_paths

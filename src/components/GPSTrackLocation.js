@@ -70,58 +70,60 @@ export default class GPSTrackLocation extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
 
-    onBackAndroid() {
-        //Actions.pop();
-        //var value = await this.getCache('credientails');
-    }
+        onBackAndroid() {
+            //Actions.pop();
+            //var value = await this.getCache('credientails');
+           }
 
-    async getCredentailsData() {
-        const self = this;
-        self.setState({ spinnerBool: true });
-        const data = JSON.parse(self.props.navigation.state.params.sendingDate);
-        self.setState({ truckNum: data.truckId });
-        this.getCache((value) => {
-            if (value !== null) {
-                var egObj = {};
-                egObj = JSON.parse(value);
-                this.setState({ token: egObj.token });
-                Axios({
-                    method: 'GET',
-                    headers: { 'token': egObj.token },
-                    url: Config.routes.base + Config.routes.gpsTrackLocation + "/" + data.truckId + "/" + data.startDate + "/" + data.endDate,
-
-                })
-                    .then((response) => {
-                        if (response.data.status) {
-                            console.log('truckMakers ==>', response.data);
-                            var coordinateArr = [];
-                            var coordinateArr1 = [];
-                            if (response.data.results.positions.length > 0) {
-
-                                const arrList = response.data.results.positions;
-                                //arrList.length
-                                for (let index = 0; index < arrList.length; index++) {
-                                    const element = arrList[index];
-                                    if (index == 2) {
-                                        this.setState({
-                                            initialPoint: {
-                                                latitude: Number(element.location.coordinates[1]),
-                                                longitude: Number(element.location.coordinates[0]),
-                                                latitudeDelta: LATITUDE_DELTA,
-                                                longitudeDelta: LONGITUDE_DELTA
-                                            }
-                                        });
-                                    }
-                                    coordinateArr.push({
-                                        strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
-                                        longitude: Number(element.location.coordinates[0])
-                                    });
-                                    element.coordinate = {
-                                        strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
-                                        longitude: Number(element.location.coordinates[0])
-                                    };
-                                    coordinateArr1.push(element);
-                                }
+           async getCredentailsData() {
+               const self  = this;
+               self.setState({ spinnerBool:true });
+               const data = JSON.parse(self.props.navigation.state.params.sendingDate);
+               self.setState({truckNum:data.truckId});
+            this.getCache((value) => {
+                if (value !== null) {
+                    var egObj = {};
+                    egObj = JSON.parse(value);
+                    this.setState({ token: egObj.token });
+                    Axios({
+                        method: 'GET',
+                        headers: { 'token': egObj.token },
+                        url: Config.routes.base + Config.routes.gpsTrackLocation +"/"+data.truckId+"/"+data.startDate+"/"+data.endDate,
+                        
+                    })
+                        .then((response) => {
+                            if (response.data.status) {
+                                console.log('truckMakers ==>', response.data);
+                                var coordinateArr =[];
+                                var coordinateArr1 =[];
+                                if (response.data.results.positions.length > 0) {
+                                   
+                                    const arrList = response.data.results.positions;
+                                    //arrList.length
+                                    for (let index = 0; index < arrList.length; index++) {
+                                        const element = arrList[index];
+                                        if(index == 2){
+                                            this.setState({initialPoint:{latitude:Number(element.location.coordinates[1]), 
+                                                longitude:Number(element.location.coordinates[0]), 
+                                                latitudeDelta:LATITUDE_DELTA,
+                                                longitudeDelta: LONGITUDE_DELTA}});
+                                        }
+                                        coordinateArr.push({ strokeColor: "#00ff00",latitude: element.location.coordinates[1], 
+                                            longitude:element.location.coordinates[0] });
+                                        element.coordinate = { strokeColor: "#00ff00",latitude:  element.location.coordinates[1] , 
+                                            longitude:element.location.coordinates[0]  };
+                                        coordinateArr1.push(element);
+                                //     }
+                                //     coordinateArr.push({
+                                //         strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
+                                //         longitude: Number(element.location.coordinates[0])
+                                //     });
+                                //     element.coordinate = {
+                                //         strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
+                                //         longitude: Number(element.location.coordinates[0])
+                                //     };
+                                //     coordinateArr1.push(element);
+                                 }
 
                                 this.setState({ coordinates: coordinateArr, coordinates1: coordinateArr1, showDependable: '' + coordinateArr.length, spinnerBool: false }, () => {
                                     this.getView();
@@ -587,10 +589,10 @@ export default class GPSTrackLocation extends Component {
                 "longitude:" + marker.longitude
             )
             _mapView.animateMarkerToCoordinate({
-                latitude: Number(marker.latitude + this.state.latitudeDelta * 0.01),
-                longitude: Number(marker.longitude + this.state.latitudeDelta * 0.01)
-            }, 6000)
-        })
+                latitude:  marker.latitude+ this.state.latitudeDelta * 0.01 ,
+                longitude:  marker.longitude+ this.state.latitudeDelta * 0.01 
+              }, 6000)
+            })
     }
 
     render() {

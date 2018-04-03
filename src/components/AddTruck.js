@@ -3,7 +3,7 @@ import {
     View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS,
     CheckBox, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, Platform
 } from 'react-native';
-import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
+import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm, CPicker } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
@@ -94,11 +94,18 @@ export default class AddTruck extends Component {
     }
 
     updateViewdate(truckDetails) {
-
+        const self = this;
+        let driversList = self.state.drivers;
         let drivrID = truckDetails.driverId;
         if (truckDetails.driverId === null) {
 
             drivrID = 'Select Driver';
+        } else {
+            for (let i = 0; i < driversList.length; i++) {
+                if (driversList[i]._id === drivrID) {
+                    self.setState({ truckText: driversList[i].fullName })
+                }
+            }
         }
         this.setState({
             truckNumber: truckDetails.registrationNo,
@@ -161,11 +168,11 @@ export default class AddTruck extends Component {
                 if (response.data.status) {
                     self.setState({ spinnerBool: false });
                     // Actions.pop();
-                    const {navigation} = this.props;
-                    const {state} = navigation;
+                    const { navigation } = this.props;
+                    const { state } = navigation;
                     let refreshFunc = state.params.refresh;
-                    if(typeof refreshFunc === 'function'){
-                        refreshFunc({refresh:true});
+                    if (typeof refreshFunc === 'function') {
+                        refreshFunc({ refresh: true });
                     }
                     this.props.navigation.goBack();
 
@@ -193,7 +200,7 @@ export default class AddTruck extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === '' ? 'none' : 'flex' }, selectedName: value });
     }
 
     onPickdate(look) {
@@ -346,7 +353,7 @@ export default class AddTruck extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.fullName}
-                value={truckItem._id}
+                value={truckItem._id + "###" + truckItem.fullName}
             />
         );
     }
@@ -354,7 +361,7 @@ export default class AddTruck extends Component {
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#1e4495', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 5, backgroundColor: '#1e4495', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
                         <Image
                             style={{ width: 20, marginLeft: 20 }}
@@ -363,7 +370,7 @@ export default class AddTruck extends Component {
                         />
                     </TouchableOpacity>
                     <Text style={{ fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light' }}>
-                        Add Truck
+                        ADD TRUCK
                         </Text>
                 </View>
                 <ScrollView >
@@ -374,28 +381,32 @@ export default class AddTruck extends Component {
 
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none',color: '#525252' }, this.state.field0]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field0]}>
                                     Truck Number*</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' 
+                                <CustomEditText underlineColorAndroid='transparent'
                                     inputTextStyle={{ marginHorizontal: 16 }}
                                     placeholder={'Truck Number*'}
-                                    value={this.state.truckNumber}                                    
-                                    onChangeText={(truckNumber) => { this.moveInputLabelUp(0, truckNumber),
-                                                this.setState({ truckNumber: truckNumber }) }} />
+                                    value={this.state.truckNumber}
+                                    onChangeText={(truckNumber) => {
+                                        this.moveInputLabelUp(0, truckNumber),
+                                        this.setState({ truckNumber: truckNumber })
+                                    }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field1]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field1]}>
                                     Tonnage*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.trucktonnage}
                                     placeholder={'Tonnage*'}
-                                    onChangeText={(trucktonnage) => { this.moveInputLabelUp(1, trucktonnage),
-                                                    this.setState({ trucktonnage: trucktonnage }) }} />
+                                    onChangeText={(trucktonnage) => {
+                                        this.moveInputLabelUp(1, trucktonnage),
+                                        this.setState({ trucktonnage: trucktonnage })
+                                    }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field2]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field2]}>
                                     Model*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.truckmodel}
@@ -404,7 +415,7 @@ export default class AddTruck extends Component {
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none' ,color: '#525252' }, this.state.field3]}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>
                                     Truck type*</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.trucktype}
@@ -412,15 +423,17 @@ export default class AddTruck extends Component {
                                     onChangeText={(trucktype) => { this.moveInputLabelUp(3, trucktype), this.setState({ trucktype: trucktype }) }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
-                                <Picker
-                                    style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                    selectedValue={this.state.selectedDriverId}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
+                                <CPicker
+                                    placeholder="Select  Vehicles"
+                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
+                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    selectedValue={this.state.truckText}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
                                     <Picker.Item label="Select Driver" value="Select Driver" />
                                     {this.renderPartyList()}
 
-                                </Picker>
+                                </CPicker>
                             </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate('TaxDue') }}
@@ -428,8 +441,8 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field4]}>
-                                            Tax Due Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>
+                                                Tax Due Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Tax Due Expiry Date*'}
@@ -452,8 +465,8 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field5]}>
-                                            Permit Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>
+                                                Permit Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Permit Expiry Date*'}
@@ -476,8 +489,8 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field6]}>
-                                            Fitness Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field6]}>
+                                                Fitness Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Fitness Expiry Date*'}
@@ -500,8 +513,8 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field7]}>
-                                            Pollution Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field7]}>
+                                                Pollution Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Pollution Expiry Date*'}
@@ -524,8 +537,8 @@ export default class AddTruck extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20,top:2, display:'none', color: '#525252' }, this.state.field8]}>
-                                            Insurance Expiry Date* </CustomText>
+                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field8]}>
+                                                Insurance Expiry Date* </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Insurance Expiry Date*'}

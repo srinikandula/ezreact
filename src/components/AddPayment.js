@@ -3,7 +3,7 @@ import {
     View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
     CheckBox, TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground , Confirm} from './common';
+import { CPicker, CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground , Confirm} from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
@@ -87,6 +87,15 @@ export default class AddPayment extends Component {
     }
 
     updateViewdate(paymentDetails){
+        const self = this;
+        let partyList = self.state.partyList;
+
+        for (let i = 0; i < partyList.length; i++) {
+            if (partyList[i]._id === paymentDetails.partyId) {
+                self.setState({ truckText: partyList[i].name })
+            }
+        }
+
         var date = new Date(paymentDetails.date);
         var dateStr =  date.getDate()+"/"+ (date.getMonth() +1)+"/" + date.getFullYear();
         var passdateStr =  (date.getMonth() +1)+"/"+date.getDate() +"/" + date.getFullYear();
@@ -282,7 +291,7 @@ export default class AddPayment extends Component {
                                     <Picker.Item
                                         key={i}
                                         label={truckItem.name}
-                                        value={truckItem._id}
+                                        value={truckItem._id + "###" + truckItem.name}
                                     />
                                 );
     }
@@ -291,7 +300,7 @@ export default class AddPayment extends Component {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
            <View style={{flex:1}}>
-           <View style={{flexDirection: 'row',height: 50, backgroundColor: '#1e4495',alignItems: 'center'}}>
+           <View style={{flexDirection: 'row',paddingTop: 20, paddingBottom:5, backgroundColor: '#1e4495',alignItems: 'center'}}>
                 <TouchableOpacity onPress={()=> {this.props.navigation.goBack()}}>
                     <Image
                     style={{width: 20,marginLeft: 20}}
@@ -300,7 +309,7 @@ export default class AddPayment extends Component {
                     />
                     </TouchableOpacity>
                     <Text style={{fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light'}}>
-                        Add Payment
+                        ADD PAYMENT
                         </Text>
                 </View>
                 <View>
@@ -328,14 +337,25 @@ export default class AddPayment extends Component {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                    <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                    <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field9]}>Party Name</CustomText>
-                        <Picker
+                       
+                    <CPicker
+                                    placeholder="Select  Vehicles"
+                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
+                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    selectedValue={this.state.truckText}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    {/* <Picker.Item label="Select Driver" value="Select Driver" /> */}
+                                    {this.renderPartyList()}
+
+                                </CPicker>
+                       {/*  <Picker
                             style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                             selectedValue={this.state.selectedPartyId}
                             onValueChange={(itemValue, itemIndex) => {this.setState({ selectedPartyId: itemValue })}}>
                             {this.renderPartyList()}
-                        </Picker>
+                        </Picker> */}
                     </View>
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
@@ -347,17 +367,18 @@ export default class AddPayment extends Component {
                                 value={this.state.Amount}
                                 onChangeText={(Amount) => {this.moveInputLabelUp(2, Amount), this.setState({Amount:Amount})}} />
                         </View>
-                        <View style={{ backgroundColor: '#ffffff',marginTop: 5,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                        <View style={{ backgroundColor: '#ffffff',marginTop: 15,  marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                         <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Payment mode</CustomText>
-                            <Picker
-                                style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                        <CPicker
+                                    placeholder="Payment Type"
+                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
                                 selectedValue={this.state.paymentType}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ paymentType: itemValue })}>
                                 <Picker.Item label="Payment Type" value="paymenttype" />
                                 <Picker.Item label="NEFT" value="neft" />
                                 <Picker.Item label="CHECK" value="check" />
                                 <Picker.Item label="CASH" value="cash" />
-                            </Picker>
+                            </CPicker>
                         </View>
                             {this.getPaymentreferenceView()}
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>

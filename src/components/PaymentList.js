@@ -180,11 +180,11 @@ export default class PaymentList extends Component {
                             <CustomEditText underlineColorAndroid='transparent' 
                                     placeholder={'Enter Party Name'}
                                     value={this.state.partyName}
-                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderWidth:1,borderColor:'#3085d6',borderRadius:5}}
+                                    inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderBottomWidth:1,borderColor:'#727272' }}
                                     onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                             />
                         </View>
-                        <View style={CustomStyles.noResultView}>
+                        <View style={[{ display: self.state.paymentsList.length === 0 ? 'flex' : 'none' }, CustomStyles.noResultView]}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {this.showResult()}</Text>
@@ -199,7 +199,7 @@ export default class PaymentList extends Component {
                             //                     categoryBgColor: !this.state.categoryBgColor
                             //                      });}}
                             // >
-                                <View style={[CustomStyles.erpCategoryItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                <View style={[CustomStyles.erpCategoryCardItems,{ backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                     <View style={CustomStyles.erpDriverItems}>
                                         <View style={[CustomStyles.erpTextView,{flex:0.4,borderBottomWidth :0}]}>
                                             <Image resizeMode="contain"

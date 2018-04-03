@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Platform, Button, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Image, Platform, Button, Text, ScrollView, TouchableOpacity,Dimensions } from 'react-native';
 import { StackNavigator, TabNavigator, TabView } from 'react-navigation';
 
 //login related screens
@@ -172,15 +172,15 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 			headerTintColor: '#fff'
 		}
 	},
-	/*AddGroup: {
+	AddGroup: {
 		screen: AddGroup,
 		navigationOptions: {
-			headerTitle: 'Add Group',
+			headerTitle: 'ADD GROUP',
 			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 			headerStyle: { backgroundColor: '#1e4495' },
 			headerTintColor: '#fff'
 		}
-},*/
+	},
 
 	homepage: {
 		screen: TabNavigator({
@@ -240,9 +240,13 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 					GroupList: {
 						screen: GroupsList,
 						navigationOptions: {
+							headerTitle: 'GROUPS',
+							headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+							headerStyle: { backgroundColor: '#1e4495' },
+							headerTintColor: '#fff'
 						}
 					},
-					AddGroup: {
+					/* AddGroup: {
 						screen: AddGroup,
 						navigationOptions: {
 							headerTitle: 'Add Group',
@@ -250,7 +254,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							headerStyle: { backgroundColor: '#1e4495' },
 							headerTintColor: '#fff'
 						}
-					},
+					}, */
 					SubModule: {
 						screen: TabNavigator({
 							Dashboard: {
@@ -258,15 +262,15 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									ErpHome: {
 										screen: ErpHome, navigationOptions: {
 											headerMode: 'none',
-											headerTitle: 'DASHBOARD',
+											headerTitle: 'ERP',
 											headerTintColor: '#fff',
 
-											headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+											headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: 'bold', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 											// /* for disabling back button */										headerLeft: null,
 											headerStyle: { backgroundColor: '#1e4495' },
 											tabBarIcon: (<Image
-												source={require('./images/revenue.png')}
+												source={require('./images/tabExpenseIcon.png')}
 												style={{ height: 30, width: 40 }}
 												resizeMode='contain'
 
@@ -276,8 +280,14 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									Erpcategory: {
 										screen: ERPCategory,
 										navigationOptions: {
+											tabBarIcon: (<Image
+												source={require('./images/tabExpenseIcon.png')}
+												style={{ height: 30, width: 40 }}
+												resizeMode='contain'
 
+											/>)
 										}
+										
 									},
 									Erpsubcategory: {
 										screen: ERPSubCategory,
@@ -310,7 +320,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Drivers: {
 								screen: DriverList, navigationOptions: {
-									headerTitle: 'DRIVERS',
+									headerTitle: 'DRIVERS DETAILS',
 									headerTintColor: '#fff',
 
 									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
@@ -338,7 +348,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							},
 							Payments: {
 								screen: PaymentList, navigationOptions: {
-									headerTitle: 'PAYMENTS',
+									headerTitle: 'PAYMENT DETAILS',
 									headerTintColor: '#fff',
 
 									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
@@ -385,7 +395,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 								animationEnabled: true,
 								swipeEnabled: true,
 								scrollEnabled: true,
-								allowFontScaling: true,
+								allowFontScaling: false,
 								...TabNavigator.Presets.AndroidTopTabs,
 								tabBarOptions: {
 									showIcon: true,
@@ -393,9 +403,14 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									upperCaseLabel: false,
 									style: {
 										backgroundColor: '#ffffff',
+										shadowColor: '#ddd',
+										shadowOffset: { width: 2, height: 3 },
+										shadowOpacity: 0.7,
+										shadowRadius: 2,
+										elevation: 1,
 									},
 									labelStyle: {
-										color: '#4c69a9',
+										color: '#13346e',
 										fontSize: 14,
 										fontFamily: 'Gotham-Book',
 										margin: 0
@@ -445,7 +460,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							GPS: {
 								screen: GpsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -457,7 +472,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							SetReports: {
 								screen: ReportsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -466,7 +481,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									/>)
 								},
 							},
-						}, {
+						}, {...TabNavigator.Presets.AndroidTopTabs,
 								tabBarPosition: 'top',
 								// swipeEnabled: true,
 								// scrollEnabled: false,
@@ -481,8 +496,10 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 										backgroundColor: '#ffffff',
 									},
 									tabStyle: {
+										width: Dimensions.get('window').width/2,
 										flexDirection: 'row',
-										justifyContent: 'center'
+										justifyContent: 'center',
+										alignItems: 'center'
 									},
 									labelStyle: {
 										marginLeft: 20,

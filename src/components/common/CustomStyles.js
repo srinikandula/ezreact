@@ -899,26 +899,25 @@ const androidStyles = {
     },
     logintext: {
         justifyContent: 'flex-start',
-        flex: 0.2,
-        //fontFamily:'Gotham-Light',
-        alignItems: 'center',
-        color: 'white',
-        backgroundColor: 'rgba(0,0,0,0)',
-        fontSize: 20,
-        marginTop:20
-
+       flex: 0.2,
+       //fontFamily:'Gotham-Light',
+       alignItems: 'center',
+       color: 'white',
+       backgroundColor: 'rgba(0,0,0,0)',
+       fontSize: 20,
+       marginTop:20
     },
     loginContainerStyle: {
         flex: 0.8,
-        backgroundColor: '#ffffff',
-        // marginTop: 60,
-        marginBottom: 50,
-        marginLeft: 20,
-        marginRight: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
+       backgroundColor: '#ffffff',
+       // marginTop: 60,
+       marginBottom: 50,
+       marginLeft: 20,
+       marginRight: 20,
+       paddingLeft: 10,
+       paddingRight: 10,
+       justifyContent: 'center',
+       alignItems: 'flex-start',
 
     },
     loginInputStyle: {

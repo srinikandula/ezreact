@@ -85,46 +85,70 @@ export default class GPSTruckMap extends Component {
 
 
     async getCredentailsData() {
-        this.setState({ spinnerBool: true });
-        this.getCache((value) => {
-            if (value !== null) {
-                var egObj = {};
-                egObj = JSON.parse(value);
-                this.setState({ token: egObj.token });
-                if (Utils.checkInternetConnection()) {
-                    console.log(Utils.checkInternetConnection(), 'network')
-                    return (<NoInternetModal visible={true} />);
-                }
+    this.setState({ spinnerBool:true });
+    this.getCache((value) => {
+        if (value !== null) {
+            var egObj = {};
+            egObj = JSON.parse(value);
+            this.setState({ token: egObj.token });
+            if(Utils.checkInternetConnection())
+            {
+                console.log(Utils.checkInternetConnection(),'network')
+                return (<NoInternetModal visible={true}/>);
+            }
 
-                Axios({
-                    method: 'get',
-                    headers: { 'token': egObj.token },
-                    url: Config.routes.base + Config.routes.gpsTrackingByMapView
-                })
-                    .then((response) => {
-                        if (response.data.status) {
-                            console.log('GPSTruckMap-trucksList ==>', response.data);
-                            if (response.data.data.length == 0) {
-                                this.setState({ spinnerBool: false, view: 'no' });
-                            } else {
-                                this.setState({ spinnerBool: false, view: 'mapShow' });
-                                var catgryarr = response.data.data;
-                                catgryarr = catgryarr.filter(function (item, index) {
-                                    if (item.hasOwnProperty('attrs'))
-                                        return item;
-                                });
+            Axios({
+                method: 'get',
+                headers: { 'token': egObj.token },
+                url: Config.routes.base + Config.routes.gpsTrackingByMapView
+            })
+                .then((response) => {
+                    if (response.data.status) {
+                        console.log('GPSTruckMap-trucksList ==>', response.data);
+                        if (response.data.data.length == 0) {
+                            this.setState({ spinnerBool: false,view:'no' });
+                        } else {
+                            this.setState({ spinnerBool: false,view:'mapShow' });
+                            var catgryarr = response.data.data;
+                            catgryarr = catgryarr.filter(function (item, index) {
+                                if (item.hasOwnProperty('attrs'))
+                                    return item;
+                            });
 
-                                this.setState({ trucks: catgryarr });
+                            this.setState({ trucks: catgryarr });
 
-                                var dump = [];
-                                for (let index = 0; index < catgryarr.length; index++) {
-                                    const element = catgryarr[index];
-                                    element.rememberme = false;
-                                    //console.log(this.state.location[index], 'element.location');
-                                    dump.push(element);
-                                    this.setState({ trucks: dump, dummytrucks: dump });
+                            var dump = [];
+                            for (let index = 0; index < catgryarr.length; index++) {
+                                const element = catgryarr[index];
+                                element.rememberme = false;
+                                //console.log(this.state.location[index], 'element.location');
+                                dump.push(element);
+                                this.setState({ trucks: dump,dummytrucks:dump });
+                            }
 
-
+                            console.log(catgryarr, 'vignesh == ', dump);
+                            var catgryarr1 = [];
+                            for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
+                                const truckElement = this.state.trucks[index];                                        
+                                if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
+                                    const element = catgryarr[index].attrs.latestLocation.location.coordinates;
+                                        //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                    //latitude:0,longitude:0
+                                    var obj = { coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                registrationNo:catgryarr[index].registrationNo,
+                                                speed:catgryarr[index].attrs.latestLocation.speed,
+                                                address:catgryarr[index].attrs.latestLocation.address,
+                                                date:catgryarr[index].attrs.latestLocation.updatedAt,
+                                                isStopped:catgryarr[index].attrs.latestLocation.isStopped,
+                                                isIdle:catgryarr[index].attrs.latestLocation.isIdle};
+                                    catgryarr1.push(obj);
+                                    truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                    truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
+                                    this.setState({ latitude: element[1], longitude: element[0] });
+                                    this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                }
+                                this.state.trucks[index] = truckElement;
+                                    
                                 }
                                 this.setState({ spinnerBool: false, trucks: this.state.trucks });
 

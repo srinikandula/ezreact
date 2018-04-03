@@ -30,7 +30,11 @@ class GpsSetting extends Component {
         }).then((response) => {
             console.log('getAccountRoutes', response.data.data);
             this.setState({ RoutesList: response.data.data })
+                        this.setState({ spinnerBool: false });
 
+        }).catch((error) => {
+            console.log('error in GpsSetting ==>', error);
+            this.setState({ spinnerBool: false });
         })
     }
     async getCredentailsData() {
@@ -60,13 +64,14 @@ class GpsSetting extends Component {
                                     stopTime: '' + response.data.results.stopTime,
                                     mstoplbl: true, OverSpeedlbl: true, intervallbl: true, stopTimelbl: true
                                 });
-                                this.getAccountRoutes();
+                               
 
                             }
                         } else {
 
                         }
-                        this.setState({ spinnerBool: false });
+                        this.getAccountRoutes();
+                        // this.setState({ spinnerBool: false });
                     }).catch((error) => {
                         console.log('error in GpsSetting ==>', error);
                         this.setState({ spinnerBool: false });

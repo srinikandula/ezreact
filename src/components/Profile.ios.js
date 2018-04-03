@@ -8,7 +8,7 @@ import CustomStyles from './common/CustomStyles';
 import Axios from 'axios';
 import Utils from './common/Utils';
 import ImagePicker  from 'react-native-image-picker';
-import fileType from 'react-native-file-type'
+//import fileType from 'react-native-file-type'
 
 const imgPickerOptions = {
     title: 'Select image',

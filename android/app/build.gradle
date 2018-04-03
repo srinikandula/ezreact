@@ -163,7 +163,6 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.2.4'
     
     compile project(':react-native-image-picker')
-
     compile project(':react-native-immediate-phone-call')
     compile project(':react-native-splash-screen')
     compile fileTree(dir: "libs", include: ["*.jar"])

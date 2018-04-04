@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CPicker,CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
@@ -9,6 +9,7 @@ import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
+import { NoInternetModal } from './common';
 export default class AddTrip extends Component {
 
     state = {
@@ -32,11 +33,21 @@ export default class AddTrip extends Component {
         tonnage: '',
         famount: '',
         spinnerBool: false,
-        accountId: ''
+        accountId: '',
+        netFlaf: false,
     };
     componentWillMount() {
         console.log("payment token", this.props.navigation.state.params.token);
-        this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+        
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
 
     }
 
@@ -303,8 +314,6 @@ export default class AddTrip extends Component {
                                     if (this.state.famount.length > 0) {
 
                                         var lane = this.state.lanesList.filter(lane => lane.name === this.state.selectedlaneId);
-
-
                                         var date = new Date(this.state.passdate);
                                         var postData = {
                                             'date': date.toISOString(),
@@ -322,7 +331,16 @@ export default class AddTrip extends Component {
                                         };
 
                                         console.log('postdata', postData);
-                                        this.callAddTripAPI(postData);
+                                        
+                                        NetInfo.isConnected.fetch().then(isConnected => {
+                                            console.log('isConnected',isConnected);
+                                            if (isConnected) {
+                                                this.setState({netFlaf:false});
+                                                this.callAddTripAPI(postData);
+                                            } else {
+                                            return this.setState({netFlaf:true});
+                                        }
+                                    });
                                     } else {
                                         Utils.ShowMessage('Please Enter Frieght Amount');
                                     }
@@ -730,6 +748,8 @@ export default class AddTrip extends Component {
                         />
                     </View>
                 </Confirm>
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

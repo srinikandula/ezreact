@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
     CheckBox, TouchableOpacity,  ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CPicker, CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground , Confirm} from './common';
@@ -8,6 +8,7 @@ import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
+import { NoInternetModal } from './common';
 export default class AddPayment extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
     state = {
@@ -23,10 +24,22 @@ export default class AddPayment extends Component {
         partyList:[],
         paymentsDetails:{},
         spinnerBool: false,
-        accountId:''
+        accountId:'',
+        netFlaf: false
     };
     componentWillMount() {
         console.log("payment token",this.props.navigation.state.params.token);
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.fetchPartyList();
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
+    }
+    fetchPartyList(){
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token},
@@ -232,7 +245,16 @@ export default class AddPayment extends Component {
                                 'paymentRefNo':this.state.paymentref,
                                 'paymentType':this.state.paymentType
                                 };
-                            this.callAddPaymentAPI(postData);
+                            
+                            NetInfo.isConnected.fetch().then(isConnected => {
+                                console.log('isConnected',isConnected);
+                                if (isConnected) {
+                                    this.setState({netFlaf:false});
+                                    this.callAddPaymentAPI(postData);
+                                } else {
+                                return this.setState({netFlaf:true});
+                                }
+                            });
                         }else{
                             if(this.state.paymentref.length>0){
                                 var postData= {
@@ -243,7 +265,15 @@ export default class AddPayment extends Component {
                                     paymentRefNo:this.state.paymentref,
                                     paymentType:this.state.paymentType
                                     };
-                                this.callAddPaymentAPI(postData);
+                                    NetInfo.isConnected.fetch().then(isConnected => {
+                                        console.log('isConnected',isConnected);
+                                        if (isConnected) {
+                                            this.setState({netFlaf:false});
+                                            this.callAddPaymentAPI(postData);
+                                        } else {
+                                        return this.setState({netFlaf:true});
+                                        }
+                                    });
                             }else{
                                 Utils.ShowMessage('Please Enter Reference Number to '+ this.state.paymentType);
                             } 
@@ -437,6 +467,9 @@ export default class AddPayment extends Component {
                         />
                     </View>
                 </Confirm>
+
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

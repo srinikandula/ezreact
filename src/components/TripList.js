@@ -1,23 +1,30 @@
 import React, { Component } from 'react';
-import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,BackHandler, ListView,NetInfo,FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
-
-
-
+import { NoInternetModal } from './common';
 
 export default class TripList extends Component {
     state = {
-        categoryBgColor: false,token:'',trips:[],dummytrips:[],tripID:''
+        categoryBgColor: false,token:'',trips:[],dummytrips:[],tripID:'', netFlaf: false
     };
 
     componentWillMount() {
         const self = this;
         console.log(self.props,"token");
-        this.getCredentailsData();
+        
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getCredentailsData();
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
     }
         componentWillUnmount(){
          BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -303,6 +310,8 @@ export default class TripList extends Component {
                                         style= {CustomStyles.addImage}/>
                             </TouchableOpacity>
                         </View>
+                    <NoInternetModal visible={this.state.netFlaf} 
+                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                 </View>
                 
             );           

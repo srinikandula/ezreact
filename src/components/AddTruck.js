@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
     View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS,
-    CheckBox, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, Platform
+    CheckBox, TouchableOpacity, ScrollView, Keyboard,NetInfo, Dimensions, BackHandler, Platform
 } from 'react-native';
 import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm, CPicker } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
+import { NoInternetModal } from './common';
 export default class AddTruck extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
@@ -35,32 +36,44 @@ export default class AddTruck extends Component {
         paymentref: '',
         remark: '',
         drivers: [],
+         netFlaf: false,
         spinnerBool: false
     };
     componentWillMount() {
         console.log("payment token", this.props.navigation.state.params.token);
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.fetchDriverList();
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
+    }
+
+    fetchDriverList(){
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.driverList
         })
-            .then((response) => {
-                if (response.data.status) {
-                    console.log('driversList from add Truck ==>', response.data);
-                    this.setState({ drivers: response.data.drivers });
-                    if (this.props.navigation.state.params.edit) {
-                        this.getTruckDetails(this.props.navigation.state.params.id);
-                    }
-                } else {
-                    console.log('error in DriverList from add Truck ==>', response);
-                    this.setState({ drivers: [], expirydetails: [] });
+        .then((response) => {
+            if (response.data.status) {
+                console.log('driversList from add Truck ==>', response.data);
+                this.setState({ drivers: response.data.drivers });
+                if (this.props.navigation.state.params.edit) {
+                    this.getTruckDetails(this.props.navigation.state.params.id);
                 }
+            } else {
+                console.log('error in DriverList from add Truck ==>', response);
+                this.setState({ drivers: [], expirydetails: [] });
+            }
 
-            }).catch((error) => {
-                console.log('error in add drivers from add Truck ==>', error);
-            })
+        }).catch((error) => {
+            console.log('error in add drivers from add Truck ==>', error);
+        })
     }
-
 
     getTruckDetails(paymentID) {
         console.log(paymentID, "paymentID")
@@ -309,7 +322,17 @@ export default class AddTruck extends Component {
                                                 'driverId': driverID,
                                             };
 
-                                            this.callAddPaymentAPI(postData);
+                                            NetInfo.isConnected.fetch().then(isConnected => {
+                                                console.log('isConnected',isConnected);
+                                                if (isConnected) {
+                                                    this.setState({netFlaf:false});
+                                                    this.callAddPaymentAPI(postData);
+                                                } else {
+                                                    return this.setState({netFlaf:true});
+                                                }
+                                            });
+
+
                                         } else {
                                             Utils.ShowMessage('Please Enter Insurance Date');
                                         }
@@ -556,6 +579,8 @@ export default class AddTruck extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
+                        <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                     </View>
                 </ScrollView>
 
@@ -622,6 +647,7 @@ export default class AddTruck extends Component {
                         />
                     </View>
                 </Confirm>
+                
             </View>
 
         );

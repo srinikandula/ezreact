@@ -23,10 +23,10 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
-            //  userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+              userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,
             spinnerBool: false
         };
@@ -85,8 +85,7 @@ class Login extends Component {
         NetInfo.isConnected.fetch().then(isConnected => {
             console.log('isConnected',isConnected);
             if (isConnected) {
-                this.setState({showMail:false});
-            self.setState({ spinnerBool: true });
+                this.setState({showMail:false, spinnerBool: true });
             Axios({
                 method: 'post',
                 url: Config.routes.base + Config.routes.loginRoute,
@@ -118,7 +117,7 @@ class Login extends Component {
                 console.log('login post error--->', error)
                 Utils.ShowMessage("Something went wrong.Please try after sometime");
             })
-        } else {
+        } else {            
             return this.setState({showMail:true});
         }
     });
@@ -373,7 +372,6 @@ class Login extends Component {
                                 </CustomText>
                                 </CustomButton>
                             </View>
-                            {this.spinnerLoad()}
                             <NoInternetModal visible={this.state.showMail} 
                                             onAccept={() => {this.setState({ showMail: false }) }}/>
                         </View>

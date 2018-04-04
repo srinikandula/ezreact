@@ -60,7 +60,7 @@ const styles = {
         color: '#000',
         fontSize: 16,
         lineHeight: 23,
-        height: 36,
+        height: 48,
         paddingLeft: 5,
         justifyContent: 'center',
         

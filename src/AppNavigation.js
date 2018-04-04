@@ -460,7 +460,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							GPS: {
 								screen: GpsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:Platform.OS==='ios'?-40: 20, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -472,7 +472,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							SetReports: {
 								screen: ReportsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:Platform.OS==='ios'?-40: 20, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -481,7 +481,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									/>)
 								},
 							},
-						}, {...TabNavigator.Presets.AndroidTopTabs,
+						}, {
+							// ...TabNavigator.Presets.AndroidTopTabs,
 								tabBarPosition: 'top',
 								// swipeEnabled: true,
 								// scrollEnabled: false,
@@ -496,7 +497,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 										backgroundColor: '#ffffff',
 									},
 									tabStyle: {
-										width: Dimensions.get('window').width/2,
+										//width: Dimensions.get('window').width/2,
 										flexDirection: 'row',
 										justifyContent: 'center',
 										alignItems: 'center'

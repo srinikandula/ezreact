@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import {CPicker, CustomInput, CRadio, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
@@ -8,6 +8,7 @@ import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
+import { NoInternetModal } from './common';
 
 export default class AddExpense extends Component {
     state = {
@@ -28,11 +29,20 @@ export default class AddExpense extends Component {
         otherExpenseInputViewBool: 'none',
         creditBool: 'none',
         cashBool: 'none',
-        spinnerBool: false
+        spinnerBool: false,
+        netFlaf: false,
     };
     componentWillMount() {
-        this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
-
+       
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
     }
 
     getDataList(calltype, url) {
@@ -286,7 +296,16 @@ export default class AddExpense extends Component {
                                     "vehicleNumber": this.state.selectedVehicleId,
                                 }
                                 console.log('postdata', postData);
-                                this.callAddExpenseAPI(postData);
+                                
+                                NetInfo.isConnected.fetch().then(isConnected => {
+                                    console.log('isConnected',isConnected);
+                                    if (isConnected) {
+                                        this.setState({netFlaf:false});
+                                        this.callAddExpenseAPI(postData);
+                                    } else {
+                                    return this.setState({netFlaf:true});
+                                    }
+                                });
                             } else {
                                 Utils.ShowMessage('Please Enter Expense Amount');
                             }
@@ -309,7 +328,16 @@ export default class AddExpense extends Component {
                                             "vehicleNumber": this.state.selectedVehicleId,
                                         }
                                         console.log('postdata', postData);
-                                        this.callAddExpenseAPI(postData);
+                                        //this.callAddExpenseAPI(postData);
+                                        NetInfo.isConnected.fetch().then(isConnected => {
+                                            console.log('isConnected',isConnected);
+                                            if (isConnected) {
+                                                this.setState({netFlaf:false});
+                                                this.callAddExpenseAPI(postData);
+                                            } else {
+                                            return this.setState({netFlaf:true});
+                                            }
+                                        });
                                     } else {
                                         Utils.ShowMessage('Please Enter  Paid Amount');
 
@@ -638,6 +666,8 @@ export default class AddExpense extends Component {
                         />
                     </View>
                 </Confirm>
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

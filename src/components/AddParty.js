@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, FlatList,
+    View, Image, Text, Picker, FlatList,NetInfo,
     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import CheckBox from 'react-native-checkbox';
@@ -9,6 +9,7 @@ import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
+import { NoInternetModal } from './common';
 export default class AddParty extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
@@ -31,12 +32,21 @@ export default class AddParty extends Component {
         suppliereBool: 'none',
         isMail: false,
         isSms: false,
-        accountId: ''
+        accountId: '',
+        netFlaf: false,
     };
     componentWillMount() {
         // console.log("AddParty token",this.propsnavigation.state.params.);   
-        if (this.props.navigation.state.params.edit) {
-            this.getPartyDetails(this.props.navigation.state.params.id);
+        if (this.props.navigation.state.params.edit) {                   
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.getPartyDetails(this.props.navigation.state.params.id);
+                } else {
+                return this.setState({netFlaf:true});
+            }
+            });
         }
     }
 
@@ -203,7 +213,16 @@ export default class AddParty extends Component {
                                 'partyType': this.state.role,
                                 'tripLanes': ""
                             };
-                            this.callAddPartytAPI(postData);
+                            NetInfo.isConnected.fetch().then(isConnected => {
+                                    console.log('isConnected',isConnected);
+                                    if (isConnected) {
+                                        this.setState({netFlaf:false});
+                                        this.callAddPartytAPI(postData);
+                                    } else {
+                                    return this.setState({netFlaf:true});
+                                }
+                            });
+                            
                         } else {
 
                             if (this.state.tripLanes.length > 0) {
@@ -221,11 +240,18 @@ export default class AddParty extends Component {
                                     'partyType': this.state.role,
                                     'tripLanes': tlanes
                                 };
-                                this.callAddPartytAPI(postData);
+                                //this.callAddPartytAPI(postData);
+                                NetInfo.isConnected.fetch().then(isConnected => {
+                                    console.log('isConnected',isConnected);
+                                    if (isConnected) {
+                                        this.setState({netFlaf:false});
+                                        this.callAddPartytAPI(postData);
+                                    } else {
+                                    return this.setState({netFlaf:true});
+                                }
+                            });
                             } else {
                                 Utils.ShowMessage('Please Add Trip Lanes ');
-
-
                             }
                         }
 

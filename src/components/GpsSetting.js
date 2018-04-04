@@ -3,13 +3,15 @@ import { View, Button, Image, Text, TouchableOpacity, FlatList, ScrollView, Keyb
 import SplashScreen from 'react-native-splash-screen';
 import { CustomInput, Card, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import CustomStyles from './common/CustomStyles';
+import { NoInternetModal } from './common';
 import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
 import RNGooglePlaces from 'react-native-google-places';
 import Axios from 'axios';
 class GpsSetting extends Component {
-    state = { routesBool: false, mstop: ' ', OverSpeed: '', interval: '', stopTime: '', source: '', destination: '', message: '', accountId: '' };
+    state = { RoutesList:[],routesBool: false, mstop: ' ', OverSpeed: '', interval: '', stopTime: '', source: '', destination: '', message: '', accountId: '',
+    netFlaf: false, };
 
     constructor(props) {
         super(props);
@@ -163,9 +165,10 @@ class GpsSetting extends Component {
                         console.log("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
                     })
                 }
-
             })
-            .catch(error => console.log(error.message));  // error is a Javascript Error object
+            .catch((error) =>{
+                console.log(error.message);  // error is a Javascript Error object
+            }); 
 
     }
 

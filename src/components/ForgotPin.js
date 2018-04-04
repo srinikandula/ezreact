@@ -121,13 +121,12 @@ class ForgotPin extends Component{
                             {this.spinnerLoad()}
                     <View style={CustomStyles.forgotMainContainer}>
                          <View style={CustomStyles.forgotcontainerStyle}>
-
-                         
                              <View style={CustomStyles.forgotInputBox}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
                                 </Text>  
                                 <CustomEditText
+                                    underlineColorAndroid={'#e1e1e1'}
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='numeric'
                                     inputTextStyle={CustomStyles.forgotInputStyle}
@@ -138,7 +137,6 @@ class ForgotPin extends Component{
                                 />
                             </View>
                             <View style={CustomStyles.forgotActionView}>
-                               
                                      <TouchableOpacity style={CustomStyles.forgotActionpadding}  onPress={() => {
                                                                 Keyboard.dismiss();
                                                                 this.props.navigation.goBack();

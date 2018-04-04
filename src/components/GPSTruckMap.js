@@ -3,15 +3,16 @@
 import React, { Component } from 'react';
 import {
     View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
-    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
+    BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity,NetInfo
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
-import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText, NoInternetModal, Confirm } from './common';
+import { ExpiryDateItems, TrackModal, CustomText, CSpinner, CustomEditText,  Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
 import MapView, { Marker, Callout } from 'react-native-maps';
+import { NoInternetModal } from './common';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height / 4;
@@ -51,7 +52,7 @@ export default class GPSTruckMap extends Component {
             }
         }],
         view: 'no',
-
+        netFlaf: false,
         spinnerBool: false,
 
     };
@@ -67,7 +68,16 @@ export default class GPSTruckMap extends Component {
         }
         console.log(self.props.showHeader, "GPSTruckMap-token");
         this.setState({ showHeader: showHeaderBool ? 'flex' : 'none', fromDate: currDate.toDateString(), toDate: currDate.toDateString(), fromPassdate: currDate.toDateString(), toPassdate: currDate.toDateString() });
-        this.getCredentailsData();
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getCredentailsData();
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
+        
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 this.setState({
@@ -91,11 +101,7 @@ export default class GPSTruckMap extends Component {
             var egObj = {};
             egObj = JSON.parse(value);
             this.setState({ token: egObj.token });
-            if(Utils.checkInternetConnection())
-            {
-                console.log(Utils.checkInternetConnection(),'network')
-                return (<NoInternetModal visible={true}/>);
-            }
+            
 
             Axios({
                 method: 'get',
@@ -138,7 +144,7 @@ export default class GPSTruckMap extends Component {
                                                 registrationNo:catgryarr[index].registrationNo,
                                                 speed:catgryarr[index].attrs.latestLocation.speed,
                                                 address:catgryarr[index].attrs.latestLocation.address,
-                                                date:catgryarr[index].attrs.latestLocation.updatedAt,
+                                                date:catgryarr[index].updatedAt,
                                                 isStopped:catgryarr[index].attrs.latestLocation.isStopped,
                                                 isIdle:catgryarr[index].attrs.latestLocation.isIdle};
                                     catgryarr1.push(obj);
@@ -520,51 +526,58 @@ export default class GPSTruckMap extends Component {
     }
 
     onAccept() {
-        if (this.state.dispDatePicker === 'flex') {
-            if (this.state.fromDate === '' || this.state.toDate === '') {
-                alert('Select a date');
-            } else {
-                this.setState({ dispDatePicker: 'none', showModal: false, showTrack: true })
-            }
-        } else if (this.state.dispLookLoad === 'flex') {
-            if (this.state.lookLoadSource === '' || this.state.lookLoadDestination === '' || this.state.lookLoadPrice === '') {
-                alert('All fields mandatory');
-            } else if (!isNaN(this.state.lookLoadSource) || !isNaN(this.state.lookLoadDestination)) {
-                alert('Number')
-            } else {
-                console.log(
-                    'sourceAddress', this.state.lookLoadSource,
-                    'destinationAddress', this.state.lookLoadDestination,
-                    'truckType', this.state.truckTypeIs,
-                    'registrationNo', this.state.registrationNumber,
-                    'pricePerTon', Number(this.state.lookLoadPrice)
-                )
-                Axios({
-                    url: Config.routes.base + Config.routes.lookingForLoad,
-                    method: 'POST',
-                    headers: { 'token': this.state.token },
-                    data: {
-                        sourceAddress: this.state.lookLoadSource,
-                        destinationAddress: this.state.lookLoadDestination,
-                        truckType: this.state.truckTypeIs,
-                        registrationNo: this.state.registrationNumber,
-                        pricePerTon: Number(this.state.lookLoadPrice)
-                    }
-                }).then((response) => {
-                    console.log('response', response);
-                    if (response.data.status) {
-
-                        // alert('Update successfull')
-                        this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: true, dispLookLoad: 'none', showModal: false })
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                if (this.state.dispDatePicker === 'flex') {
+                    if (this.state.fromDate === '' || this.state.toDate === '') {
+                        alert('Select a date');
                     } else {
-                        alert(response.data.messages)
+                        this.setState({ dispDatePicker: 'none', showModal: false, showTrack: true })
                     }
-                }).catch((error) => {
-                    console.log(error.response);
-                })
-            }
+                } else if (this.state.dispLookLoad === 'flex') {
+                    if (this.state.lookLoadSource === '' || this.state.lookLoadDestination === '' || this.state.lookLoadPrice === '') {
+                        alert('All fields mandatory');
+                    } else if (!isNaN(this.state.lookLoadSource) || !isNaN(this.state.lookLoadDestination)) {
+                        alert('Number')
+                    } else {
+                        console.log(
+                            'sourceAddress', this.state.lookLoadSource,
+                            'destinationAddress', this.state.lookLoadDestination,
+                            'truckType', this.state.truckTypeIs,
+                            'registrationNo', this.state.registrationNumber,
+                            'pricePerTon', Number(this.state.lookLoadPrice)
+                        )
+                        Axios({
+                            url: Config.routes.base + Config.routes.lookingForLoad,
+                            method: 'POST',
+                            headers: { 'token': this.state.token },
+                            data: {
+                                sourceAddress: this.state.lookLoadSource,
+                                destinationAddress: this.state.lookLoadDestination,
+                                truckType: this.state.truckTypeIs,
+                                registrationNo: this.state.registrationNumber,
+                                pricePerTon: Number(this.state.lookLoadPrice)
+                            }
+                        }).then((response) => {
+                            console.log('response', response);
+                            if (response.data.status) {
 
+                                // alert('Update successfull')
+                                this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: true, dispLookLoad: 'none', showModal: false })
+                            } else {
+                                alert(response.data.messages)
+                            }
+                        }).catch((error) => {
+                            console.log(error.response);
+                        })
+                    }
+                }
+        } else {
+            return this.setState({netFlaf:true});
         }
+    });
     }
 
     onDecline() {
@@ -622,13 +635,15 @@ export default class GPSTruckMap extends Component {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 10, margin: 5 }}>
                         <TouchableOpacity onPress={() => { this.setState({ view: 'mapShow' }); }}>
-                            <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
+                            <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5,
+                                            opacity :this.state.view ==='mapShow' ? 0.2:1}}
                                 source={require('../images/gps_map_lap_icon.png')} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             this.setState({ view: 'listshow' });
                         }}>
-                            <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
+                            <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5,
+                                    opacity :this.state.view ==='listshow' ? 0.2:1 }}
                                 source={require('../images/gps_truck_list_icon.png')} />
                         </TouchableOpacity>
                         {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('GPSDistReport',{refresh: this.refreshFunction}) }}>
@@ -646,6 +661,7 @@ export default class GPSTruckMap extends Component {
                     {this.spinnerLoad()}
                     {self.getView()}
                 </View>
+
                 <TrackModal
                     visible={this.state.showTrack} cancel={'cancel'}
                     onAccept={() => { this.moveToTrackScreen(); }}
@@ -713,6 +729,9 @@ export default class GPSTruckMap extends Component {
                         </View>
                     </View>
                 </Confirm>
+
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

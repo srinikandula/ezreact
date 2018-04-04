@@ -8,6 +8,7 @@ import Utils from './common/Utils';
 import { NavigationActions } from 'react-navigation';
 import Config from '../config/Config';
 import Axios from 'axios';
+import { NoInternetModal } from './common';
 const category = [
     {
         'name': 'Revenue',
@@ -18,7 +19,7 @@ const category = [
 
 export default class ErpHome extends Component {
     state = {
-        loadSpinner: false, categoryBgColor: false, token: '',
+        loadSpinner: false, categoryBgColor: false, token: '', netFlaf: false,
         erpDashBroadData: { paybleAmount: 0, pendingDue: 0, expensesTotal: 0, totalRevenue: 0 }, expirydetails: [], update: false
     };
 
@@ -29,8 +30,9 @@ export default class ErpHome extends Component {
         // this.setState({ order: this.props.order });
 
         self.setState({ loadSpinner: true }, () => {
-
-            this.getCredentailsData();
+            
+                    this.getCredentailsData();
+                
             BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         });
     }
@@ -141,48 +143,57 @@ export default class ErpHome extends Component {
     }
 
     callcategoryScreen(data) {
-        const { navigate } = this.props.navigation;
-        switch (data) {
-            case "Revenue":
-                navigate('Erpcategory', {
-                    token: this.state.token,
-                    Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
-                    mode: data,
-                    label: 'Total Revenue Details'
-                });
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+            const { navigate } = this.props.navigation;
+            switch (data) {
+                case "Revenue":
+                    navigate('Erpcategory', {
+                        token: this.state.token,
+                        Url: Config.routes.base + Config.routes.totalRevenueByVechicle,
+                        mode: data,
+                        label: 'Total Revenue Details'
+                    });
 
-                break;
-            case "Expense":
-                navigate('Erpcategory', {
-                    token: this.state.token,
-                    Url: Config.routes.base + Config.routes.totalExpensesForAllVehicles,
-                    mode: data,
-                    label: 'Total Expenses Details'
-                });
-                break;
-            case "Payments":
-                console.log("Payments", data);
-                navigate('Erpcategory', {
-                    token: this.state.token,
-                    Url: Config.routes.base + Config.routes.totalPayeblesPayment,
-                    //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
-                    mode: data,
-                    label: 'Total Payments Details'
-                });
-                break;
-            case "Expiry":
-                console.log("Expiry", data);
-                navigate('ExpiryDate', {
-                    token: this.state.token,
-                    Url: Config.routes.base + Config.routes.permitExpiryTrucks,
-                    mode: data,
-                    baseExpiry: 'Permit',
-                    label: 'Permit Details'
-                });
-                break;
-            default:
-                text = "I have never heard of that fruit...";
+                    break;
+                case "Expense":
+                    navigate('Erpcategory', {
+                        token: this.state.token,
+                        Url: Config.routes.base + Config.routes.totalExpensesForAllVehicles,
+                        mode: data,
+                        label: 'Total Expenses Details'
+                    });
+                    break;
+                case "Payments":
+                    console.log("Payments", data);
+                    navigate('Erpcategory', {
+                        token: this.state.token,
+                        Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                        //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                        mode: data,
+                        label: 'Total Payments Details'
+                    });
+                    break;
+                case "Expiry":
+                    console.log("Expiry", data);
+                    navigate('ExpiryDate', {
+                        token: this.state.token,
+                        Url: Config.routes.base + Config.routes.permitExpiryTrucks,
+                        mode: data,
+                        baseExpiry: 'Permit',
+                        label: 'Permit Details'
+                    });
+                    break;
+                default:
+                    text = "I have never heard of that fruit...";
+            }
+        } else {
+            return this.setState({netFlaf:true});
         }
+    });
+
     }
 
     render() {
@@ -287,7 +298,9 @@ export default class ErpHome extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                </ScrollView>
+                    <NoInternetModal visible={this.state.netFlaf} 
+                        onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                </ScrollView>                
             </View>
         );
     }

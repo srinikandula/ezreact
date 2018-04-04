@@ -1,24 +1,32 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity,NetInfo } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText, CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import Utils from './common/Utils';
-
+import { NoInternetModal } from './common';
 
 export default class TruckList extends Component {
     state = {
-        categoryBgColor: false, token: '', trucks: [], dummyTrucks: [], truckNumber: ''
+        categoryBgColor: false, token: '', trucks: [], dummyTrucks: [], truckNumber: '', netFlaf: false,
     };
 
     componentWillMount() {
         const self = this;
         console.log(self.props, "token");
-        this.getCredentailsData();
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getCredentailsData();
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -145,7 +153,7 @@ export default class TruckList extends Component {
             }
 
         } else {
-            data = '-';
+            data = 'Name not available';
         }
         return data;
     }
@@ -260,9 +268,9 @@ export default class TruckList extends Component {
                                                 <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                                     {this.getName(item)}
                                                 </Text>
-                                                <Text style={CustomStyles.erpText}>
+                                                {/* <Text style={CustomStyles.erpText}>
                                                     {this.getmobile(item)}
-                                                </Text>
+                                                </Text> */}
                                             </View>
                                             <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
                                                 <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddTruck', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) }
@@ -271,12 +279,12 @@ export default class TruckList extends Component {
                                                         source={require('../images/form_edit.png')}
                                                         style={CustomStyles.drivervEditIcons} />
                                                 </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => { this.callSubCategoryScreen(item) }
+                                                {/* <TouchableOpacity onPress={() => { this.callSubCategoryScreen(item) }
                                                 }>
                                                     <Image resizeMode="contain"
                                                         source={require('../images/call_user.png')}
                                                         style={CustomStyles.drivervCallIcons} />
-                                                </TouchableOpacity>
+                                                </TouchableOpacity> */}
                                             </View>
                                         </View>
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 5 }}>
@@ -322,6 +330,8 @@ export default class TruckList extends Component {
                         }
                         keyExtractor={item => item._id} />
 
+                        
+
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
@@ -331,6 +341,8 @@ export default class TruckList extends Component {
                             style={CustomStyles.addImage} />
                     </TouchableOpacity>
                 </View>
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

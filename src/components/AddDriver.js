@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import { CustomInput, CPicker, renderIf, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
@@ -9,7 +9,7 @@ import Utils from '../components/common/Utils';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
-
+import { NoInternetModal } from './common';
 export default class AddDriver extends Component {
     state = {
         showModal: false,
@@ -25,11 +25,24 @@ export default class AddDriver extends Component {
         date: "",
         passdate: '',
         activeMe: false,
+        netFlaf: false,
         spinnerBool: false
 
     };
 
     componentWillMount() {
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.fetchTruckList();
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
+    }
+
+    fetchTruckList(){
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token },
@@ -57,7 +70,6 @@ export default class AddDriver extends Component {
                 console.log('error in baskets ==>', error);
             })
     }
-
     getDriverDetails(driverID) {
         console.log(driverID, "driverID")
         const self = this;
@@ -207,7 +219,16 @@ export default class AddDriver extends Component {
                                 'salary': Number(this.state.salaryPM),
                                 'isActive': this.state.activeMe
                             };
-                            this.callAddDriverAPI(postData);
+                            
+                            NetInfo.isConnected.fetch().then(isConnected => {
+                                console.log('isConnected',isConnected);
+                                if (isConnected) {
+                                    this.setState({netFlaf:false});
+                                    this.callAddDriverAPI(postData);
+                                } else {
+                                return this.setState({netFlaf:true});
+                            }
+                        });
 
                         } else {
                             Utils.ShowMessage('Please Enter Salary AMount');
@@ -400,7 +421,8 @@ export default class AddDriver extends Component {
                                 />
                             </View>
 
-
+                                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                         </View>
                     </ScrollView>
 

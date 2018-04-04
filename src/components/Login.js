@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage,Platform, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules } from 'react-native';
+import { View, Image, AsyncStorage,Platform, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules,NetInfo } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import Utils from './common/Utils';
@@ -24,10 +24,10 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
+            // userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
             // userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
-            //  userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+              userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,
             spinnerBool: false
         };
@@ -83,39 +83,45 @@ class Login extends Component {
         if (this.state.password.length < 4) {
             return Utils.ShowMessage('Enter valid password');
         }
-
-        self.setState({ spinnerBool: true });
-        Axios({
-            method: 'post',
-            url: Config.routes.base + Config.routes.loginRoute,
-            data: {
-                userName: this.state.userName,
-                password: this.state.password,
-                contactPhone: this.state.phoneNumber
-            }
-        }).then((response) => {
-            console.log("messages", response.data.messages);
-            console.log("response", response.data);
-            if (response.data.status) {
-                //console.log("response.data",response.data);
-                this.storeData(response.data);
-                this.runFCMService(response.data.token);
-                //this.props.navigation.navigate('homepage');
-            } else {
-                let message = "";
-                if (response.data)
-                    response.data.messages.forEach(function (current_value) {
-                        message = message + current_value;
-                    });
-                Utils.ShowMessage(message);
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({showMail:false, spinnerBool: true });
+            Axios({
+                method: 'post',
+                url: Config.routes.base + Config.routes.loginRoute,
+                data: {
+                    userName: this.state.userName,
+                    password: this.state.password,
+                    contactPhone: this.state.phoneNumber
+                }
+            }).then((response) => {
+                console.log("messages", response.data.messages);
+                console.log("response", response.data);
+                if (response.data.status) {
+                    //console.log("response.data",response.data);
+                    this.storeData(response.data);
+                    this.runFCMService(response.data.token);
+                    //this.props.navigation.navigate('homepage');
+                } else {
+                    let message = "";
+                    if (response.data)
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                    Utils.ShowMessage(message);
+                    self.setState({ spinnerBool: false });
+                }
+            
+            }).catch((error) => {
                 self.setState({ spinnerBool: false });
-            }
-
-        }).catch((error) => {
-            self.setState({ spinnerBool: false });
-            console.log('login post error--->', error)
-            Utils.ShowMessage("Something went wrong.Please try after sometime");
-        })
+                console.log('login post error--->', error)
+                Utils.ShowMessage("Something went wrong.Please try after sometime");
+            })
+        } else {            
+            return this.setState({showMail:true});
+        }
+    });
 
     }
 
@@ -243,6 +249,8 @@ class Login extends Component {
             local: true
         });
     }
+
+   
 
     render() {
         const {
@@ -399,7 +407,8 @@ class Login extends Component {
                                 </CustomText>
                                 </CustomButton>
                             </View>
-                            <NoInternetModal visible={this.state.showMail} />
+                            <NoInternetModal visible={this.state.showMail} 
+                                            onAccept={() => {this.setState({ showMail: false }) }}/>
                         </View>
                     </ScrollView>
                 </View>

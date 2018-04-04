@@ -53,38 +53,42 @@ export default class App extends Component {
 
   runFCMService() {
     FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
-    var refreshedToken = FCM.on('FCMTokenRefreshed', (refreshedToken) => {
-      console.log('refreshedToken', refreshedToken)
-      // alert(refreshedToken, ' refresh token');
-      this.setState({ fcmToken: refreshedToken });
-    });
-    FCM.getFCMToken().then(token => {
-      // store fcm token in your server
-      console.log('token', token)
-      // setFcmToken(token);
-      this.setState({ fcmToken: token });
-      NativeModules.customActivity.findEvents((error, imeiResp) => {
-        // alert(imeiResp);
-       /*  Utils.dbCall(Config.routes.fetchDeviceDetails + imeiResp, 'GET', { devicetoken: Config.appUtils.deviceId }, {}, (dFResp) => {
-          console.warn(dFResp);
-          if (dFResp.status && !dFResp.devices) {
-            Utils.dbCall(Config.routes.updateDeviceDetails, 'POST', null, { imei: imeiResp, deviceId: token, email: '', mobile: '' }, (dResp) => {
-              // alert(JSON.stringify(dResp));
-            });
-          } else if (dFResp.devices) {
-            Utils.dbCall(Config.routes.updateDeviceDetails, 'POST', null, { _id: dFResp.devices._id, imei: imeiResp, deviceId: token, email: '', mobile: '' }, (dResp) => {
-              // alert(JSON.stringify(dResp));
-            });
-          }
-        }); */
-      }); // Native modules end
-    });
+    
     this.notificationListener = FCM.on(FCMEvent.Notification, async (notif) => {
-      if (notif.fcm !== '') {
-        // this.props.navigation.navigate('notifications');
-      }
+        // optional, do some component related stuff
+        console.log("notify", notif);
+        this.sendRemote(notif);
+    });
+
+    FCM.getInitialNotification().then(notif => {
+        console.log('getInitialNotification',notif)
     });
   }
+
+  sendRemote(notif) {
+    //console.log('sendRemote',notif.fcm.body +'--'+notif.fcm.title);
+    //console.log('sendRemote',notif.body +'--'+notif.title);
+    if(notif.fcm.body){
+      FCM.presentLocalNotification({
+          title: notif.fcm.title,
+          body: notif.fcm.body,
+          priority: "high",
+          click_action: notif.click_action,
+          show_in_foreground: true,
+          local: true
+      });
+    }else{
+      FCM.presentLocalNotification({
+        title: notif.title,
+        body: notif.body,
+        priority: "high",
+        click_action: notif.click_action,
+        show_in_foreground: true,
+        local: true
+    });
+    }
+    
+}
 
   getItem() {
     return AsyncStorage.getItem('credientails');

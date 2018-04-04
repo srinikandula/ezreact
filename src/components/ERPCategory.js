@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import {
-    View, ScrollView, DatePickerAndroid, DatePickerIOS, Platform,
+    View, ScrollView, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
     Picker, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
@@ -10,6 +10,7 @@ import Utils from './common/Utils';
 import { LoadingSpinner, ExpiryDateItems, Card, MailBox, CustomEditText, CPicker, Ctoggle, CustomText, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
+import { NoInternetModal } from './common';
 
 
 export default class ERPCategory extends Component {
@@ -54,7 +55,8 @@ export default class ERPCategory extends Component {
         showMail: false,
         mail: '',
         payablesBool: '#1e4495',
-        receiveablesBool: '#ffffff'
+        receiveablesBool: '#ffffff',
+        netFlaf: false
     };
     /* static navigationOptions = ({navigation})=> ({
         title: navigation.state.params.mode.toUpperCase(),
@@ -64,7 +66,19 @@ export default class ERPCategory extends Component {
         // title: "Revenue",
       }); */
     componentWillMount() {
-        
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getReportsData();        
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
+        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+    }
+
+    getReportsData(){
         const self = this;
         Axios({
             method: 'get',
@@ -106,8 +120,9 @@ export default class ERPCategory extends Component {
             }).catch((error) => {
                 console.log('error in ERP Category ==>', error);
             })
-        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
+
+
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
@@ -202,47 +217,55 @@ export default class ERPCategory extends Component {
     }
 
     callSubCategoryScreen(truckNum, truckAmount, truckID) {
-        const self = this;
-        console.log(self.props.navigation.state.params.token);
-        switch (self.props.navigation.state.params.mode) {
-            case "Revenue":
-                this.props.navigation.navigate('Erpsubcategory', {
-                    token: self.props.navigation.state.params.token,
-                    Url: Config.routes.base + Config.routes.detailsRevenueFromVechicle + truckID,
-                    label: 'Total Revenue From ' + truckNum + ":  " + truckAmount,
-                    mode: self.props.navigation.state.params.mode
-                });
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+            const self = this;
+            console.log(self.props.navigation.state.params.token);
+            switch (self.props.navigation.state.params.mode) {
+                case "Revenue":
+                    this.props.navigation.navigate('Erpsubcategory', {
+                        token: self.props.navigation.state.params.token,
+                        Url: Config.routes.base + Config.routes.detailsRevenueFromVechicle + truckID,
+                        label: 'Total Revenue From ' + truckNum + ":  " + truckAmount,
+                        mode: self.props.navigation.state.params.mode
+                    });
 
-                break;
-            case "Expense":
-                console.log("Expense", 'data', );
-                this.props.navigation.navigate('Erpsubcategory', {
-                    token: self.props.navigation.state.params.token,
-                    Url: Config.routes.base + Config.routes.detailsExpensesForAllVehicles + truckID,
-                    label: 'Total Expense From ' + truckNum + "  " + truckAmount,
-                    mode: self.props.navigation.state.params.mode
-                });
-                break;
-            case "Payments":
-                console.log("Payments", "data");
-                this.props.navigation.navigate('Erpsubcategory', {
-                    token: self.props.navigation.state.params.token,
-                    Url: Config.routes.base + Config.routes.totalPayablesPaymentByParty + truckID,
-                    label: 'Total Payments Receivablea From ' + "\n" + truckNum + "  " + truckAmount,
-                    mode: self.props.navigation.state.params.mode
-                });
-                break;
-            case "Receivables":
-                this.props.navigation.navigate('Erpsubcategory', {
-                    token: self.props.navigation.state.params.token,
-                    Url: Config.routes.base + Config.routes.totalPaymentByParty + truckID,
-                    label: 'Total Payments Receivablea From ' + "\n" + truckNum + "  " + truckAmount,
-                    mode: self.props.navigation.state.params.mode
-                });
-                break;
-            default:
-                text = "I have never heard of that fruit...";
-        }
+                    break;
+                case "Expense":
+                    console.log("Expense", 'data', );
+                    this.props.navigation.navigate('Erpsubcategory', {
+                        token: self.props.navigation.state.params.token,
+                        Url: Config.routes.base + Config.routes.detailsExpensesForAllVehicles + truckID,
+                        label: 'Total Expense From ' + truckNum + "  " + truckAmount,
+                        mode: self.props.navigation.state.params.mode
+                    });
+                    break;
+                case "Payments":
+                    console.log("Payments", "data");
+                    this.props.navigation.navigate('Erpsubcategory', {
+                        token: self.props.navigation.state.params.token,
+                        Url: Config.routes.base + Config.routes.totalPayablesPaymentByParty + truckID,
+                        label: 'Total Payments Receivablea From ' + "\n" + truckNum + "  " + truckAmount,
+                        mode: self.props.navigation.state.params.mode
+                    });
+                    break;
+                case "Receivables":
+                    this.props.navigation.navigate('Erpsubcategory', {
+                        token: self.props.navigation.state.params.token,
+                        Url: Config.routes.base + Config.routes.totalPaymentByParty + truckID,
+                        label: 'Total Payments Receivablea From ' + "\n" + truckNum + "  " + truckAmount,
+                        mode: self.props.navigation.state.params.mode
+                    });
+                    break;
+                default:
+                    text = "I have never heard of that fruit...";
+            }
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
     }
 
 
@@ -273,49 +296,57 @@ export default class ERPCategory extends Component {
 
 
     paymentRoleData(str, url) {
-        const self = this;
-        Axios({
-            method: 'get',
-            headers: { 'token': self.props.navigation.state.params.token },
-            url: url
-        })
-            .then((response) => {
-                //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
-                if (response.data.status) {
-                    if (str == 'Payments') {
-                        self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
-                        if (response.data.paybleAmounts.length == 0) {
-                            Utils.ShowMessage('No Records Found');
-                        }
-                        Actions.refresh({
-                            token: self.props.navigation.state.params.token,
-                            Url: Config.routes.base + Config.routes.totalPayeblesPayment,
-                            //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
-                            mode: 'Payments',
-                            label: 'Total Payments Details'
-                        });
-                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    } else {
-                        self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
-                        if (response.data.parties.length == 0) {
-                            Utils.ShowMessage('No Records Found');
-                        }
-                        Actions.refresh({
-                            token: self.props.navigation.state.params.token,
-                            //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
-                            Url: Config.routes.base + Config.routes.totalPaymentFromParty,
-                            mode: 'Receivables',
-                            label: 'Total Payments Details'
-                        });
-                        this.callDependenciesList(Config.routes.base + Config.routes.partyList);
-                    }
-                } else {
-                    console.log(self.props.navigation.state.params.mode, 'error  ==>', response);
-                }
-
-            }).catch((error) => {
-                console.log('error in ERP Category ==>', error);
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+            const self = this;
+            Axios({
+                method: 'get',
+                headers: { 'token': self.props.navigation.state.params.token },
+                url: url
             })
+                .then((response) => {
+                    //console.log(self.props.navigation.state.params.mode,'ERP CAtegory ==>', response.data);
+                    if (response.data.status) {
+                        if (str == 'Payments') {
+                            self.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
+                            if (response.data.paybleAmounts.length == 0) {
+                                Utils.ShowMessage('No Records Found');
+                            }
+                            Actions.refresh({
+                                token: self.props.navigation.state.params.token,
+                                Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                                //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
+                                mode: 'Payments',
+                                label: 'Total Payments Details'
+                            });
+                            this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                        } else {
+                            self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
+                            if (response.data.parties.length == 0) {
+                                Utils.ShowMessage('No Records Found');
+                            }
+                            Actions.refresh({
+                                token: self.props.navigation.state.params.token,
+                                //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                                Url: Config.routes.base + Config.routes.totalPaymentFromParty,
+                                mode: 'Receivables',
+                                label: 'Total Payments Details'
+                            });
+                            this.callDependenciesList(Config.routes.base + Config.routes.partyList);
+                        }
+                    } else {
+                        console.log(self.props.navigation.state.params.mode, 'error  ==>', response);
+                    }
+
+                }).catch((error) => {
+                    console.log('error in ERP Category ==>', error);
+                });
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
     }
 
     onPickdate(str, category) {
@@ -676,72 +707,77 @@ export default class ERPCategory extends Component {
     }
 
     searchReportsData(url) {
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false}); 
         const self = this;
         this.setState({ spinnerBool: true });
-        console.log('posting data', url);
-        Axios({
-            method: 'get',
-            headers: { 'token': self.props.navigation.state.params.token },
-            url: url
-        })
-            .then((response) => {
-                if (response.data.status) {
-                    this.setState({ spinnerBool: false });
-                    if (self.props.navigation.state.params.mode == 'Expense') {
-                        this.setState({ expenses: response.data.expenses, totalExpenses: response.data.totalExpenses });
-                        if (response.data.expenses.length == 0) {
-                            Utils.ShowMessage('No Records Found');
+            console.log('posting data', url);
+            Axios({
+                method: 'get',
+                headers: { 'token': self.props.navigation.state.params.token },
+                url: url
+            })
+                .then((response) => {
+                    if (response.data.status) {
+                        this.setState({ spinnerBool: false });
+                        if (self.props.navigation.state.params.mode == 'Expense') {
+                            this.setState({ expenses: response.data.expenses, totalExpenses: response.data.totalExpenses });
+                            if (response.data.expenses.length == 0) {
+                                Utils.ShowMessage('No Records Found');
 
 
 
+                            }
+                        } else if (self.props.navigation.state.params.mode == 'Revenue') {
+                            this.setState({ recordsList: response.data.revenue, grossAmounts: response.data.grossAmounts });
+                            if (response.data.revenue.length == 0) {
+                                Utils.ShowMessage('No Records Found');
+
+
+
+                            }
+                        } else if (self.props.navigation.state.params.mode == 'Receivables') {
+                            this.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
+                            if (response.data.parties.length == 0) {
+                                Utils.ShowMessage('No Records Found');
+
+
+
+                            }
+                        } else {
+                            this.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
+                            if (response.data.paybleAmounts.length == 0) {
+                                Utils.ShowMessage('No Records Found');
+
+
+
+                            }
                         }
-                    } else if (self.props.navigation.state.params.mode == 'Revenue') {
-                        this.setState({ recordsList: response.data.revenue, grossAmounts: response.data.grossAmounts });
-                        if (response.data.revenue.length == 0) {
-                            Utils.ShowMessage('No Records Found');
 
-
-
-                        }
-                    } else if (self.props.navigation.state.params.mode == 'Receivables') {
-                        this.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
-                        if (response.data.parties.length == 0) {
-                            Utils.ShowMessage('No Records Found');
-
-
-
-                        }
                     } else {
-                        this.setState({ paymentsParties: response.data.paybleAmounts, payableGrossAmounts: response.data.gross });
-                        if (response.data.paybleAmounts.length == 0) {
-                            Utils.ShowMessage('No Records Found');
+                        //console.log('reponse in update erpSettingData ==>', response);
+                        this.setState({ spinnerBool: false });
+                        let message = "";
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                        Utils.ShowMessage(message);
 
 
 
-                        }
                     }
 
-                } else {
-                    //console.log('reponse in update erpSettingData ==>', response);
+                }).catch((error) => {
+                    console.log('error in erpSettingData ==>', error);
                     this.setState({ spinnerBool: false });
-                    let message = "";
-                    response.data.messages.forEach(function (current_value) {
-                        message = message + current_value;
-                    });
-                    Utils.ShowMessage(message);
-
-
-
-                }
-
-            }).catch((error) => {
-                console.log('error in erpSettingData ==>', error);
-                this.setState({ spinnerBool: false });
-                Utils.ShowMessage("Something went Wrong,Please Try again ");
-
-
-
-            })
+                    Utils.ShowMessage("Something went Wrong,Please Try again ");
+                })
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });    
     }
 
 
@@ -1039,48 +1075,49 @@ export default class ERPCategory extends Component {
 
 
     sendReportsData(url) {
-        const self = this;
-        this.setState({ spinnerBool: true });
-        console.log('posting data', url);
-        Axios({
-            method: 'get',
-            headers: { 'token': self.props.navigation.state.params.token },
-            url: url
-        })
-            .then((response) => {
-                console.log('posting data', response);
-                if (response.data.status) {
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                const self = this;
+                this.setState({ spinnerBool: true });
+                console.log('posting data', url);
+                Axios({
+                    method: 'get',
+                    headers: { 'token': self.props.navigation.state.params.token },
+                    url: url
+                })
+                .then((response) => {
+                    console.log('posting data', response);
+                    if (response.data.status) {
+                        this.setState({ spinnerBool: false });
+                        let message = "";
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                        Utils.ShowMessage(message);
+
+
+
+                        this.ShowModalFunction(!this.state.showMail);
+                    } else {
+                        //console.log('reponse in update erpSettingData ==>', response);
+                        this.setState({ spinnerBool: false });
+                        let message = "";
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                        Utils.ShowMessage(message);
+                    }
+                }).catch((error) => {
+                    console.log('error in erpSettingData ==>', error);
                     this.setState({ spinnerBool: false });
-                    let message = "";
-                    response.data.messages.forEach(function (current_value) {
-                        message = message + current_value;
-                    });
-                    Utils.ShowMessage(message);
-
-
-
-                    this.ShowModalFunction(!this.state.showMail);
-                } else {
-                    //console.log('reponse in update erpSettingData ==>', response);
-                    this.setState({ spinnerBool: false });
-                    let message = "";
-                    response.data.messages.forEach(function (current_value) {
-                        message = message + current_value;
-                    });
-                    Utils.ShowMessage(message);
-
-
-
-                }
-
-            }).catch((error) => {
-                console.log('error in erpSettingData ==>', error);
-                this.setState({ spinnerBool: false });
-                Utils.ShowMessage("Something went Wrong,Please Try again ");
-
-
-
-            })
+                    Utils.ShowMessage("Something went Wrong,Please Try again ");
+                })
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });        
     }
 
     downLoadData(url) {
@@ -1111,6 +1148,9 @@ export default class ERPCategory extends Component {
 
     render() {
         const self = this;
+         {return(<NoInternetModal visible={this.state.netFlaf} 
+         onAccept={() => {this.setState({ netFlaf: false }) }}/>)}
+
         switch (self.props.navigation.state.params.mode) {
             case "Revenue":
                 return (

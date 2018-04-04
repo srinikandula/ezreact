@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {View,Image,Text,CheckBox,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,Text,NetInfo,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
+import { NoInternetModal } from './common';
 import Axios from 'axios';
 import Utils from './common/Utils';
 class ForgotPin extends Component{
      state = {userName: '',phoneNumber: '', password: '', message: '',userNamelbl:false,
            phoneNumberlbl:false,isFocused: false,
-           passwordlbl:false,rememberme:false,
+           passwordlbl:false,rememberme:false,showMail: false,
            spinnerBool: false};
 
     constructor(props) {
@@ -39,14 +40,25 @@ class ForgotPin extends Component{
                     this.props.navigation.navigate('Otpverification',{mobile:this.state.phoneNumber});
                     let message ="";
                     if(response.data)
-                    response.data.messages.forEach(function(current_value) {
-                        message = message+current_value;
-                    });
+                    {
+                        response.data.messages.forEach(function(current_value) {
+                            message = message+current_value;
+                        });
+                    }
+                    
                     Utils.ShowMessage(message);
                 } else {
                    // console.log('fail in forgotPassword ==>', response);
                     self.setState({ spinnerBool:false });
-                    Utils.ShowMessage(response.data.messages);
+                    let message ="";
+                    if(response.data)
+                    {
+                        response.data.messages.forEach(function(current_value) {
+                            message = message+current_value;
+                        });
+                    }
+                    
+                    Utils.ShowMessage(message);
                 }
             }).catch((error) => {
                 console.log('error in forgotPassword ==>', error);
@@ -62,8 +74,15 @@ class ForgotPin extends Component{
                 Utils.ShowMessage('Please Enter  Mobile Number');
         } else {
              if(this.state.phoneNumber.length == 10){
-                    Utils.ShowMessage(this.state.phoneNumber);
-                    this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
+                NetInfo.isConnected.fetch().then(isConnected => {
+                    console.log('isConnected',isConnected);
+                    if (isConnected) {
+                        this.setState({showMail:false});
+                        this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
+                    } else {
+                        return this.setState({showMail:true});
+                    }
+                });
             }else{
                 this.setState({message: ' Please Enter 10 digits Mobile nmuber'});
                 Utils.ShowMessage(this.state.message);
@@ -102,13 +121,12 @@ class ForgotPin extends Component{
                             {this.spinnerLoad()}
                     <View style={CustomStyles.forgotMainContainer}>
                          <View style={CustomStyles.forgotcontainerStyle}>
-
-                         
                              <View style={CustomStyles.forgotInputBox}>
                                 <Text style={phonelabelStyle} >
                                     Mobile Number
                                 </Text>  
                                 <CustomEditText
+                                    underlineColorAndroid={'#e1e1e1'}
                                     maxLength={Config.limiters.mobileLength}
                                     keyboardType='numeric'
                                     inputTextStyle={CustomStyles.forgotInputStyle}
@@ -119,7 +137,6 @@ class ForgotPin extends Component{
                                 />
                             </View>
                             <View style={CustomStyles.forgotActionView}>
-                               
                                      <TouchableOpacity style={CustomStyles.forgotActionpadding}  onPress={() => {
                                                                 Keyboard.dismiss();
                                                                 this.props.navigation.goBack();
@@ -139,6 +156,8 @@ class ForgotPin extends Component{
                                      </TouchableOpacity>
                                    
                             </View>
+                            <NoInternetModal visible={this.state.showMail} 
+                                            onAccept={() => {this.setState({ showMail: false }) }}/>
                         </View>
                     </View>
                  </View>   

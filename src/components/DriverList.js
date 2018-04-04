@@ -1,24 +1,32 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage,NetInfo, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import Utils from './common/Utils';
-
+import { NoInternetModal } from './common';
 
 export default class DriverList extends Component {
     state = {
-        categoryBgColor: false, token: '', driver: [],dummydriver:[],DriverFullName:''
+        categoryBgColor: false, token: '', driver: [],dummydriver:[],DriverFullName:'',netFlaf: false,
     };
 
     componentWillMount() {
         const self = this;
         console.log(self.props, "token");
-        this.getCredentailsData();
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.getCredentailsData();
+            } else {
+                return this.setState({netFlaf:true});
+            }
+        });
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
@@ -213,6 +221,9 @@ export default class DriverList extends Component {
                         style={CustomStyles.addImage} />
                     </TouchableOpacity>
                 </View>
+
+                <NoInternetModal visible={this.state.netFlaf} 
+                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
 
         );

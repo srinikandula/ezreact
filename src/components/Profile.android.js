@@ -372,7 +372,7 @@ onLogout(){
                         <View style={CustomStyles.profileInputBox}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field0]}>
                                 UserName</CustomText>
-                            <CustomEditText 
+                            <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 editable = {false}
                                 inputTextStyle={CustomStyles.profileInputStyle }
@@ -382,7 +382,7 @@ onLogout(){
                         <View style={CustomStyles.profileInputBox}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field1]}>
                             Phone Number</CustomText>
-                            <CustomEditText 
+                            <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 editable = {true}
                                 keyboardType='numeric'
@@ -397,7 +397,7 @@ onLogout(){
                         <View style={CustomStyles.profileInputBox}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field2]}>
                                 Email</CustomText>
-                            <CustomEditText 
+                            <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 placeholder={'Enter Email ID'}
                                 editable = {true}
@@ -411,7 +411,7 @@ onLogout(){
                         <View style={CustomStyles.profileInputBox}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field3]}>
                             Total Groups</CustomText>
-                            <CustomEditText 
+                            <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 placeholder={'0'}
                                 editable = {false}
@@ -422,7 +422,7 @@ onLogout(){
                         <View style={CustomStyles.profileInputBox}>
                             <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field4]}>
                             Total Vehicles</CustomText>
-                            <CustomEditText 
+                            <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                 inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                 placeholder={'0'}
                                 editable = {false}
@@ -441,7 +441,7 @@ onLogout(){
                             <View style={CustomStyles.profileInputBox}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field5]}>
                                     Old Password </CustomText>
-                                <CustomEditText 
+                                <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                     placeholder={'Enter Old Password'}
                                     editable = {true}
@@ -455,7 +455,7 @@ onLogout(){
                             <View style={CustomStyles.profileInputBox}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field6]}>
                                 New Password </CustomText>
-                                <CustomEditText 
+                                <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                     placeholder={'Enter New Password'}
                                     editable = {true}
@@ -469,7 +469,7 @@ onLogout(){
                             <View style={CustomStyles.profileInputBox}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 5, top:2, display:'flex',color: '#525252' }, this.state.field7]}>
                                     Retype Password </CustomText>
-                                <CustomEditText 
+                                <CustomEditText  underlineColorAndroid={'#e1e1e1'}
                                     secureTextEntry
                                     inputContainerStyle={CustomStyles.profileInputContainerStyle}
                                     placeholder={'Enter Retype Password'}

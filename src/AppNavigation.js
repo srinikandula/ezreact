@@ -484,7 +484,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									/>)
 								},
 							},
-						}, {...TabNavigator.Presets.AndroidTopTabs,
+						}, {
+							// ...TabNavigator.Presets.AndroidTopTabs,
 								tabBarPosition: 'top',
 								// swipeEnabled: true,
 								// scrollEnabled: false,

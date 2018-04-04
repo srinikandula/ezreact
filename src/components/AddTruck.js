@@ -357,7 +357,16 @@ export default class AddTruck extends Component {
             />
         );
     }
-
+    /* renderPartyList() {
+        return this.state.drivers.map((truckItem, i) =>
+            <Picker.Item
+                key={i}
+                label={truckItem.fullName}
+                value={truckItem._id}
+            />
+        );
+    }
+ */
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -389,7 +398,7 @@ export default class AddTruck extends Component {
                                     value={this.state.truckNumber}
                                     onChangeText={(truckNumber) => {
                                         this.moveInputLabelUp(0, truckNumber),
-                                        this.setState({ truckNumber: truckNumber })
+                                            this.setState({ truckNumber: truckNumber })
                                     }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -401,7 +410,7 @@ export default class AddTruck extends Component {
                                     placeholder={'Tonnage*'}
                                     onChangeText={(trucktonnage) => {
                                         this.moveInputLabelUp(1, trucktonnage),
-                                        this.setState({ trucktonnage: trucktonnage })
+                                            this.setState({ trucktonnage: trucktonnage })
                                     }} />
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -424,16 +433,21 @@ export default class AddTruck extends Component {
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
-                                <CPicker
-                                    placeholder="Select  Vehicles"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                {<CPicker
+                                    placeholder="Select  Driver"
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedDriverId: itemValue.split("###")[0] })}>
                                     <Picker.Item label="Select Driver" value="Select Driver" />
                                     {this.renderPartyList()}
-
-                                </CPicker>
+                                </CPicker>}
+                                {/* <Picker
+                                    cStyle={CustomStyles.cPickerStyle}
+                                    selectedValue={this.state.selectedDriverId}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
+                                     <Picker.Item label="Select Driver" value="Select Driver" />
+                                    {this.renderPartyList()}
+                                </Picker> */}
                             </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate('TaxDue') }}

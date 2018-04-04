@@ -59,8 +59,8 @@ const styles = {
         // fontFamily:'Gotham-Light',
         color: '#000',
         fontSize: 16,
-        lineHeight: 23,
-        height: 36,
+        lineHeight: 16,
+        height: 38,
         paddingLeft: 5,
         justifyContent: 'center',
         

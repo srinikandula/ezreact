@@ -10,11 +10,6 @@ class CPicker extends Component {
         console.log('this.props.selectedValue',this.props.selectedValue,"++++",this.props.placeholder)
         if(this.props.selectedValue && this.props.selectedValue!==''){
             return this.props.selectedValue;
-           /*  if(this.props.placeholder==='Select Course'){
-                return this.checkValue(this.props.value.split('###')[1]);
-            }else{
-                return this.checkValue(this.props.value.split('###')[2]);
-            } */
         } else {
             return this.props.placeholder;
         }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, Platform, Button, Text, ScrollView, TouchableOpacity,Dimensions } from 'react-native';
 import { StackNavigator, TabNavigator, TabView } from 'react-navigation';
+import CustomStyles from './components/common/CustomStyles';
 
 //login related screens
 import Login from './components/Login';
@@ -113,8 +114,10 @@ class FooterTabs extends Component {
 	}
 }
 let changeState = true;
+
 //global navigator===> stack navigator
 export default AppNavigation = (loginStatus) => StackNavigator({
+	
 	login: { screen: Login, navigationOptions: { header: null } },
 	forgotpin: { screen: ForgotPin, navigationOptions: { header: null } },
 	otpverification: { screen: OtpVerification, navigationOptions: { header: null } },
@@ -460,7 +463,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							GPS: {
 								screen: GpsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:Platform.OS === 'ios'?-40: 20, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -472,7 +475,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 							SetReports: {
 								screen: ReportsSetting, navigationOptions: {
 									headerTitle: 'SETTINGS',
-									headerTitleStyle: { marginLeft:-40, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerTitleStyle: { marginLeft:Platform.OS === 'ios'?-40: 20, alignSelf: 'flex-start',  fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
@@ -495,12 +498,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									style: {
 										backgroundColor: '#ffffff',
 									},
-									tabStyle: {
-										width: Dimensions.get('window').width/2,
-										flexDirection: 'row',
-										justifyContent: 'center',
-										alignItems: 'center'
-									},
+									tabStyle: CustomStyles.settingsTabStyle,
 									labelStyle: {
 										marginLeft: 20,
 										color: '#4c69a9',

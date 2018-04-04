@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button, Image, Text, TouchableOpacity, FlatList, ScrollView, Keyboard, Dimensions, AsyncStorage } from 'react-native';
+import { View, Button, Image, Text, TouchableOpacity, FlatList,Platform, ScrollView, Keyboard, Dimensions, AsyncStorage } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import { CustomInput, Card, CustomEditText, CustomButton, CustomText, CommonBackground } from './common';
 import CustomStyles from './common/CustomStyles';
@@ -7,6 +7,7 @@ import Config from '../config/Config';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
 import RNGooglePlaces from 'react-native-google-places';
+
 import Axios from 'axios';
 class GpsSetting extends Component {
     state = { routesBool: false, mstop: ' ', OverSpeed: '', interval: '', stopTime: '', source: '', destination: '', message: '', accountId: '' };
@@ -152,17 +153,39 @@ class GpsSetting extends Component {
     }
 
     openSearchModal() {
-        RNGooglePlaces.openAutocompleteModal()
+        RNGooglePlaces.openAutocompleteModal({
+            type: 'cities'
+        })
             .then((place) => {
-                if (this.state.point === 'source') {
-                    this.setState({ source: place.name, sourceState: place.addressComponents.administrative_area_level_1, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude }, () => {
-                        console.log("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
-                    })
-                } else {
-                    this.setState({ destination: place.name, destinationState: place.addressComponents.administrative_area_level_1, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude }, () => {
-                        console.log("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
-                    })
+                Keyboard.dismiss()
+                if(Platform.OS==='ios'){
+                    if (this.state.point === 'source') {
+                        console.log('place source', place)
+                        this.setState({ source: place.name, sourceState: place.addressComponents.administrative_area_level_1, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude }, () => {
+                            console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
+                        })
+                    } else {
+                        this.setState({ destination: place.name, destinationState: place.addressComponents.administrative_area_level_1, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude }, () => {
+                            console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
+                        })
+                    }
+                }else {
+                    let address= place.address;
+                    let addressArray=address.split(',');
+                    state=addressArray[1].replace(/[^a-zA-Z ]+/g, '');
+                    console.log('state',state);
+                    if (this.state.point === 'source') {
+
+                        this.setState({ source: place.name, sourceState: state, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude }, () => {
+                            console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
+                        })
+                    } else {
+                        this.setState({ destination: place.name, destinationState: state, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude }, () => {
+                            console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
+                        })
+                    }
                 }
+                
 
             })
             .catch(error => console.log(error.message));  // error is a Javascript Error object

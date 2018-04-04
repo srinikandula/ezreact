@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, AsyncStorage, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules } from 'react-native';
+import { View, Image, AsyncStorage,Platform, Text, TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler, NativeModules } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import SplashScreen from 'react-native-splash-screen';
 import Utils from './common/Utils';
@@ -16,6 +16,7 @@ import CheckBox from 'react-native-checkbox';
 import Axios from 'axios';
 import { NoInternetModal } from './common';
 import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
+// import { platform } from 'os';
 
 class Login extends Component {
     state = {};
@@ -53,7 +54,7 @@ class Login extends Component {
             var value = AsyncStorage.getItem('fcmStorage');
             //console.log('credientails',key);
             if (value !== null) {
-                 //this.runFCMService();
+                //this.runFCMService();
 
             } else {
                 console.log('value', value.json())
@@ -109,7 +110,7 @@ class Login extends Component {
                 Utils.ShowMessage(message);
                 self.setState({ spinnerBool: false });
             }
-           
+
         }).catch((error) => {
             self.setState({ spinnerBool: false });
             console.log('login post error--->', error)
@@ -147,42 +148,76 @@ class Login extends Component {
 
     runFCMService(jwttoken) {
         FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
-        
+
         FCM.getFCMToken().then(token => {
             // store fcm token in your server
             // setFcmToken(token);
             // this.setState({ fcmToken: token });
             console.log('refreshedToken', token);
-            NativeModules.FetchData.GetDeviceId((imeiResp) => {
-                // alert(JSON.stringify(imeiResp));
-                console.log(imeiResp, 'imeiResp');
-                console.log('test-url', Config.routes.base + Config.routes.registerToServer);
-                Axios({
-                    method: 'post',
-                    headers: { 'token': jwttoken },
-                    url: Config.routes.base + Config.routes.registerToServer,
-                    data: {
-                        fcmDeviceId: token,
-                        imei: imeiResp,
-                    }
-                }).then((response) => {
-                    console.log("registerToServer-response", response.data);
-                    if (response.data.status) {
-                        console.log("response.data", response.data);
-                        this.props.navigation.navigate('homepage');
-                    } else {
-                        let message = "";
+            if (Platform.OS === 'ios') {
+                NativeModules.customActivity.findEvents((error, imeiResp) => {
+                    // alert(JSON.stringify(imeiResp));
+                    console.log(imeiResp, 'imeiResp');
+                    console.log('test-url', Config.routes.base + Config.routes.registerToServer);
+                    Axios({
+                        method: 'post',
+                        headers: { 'token': jwttoken },
+                        url: Config.routes.base + Config.routes.registerToServer,
+                        data: {
+                            fcmDeviceId: token,
+                            imei: imeiResp,
+                        }
+                    }).then((response) => {
+                        console.log("registerToServer-response", response.data);
+                        if (response.data.status) {
+                            console.log("response.data", response.data);
+                            this.props.navigation.navigate('homepage');
+                        } else {
+                            let message = "";
 
-                    }
-                    this.setState({ spinnerBool: false });
-                }).catch((error) => {
-                    this.setState({ spinnerBool: false });
-                    console.log('registerToServer post error--->', error)
-                    Utils.ShowMessage("Something went wrong.Please try after sometime");
-                })
+                        }
+                        this.setState({ spinnerBool: false });
+                    }).catch((error) => {
+                        this.setState({ spinnerBool: false });
+                        console.log('registerToServer post error--->', error)
+                        Utils.ShowMessage("Something went wrong.Please try after sometime");
+                    })
 
 
-            }); // Native modules end
+                }); // Native modules end
+
+            } else {
+                NativeModules.FetchData.GetDeviceId((imeiResp) => {
+                    // alert(JSON.stringify(imeiResp));
+                    console.log(imeiResp, 'imeiResp');
+                    console.log('test-url', Config.routes.base + Config.routes.registerToServer);
+                    Axios({
+                        method: 'post',
+                        headers: { 'token': jwttoken },
+                        url: Config.routes.base + Config.routes.registerToServer,
+                        data: {
+                            fcmDeviceId: token,
+                            imei: imeiResp,
+                        }
+                    }).then((response) => {
+                        console.log("registerToServer-response", response.data);
+                        if (response.data.status) {
+                            console.log("response.data", response.data);
+                            this.props.navigation.navigate('homepage');
+                        } else {
+                            let message = "";
+
+                        }
+                        this.setState({ spinnerBool: false });
+                    }).catch((error) => {
+                        this.setState({ spinnerBool: false });
+                        console.log('registerToServer post error--->', error)
+                        Utils.ShowMessage("Something went wrong.Please try after sometime");
+                    })
+
+
+                }); // Native modules end
+            }
         });
 
 
@@ -364,7 +399,6 @@ class Login extends Component {
                                 </CustomText>
                                 </CustomButton>
                             </View>
-                            {this.spinnerLoad()}
                             <NoInternetModal visible={this.state.showMail} />
                         </View>
                     </ScrollView>

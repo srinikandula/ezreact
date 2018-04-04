@@ -147,11 +147,7 @@ export default class ExpiryDate extends Component {
             // console.log('in if', item.title);
             return (
                 <TouchableOpacity onPress={() => this.callSubCategoryScreen(item)}>
-                    <View style={[{marginTop: 10,
-                        backgroundColor: '#1e4495', borderRadius: 20,
-                        borderWidth: 1,
-                        borderColor: '#1e4495',
-                    }, { flexDirection: 'row', padding: 5 }]}>
+                    <View style={[CustomStyles.iosSelectedButton, { flexDirection: 'row', padding: 5 }]}>
                         <Text style={[{
                         }, CustomStyles.epirySelectedButtons]}>
                             {item.title}

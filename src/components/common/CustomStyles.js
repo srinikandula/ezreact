@@ -1,6 +1,12 @@
 
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 const iosStyles = {
+    settingsTabStyle: {
+        width: Platform.OS === 'ios' ? Dimensions.get('window').width / 2 : null,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     pickerWrapStyle: {
         alignSelf: 'stretch',
         // borderWidth: 1,
@@ -48,7 +54,7 @@ const iosStyles = {
         color: 'white',
         backgroundColor: 'rgba(0,0,0,0)',
         fontSize: 20,
-        marginTop:20
+        marginTop: 20
 
     },
     loginContainerStyle: {
@@ -90,7 +96,7 @@ const iosStyles = {
         alignSelf: 'stretch',
         flexDirection: 'row',
         marginTop: 10,
-        marginHorizontal:10,
+        marginHorizontal: 10,
         marginBottom: 20,
         justifyContent: 'space-between'
     },
@@ -338,7 +344,7 @@ const iosStyles = {
         marginLeft: 10
 
     },
-    profileInputBox: { justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', paddingTop: 3, marginTop: 5 ,borderBottomWidth: 1, borderBottomColor: '#ddd'},
+    profileInputBox: { justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', paddingTop: 3, marginTop: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' },
     profileInputContainerStyle: {
         marginTop: 10,
         marginBottom: 0
@@ -444,9 +450,9 @@ const iosStyles = {
     },
     expiryDateView: { flexDirection: 'row', justifyContent: 'space-around' },
     expiryMainContainer: { alignSelf: 'stretch', padding: 2 },
-    expirySubContainer: { marginTop:5,borderRadius: 5, justifyContent: 'space-around',  alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
-    expiryCount: {  alignSelf: 'center', fontSize: 16, color: 'blue' },
-    expiryLabel: { marginTop:2,alignSelf: 'center', fontSize: 12 ,color: '#000'},
+    expirySubContainer: { marginTop: 5, borderRadius: 5, justifyContent: 'space-around', alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
+    expiryCount: { alignSelf: 'center', fontSize: 16, color: 'blue' },
+    expiryLabel: { marginTop: 2, alignSelf: 'center', fontSize: 12, color: '#000' },
     headText: {
         // fontFamily:'Gotham-Light',
         alignItems: 'center',
@@ -587,6 +593,12 @@ const iosStyles = {
         paddingVertical: 8
         // height:45
     }, */
+    iosSelectedButton: {
+        marginTop: 10,
+        backgroundColor: '#1e4495', borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#1e4495',
+    },
     epirySelectedButtons: {
         width: 110,
         // fontFamily:'Gotham-Light',
@@ -594,7 +606,7 @@ const iosStyles = {
         // alignSelf: 'center',
         // alignItems: 'center',
         textAlign: 'center',
-        
+
         padding: 3,
         color: 'white',
         // backgroundColor: '#1e4495',
@@ -621,7 +633,7 @@ const iosStyles = {
         paddingVertical: 8
         // height:45
     },
-   
+
     separator: {
         height: 0.5,
         width: "80%",
@@ -659,7 +671,7 @@ const iosStyles = {
     },
     drivervCallIcons: {
         width: 30,
-        marginTop:5,
+        marginTop: 5,
 
         height: 32,
         padding: 5,
@@ -866,12 +878,18 @@ const iosStyles = {
         paddingHorizontal: 12,
         alignItems: 'center',
         marginHorizontal: 10,
-    }
-
+    },
+cPickerStyle: { marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 },
 
 };
 
 const androidStyles = {
+    cPickerStyle: { marginLeft: 12, marginRight: 20, marginVertical: 7 },
+    settingsTabStyle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     mapcontainer: {
         ...StyleSheet.absoluteFillObject,
         // top:60,
@@ -892,32 +910,32 @@ const androidStyles = {
     },
     loginViewStyle: {
         flex: 1,
-       justifyContent: 'space-between',
-       flexDirection: 'column',
-       alignItems: 'center',
-       paddingBottom: 10
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingBottom: 10
     },
     logintext: {
         justifyContent: 'flex-start',
-       flex: 0.2,
-       //fontFamily:'Gotham-Light',
-       alignItems: 'center',
-       color: 'white',
-       backgroundColor: 'rgba(0,0,0,0)',
-       fontSize: 20,
-       marginTop:20
+        flex: 0.2,
+        //fontFamily:'Gotham-Light',
+        alignItems: 'center',
+        color: 'white',
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize: 20,
+        marginTop: 20
     },
     loginContainerStyle: {
         flex: 0.8,
-       backgroundColor: '#ffffff',
-       // marginTop: 60,
-       marginBottom: 50,
-       marginLeft: 20,
-       marginRight: 20,
-       paddingLeft: 10,
-       paddingRight: 10,
-       justifyContent: 'center',
-       alignItems: 'flex-start',
+        backgroundColor: '#ffffff',
+        // marginTop: 60,
+        marginBottom: 50,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingLeft: 10,
+        paddingRight: 10,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
 
     },
     loginInputStyle: {
@@ -1256,7 +1274,7 @@ const androidStyles = {
         flex: 1,
         backgroundColor: '#fff'
     },
-   
+
     subHeadingTextColor: {
         // fontFamily:'Gotham-Light',
         color: '#404040'
@@ -1304,9 +1322,9 @@ const androidStyles = {
     },
     expiryDateView: { flexDirection: 'row', justifyContent: 'space-around' },
     expiryMainContainer: { alignSelf: 'stretch', padding: 2 },
-    expirySubContainer: { marginTop:5,borderRadius: 5, justifyContent: 'space-around',  alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
-    expiryCount: {  alignSelf: 'center', fontSize: 16, color: 'blue' },
-    expiryLabel: { marginTop:2,alignSelf: 'center', fontSize: 12 ,color: '#000'},
+    expirySubContainer: { marginTop: 5, borderRadius: 5, justifyContent: 'space-around', alignSelf: 'stretch', padding: 5, borderWidth: 1, borderColor: '#ddd' },
+    expiryCount: { alignSelf: 'center', fontSize: 16, color: 'blue' },
+    expiryLabel: { marginTop: 2, alignSelf: 'center', fontSize: 12, color: '#000' },
     headText: {
         // fontFamily:'Gotham-Light',
         alignItems: 'center',
@@ -1447,6 +1465,7 @@ const androidStyles = {
         paddingVertical: 8
         // height:45
     },
+    iosSelectedButton: {},
     epirySelectedButtons: {
         width: 110,
         // fontFamily:'Gotham-Light',
@@ -1502,7 +1521,7 @@ const androidStyles = {
     drivervCallIcons: {
         width: 30,
         height: 32,
-        marginTop:5,
+        marginTop: 5,
         padding: 5,
     },
     separator: {

@@ -1148,8 +1148,6 @@ export default class ERPCategory extends Component {
 
     render() {
         const self = this;
-         {return(<NoInternetModal visible={this.state.netFlaf} 
-         onAccept={() => {this.setState({ netFlaf: false }) }}/>)}
 
         switch (self.props.navigation.state.params.mode) {
             case "Revenue":
@@ -1328,6 +1326,8 @@ export default class ERPCategory extends Component {
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
                         {this.iosDateModal()}
+                        <NoInternetModal visible={this.state.netFlaf} 
+                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                     </View>
                 );
 
@@ -1523,6 +1523,8 @@ export default class ERPCategory extends Component {
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
                         {this.iosDateModal()}
+                        <NoInternetModal visible={this.state.netFlaf} 
+                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                     </View>
                 );
                 break;
@@ -1717,6 +1719,8 @@ export default class ERPCategory extends Component {
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
                         {this.iosDateModal()}
+                        <NoInternetModal visible={this.state.netFlaf} 
+                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                     </View>
                 );
                 break;
@@ -1908,6 +1912,8 @@ export default class ERPCategory extends Component {
                             onDecline={() => { this.ShowModalFunction(!this.state.showMail) }}
                             onchange={(mail) => { this.setState({ mail: mail }) }} />
                         {this.iosDateModal()}
+                        <NoInternetModal visible={this.state.netFlaf} 
+                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
                     </View>
                 );
                 break;

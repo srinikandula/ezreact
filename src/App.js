@@ -52,7 +52,7 @@ export default class App extends Component {
   }
 
   runFCMService() {
-    FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
+    //FCM.requestPermissions().then(() => console.log('granted')).catch(() => console.log('notification permission rejected'));
     
     this.notificationListener = FCM.on(FCMEvent.Notification, async (notif) => {
         // optional, do some component related stuff
@@ -60,9 +60,9 @@ export default class App extends Component {
         this.sendRemote(notif);
     });
 
-    FCM.getInitialNotification().then(notif => {
-        console.log('getInitialNotification',notif)
-    });
+    // FCM.getInitialNotification().then(notif => {
+    //     console.log('getInitialNotification',notif)
+    // });
   }
 
   sendRemote(notif) {

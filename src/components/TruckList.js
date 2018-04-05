@@ -135,23 +135,22 @@ export default class TruckList extends Component {
         />
     );
     getTonnage(item) {
-        var data = '-';
+        var data = '- K';
         if (item.hasOwnProperty("tonnage")) {
             data = item.tonnage + 'K';
         } else {
-            data = '-';
+            data = '- K';
         }
         return data;
     }
     getName(item) {
-        var data = '-';
+        var data = 'Name not available';
         if (item.hasOwnProperty("attrs")) {
             if (item.attrs.hasOwnProperty("fullName")) {
                 data = item.attrs.fullName;
             } else {
                 return data;
             }
-
         } else {
             data = 'Name not available';
         }
@@ -217,6 +216,21 @@ export default class TruckList extends Component {
         }
     }
 
+
+    editTruckDetails(token,_id){
+        //this.props.navigation.navigate('AddTruck', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) 
+
+        NetInfo.isConnected.fetch().then(isConnected => {
+            console.log('isConnected',isConnected);
+            if (isConnected) {
+                this.setState({netFlaf:false});
+                this.props.navigation.navigate('AddTruck', { token:token, id: _id, edit: true, refresh: this.refreshFunction }) 
+			} else {
+            return this.setState({netFlaf:true});
+        }
+    });
+    }
+
     render() {
         const self = this;
         return (
@@ -265,7 +279,7 @@ export default class TruckList extends Component {
                                         <View style={{ flexDirection: 'row', padding: 10 }}>
                                             <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
 
-                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                                <Text style={[CustomStyles.erpText, { fontFamily: 'Gotham-Medium', fontSize: 12, }]}>
                                                     {this.getName(item)}
                                                 </Text>
                                                 {/* <Text style={CustomStyles.erpText}>
@@ -273,7 +287,7 @@ export default class TruckList extends Component {
                                                 </Text> */}
                                             </View>
                                             <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                                <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddTruck', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) }
+                                                <TouchableOpacity onPress={() => { this.editTruckDetails(this.state.token,item._id)}
                                                 }>
                                                     <Image resizeMode="contain"
                                                         source={require('../images/form_edit.png')}

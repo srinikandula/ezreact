@@ -82,7 +82,7 @@ export default class ModulesHome extends Component {
     }
 
     SubModulecheckNetwork(){
-        this.setState({netFlaf:false});
+        this.setState({netFlaf:false},()=>{
         NetInfo.isConnected.fetch().then(isConnected => {
             console.log('isConnected',isConnected);
             if (isConnected) {
@@ -92,6 +92,7 @@ export default class ModulesHome extends Component {
              this.setState({netFlaf:true});
             }
         });
+    });
     }
 
 

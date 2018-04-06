@@ -25,6 +25,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class DistanceReport extends Component {
     state = {
+        defaultDate: new Date(),
         _mapView: MapView,
         showModal: false, date: '',
         categoryBgColor: false, token: '', truckMakers: [], coordinates: [], coordinates1: [],
@@ -389,8 +390,9 @@ export default class DistanceReport extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
+                            date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
+                                this.setState({defaultDate: pickedDate})
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 if (this.state.category === 'fromDate') {

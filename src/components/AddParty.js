@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, FlatList,NetInfo,
+    View, Image, Text, Picker, FlatList, NetInfo,Platform,
     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import CheckBox from 'react-native-checkbox';
@@ -37,19 +37,43 @@ export default class AddParty extends Component {
     };
     componentWillMount() {
         // console.log("AddParty token",this.propsnavigation.state.params.);   
-        if (this.props.navigation.state.params.edit) {                   
+        if (this.props.navigation.state.params.edit) {
+            this.connectionInfo();
+        }
+    }
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { this.onNetSuccess(); }
+        } else {
             NetInfo.isConnected.fetch().then(isConnected => {
-                console.log('isConnected',isConnected);
-                if (isConnected) {
-                    this.setState({netFlaf:false});
-                    this.getPartyDetails(this.props.navigation.state.params.id);
-                } else {
-                return this.setState({netFlaf:true});
-            }
+                console.log('isConnected', isConnected);
+                if (isConnected) { this.onNetSuccess(); }
+                else { return this.setState({ netFlaf: true }); }
             });
         }
     }
+    onNetSuccess() {
+        this.setState({ netFlaf: false });
+        this.getPartyDetails(this.props.navigation.state.params.id);
+    }
 
+    async connectNetInfo(postData) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {  this.setState({ netFlaf: false });
+            this.callAddPartytAPI(postData); }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {  this.setState({ netFlaf: false });
+                this.callAddPartytAPI(postData);}
+                else { return this.setState({ netFlaf: true }); }
+            });
+        }
+    }
 
     getPartyDetails(partyID) {
         const self = this;
@@ -83,7 +107,6 @@ export default class AddParty extends Component {
 
     updateViewdate(partyDetails) {
         console.log('partyDetails', partyDetails.accountId);
-        alert('partyDetails' + partyDetails.accountId);
         this.setState({
             partyName: partyDetails.name,
             partyContact: '' + partyDetails.contact,
@@ -213,16 +236,7 @@ export default class AddParty extends Component {
                                 'partyType': this.state.role,
                                 'tripLanes': ""
                             };
-                            NetInfo.isConnected.fetch().then(isConnected => {
-                                    console.log('isConnected',isConnected);
-                                    if (isConnected) {
-                                        this.setState({netFlaf:false});
-                                        this.callAddPartytAPI(postData);
-                                    } else {
-                                    return this.setState({netFlaf:true});
-                                }
-                            });
-                            
+                            this.connectNetInfo(postData);
                         } else {
 
                             if (this.state.tripLanes.length > 0) {
@@ -241,15 +255,8 @@ export default class AddParty extends Component {
                                     'tripLanes': tlanes
                                 };
                                 //this.callAddPartytAPI(postData);
-                                NetInfo.isConnected.fetch().then(isConnected => {
-                                    console.log('isConnected',isConnected);
-                                    if (isConnected) {
-                                        this.setState({netFlaf:false});
-                                        this.callAddPartytAPI(postData);
-                                    } else {
-                                    return this.setState({netFlaf:true});
-                                }
-                            });
+                                this.connectNetInfo(postData);
+
                             } else {
                                 Utils.ShowMessage('Please Add Trip Lanes ');
                             }

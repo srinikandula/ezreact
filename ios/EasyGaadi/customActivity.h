@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
+//#import "Reachability.h"
 
 @interface customActivity : NSObject <RCTBridgeModule>
 

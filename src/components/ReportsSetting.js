@@ -13,6 +13,7 @@ import Utils from './common/Utils';
 
 class ReportsSetting extends Component {
     state = {
+        defaultDate: new Date(),
         showModal: false,
         RData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         itemIndex: 1,
@@ -621,8 +622,9 @@ class ReportsSetting extends Component {
         >
             <View style={{ flex: 1, padding: 20 }}>
                 <DatePickerIOS
-                    date={new Date()}
+                    date={this.state.defaultDate}
                     onDateChange={(pickedDate) => {
+                        this.setState({defaultDate: pickedDate})
                         var month = pickedDate.getMonth() + 1
                         let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                         switch (this.state.category) {

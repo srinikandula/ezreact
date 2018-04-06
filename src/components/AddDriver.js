@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform, NetInfo,
     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import { CustomInput, CPicker, renderIf, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
+import {
+    CustomInput, CPicker, renderIf, CustomEditText,NoInternetModal,
+    CustomButton, CustomText, CommonBackground, Confirm
+} from './common';
 import Config from '../config/Config';
 import Utils from '../components/common/Utils';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
-import { NoInternetModal } from './common';
+
 export default class AddDriver extends Component {
     state = {
+        defaultDate: new Date(),
         showModal: false,
         selectedName: '',
         licenseValidityDate: "",
@@ -31,18 +35,50 @@ export default class AddDriver extends Component {
     };
 
     componentWillMount() {
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.fetchTruckList();
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
+        this.connectionInfo();
     }
 
-    fetchTruckList(){
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { this.onNetSuccess(); }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) { this.onNetSuccess(); }
+                else { return this.setState({ netFlaf: true }); }
+            });
+        }
+    }
+
+    onNetSuccess() {
+        this.setState({ netFlaf: false });
+        this.fetchTruckList();
+    }
+
+    async connectNetInfo(postData) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.callAddDriverAPI(postData);
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.callAddDriverAPI(postData);
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
+        }
+    }
+
+    fetchTruckList() {
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token },
@@ -111,7 +147,7 @@ export default class AddDriver extends Component {
         } else {
             for (let i = 0; i < trucksList.length; i++) {
                 if (trucksList[i]._id === truckID) {
-                    self.setState({ truckText: trucksList[i].registrationNo })
+                    self.setState({ truckText: Platform.OS === 'ios' ? trucksList[i].registrationNo : trucksList[i]._id + "###" + trucksList[i].registrationNo })
                 }
             }
         }
@@ -219,16 +255,8 @@ export default class AddDriver extends Component {
                                 'salary': Number(this.state.salaryPM),
                                 'isActive': this.state.activeMe
                             };
-                            
-                            NetInfo.isConnected.fetch().then(isConnected => {
-                                console.log('isConnected',isConnected);
-                                if (isConnected) {
-                                    this.setState({netFlaf:false});
-                                    this.callAddDriverAPI(postData);
-                                } else {
-                                return this.setState({netFlaf:true});
-                            }
-                        });
+
+                            this.connectNetInfo(postData);
 
                         } else {
                             Utils.ShowMessage('Please Enter Salary AMount');
@@ -383,12 +411,10 @@ export default class AddDriver extends Component {
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>
                                     Truck Num</CustomText>
                                 <CPicker
-                                    placeholder="Select  Vehicles"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    placeholder="Select Driver"
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
-                                    <Picker.Item label="Select Driver" value="Select Driver" />
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedTruckId: itemValue.split("###")[0] })}>
                                     {this.renderTrucksRegNo()}
 
                                 </CPicker>
@@ -421,8 +447,8 @@ export default class AddDriver extends Component {
                                 />
                             </View>
 
-                                <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                            <NoInternetModal visible={this.state.netFlaf}
+                                onAccept={() => { this.setState({ netFlaf: false }) }} />
                         </View>
                     </ScrollView>
 
@@ -456,8 +482,9 @@ export default class AddDriver extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
+                            date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
+                                this.setState({ defaultDate: pickedDate })
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 this.setState({ date: date, passdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });

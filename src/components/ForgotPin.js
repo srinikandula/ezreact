@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,Text,NetInfo,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
+import {View,Image,Text,NetInfo,Platform,TouchableOpacity,ScrollView,Keyboard, Dimensions,BackHandler} from 'react-native';
 import {CustomInput,CSpinner,CustomEditText,CustomButton,CustomText,CommonBackground} from './common';
 import Config from '../config/Config';
 import CustomStyles from './common/CustomStyles';
@@ -74,19 +74,32 @@ class ForgotPin extends Component{
                 Utils.ShowMessage('Please Enter  Mobile Number');
         } else {
              if(this.state.phoneNumber.length == 10){
-                NetInfo.isConnected.fetch().then(isConnected => {
-                    console.log('isConnected',isConnected);
-                    if (isConnected) {
-                        this.setState({showMail:false});
-                        this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
-                    } else {
-                        return this.setState({showMail:true});
-                    }
-                });
+                this.connectionInfo();
+                
             }else{
                 this.setState({message: ' Please Enter 10 digits Mobile nmuber'});
                 Utils.ShowMessage(this.state.message);
             }
+        }
+    }
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ showMail: true }); });
+            if (isConnected) { 
+                this.setState({showMail:false});
+                this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({showMail:false});
+                    this.callForgotPasswordAPI(Config.routes.base + Config.routes.forgotPassword,this.state.phoneNumber);
+                } else {
+                    return this.setState({showMail:true});
+                }
+            });
         }
     }
 

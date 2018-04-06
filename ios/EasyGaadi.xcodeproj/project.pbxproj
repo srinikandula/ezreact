@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -41,6 +42,7 @@
 		8140F2732064F97800F854F6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8140F2722064F97800F854F6 /* GoogleService-Info.plist */; };
 		81ACF978206B658E00D04ACB /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81ACF972206B657800D04ACB /* libRNFS.a */; };
 		81C02F68202C68D8008C7AFD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81C02F67202C68D8008C7AFD /* Images.xcassets */; };
+		81DD6A032075EB0300581A22 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81DD6A022075EB0300581A22 /* SystemConfiguration.framework */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		834C91542A604D44975869A4 /* libRNImmediatePhoneCall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34ECE007388D477CA907E512 /* libRNImmediatePhoneCall.a */; };
 		85D4EDA3B034F9820E5BFB7C /* libPods-EasyGaadiTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 713C2D97DB222B4066A981A8 /* libPods-EasyGaadiTests.a */; };
@@ -418,6 +420,7 @@
 		8140F2722064F97800F854F6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		81ACF947206B657800D04ACB /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		81C02F67202C68D8008C7AFD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EasyGaadi/Images.xcassets; sourceTree = "<group>"; };
+		81DD6A022075EB0300581A22 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8B8E5160C9E244E2A95D7BD4 /* libRNFileViewer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFileViewer.a; sourceTree = "<group>"; };
 		979EC3CE74023C906CD6DD8B /* Pods-EasyGaadi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasyGaadi.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EasyGaadi/Pods-EasyGaadi.debug.xcconfig"; sourceTree = "<group>"; };
@@ -451,6 +454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81DD6A032075EB0300581A22 /* SystemConfiguration.framework in Frameworks */,
 				81ACF978206B658E00D04ACB /* libRNFS.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -815,6 +819,7 @@
 		CA470B948B9ED5DCA7429689 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				81DD6A022075EB0300581A22 /* SystemConfiguration.framework */,
 				315EAEC88D8F066F8710C4C4 /* libPods-EasyGaadi.a */,
 				C8E45CBBA8248896593A7F9D /* libPods-EasyGaadi-tvOS.a */,
 				BE5A915BAFBF62623B204C96 /* libPods-EasyGaadi-tvOSTests.a */,

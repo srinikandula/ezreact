@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform, NetInfo,
     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import { CPicker,CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
+import { CPicker, CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
@@ -13,6 +13,7 @@ import { NoInternetModal } from './common';
 export default class AddTrip extends Component {
 
     state = {
+        defaultDate: new Date(),
         showModal: false,
         date: "",
         passdate: '',
@@ -37,18 +38,52 @@ export default class AddTrip extends Component {
         netFlaf: false,
     };
     componentWillMount() {
-        console.log("payment token", this.props.navigation.state.params.token);
-        
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
+        // console.log("payment token", this.props.navigation.state.params.token);
+        this.connectionInfo()
 
+
+
+    }
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
+        }
+    }
+
+    async connectNetInfo(postData) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.callAddTripAPI(postData);
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.callAddTripAPI(postData);
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
+        }
     }
 
     getDataList(calltype, url) {
@@ -136,7 +171,7 @@ export default class AddTrip extends Component {
 
     updateViewdate(paymentDetails) {
         const self = this;
-        console.log("lanesList[i].name === paymentDetails.tripLane",self.state.lanesList,  "===" ,paymentDetails.tripLane)
+        console.log("lanesList[i].name === paymentDetails.tripLane", self.state.lanesList, "===", paymentDetails.tripLane)
 
         let trucksList = self.state.trucks;
         let driversList = self.state.drivers;
@@ -145,23 +180,22 @@ export default class AddTrip extends Component {
 
         for (let i = 0; i < trucksList.length; i++) {
             if (trucksList[i]._id === paymentDetails.registrationNo) {
-                self.setState({ truckText: trucksList[i].registrationNo })
+                self.setState({ truckText: Platform.OS === 'ios' ? trucksList[i].registrationNo : trucksList[i]._id + "###" + trucksList[i].registrationNo })
             }
         }
         for (let i = 0; i < driversList.length; i++) {
             if (driversList[i]._id === paymentDetails.driverId) {
-                self.setState({ driverText: driversList[i].fullName })
+                self.setState({ driverText: Platform.OS === 'ios' ? driversList[i].fullName : driversList[i]._id + "###" + driversList[i].fullName })
             }
         }
         for (let i = 0; i < partiesList.length; i++) {
             if (partiesList[i]._id === paymentDetails.partyId) {
-                self.setState({ partiesText: partiesList[i].name })
+                self.setState({ partiesText: Platform.OS === 'ios' ? partiesList[i].name : partiesList[i]._id + "###" + partiesList[i].name })
             }
         }
         for (let i = 0; i < lanesList.length; i++) {
-            console.log("lanesList[i].name === paymentDetails.tripLane",lanesList[i].name, "===" ,paymentDetails.tripLane)
             if (lanesList[i].name === paymentDetails.tripLane) {
-                self.setState({ laneText: lanesList[i].name })
+                self.setState({ laneText: Platform.OS === 'ios' ? lanesList[i].name : lanesList[i].name })
             }
         }
 
@@ -331,16 +365,8 @@ export default class AddTrip extends Component {
                                         };
 
                                         console.log('postdata', postData);
-                                        
-                                        NetInfo.isConnected.fetch().then(isConnected => {
-                                            console.log('isConnected',isConnected);
-                                            if (isConnected) {
-                                                this.setState({netFlaf:false});
-                                                this.callAddTripAPI(postData);
-                                            } else {
-                                            return this.setState({netFlaf:true});
-                                        }
-                                    });
+                                        this.connectNetInfo(postData);
+
                                     } else {
                                         Utils.ShowMessage('Please Enter Frieght Amount');
                                     }
@@ -378,7 +404,7 @@ export default class AddTrip extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.registrationNo}
-                value={truckItem._id+"###"+truckItem.registrationNo}
+                value={truckItem._id + "###" + truckItem.registrationNo}
             />
         );
     }
@@ -388,7 +414,7 @@ export default class AddTrip extends Component {
             <Picker.Item
                 key={i}
                 label={driverItem.fullName}
-                value={driverItem._id+"###"+driverItem.fullName}
+                value={driverItem._id + "###" + driverItem.fullName}
             />
         );
     }
@@ -398,7 +424,7 @@ export default class AddTrip extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.name}
-                value={truckItem._id+"###"+truckItem.name}
+                value={truckItem._id + "###" + truckItem.name}
             />
         );
     }
@@ -409,14 +435,14 @@ export default class AddTrip extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.name}
-                value={truckItem.name+"###"+truckItem.name}
+                value={truckItem.name}
             />
         );
     }
 
     updateLaneList(itemValue) {
         const self = this;
-//selectedlaneId
+        //selectedlaneId
 
         if (itemValue.length <= 1) {
             return;
@@ -425,11 +451,9 @@ export default class AddTrip extends Component {
             self.state.lanesList = [{ name: 'Select Lane' }];
             self.setState({ lanesList: self.state.lanesList });
             for (let i = 0; i < self.state.partyList.length; i++) {
-                console.log('=====>>>>>>updateLaneList',self.state.partyList[i]._id,"===", itemValue);
                 if (self.state.partyList[i]._id === itemValue) {
                     var lanearr = self.state.partyList[i].tripLanes;
-                    console.log('<<<<<=====>>>>>>updateLaneList',self.state.partyList[i].tripLanes);
-                    self.setState({ laneText: self.state.partyList[i].tripLanes[0].name });
+                    self.setState({ laneText: Platform.OS === 'ios' ? self.state.partyList[i].tripLanes[0].name : self.state.partyList[i].tripLanes[0].name });
                     for (let j = 0; j < lanearr.length; j++) {
                         var laneObj = lanearr[j];
                         if (laneObj.hasOwnProperty("name")) {
@@ -549,17 +573,16 @@ export default class AddTrip extends Component {
                             </TouchableOpacity>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Vehicle Number*</CustomText>
-                                
+
                                 <CPicker
-                                    placeholder="Select  Vehicles"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    placeholder="Select  Vehicle"
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
-                                     <Picker.Item label="Select Vehicle" value="Select Vehicle" />
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    <Picker.Item label="Select Vehicle" value="Select Vehicle" />
                                     {this.renderTrucksList()}
                                 </CPicker>
-                               {/*  <Picker
+                                {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedVehicleId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -574,19 +597,18 @@ export default class AddTrip extends Component {
 
                             <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Driver Name*</CustomText>
-                                
+
                                 <CPicker
                                     placeholder="Select  Driver"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.driverText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ driverText: itemValue.split("###")[1], selectedDriverId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ driverText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedDriverId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
                                     <Picker.Item label="Select Driver" value="Select Driver" />
                                     {this.renderDriverList()}
 
                                 </CPicker>
 
-                               {/*  <Picker
+                                {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedDriverId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -602,17 +624,16 @@ export default class AddTrip extends Component {
                             <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Party Name*</CustomText>
                                 <CPicker
-                                    // placeholder="Select  Party"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    placeholder="Select Party"
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.partiesText}
-                                    onValueChange={(itemValue, itemIndex) => {this.updateLaneList(itemValue); this.setState({ partiesText: itemValue.split("###")[1], tripPartyId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}}>
+                                    onValueChange={(itemValue, itemIndex) => { this.updateLaneList(itemValue); this.setState({ partiesText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, tripPartyId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }) }}>
                                     <Picker.Item label="Select Party" value="Select Party" />
-                                    
+
                                     {this.renderPartyList()}
 
                                 </CPicker>
-                               {/*  <Picker
+                                {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.tripPartyId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -626,17 +647,16 @@ export default class AddTrip extends Component {
                             <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
                                 <CPicker
-                                    placeholder="Select  Lane"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    placeholder="Select Lane"
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.laneText}
-                                    onValueChange={(itemValue, itemIndex) => { this.setState({ laneText: itemValue.split("###")[1], selectedlaneId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}}>
+                                    onValueChange={(itemValue, itemIndex) => { this.setState({ laneText: Platform.OS === 'ios' ? itemValue : itemValue, selectedlaneId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }) }}>
                                     {/* <Picker.Item label="Select Driver" value="Select Driver" /> */}
-                                    
+
                                     {this.renderLaneList()}
 
                                 </CPicker>
-                                
+
                                 {/* <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedlaneId}
@@ -737,8 +757,9 @@ export default class AddTrip extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
+                            date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
+                                this.setState({ defaultDate: pickedDate })
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 this.setState({ date: date, passdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
@@ -748,8 +769,8 @@ export default class AddTrip extends Component {
                         />
                     </View>
                 </Confirm>
-                <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                <NoInternetModal visible={this.state.netFlaf}
+                    onAccept={() => { this.setState({ netFlaf: false }) }} />
             </View>
 
         );

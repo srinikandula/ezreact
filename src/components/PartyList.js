@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage,NetInfo, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,BackHandler, ListView, FlatList, Text, AsyncStorage,Platform,NetInfo, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText,CustomEditText } from './common';
 import Config from '../config/Config';
@@ -12,23 +12,38 @@ import { NoInternetModal } from './common';
 
 export default class PartyList extends Component {
     state = {
-        categoryBgColor: false,token:'',parties:[],dummyparties:[],partyName:''
+        categoryBgColor: false,token:'',parties:[],dummyparties:[],partyName:'',netFlaf:false
     };
 
     componentWillMount() {
         const self = this;
         console.log(self.props,"token");
         
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.getCredentailsData();
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
+        this.connectionInfo();
+       
     }
+
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { 
+                this.setState({netFlaf:false});
+                    this.getCredentailsData();
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.getCredentailsData();
+                } else {
+                return this.setState({netFlaf:true});
+            }
+        });
+        }
+    }
+
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }

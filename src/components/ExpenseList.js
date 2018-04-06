@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView,BackHandler, ListView,NetInfo,FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView,BackHandler,Platform, ListView,NetInfo,FlatList, Text, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText ,CustomEditText} from './common';
 import Config from '../config/Config';
@@ -15,17 +15,33 @@ export default class ExpenseList extends Component {
 
     componentWillMount() {
         const self = this;
+        this.connectionInfo();
+
         
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.getCredentailsData();
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
     }
+
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { 
+                this.setState({netFlaf:false});
+                    this.getCredentailsData();
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.getCredentailsData();
+                } else {
+                return this.setState({netFlaf:true});
+            }
+        });
+        }
+    }
+
+
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS,
-    CheckBox, TouchableOpacity, ScrollView, Keyboard,NetInfo, Dimensions, BackHandler, Platform
+    CheckBox, TouchableOpacity, ScrollView, Keyboard, NetInfo, Dimensions, BackHandler, Platform
 } from 'react-native';
 import { CustomInput, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm, CPicker } from './common';
 import Config from '../config/Config';
@@ -13,6 +13,7 @@ export default class AddTruck extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
     state = {
+        defaultDate: new Date(),
         look: '',
         showModal: false,
         selectedName: '',
@@ -36,43 +37,76 @@ export default class AddTruck extends Component {
         paymentref: '',
         remark: '',
         drivers: [],
-         netFlaf: false,
+        netFlaf: false,
         spinnerBool: false
     };
     componentWillMount() {
-        console.log("payment token", this.props.navigation.state.params.token);
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.fetchDriverList();
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
+        // console.log("payment token", this.props.navigation.state.params.token);
+        this.connectionInfo();
     }
 
-    fetchDriverList(){
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.fetchDriverList();
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.fetchDriverList();
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
+        }
+    }
+    async connectNetInfo(postData) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.callAddPaymentAPI(postData);
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.callAddPaymentAPI(postData);
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
+        }
+    }
+
+    fetchDriverList() {
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token },
             url: Config.routes.base + Config.routes.driverList
         })
-        .then((response) => {
-            if (response.data.status) {
-                console.log('driversList from add Truck ==>', response.data);
-                this.setState({ drivers: response.data.drivers });
-                if (this.props.navigation.state.params.edit) {
-                    this.getTruckDetails(this.props.navigation.state.params.id);
+            .then((response) => {
+                if (response.data.status) {
+                    console.log('driversList from add Truck ==>', response.data);
+                    this.setState({ drivers: response.data.drivers });
+                    if (this.props.navigation.state.params.edit) {
+                        this.getTruckDetails(this.props.navigation.state.params.id);
+                    }
+                } else {
+                    console.log('error in DriverList from add Truck ==>', response);
+                    this.setState({ drivers: [], expirydetails: [] });
                 }
-            } else {
-                console.log('error in DriverList from add Truck ==>', response);
-                this.setState({ drivers: [], expirydetails: [] });
-            }
 
-        }).catch((error) => {
-            console.log('error in add drivers from add Truck ==>', error);
-        })
+            }).catch((error) => {
+                console.log('error in add drivers from add Truck ==>', error);
+            })
     }
 
     getTruckDetails(paymentID) {
@@ -116,7 +150,7 @@ export default class AddTruck extends Component {
         } else {
             for (let i = 0; i < driversList.length; i++) {
                 if (driversList[i]._id === drivrID) {
-                    self.setState({ truckText: driversList[i].fullName })
+                    self.setState({ truckText: Platform.OS==='ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
                 }
             }
         }
@@ -322,15 +356,7 @@ export default class AddTruck extends Component {
                                                 'driverId': driverID,
                                             };
 
-                                            NetInfo.isConnected.fetch().then(isConnected => {
-                                                console.log('isConnected',isConnected);
-                                                if (isConnected) {
-                                                    this.setState({netFlaf:false});
-                                                    this.callAddPaymentAPI(postData);
-                                                } else {
-                                                    return this.setState({netFlaf:true});
-                                                }
-                                            });
+                                            this.connectNetInfo(postData)
 
 
                                         } else {
@@ -380,16 +406,7 @@ export default class AddTruck extends Component {
             />
         );
     }
-    /* renderPartyList() {
-        return this.state.drivers.map((truckItem, i) =>
-            <Picker.Item
-                key={i}
-                label={truckItem.fullName}
-                value={truckItem._id}
-            />
-        );
-    }
- */
+    
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -460,17 +477,11 @@ export default class AddTruck extends Component {
                                     placeholder="Select  Driver"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: itemValue.split("###")[1], selectedDriverId: itemValue.split("###")[0] })}>
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckText: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue, selectedDriverId: itemValue.split("###")[0] })}}>
                                     <Picker.Item label="Select Driver" value="Select Driver" />
                                     {this.renderPartyList()}
                                 </CPicker>}
-                                {/* <Picker
-                                    cStyle={CustomStyles.cPickerStyle}
-                                    selectedValue={this.state.selectedDriverId}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectedDriverId: itemValue })}>
-                                     <Picker.Item label="Select Driver" value="Select Driver" />
-                                    {this.renderPartyList()}
-                                </Picker> */}
+                                
                             </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate('TaxDue') }}
@@ -593,8 +604,8 @@ export default class AddTruck extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                        <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                        <NoInternetModal visible={this.state.netFlaf}
+                            onAccept={() => { this.setState({ netFlaf: false }) }} />
                     </View>
                 </ScrollView>
 
@@ -629,8 +640,9 @@ export default class AddTruck extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
+                            date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
+                                this.setState({defaultDate: pickedDate})
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 var pdate = new Date(month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear());
@@ -661,7 +673,7 @@ export default class AddTruck extends Component {
                         />
                     </View>
                 </Confirm>
-                
+
             </View>
 
         );

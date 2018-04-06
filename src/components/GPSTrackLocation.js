@@ -25,6 +25,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
     state = {
+        defaultDate: new Date(),
         showModal: false, date: '',
         _mapView: MapView,
         categoryBgColor: false, token: '', truckMakers: [], coordinates: [], coordinates1: [],
@@ -663,8 +664,9 @@ export default class GPSTrackLocation extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
-                            onDateChange={(pickedDate) => {
+                           date={this.state.defaultDate}
+                           onDateChange={(pickedDate) => {
+                               this.setState({defaultDate: pickedDate})
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 this.setState({ date: date, passdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });

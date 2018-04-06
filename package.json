@@ -24,9 +24,11 @@
 		"react-native-image-picker": "^0.26.7",
 		"react-native-immediate-phone-call": "^1.0.0",
 		"react-native-maps": "^0.20.0",
+		"react-native-network-connectivity": "^0.1.0",
 		"react-native-router-flux": "^4.0.0-beta.24",
 		"react-native-splash-screen": "^3.0.6",
-		"react-navigation": "github:react-community/react-navigation#fe4b1e2"
+		"react-navigation": "github:react-community/react-navigation#fe4b1e2",
+		"react-redux": "^5.0.7"
 	},
 	"devDependencies": {
 		"babel-jest": "22.0.4",

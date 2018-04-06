@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform,NetInfo,
+    View, Image, Text, Picker, DatePickerAndroid, DatePickerIOS, Platform, NetInfo,
     TouchableOpacity, ToastAndroid, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
-import {CPicker, CustomInput, CRadio, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
+import { CPicker, CustomInput, CRadio, CSpinner, CustomEditText, CustomButton, CustomText, CommonBackground, Confirm } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
@@ -12,6 +12,7 @@ import { NoInternetModal } from './common';
 
 export default class AddExpense extends Component {
     state = {
+        defaultDate: new Date(),
         showModal: false,
         date: "",
         passdate: '',
@@ -33,17 +34,47 @@ export default class AddExpense extends Component {
         netFlaf: false,
     };
     componentWillMount() {
-       
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
-			} else {
-            return this.setState({netFlaf:true});
-        }
-    });
+        this.connectionInfo();
     }
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { this.onNetSuccess(); }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) { this.onNetSuccess(); }
+                else { return this.setState({ netFlaf: true }); }
+            });
+        }
+    }
+
+    onNetSuccess() {
+        this.setState({ netFlaf: false });
+        this.getDataList('trucks', Config.routes.base + Config.routes.trucksList);
+    }
+
+    async connectNetInfo(postData) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.callAddExpenseAPI(postData);
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.callAddExpenseAPI(postData);
+                }
+                else { return this.setState({ netFlaf: true }); }
+            });
+        }
+    }
+
 
     getDataList(calltype, url) {
         const types = calltype;
@@ -126,12 +157,12 @@ export default class AddExpense extends Component {
 
         for (let i = 0; i < trucksList.length; i++) {
             if (trucksList[i]._id === expenseDetails.vehicleNumber) {
-                self.setState({ truckText: trucksList[i].registrationNo })
+                self.setState({ truckText: Platform.OS === 'ios' ? trucksList[i].registrationNo : trucksList[i]._id + "###" + trucksList[i].registrationNo })
             }
         }
         for (let i = 0; i < expensesList.length; i++) {
             if (expensesList[i]._id === expenseDetails.expenseType) {
-                self.setState({ expenseText: expensesList[i].expenseName })
+                self.setState({ expenseText: Platform.OS === 'ios' ? expensesList[i].expenseName : expensesList[i]._id + "###" + expensesList[i].expenseName })
             }
         }
         var date = new Date(expenseDetails.date);
@@ -184,11 +215,11 @@ export default class AddExpense extends Component {
                 if (response.data.status) {
                     self.setState({ spinnerBool: false });
                     // Actions.pop();
-                    const {navigation} = this.props;
-                    const {state} = navigation;
+                    const { navigation } = this.props;
+                    const { state } = navigation;
                     let refreshFunc = state.params.refresh;
-                    if(typeof refreshFunc === 'function'){
-                        refreshFunc({refresh:true});
+                    if (typeof refreshFunc === 'function') {
+                        refreshFunc({ refresh: true });
                     }
                     this.props.navigation.goBack();
                     let message = "";
@@ -221,7 +252,7 @@ export default class AddExpense extends Component {
     }
 
     moveInputLabelUp(id, value) {
-        this.setState({ ['field' + id]: { display: value === ''? 'none':'flex' }, selectedName: value });
+        this.setState({ ['field' + id]: { display: value === '' ? 'none' : 'flex' }, selectedName: value });
     }
 
     onPickdate() {
@@ -296,16 +327,7 @@ export default class AddExpense extends Component {
                                     "vehicleNumber": this.state.selectedVehicleId,
                                 }
                                 console.log('postdata', postData);
-                                
-                                NetInfo.isConnected.fetch().then(isConnected => {
-                                    console.log('isConnected',isConnected);
-                                    if (isConnected) {
-                                        this.setState({netFlaf:false});
-                                        this.callAddExpenseAPI(postData);
-                                    } else {
-                                    return this.setState({netFlaf:true});
-                                    }
-                                });
+                                this.connectNetInfo(postData);
                             } else {
                                 Utils.ShowMessage('Please Enter Expense Amount');
                             }
@@ -328,16 +350,8 @@ export default class AddExpense extends Component {
                                             "vehicleNumber": this.state.selectedVehicleId,
                                         }
                                         console.log('postdata', postData);
-                                        //this.callAddExpenseAPI(postData);
-                                        NetInfo.isConnected.fetch().then(isConnected => {
-                                            console.log('isConnected',isConnected);
-                                            if (isConnected) {
-                                                this.setState({netFlaf:false});
-                                                this.callAddExpenseAPI(postData);
-                                            } else {
-                                            return this.setState({netFlaf:true});
-                                            }
-                                        });
+                                        this.connectNetInfo(postData);
+
                                     } else {
                                         Utils.ShowMessage('Please Enter  Paid Amount');
 
@@ -397,7 +411,7 @@ export default class AddExpense extends Component {
             <Picker.Item
                 key={i}
                 label={driverItem.expenseName}
-                value={driverItem._id+ "###" +driverItem.expenseName}
+                value={driverItem._id + "###" + driverItem.expenseName}
             />
         );
     }
@@ -466,7 +480,7 @@ export default class AddExpense extends Component {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row',paddingTop: 20, paddingBottom:5, backgroundColor: '#1e4495', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 5, backgroundColor: '#1e4495', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
                             <Image
                                 style={{ width: 20, marginLeft: 20 }}
@@ -475,7 +489,7 @@ export default class AddExpense extends Component {
                             />
                         </TouchableOpacity>
                         <Text style={{ fontSize: 16, color: '#fff', paddingLeft: 20, fontFamily: 'Gotham-Light' }}>
-                           ADD EXPENSE
+                            ADD EXPENSE
                         </Text>
                     </View>
                     <View>
@@ -488,13 +502,13 @@ export default class AddExpense extends Component {
                                     <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={{ flex: 5 }}>
-                                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field0]}> 
-                                                        Trip Date</CustomText>
+                                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field0]}>
+                                                    Trip Date</CustomText>
                                                 <CustomEditText underlineColorAndroid='transparent'
-                                                                placeholder={'Trip Date*'}
-                                                                editable={false}
-                                                                inputTextStyle={{ marginHorizontal: 16 }}
-                                                                value={this.state.date} />
+                                                    placeholder={'Trip Date*'}
+                                                    editable={false}
+                                                    inputTextStyle={{ marginHorizontal: 16 }}
+                                                    value={this.state.date} />
 
                                             </View>
 
@@ -506,18 +520,17 @@ export default class AddExpense extends Component {
                                 </TouchableOpacity>
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field2]}>Vehicle Number*</CustomText>
-                                    
-                                    <CPicker
-                                    placeholder="Select  Vehicles"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                    selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => {this.getTruckNum(itemValue); this.setState({ truckText: itemValue.split("###")[1], selectedTruckId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}}>
-                                    <Picker.Item label="Select Driver" value="Select Driver" />
-                                    {this.renderTrucksList()}
 
-                                </CPicker>
-                                   {/*  <Picker
+                                    <CPicker
+                                        placeholder="Select  Vehicle"
+                                        cStyle={CustomStyles.cPickerStyle}
+                                        selectedValue={this.state.truckText}
+                                        onValueChange={(itemValue, itemIndex) => { this.getTruckNum(itemValue); this.setState({ truckText: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue, selectedVehicleId: itemValue.split("###")[0]})}}>
+                                        {/* <Picker.Item label="Select Driver" value="Select Driver" /> */}
+                                        {this.renderTrucksList()}
+
+                                    </CPicker>
+                                    {/*  <Picker
                                         style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                         selectedValue={this.state.selectedVehicleId}
                                         onValueChange={(itemValue, itemIndex) => {
@@ -532,17 +545,16 @@ export default class AddExpense extends Component {
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field3]}>Expense Type*</CustomText>
                                     <CPicker
-                                    placeholder="Select Expense Type"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
-                                    selectedValue={this.state.expenseText}
-                                    onValueChange={(itemValue, itemIndex) => {this.ShowExpenseView(itemValue); this.setState({ expenseText: itemValue.split("###")[1], selectedExpenseType: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}}>
-                                   <Picker.Item label="Select Expense Type" value="Select Expense Type" />
+                                        placeholder="Select Expense Type"
+                                        cStyle={CustomStyles.cPickerStyle}
+                                        selectedValue={this.state.expenseText}
+                                        onValueChange={(itemValue, itemIndex) => { this.ShowExpenseView(itemValue); this.setState({ expenseText: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue, selectedExpenseType: itemValue.split("###")[0]}) }}>
+                                        <Picker.Item label="Select Expense Type" value="Select Expense Type" />
                                         {this.renderExpensesList()}
                                         <Picker.Item label="others" value="others" />
 
-                                </CPicker>
-                                    
+                                    </CPicker>
+
                                     {/* <Picker
                                         style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                         selectedValue={this.state.selectedExpenseType}
@@ -557,13 +569,13 @@ export default class AddExpense extends Component {
                                 </View>
                                 <View style={{ display: this.state.otherExpenseInputViewBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field4]}>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>
                                         Other Expense Type </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                                    placeholder={'Expense Name*'}
-                                                    inputTextStyle={{ marginHorizontal: 16 }} 
-                                                    value={this.state.otherExpense}
-                                                    onChangeText={(otherExpense) => { this.moveInputLabelUp(4, otherExpense); this.setState({ otherExpense: otherExpense }); }} />
+                                        placeholder={'Expense Name*'}
+                                        inputTextStyle={{ marginHorizontal: 16 }}
+                                        value={this.state.otherExpense}
+                                        onChangeText={(otherExpense) => { this.moveInputLabelUp(4, otherExpense); this.setState({ otherExpense: otherExpense }); }} />
                                 </View>
                                 <View style={[CustomStyles.row, CustomStyles.mTop10, CustomStyles.mBottom10]}>
                                     <CRadio label='Credit' activeStyle={{ display: this.state.creditBool, margin: 10 }}
@@ -589,36 +601,36 @@ export default class AddExpense extends Component {
 
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field5]}>
-                                            Total Amount* </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>
+                                        Total Amount* </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                                    placeholder={'Total Amount*'}
-                                                    keyboardType='numeric'
-                                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                                    value={this.state.totalAmount}
-                                                    onChangeText={(totalAmount) => { this.moveInputLabelUp(5, totalAmount); this.setState({ totalAmount: totalAmount.trim() }); }} />
+                                        placeholder={'Total Amount*'}
+                                        keyboardType='numeric'
+                                        inputTextStyle={{ marginHorizontal: 16 }}
+                                        value={this.state.totalAmount}
+                                        onChangeText={(totalAmount) => { this.moveInputLabelUp(5, totalAmount); this.setState({ totalAmount: totalAmount.trim() }); }} />
                                 </View>
 
                                 <View style={{ display: this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field6]}>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field6]}>
                                         Paid Amount* </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                                    placeholder={'Paid Amount*'}
-                                                    keyboardType='numeric'
-                                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                                    value={this.state.paidAmount}
-                                                    onChangeText={(paidAmount) => { this.moveInputLabelUp(6, paidAmount); this.setState({ paidAmount: paidAmount.trim() }); }} />
+                                        placeholder={'Paid Amount*'}
+                                        keyboardType='numeric'
+                                        inputTextStyle={{ marginHorizontal: 16 }}
+                                        value={this.state.paidAmount}
+                                        onChangeText={(paidAmount) => { this.moveInputLabelUp(6, paidAmount); this.setState({ paidAmount: paidAmount.trim() }); }} />
                                 </View>
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top:2, display:'none', color: '#525252' }, this.state.field7]}>
-                                            Remarks </CustomText>
+                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field7]}>
+                                        Remarks </CustomText>
                                     <CustomEditText underlineColorAndroid='transparent'
-                                                    placeholder={'Remarks'}
-                                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                                    value={this.state.remark}
-                                                    onChangeText={(remark) => { this.moveInputLabelUp(7, remark); this.setState({ remark: remark }); }} />
+                                        placeholder={'Remarks'}
+                                        inputTextStyle={{ marginHorizontal: 16 }}
+                                        value={this.state.remark}
+                                        onChangeText={(remark) => { this.moveInputLabelUp(7, remark); this.setState({ remark: remark }); }} />
                                 </View>
                             </View>
                         </ScrollView>
@@ -655,8 +667,9 @@ export default class AddExpense extends Component {
                 >
                     <View style={{ flex: 1, padding: 20 }}>
                         <DatePickerIOS
-                            date={new Date()}
+                            date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
+                                this.setState({ defaultDate: pickedDate })
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 this.setState({ date: date, passdate: month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear() });
@@ -666,8 +679,8 @@ export default class AddExpense extends Component {
                         />
                     </View>
                 </Confirm>
-                <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                <NoInternetModal visible={this.state.netFlaf}
+                    onAccept={() => { this.setState({ netFlaf: false }) }} />
             </View>
 
         );

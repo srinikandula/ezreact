@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, BackHandler, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity,NetInfo } from 'react-native';
+import { View, ScrollView, BackHandler, ListView, FlatList, Platform,Text, AsyncStorage, Image, TouchableOpacity,NetInfo } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText, CustomEditText } from './common';
 import Config from '../config/Config';
@@ -18,16 +18,30 @@ export default class TruckList extends Component {
     componentWillMount() {
         const self = this;
         console.log(self.props, "token");
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.getCredentailsData();
-            } else {
-                return this.setState({netFlaf:true});
-            }
-        });
+        this.connectionInfo();
     }
+
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { 
+                this.setState({netFlaf:false});
+                    this.getCredentailsData();
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.getCredentailsData();
+                } else {
+                    return this.setState({netFlaf:true});
+                }
+            });
+        }
+    }
+
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
     }
@@ -144,14 +158,13 @@ export default class TruckList extends Component {
         return data;
     }
     getName(item) {
-        var data = '-';
+        var data = 'Name not available';
         if (item.hasOwnProperty("attrs")) {
             if (item.attrs.hasOwnProperty("fullName")) {
                 data = item.attrs.fullName;
             } else {
                 return data;
             }
-
         } else {
             data = 'Name not available';
         }

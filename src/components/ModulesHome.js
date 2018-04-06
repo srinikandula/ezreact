@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity,AsyncStorage, BackHandler,NetInfo, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity,AsyncStorage, BackHandler,Platform,NetInfo, Alert } from 'react-native';
 import GPSTruckMap from '../components/GPSTruckMap';
 import { NoInternetModal } from './common';
 var count=0;
@@ -69,31 +69,57 @@ export default class ModulesHome extends Component {
         }
     }
 
+
+
     GPSMApcheckNetwork(){
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
+        this.connectionInfo();
+    }
+
+    async connectionInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { 
                 this.setState({netFlaf:false});
                 this.props.navigation.navigate('GPSMAp',{ nav:this.props,showHeader:true});
-			} else {
-             this.setState({netFlaf:true});
-            }
-        });
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.props.navigation.navigate('GPSMAp',{ nav:this.props,showHeader:true});
+                } else {
+                 this.setState({netFlaf:true});
+                }
+            });
+        }
     }
 
     SubModulecheckNetwork(){
         this.setState({netFlaf:false});
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
-            if (isConnected) {
-                this.setState({netFlaf:false});
-                this.props.navigation.navigate('SubModule');
-			} else {
-             this.setState({netFlaf:true});
-            }
-        });
+        this.connectNetInfo();
     }
-
+    async connectNetInfo() {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
+            if (isConnected) { 
+                this.setState({netFlaf:false});
+                    this.props.navigation.navigate('SubModule');
+             }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected',isConnected);
+                if (isConnected) {
+                    this.setState({netFlaf:false});
+                    this.props.navigation.navigate('SubModule');
+                } else {
+                 this.setState({netFlaf:true});
+                }
+            });
+        }
+    }
 
     render() {
         return (
@@ -112,7 +138,7 @@ export default class ModulesHome extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity /* navigation={this.props.navigation} */ onPress={() => 
-                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'none'}}>
+                            this.SubModulecheckNetwork()} style={{display:'flex'/* this.state.erpEnabled?'flex':'none' */}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/erpTruckIcon.png')}

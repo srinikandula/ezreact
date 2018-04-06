@@ -96,7 +96,7 @@ let routes = {
     gpsTrackLocation:'/gps/gpsTrackingByTruck',
     gpsTrackingByMapView:'/gps/gpsTrackingByMapView',
     getTruckReport:'/gps/getTruckReport/',
-
+    unCheckLookingForLoad:'/trucks/unCheckLookingForLoad',
 
     //Profile
     getProfileDetails:'/admin/userProfile',

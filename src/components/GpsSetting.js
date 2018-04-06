@@ -163,11 +163,11 @@ class GpsSetting extends Component {
                 if(Platform.OS==='ios'){
                     if (this.state.point === 'source') {
                         console.log('place source', place)
-                        this.setState({ source: place.name, sourceState: place.addressComponents.administrative_area_level_1, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude }, () => {
+                        this.setState({ source: place.name, sourceState: place.addressComponents.administrative_area_level_1, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude,sourcelbl:true }, () => {
                             console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
                         })
                     } else {
-                        this.setState({ destination: place.name, destinationState: place.addressComponents.administrative_area_level_1, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude }, () => {
+                        this.setState({ destination: place.name, destinationState: place.addressComponents.administrative_area_level_1, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude,destinationlbl:true  }, () => {
                             console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
                         })
                     }
@@ -178,11 +178,11 @@ class GpsSetting extends Component {
                     console.log('state',state);
                     if (this.state.point === 'source') {
 
-                        this.setState({ source: place.name, sourceState: state, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude }, () => {
+                        this.setState({ source: place.name, sourceState: state, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude,sourcelbl:true }, () => {
                             console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
                         })
                     } else {
-                        this.setState({ destination: place.name, destinationState: state, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude }, () => {
+                        this.setState({ destination: place.name, destinationState: state, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude ,destinationlbl:true}, () => {
                             console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
                         })
                     }
@@ -324,7 +324,7 @@ class GpsSetting extends Component {
 
         return (
             <View style={viewStyle}>
-                <ScrollView style={{ alignSelf: 'stretch', flex: 1, marginBottom: 10 }}>
+                <ScrollView style={{ alignSelf: 'stretch', flex: 1, marginBottom: 0 }}>
                     <View style={containerStyle}>
                         <Card>
                             <View style={{ borderBottomWidth: 1, borderBottomColor: '#ddd', justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', paddingTop: 3, marginTop: 5 }}>
@@ -403,7 +403,7 @@ class GpsSetting extends Component {
                                     Set operating Routes
                                 </Text>
                                 <TouchableOpacity onPress={()=> {this.setState({routesBool: !this.state.routesBool})}}>
-                                    <Image style={{ width: 18, height: 18, resizeMode: 'contain' }} source={require('../images/form_edit.png')} />
+                                    <Image style={{ width: 25, height: 25, margin:6, resizeMode: 'contain' }} source={require('../images/addroutes.png')} />
                                 </TouchableOpacity>
                             </View>
 
@@ -411,7 +411,7 @@ class GpsSetting extends Component {
                                 <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <Text style={sourcelabelStyle} >
                                         Source
-                                </Text>
+                                    </Text>
                                     <CustomEditText
                                         onFocus={() => {
                                             this.setState({ point: 'source' }, () => {
@@ -423,14 +423,14 @@ class GpsSetting extends Component {
                                         inputTextStyle={inputStyle}
                                         value={this.state.source}
                                         onChangeText={(value) => {
-                                            this.setState({ source: value, sourcelbl: true })
+                                            this.setState({ source: value, sourcelbl: value == 0 ? false:true })
                                         }}
                                     />
                                 </View>
                                 <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <Text style={destlabelStyle} >
                                         Destination
-                                </Text>
+                                    </Text>
 
                                     <CustomEditText
                                         onFocus={() => {
@@ -443,7 +443,7 @@ class GpsSetting extends Component {
                                         inputTextStyle={inputStyle}
                                         value={this.state.destination}
                                         onChangeText={(value) => {
-                                            this.setState({ destination: value, destinationlbl: true })
+                                            this.setState({ destination: value, destinationlbl: value == 0 ? false:true })
                                         }}
                                     />
                                 </View>
@@ -465,7 +465,7 @@ class GpsSetting extends Component {
                             </View>
                             <View style={checkForgotStyle}>
 
-                                <TouchableOpacity style={actionStyle} >
+                                <TouchableOpacity style={actionStyle} onPress={() => { this.setState({destination:'',source:'',sourcelbl:false,destinationlbl:''}) }}>
                                     <CustomText customTextStyle={sendTextStyle}>
                                         Clear
                                         </CustomText>
@@ -509,7 +509,7 @@ const styles = {
         justifyContent: 'flex-start',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingBottom: 10
+        paddingBottom: 0
 
     },
     containerStyle: {

@@ -140,7 +140,7 @@ export default class ModulesHome extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity /* navigation={this.props.navigation} */ onPress={() => 
-                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'flex'}}>
+                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'none'}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/erpTruckIcon.png')}

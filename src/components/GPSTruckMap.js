@@ -52,7 +52,7 @@ export default class GPSTruckMap extends Component {
                 longitude: 0
             }
         }],
-        forDate:'',
+        forDate: '',
         forPassdate: '',
         view: 'no',
         netFlaf: false,
@@ -73,7 +73,7 @@ export default class GPSTruckMap extends Component {
         this.setState({ showHeader: showHeaderBool ? 'flex' : 'none', fromDate: currDate.toDateString(), toDate: currDate.toDateString(), fromPassdate: currDate.toDateString(), toPassdate: currDate.toDateString() });
         this.connectionInfo();
 
-        
+
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -94,10 +94,10 @@ export default class GPSTruckMap extends Component {
         if (Platform.OS === "ios") {
             let isConnected = await fetch("https://www.google.com")
                 .catch((error) => { this.setState({ netFlaf: true }); });
-            if (isConnected) { 
+            if (isConnected) {
                 this.setState({ netFlaf: false });
-                    this.getCredentailsData();
-             }
+                this.getCredentailsData();
+            }
         } else {
             NetInfo.isConnected.fetch().then(isConnected => {
                 console.log('isConnected', isConnected);
@@ -168,7 +168,7 @@ export default class GPSTruckMap extends Component {
                                             isIdle: catgryarr[index].attrs.latestLocation.isIdle
                                         };
                                         catgryarr1.push(obj);
-                                        truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                        //truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
                                         truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
                                         this.setState({ latitude: element[1], longitude: element[0] });
                                         this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
@@ -222,13 +222,13 @@ export default class GPSTruckMap extends Component {
 
 
     getParsedDate(date) {
-        if(date){
+        if (date) {
             var formattedDate = new Date(date);
             return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
-        }else{
+        } else {
             return '-';
         }
-       
+
     }
 
     renderSeparator = () => (
@@ -295,9 +295,10 @@ export default class GPSTruckMap extends Component {
                     break;
                 }
             }
-        }else{
+        } else {
             for (let index = 0; index < this.state.trucks.length; index++) {
                 const element = this.state.trucks[index];
+                console.log(element,'element');
                 if (items._id == element._id) {
                     if (element.lookingForLoad) {
                         element.lookingForLoad = false;
@@ -306,6 +307,9 @@ export default class GPSTruckMap extends Component {
                     }
                     this.state.trucks[index] = element;
                     this.setState({ trucks: this.state.trucks });
+                    console.log(element.registrationNo,'element-registrationNo');
+                    this.unCheckLookingForLoad(element.registrationNo);
+
                     break;
                 }
             }
@@ -364,6 +368,7 @@ export default class GPSTruckMap extends Component {
 
     //this.getParsedDate(item.updatedAt)
     getupdateDate(item) {
+        console.log(item.updatedAt,'updatedAt');
         var data = 'Date : \n' + '';
         if (item.hasOwnProperty("updatedAt")) {
             data = 'Date : \n' + this.getParsedDate(item.updatedAt);
@@ -379,6 +384,35 @@ export default class GPSTruckMap extends Component {
         else {
             return require('../images/unchecked.png')
         }
+    }
+
+    getShortAddress(address) {
+        let addr='';
+        // addr=address.length
+        console.log(typeof(address));
+        /* if (addr.length > 30) {
+            addr = address.substring(0, 30) + "..."
+        }
+        return addr; */
+    }
+    truckStatus(marker){
+        //console.log(marker,'truckStatus')
+        if (marker.attrs.hasOwnProperty('latestLocation')) {
+            console.log(marker.attrs.latestLocation.isStopped,'marker.attrs.latestLocation.isStopped');
+            if (marker.attrs.latestLocation.isStopped) {
+                return require('../images/stoptruck.png');
+            }else if (marker.attrs.latestLocation.isIdle && !marker.attrs.latestLocation.isStopped) {
+                console.log(marker.attrs.latestLocation.isIdle,'marker.attrs.latestLocation.isIdle');
+                return require('../images/runningTruck.png');
+            }else{
+            return require('../images/stoptruck.png');                
+            }
+        }else{
+            console.log(marker,'marker.attrs.latestLocation');
+            return require('../images/stoptruck.png');
+        }
+        
+        
     }
 
     getView() {
@@ -424,8 +458,8 @@ export default class GPSTruckMap extends Component {
                                             </View>
                                             <TouchableHighlight style={{ alignSelf: 'stretch' }}
                                                 underlayColor='#dddddd'>
-                                                <View style={{ alignSelf: 'stretch', alignItems: 'center', padding: 2, borderBottomWidth: 0, }}>
-                                                    <Text>{'Track'}</Text>
+                                                <View style={{ maxWidth: 200, alignItems: 'center', margin: 5, padding: 2, borderBottomWidth: 0, }}>
+                                                    <Text style={{ color: '#1e4495' }}>{'Track'}</Text>
                                                 </View>
                                             </TouchableHighlight>
                                         </MapView.Callout>
@@ -461,7 +495,7 @@ export default class GPSTruckMap extends Component {
 
                                         <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
                                             <Image resizeMode="contain"
-                                                source={require('../images/truck_icon.png')}
+                                                source={this.truckStatus(item)}
                                                 style={CustomStyles.imageWithoutradiusViewContainer} />
                                         </View>
 
@@ -484,7 +518,7 @@ export default class GPSTruckMap extends Component {
                                             checkboxStyle={{ width: 15, height: 15 }}
                                             //checkedImage={this.renderlookLoadIcon(item.lookingForLoad)}
                                             //uncheckedImage={require('../images/unchecked.png')}
-                                             checked={item.lookingForLoad}
+                                            checked={item.lookingForLoad}
                                             onChange={(val) => this.lookingForLoad(item, val)}
                                         />
 
@@ -545,15 +579,15 @@ export default class GPSTruckMap extends Component {
                             case "fromDate":
                                 this.setState({ fromDate: date, fromPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
-                            break;
+                                break;
                             case "toDate":
                                 this.setState({ toDate: date, toPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
-                            break;
+                                break;
                             case "forDate":
                                 this.setState({ forDate: date, forPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
-                            break;
+                                break;
                             default:
                                 return;
                                 break;
@@ -595,9 +629,11 @@ export default class GPSTruckMap extends Component {
                 alert('All fields mandatory');
             } else if (!isNaN(this.state.lookLoadSource) || !isNaN(this.state.lookLoadDestination)) {
                 alert('Number')
+            } else if (this.state.lookLoadPrice === '') {
+                alert('Please Set Price')
             } else if (this.state.forDate === '') {
                 alert('Please Set Date')
-            }else {
+            } else {
                 var date = new Date(this.state.forPassdate);
                 console.log(
                     'sourceAddress', this.state.lookLoadSource,
@@ -605,7 +641,7 @@ export default class GPSTruckMap extends Component {
                     'truckType', this.state.truckTypeIs,
                     'registrationNo', this.state.registrationNumber,
                     'pricePerTon', Number(this.state.lookLoadPrice),
-                    'dateAvailable',date.toISOString(),
+                    'dateAvailable', date,
                 )
                 Axios({
                     url: Config.routes.base + Config.routes.lookingForLoad,
@@ -617,7 +653,7 @@ export default class GPSTruckMap extends Component {
                         truckType: this.state.truckTypeIs,
                         registrationNo: this.state.registrationNumber,
                         pricePerTon: Number(this.state.lookLoadPrice),
-                        dateAvailable:date.toISOString()
+                        dateAvailable: date.toISOString()
                     }
                 }).then((response) => {
                     console.log('response', response);
@@ -642,6 +678,29 @@ export default class GPSTruckMap extends Component {
     onDecline() {
         this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: false, dispLookLoad: 'none', dispDatePicker: 'none', showModal: false, date: '' });
 
+    }
+
+    unCheckLookingForLoad(registrationNumber){
+        console.log('unCheckLookingForLoad',registrationNumber);
+        Axios({
+            url: Config.routes.base + Config.routes.unCheckLookingForLoad,
+            method: 'POST',
+            headers: { 'token': this.state.token },
+            data: {
+                registrationNo: registrationNumber,
+                }
+        }).then((response) => {
+            console.log('response', response);
+            if (response.data.status) {
+
+                alert('Update successfull')
+                //this.setState({ lookLoadDestination: '', lookLoadPrice: '', lookLoadSource: '', lookLoadIcon: true, dispLookLoad: 'none', showModal: false })
+            } else {
+                alert(response.data.messages)
+            }
+        }).catch((error) => {
+            console.log(error.response);
+        })
     }
 
     /*const data = {truckId:markerData.registrationNo,,
@@ -674,7 +733,7 @@ export default class GPSTruckMap extends Component {
         return false;
     }
 
-    
+
 
 
     render() {
@@ -750,7 +809,7 @@ export default class GPSTruckMap extends Component {
                             style={{ display: this.state.dispDatePicker }}
                             date={this.state.defaultDate}
                             onDateChange={(pickedDate) => {
-                                this.setState({defaultDate: pickedDate})
+                                this.setState({ defaultDate: pickedDate })
                                 var month = pickedDate.getMonth() + 1
                                 let date = pickedDate.getDate() + "/" + month + "/" + pickedDate.getFullYear();
                                 // console.warn(month + "/" + pickedDate.getDate() + "/" + pickedDate.getFullYear())
@@ -789,23 +848,24 @@ export default class GPSTruckMap extends Component {
                                 <CustomEditText
                                     underlineColorAndroid='transparent'
                                     placeholder={'Enter Price'}
+                                    keyboardType='numeric'
                                     value={this.state.lookLoadPrice}
                                     inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}
                                     onChangeText={(lookLoadPrice) => { this.setState({ lookLoadPrice }) }}
                                 />
                             </View>
                             <View>
-                                <TouchableOpacity
+                                <TouchableOpacity style={{marginTop: 10,marginHorizontal: 16,}}
                                     onPress={() => { this.onPickdate('forDate') }}>
-                                      <View style={{ flexDirection: 'row',borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}>
-                                        <View style={{ flex: 5 }}>
+                                    <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}>
+                                        <View style={{ flex: 4 }}>
                                             <CustomEditText
                                                 underlineColorAndroid='transparent'
                                                 editable={false}
                                                 placeholder={'Select Date'}
                                                 value={this.state.forDate}
-                                                inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16 }}
-                                                
+                                                inputTextStyle={{ alignSelf: 'stretch' }}
+
                                             />
                                         </View>
                                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

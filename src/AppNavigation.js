@@ -418,7 +418,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 
 									headerStyle: { backgroundColor: '#1e4495' },
 									tabBarIcon: (<Image
-										source={require('./images/gpsGrayIcon.png')}
+										source={require('./images/reports_icon.png')}
 										style={{ height: 25, width: 25, resizeMode: 'contain' }}
 									/>)
 								},

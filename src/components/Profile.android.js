@@ -309,7 +309,7 @@ onPickImage() {
     })
         .then((response) => {
            // console.log(Config.routes.base + Config.routes.uploadProfilePic,"URL");
-            //console.log(postData,'<--update Profile pic ==>', response.data);
+            console.log(postData,'<--update Profile pic ==>', response.data);
             if (response.data.status) {                    
                 self.setState({ spinnerBool:false });
 
@@ -324,10 +324,10 @@ onPickImage() {
                 self.setState({ spinnerBool:false });
                 let message ="";
                 if(response.data)
-                response.data.messages.forEach(function(current_value) {
-                    message = message+current_value;
-                });
-                Utils.ShowMessage(message);                    
+                // response.data.messages.forEach(function(current_value) {
+                //     message = message+current_value;
+                // });
+                Utils.ShowMessage(response.data.message);                    
             }
         }).catch((error) => {
             console.log('error in update Profile pic==>', error);

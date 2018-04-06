@@ -531,6 +531,27 @@ export default class AddTrip extends Component {
 
     }
 
+    setTonnageValue(itemValue, itemIndex){
+        console.log(itemIndex,'itemIndex--'+"\n"+itemValue);
+        let trucksList = this.state.trucks;
+        if(itemValue === 'Select Vehicle'){
+            
+        }else{
+
+            for (let i = 0; i <= trucksList.length; i++) {
+                
+                if (i === itemIndex-1) {
+                    console.log(itemIndex,'itemIndex--'+i+"\n"+trucksList[i].tonnage );
+                    if(trucksList[itemIndex-1].hasOwnProperty('tonnage')){
+                        this.setState({ tonnage: trucksList[itemIndex-1].tonnage })
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+
     render() {
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -578,7 +599,8 @@ export default class AddTrip extends Component {
                                     placeholder="Select  Vehicle"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }),
+                                                                                this.setTonnageValue(itemValue, itemIndex)}}>
                                     <Picker.Item label="Select Vehicle" value="Select Vehicle" />
                                     {this.renderTrucksList()}
                                 </CPicker>
@@ -628,7 +650,7 @@ export default class AddTrip extends Component {
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.partiesText}
                                     onValueChange={(itemValue, itemIndex) => { this.updateLaneList(itemValue); this.setState({ partiesText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, tripPartyId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }) }}>
-                                    <Picker.Item label="Select Party" value="Select Party" />
+                                    {/* <Picker.Item label="Select Party" value="Select Party" /> */}
 
                                     {this.renderPartyList()}
 

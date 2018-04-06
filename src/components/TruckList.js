@@ -349,7 +349,7 @@ export default class TruckList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('AddTruck', { token: this.state.token, edit: false }) }}
+                        onPress={() => { this.props.navigation.navigate('AddTruck', { token: this.state.token, edit: false, refresh: this.refreshFunction }) }}
                     >
                         <Image source={require('../images/eg_truck.png')}
                             style={CustomStyles.addImage} />

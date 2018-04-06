@@ -59,6 +59,7 @@ let routes = {
 
     //trucks api--add ,edit(GET--trucks/id)
     addtrucksList : '/trucks/',
+    getTruckTypes:'/trucks/getTruckTypes',
 
     //party api--add ,edit(GET--party/id)
     addParty : '/party/addParty',

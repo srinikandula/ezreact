@@ -12,7 +12,7 @@ import { NoInternetModal } from './common';
 
 export default class PartyList extends Component {
     state = {
-        categoryBgColor: false,token:'',parties:[],dummyparties:[],partyName:''
+        categoryBgColor: false,token:'',parties:[],dummyparties:[],partyName:'',netFlaf:false
     };
 
     componentWillMount() {

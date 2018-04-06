@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity,AsyncStorage, BackHandler,NetInfo, Alert } from 'react-native';
 import GPSTruckMap from '../components/GPSTruckMap';
 import { NoInternetModal } from './common';
+import SplashScreen from 'react-native-splash-screen';
 var count=0;
 export default class ModulesHome extends Component {
     state={ netFlaf: false,gpsEnabled: true,
         erpEnabled: true,}
     componentDidMount() {
+        SplashScreen.hide();
         this.getCredentailsData();
         BackHandler.addEventListener('hardwareBackPress', function () {
             count++;
@@ -113,7 +115,7 @@ export default class ModulesHome extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity /* navigation={this.props.navigation} */ onPress={() => 
-                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'none'}}>
+                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'flex'}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/erpTruckIcon.png')}

@@ -52,6 +52,8 @@ export default class GPSTruckMap extends Component {
                 longitude: 0
             }
         }],
+        forDate:'',
+        forPassdate: '',
         view: 'no',
         netFlaf: false,
         spinnerBool: false,
@@ -220,8 +222,13 @@ export default class GPSTruckMap extends Component {
 
 
     getParsedDate(date) {
-        var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+        if(date){
+            var formattedDate = new Date(date);
+            return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+        }else{
+            return '-';
+        }
+       
     }
 
     renderSeparator = () => (
@@ -270,7 +277,7 @@ export default class GPSTruckMap extends Component {
         });
     }
     lookingForLoad(items, val) {
-        if (val) {
+        if (!val) {
             this.setState({ registrationNumber: items.registrationNo, truckTypeIs: items.truckType, showModal: true, dispLookLoad: 'flex' });
             console.log('val', val)
             console.log('items', items)
@@ -278,10 +285,24 @@ export default class GPSTruckMap extends Component {
             for (let index = 0; index < this.state.trucks.length; index++) {
                 const element = this.state.trucks[index];
                 if (items._id == element._id) {
-                    if (element.rememberme) {
-                        element.rememberme = false;
+                    if (element.lookingForLoad) {
+                        element.lookingForLoad = false;
                     } else {
-                        element.rememberme = true;
+                        element.lookingForLoad = true;
+                    }
+                    this.state.trucks[index] = element;
+                    this.setState({ trucks: this.state.trucks });
+                    break;
+                }
+            }
+        }else{
+            for (let index = 0; index < this.state.trucks.length; index++) {
+                const element = this.state.trucks[index];
+                if (items._id == element._id) {
+                    if (element.lookingForLoad) {
+                        element.lookingForLoad = false;
+                    } else {
+                        element.lookingForLoad = true;
                     }
                     this.state.trucks[index] = element;
                     this.setState({ trucks: this.state.trucks });
@@ -445,7 +466,7 @@ export default class GPSTruckMap extends Component {
                                         </View>
 
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
-                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', textDecorationLine: 'underline' }]}>
+                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold' }]}>
                                                 {item.registrationNo}</Text>
                                             <Text style={[CustomStyles.erpText, { color: '#1e4495', fontSize: 10 }]}>
                                                 Location :{this.getAddress(item)}</Text>
@@ -461,9 +482,9 @@ export default class GPSTruckMap extends Component {
                                             label='Looking For Load'
                                             color={'#000000'}
                                             checkboxStyle={{ width: 15, height: 15 }}
-                                            checkedImage={this.renderlookLoadIcon(true)}
-                                            uncheckedImage={require('../images/unchecked.png')}
-                                            // checked={item.rememberme}
+                                            //checkedImage={this.renderlookLoadIcon(item.lookingForLoad)}
+                                            //uncheckedImage={require('../images/unchecked.png')}
+                                             checked={item.lookingForLoad}
                                             onChange={(val) => this.lookingForLoad(item, val)}
                                         />
 
@@ -471,7 +492,7 @@ export default class GPSTruckMap extends Component {
                                 </View>
                             }
                             keyExtractor={item => item._id}
-                            extraData={this.state} />
+                            extraData={this.state.trucks} />
                     </View>);
                 break;
 
@@ -514,7 +535,7 @@ export default class GPSTruckMap extends Component {
         } else {
             try {
                 const { action, year, month, day } = DatePickerAndroid.open({
-
+                    date: new Date(),
                     //minDate: str == 'min'? new Date() :new Date('1-1-2007'),
                 }).then((response) => {
                     if (response.action === "dateSetAction") {
@@ -524,11 +545,15 @@ export default class GPSTruckMap extends Component {
                             case "fromDate":
                                 this.setState({ fromDate: date, fromPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
-                                break;
+                            break;
                             case "toDate":
                                 this.setState({ toDate: date, toPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
-                                break;
+                            break;
+                            case "forDate":
+                                this.setState({ forDate: date, forPassdate: month + "/" + response.day + "/" + response.year });
+                                return;
+                            break;
                             default:
                                 return;
                                 break;
@@ -570,13 +595,17 @@ export default class GPSTruckMap extends Component {
                 alert('All fields mandatory');
             } else if (!isNaN(this.state.lookLoadSource) || !isNaN(this.state.lookLoadDestination)) {
                 alert('Number')
-            } else {
+            } else if (this.state.forDate === '') {
+                alert('Please Set Date')
+            }else {
+                var date = new Date(this.state.forPassdate);
                 console.log(
                     'sourceAddress', this.state.lookLoadSource,
                     'destinationAddress', this.state.lookLoadDestination,
                     'truckType', this.state.truckTypeIs,
                     'registrationNo', this.state.registrationNumber,
-                    'pricePerTon', Number(this.state.lookLoadPrice)
+                    'pricePerTon', Number(this.state.lookLoadPrice),
+                    'dateAvailable',date.toISOString(),
                 )
                 Axios({
                     url: Config.routes.base + Config.routes.lookingForLoad,
@@ -587,7 +616,8 @@ export default class GPSTruckMap extends Component {
                         destinationAddress: this.state.lookLoadDestination,
                         truckType: this.state.truckTypeIs,
                         registrationNo: this.state.registrationNumber,
-                        pricePerTon: Number(this.state.lookLoadPrice)
+                        pricePerTon: Number(this.state.lookLoadPrice),
+                        dateAvailable:date.toISOString()
                     }
                 }).then((response) => {
                     console.log('response', response);
@@ -643,6 +673,10 @@ export default class GPSTruckMap extends Component {
             return <CSpinner />;
         return false;
     }
+
+    
+
+
     render() {
         const self = this;
         const { region } = this.props;
@@ -752,7 +786,6 @@ export default class GPSTruckMap extends Component {
                                 />
                             </View>
                             <View>
-
                                 <CustomEditText
                                     underlineColorAndroid='transparent'
                                     placeholder={'Enter Price'}
@@ -761,6 +794,27 @@ export default class GPSTruckMap extends Component {
                                     onChangeText={(lookLoadPrice) => { this.setState({ lookLoadPrice }) }}
                                 />
                             </View>
+                            <View>
+                                <TouchableOpacity
+                                    onPress={() => { this.onPickdate('forDate') }}>
+                                      <View style={{ flexDirection: 'row',borderWidth: 1, borderColor: '#3085d6', borderRadius: 5 }}>
+                                        <View style={{ flex: 5 }}>
+                                            <CustomEditText
+                                                underlineColorAndroid='transparent'
+                                                editable={false}
+                                                placeholder={'Select Date'}
+                                                value={this.state.forDate}
+                                                inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16 }}
+                                                
+                                            />
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                            <Image style={{ width: 20, height: 20, resizeMode: 'contain' }} source={require('../images/calanderLogo.png')} />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
                         </View>
                     </View>
                 </Confirm>

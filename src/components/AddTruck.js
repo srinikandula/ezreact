@@ -37,7 +37,8 @@ export default class AddTruck extends Component {
         paymentref: '',
         remark: '',
         drivers: [],
-        netFlaf: false,
+        truckTypes:[],
+         netFlaf: false,
         spinnerBool: false
     };
     componentWillMount() {
@@ -104,10 +105,34 @@ export default class AddTruck extends Component {
                     this.setState({ drivers: [], expirydetails: [] });
                 }
 
-            }).catch((error) => {
-                console.log('error in add drivers from add Truck ==>', error);
-            })
+        }).catch((error) => {
+            console.log('error in add drivers from add Truck ==>', error);
+        });
+        this.fetchTruckTypes();
     }
+
+
+    fetchTruckTypes(){
+        Axios({
+            method: 'get',
+            headers: { 'token': this.props.navigation.state.params.token },
+            url: Config.routes.base + Config.routes.getTruckTypes
+        })
+        .then((response) => {
+            if (response.data.status) {
+                console.log('getTruckTypes from add Truck ==>', response.data);
+                this.setState({ truckTypes: response.data.data });
+               
+            } else {
+                console.log('error in getTruckTypes from add Truck ==>', response);
+                this.setState({ truckTypes: [] });
+            }
+
+        }).catch((error) => {
+            console.log('error in getTruckTypes from add Truck ==>', error);
+        })
+    }
+
 
     getTruckDetails(paymentID) {
         console.log(paymentID, "paymentID")
@@ -144,6 +169,8 @@ export default class AddTruck extends Component {
         const self = this;
         let driversList = self.state.drivers;
         let drivrID = truckDetails.driverId;
+        let truckTypeId = truckDetails.truckTypeId;
+        let truckTypesList = this.state.truckTypes;
         if (truckDetails.driverId === null) {
 
             drivrID = 'Select Driver';
@@ -151,6 +178,17 @@ export default class AddTruck extends Component {
             for (let i = 0; i < driversList.length; i++) {
                 if (driversList[i]._id === drivrID) {
                     self.setState({ truckText: Platform.OS==='ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
+                    break;
+                }
+            }
+        }
+        if (truckDetails.truckTypeId === null) {
+            truckTypeId = 'Select Truck Type';
+        } else {
+            for (let i = 0; i < truckTypesList.length; i++) {
+                if (truckTypesList[i]._id === truckTypeId) {
+                    self.setState({ truckType: truckTypesList[i]._id + '###' +truckTypesList[i].title });
+                    break;
                 }
             }
         }
@@ -159,6 +197,7 @@ export default class AddTruck extends Component {
             trucktonnage: truckDetails.tonnage,
             truckmodel: truckDetails.modelAndYear,
             trucktype: truckDetails.truckType,
+            selectedTruckTypeId :truckTypeId,
             TaxDueDate: this.getDateDDMMYY(truckDetails.taxDueDate),
             PermitDate: this.getDateDDMMYY(truckDetails.permitExpiry),
             FitnessDate: this.getDateDDMMYY(truckDetails.fitnessExpiry),
@@ -333,16 +372,17 @@ export default class AddTruck extends Component {
         if (this.state.truckNumber.length > 0) {
             if (this.state.trucktonnage.length > 0) {
                 if (this.state.truckmodel.length > 0) {
-                    if (this.state.trucktype.length > 0) {
+                    if (!this.state.selectedTruckTypeId.includes('Select Truck Type')) {
                         if (this.state.TaxDueDate.includes('/')) {
                             if (this.state.PermitDate.includes('/')) {
                                 if (this.state.FitnessDate.includes('/')) {
                                     if (this.state.PollutionDate.includes('/')) {
                                         if (this.state.InsuranceDate.includes('/')) {
                                             let driverID = this.state.selectedDriverId;
-                                            if (this.state.selectedDriverId.includes("Select Driver")) {
+                                            if (this.state.selectedDriverId.includes('Select Driver')) {
                                                 driverID = "";
                                             }
+
                                             var postData = {
                                                 'registrationNo': this.state.truckNumber,
                                                 'truckType': this.state.trucktype,
@@ -354,6 +394,7 @@ export default class AddTruck extends Component {
                                                 'pollutionExpiry': this.state.pollpassdate.toISOString(),
                                                 'taxDueDate': this.state.taxpassdate.toISOString(),
                                                 'driverId': driverID,
+                                                truckTypeId:this.state.selectedTruckTypeId
                                             };
 
                                             this.connectNetInfo(postData)
@@ -375,7 +416,7 @@ export default class AddTruck extends Component {
                             Utils.ShowMessage('Please Enter TaxDue Date');
                         }
                     } else {
-                        Utils.ShowMessage('Please Enter Truck Type');
+                        Utils.ShowMessage('Please Select Truck Type');
                     }
                 } else {
                     Utils.ShowMessage('Please Enter Truck model');
@@ -395,6 +436,17 @@ export default class AddTruck extends Component {
         if (this.state.spinnerBool)
             return <CSpinner />;
         return false;
+    }
+
+    renderTruckTypeList(){
+        return this.state.truckTypes.map((truckItem, i) =>
+            <Picker.Item
+                key={i}
+                label={truckItem.title}
+                value={truckItem._id + "###" + truckItem.title}
+            />
+        );
+
     }
 
     renderPartyList() {
@@ -462,14 +514,19 @@ export default class AddTruck extends Component {
                                     placeholder={'Model*'}
                                     onChangeText={(truckmodel) => { this.moveInputLabelUp(2, truckmodel), this.setState({ truckmodel: truckmodel }) }} />
                             </View>
+                            
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
+                                <CPicker
+                                    placeholder="Select  Driver"
+                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
+                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    selectedValue={this.state.truckType}
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}}>
+                                    <Picker.Item label = "Select Truck Type" value = "Select Truck Type" />
+                                    {this.renderTruckTypeList()}
 
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>
-                                    Truck type*</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
-                                    value={this.state.trucktype}
-                                    placeholder={'Truck type*'}
-                                    onChangeText={(trucktype) => { this.moveInputLabelUp(3, trucktype), this.setState({ trucktype: trucktype }) }} />
+                                </CPicker>
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>

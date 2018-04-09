@@ -441,17 +441,18 @@ export default class AddTrip extends Component {
     }
 
     updateLaneList(itemValue) {
+        console.log('updateLaneList---',itemValue);
         const self = this;
         //selectedlaneId
 
-        if (itemValue.length <= 1) {
+        if (itemValue.split('#')[0].trim().length <= 1) {
             return;
         }
         else {
             self.state.lanesList = [{ name: 'Select Lane' }];
             self.setState({ lanesList: self.state.lanesList });
             for (let i = 0; i < self.state.partyList.length; i++) {
-                if (self.state.partyList[i]._id === itemValue) {
+                if (self.state.partyList[i]._id === itemValue.split('#')[0].trim()) {
                     var lanearr = self.state.partyList[i].tripLanes;
                     self.setState({ laneText: Platform.OS === 'ios' ? self.state.partyList[i].tripLanes[0].name : self.state.partyList[i].tripLanes[0].name });
                     for (let j = 0; j < lanearr.length; j++) {
@@ -672,7 +673,9 @@ export default class AddTrip extends Component {
                                     placeholder="Select Lane"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.laneText}
-                                    onValueChange={(itemValue, itemIndex) => { this.setState({ laneText: Platform.OS === 'ios' ? itemValue : itemValue, selectedlaneId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }) }}>
+                                    onValueChange={(itemValue, itemIndex) => { 
+                                        this.setState({ laneText: Platform.OS === 'ios' ? itemValue : itemValue, selectedlaneId: Platform.OS === 'ios' ? itemValue.split("###")[0] : itemValue/* selectedDriverId: itemValue */ })
+                                         }}>
                                     {/* <Picker.Item label="Select Driver" value="Select Driver" /> */}
 
                                     {this.renderLaneList()}

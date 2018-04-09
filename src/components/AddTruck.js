@@ -187,7 +187,7 @@ export default class AddTruck extends Component {
         } else {
             for (let i = 0; i < truckTypesList.length; i++) {
                 if (truckTypesList[i]._id === truckTypeId) {
-                    self.setState({ truckType: truckTypesList[i]._id + '###' +truckTypesList[i].title });
+                    self.setState({ truckType: Platform.OS==='ios'?truckTypesList[i].title:truckTypesList[i]._id + '###' +truckTypesList[i].title  });
                     break;
                 }
             }
@@ -518,11 +518,11 @@ export default class AddTruck extends Component {
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                                 <CPicker
-                                    placeholder="Select  Driver"
+                                    placeholder="Select Truck Type"
                                     cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
                                     // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.truckType}
-                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}}>
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}}>
                                     <Picker.Item label = "Select Truck Type" value = "Select Truck Type" />
                                     {this.renderTruckTypeList()}
 

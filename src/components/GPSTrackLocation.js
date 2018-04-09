@@ -465,8 +465,12 @@ export default class GPSTrackLocation extends Component {
 
                                 }}
                                 coordinates={this.state.coordinates}
-                                strokeWidth={2}
-                                strokeColor="red" />
+                                strokeWidth={1}
+                                fillColor="rgba(255,0,0,0.5)"
+                                strokeColor="green"
+                                lineCap="round"
+                                lineJoin="round"
+                                geodesic={true} />
                             {this.state.coordinates1.map((marker, index) => {
                                 if (index = 0) {
                                     return (
@@ -608,9 +612,9 @@ export default class GPSTrackLocation extends Component {
                     zIndex: 1, backgroundColor: '#1e4495', width: '100%'
                 }, { display: 'flex' }]}>
 
-                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 5 }}>
+                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 15 }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
-                            <Image style={{ width: 25, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
+                            <Image style={{ width: 20, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
                         <Text style={[CustomStyles.erpText, { color: 'white', paddingVertical: 3, fontFamily: 'Gotham-Medium', fontSize: 12, margin: 10, marginLeft: 3 }]}>

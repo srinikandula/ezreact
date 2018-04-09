@@ -18,7 +18,8 @@ class ForgotPin extends Component{
             userNamelbl: false,
              phoneNumberlbl:false,
              passwordlbl:false,
-             spinnerBool: false
+             spinnerBool: false,
+             showMail: false,
         };
     }
 

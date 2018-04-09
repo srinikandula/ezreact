@@ -89,6 +89,7 @@ class Login extends Component {
                 this.storeData(response.data);
                 this.runFCMService(response.data.token);
                 //this.props.navigation.navigate('homepage');
+                this.setState({ spinnerBool: false });
             } else {
                 let message = "";
                 if (response.data)
@@ -96,11 +97,11 @@ class Login extends Component {
                         message = message + current_value;
                     });
                 Utils.ShowMessage(message);
-                self.setState({ spinnerBool: false });
+                this.setState({ spinnerBool: false });
             }
 
         }).catch((error) => {
-            self.setState({ spinnerBool: false });
+            this.setState({ spinnerBool: false });
             console.log('login post error--->', error)
             Utils.ShowMessage("Something went wrong.Please try after sometime");
         })
@@ -201,7 +202,8 @@ class Login extends Component {
                             this.props.navigation.navigate('homepage');
                         } else {
                             let message = "";
-
+                           // this.props.navigation.navigate('homepage');
+                           Utils.ShowMessage("Something went wrong .Please try after sometime");
                         }
                         this.setState({ spinnerBool: false });
                     }).catch((error) => {

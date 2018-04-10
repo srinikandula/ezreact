@@ -2,7 +2,7 @@
 import { StyleSheet, Platform, Dimensions } from 'react-native';
 const iosStyles = {
     settingsTabStyle: {
-        width: Platform.OS === 'ios' ? Dimensions.get('window').width / 2 : null,
+        width: Dimensions.get('window').width / 2,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'

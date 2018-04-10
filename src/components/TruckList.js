@@ -1,7 +1,7 @@
 //Home screen is where you can see tabs like GPS, ERP, Fuel Cards etc..
 
 import React, { Component } from 'react';
-import { View, ScrollView, BackHandler, ListView, FlatList, Platform,Text, AsyncStorage, Image, TouchableOpacity,NetInfo } from 'react-native';
+import { View, ScrollView, BackHandler, ListView, FlatList, Platform, Text, AsyncStorage, Image, TouchableOpacity, NetInfo } from 'react-native';
 import CustomStyles from './common/CustomStyles';
 import { ExpiryDateItems, CustomText, CustomEditText } from './common';
 import Config from '../config/Config';
@@ -25,18 +25,18 @@ export default class TruckList extends Component {
         if (Platform.OS === "ios") {
             let isConnected = await fetch("https://www.google.com")
                 .catch((error) => { this.setState({ netFlaf: true }); });
-            if (isConnected) { 
-                this.setState({netFlaf:false});
-                    this.getCredentailsData();
-             }
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.getCredentailsData();
+            }
         } else {
             NetInfo.isConnected.fetch().then(isConnected => {
-                console.log('isConnected',isConnected);
+                console.log('isConnected', isConnected);
                 if (isConnected) {
-                    this.setState({netFlaf:false});
+                    this.setState({ netFlaf: false });
                     this.getCredentailsData();
                 } else {
-                    return this.setState({netFlaf:true});
+                    return this.setState({ netFlaf: true });
                 }
             });
         }
@@ -231,18 +231,31 @@ export default class TruckList extends Component {
     }
 
 
-    editTruckDetails(token,_id){
+    editTruckDetails(token, _id) {
         //this.props.navigation.navigate('AddTruck', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) 
+        this.connectNetInfo(token, _id);
+        
+    }
 
-        NetInfo.isConnected.fetch().then(isConnected => {
-            console.log('isConnected',isConnected);
+    async connectNetInfo(token, _id) {
+        if (Platform.OS === "ios") {
+            let isConnected = await fetch("https://www.google.com")
+                .catch((error) => { this.setState({ netFlaf: true }); });
             if (isConnected) {
-                this.setState({netFlaf:false});
-                this.props.navigation.navigate('AddTruck', { token:token, id: _id, edit: true, refresh: this.refreshFunction }) 
-			} else {
-            return this.setState({netFlaf:true});
+                this.setState({ netFlaf: false });
+                this.props.navigation.navigate('AddTruck', { token: token, id: _id, edit: true, refresh: this.refreshFunction })
+            }
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                console.log('isConnected', isConnected);
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.props.navigation.navigate('AddTruck', { token: token, id: _id, edit: true, refresh: this.refreshFunction })
+                } else {
+                    return this.setState({ netFlaf: true });
+                }
+            });
         }
-    });
     }
 
     render() {
@@ -253,11 +266,12 @@ export default class TruckList extends Component {
                 <View style={CustomStyles.erpCategory}>
 
                     <View style={{
-                        alignSelf: 'stretch', shadowColor: '#ddd'}}>
+                        alignSelf: 'stretch', shadowColor: '#ddd'
+                    }}>
                         <CustomEditText underlineColorAndroid='transparent'
                             placeholder={'Enter Truck Number'}
                             value={this.state.truckNumber}
-                            inputTextStyle={{ alignSelf:'stretch',marginHorizontal: 16,borderBottomWidth:1,borderColor:'#727272' }}
+                            inputTextStyle={{ alignSelf: 'stretch', marginHorizontal: 16, borderBottomWidth: 1, borderColor: '#727272' }}
                             onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                         />
                     </View>
@@ -301,7 +315,7 @@ export default class TruckList extends Component {
                                                 </Text> */}
                                             </View>
                                             <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                                <TouchableOpacity onPress={() => { this.editTruckDetails(this.state.token,item._id)}
+                                                <TouchableOpacity onPress={() => { this.editTruckDetails(this.state.token, item._id) }
                                                 }>
                                                     <Image resizeMode="contain"
                                                         source={require('../images/form_edit.png')}
@@ -358,7 +372,7 @@ export default class TruckList extends Component {
                         }
                         keyExtractor={item => item._id} />
 
-                        
+
 
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
@@ -369,8 +383,8 @@ export default class TruckList extends Component {
                             style={CustomStyles.addImage} />
                     </TouchableOpacity>
                 </View>
-                <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                <NoInternetModal visible={this.state.netFlaf}
+                    onAccept={() => { this.setState({ netFlaf: false }) }} />
             </View>
 
         );

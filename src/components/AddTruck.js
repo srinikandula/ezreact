@@ -519,8 +519,7 @@ export default class AddTruck extends Component {
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                                 <CPicker
                                     placeholder="Select Truck Type"
-                                    cStyle={{ marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, height: 150 }}
-                                    // style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
+                                    cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckType}
                                     onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}}>
                                     <Picker.Item label = "Select Truck Type" value = "Select Truck Type" />

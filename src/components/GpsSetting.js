@@ -448,7 +448,7 @@ class GpsSetting extends Component {
                                     />
                                 </View>
                             </View>
-                            <View style={[CustomStyles.erpCategoryCardItems]}>
+                            <View style={[CustomStyles.erpCategoryItems]}>
                                 <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                                     data={this.state.RoutesList}
                                     // extraData={this.state.RoutesList}

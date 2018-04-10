@@ -10,9 +10,12 @@ import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
 import Utils from './common/Utils';
 import { NoInternetModal } from './common';
+import RNGooglePlaces from 'react-native-google-places';
+
 export default class AddTrip extends Component {
 
     state = {
+        routesBool: false,
         defaultDate: new Date(),
         showModal: false,
         date: "",
@@ -36,6 +39,8 @@ export default class AddTrip extends Component {
         spinnerBool: false,
         accountId: '',
         netFlaf: false,
+        source: '', destination: '',
+        sourcelbl: false, destinationlbl: false
     };
     componentWillMount() {
         // console.log("payment token", this.props.navigation.state.params.token);
@@ -342,42 +347,47 @@ export default class AddTrip extends Component {
             if (!this.state.selectedVehicleId.includes("Select Vehicle")) {
                 if (!this.state.selectedDriverId.includes("Select Driver")) {
                     if (this.state.tripPartyId.length > 0) {
-                        if (this.state.selectedlaneId.length > 0) {
-                            if (this.state.rate.length > 0) {
-                                if (this.state.tonnage.length > 0) {
-                                    if (this.state.famount.length > 0) {
+                        // if (this.state.selectedlaneId.length > 0) {
+                        if (this.state.source.length > 0) {
+                            if (this.state.destination.length > 0) {
+                                if (this.state.rate.length > 0) {
+                                    if (this.state.tonnage.length > 0) {
+                                        if (this.state.famount.length > 0) {
 
-                                        var lane = this.state.lanesList.filter(lane => lane.name === this.state.selectedlaneId);
-                                        var date = new Date(this.state.passdate);
-                                        var postData = {
-                                            'date': date.toISOString(),
-                                            'driverId': this.state.selectedDriverId,
-                                            'partyId': this.state.tripPartyId,
-                                            'registrationNo': this.state.selectedVehicleId,
-                                            'freightAmount': Number(this.state.famount),
-                                            'tripLane': lane[0],
-                                            'tonnage': Number(this.state.tonnage),
-                                            'rate': Number(this.state.rate),
-                                            'remarks': this.state.remark,
-                                            'share': this.state.share,
-                                            'vechicleNo': this.state.vehicleNum,
-                                            'driverName': this.state.driverName
-                                        };
+                                            var lane = this.state.lanesList.filter(lane => lane.name === this.state.selectedlaneId);
+                                            var date = new Date(this.state.passdate);
+                                            var postData = {
+                                                'date': date.toISOString(),
+                                                'driverId': this.state.selectedDriverId,
+                                                'partyId': this.state.tripPartyId,
+                                                'registrationNo': this.state.selectedVehicleId,
+                                                'freightAmount': Number(this.state.famount),
+                                                'tripLane': lane[0],
+                                                'tonnage': Number(this.state.tonnage),
+                                                'rate': Number(this.state.rate),
+                                                'remarks': this.state.remark,
+                                                'share': this.state.share,
+                                                'vechicleNo': this.state.vehicleNum,
+                                                'driverName': this.state.driverName
+                                            };
 
-                                        console.log('postdata', postData);
-                                        this.connectNetInfo(postData);
+                                            console.log('postdata', postData);
+                                            this.connectNetInfo(postData);
 
+                                        } else {
+                                            Utils.ShowMessage('Please Enter Frieght Amount');
+                                        }
                                     } else {
-                                        Utils.ShowMessage('Please Enter Frieght Amount');
+                                        Utils.ShowMessage('Please Enter Tonnage');
                                     }
                                 } else {
-                                    Utils.ShowMessage('Please Enter Tonnage');
+                                    Utils.ShowMessage('Please Enter Rate');
                                 }
                             } else {
-                                Utils.ShowMessage('Please Enter Rate');
+                                Utils.ShowMessage('Please Select Destination ');
                             }
                         } else {
-                            Utils.ShowMessage('Please Select Lane ');
+                            Utils.ShowMessage('Please Select Source ');
                         }
                     } else {
                         Utils.ShowMessage('Please Select Party Name');
@@ -532,28 +542,92 @@ export default class AddTrip extends Component {
 
     }
 
-    setTonnageValue(itemValue, itemIndex){
-        console.log(itemIndex,'itemIndex--'+"\n"+itemValue);
+    setTonnageValue(itemValue, itemIndex) {
+        console.log(itemIndex, 'itemIndex--' + "\n" + itemValue);
         let trucksList = this.state.trucks;
-        if(itemValue === 'Select Vehicle'){
-            
-        }else{
+        if (itemValue === 'Select Vehicle') {
+
+        } else {
 
             for (let i = 0; i <= trucksList.length; i++) {
-                
-                if (i === itemIndex-1) {
-                    console.log(itemIndex,'itemIndex--'+i+"\n"+trucksList[i].tonnage );
-                    if(trucksList[itemIndex-1].hasOwnProperty('tonnage')){
-                        this.setState({ tonnage: trucksList[itemIndex-1].tonnage })
+
+                if (i === itemIndex - 1) {
+                    console.log(itemIndex, 'itemIndex--' + i + "\n" + trucksList[i].tonnage);
+                    if (trucksList[itemIndex - 1].hasOwnProperty('tonnage')) {
+                        this.setState({ tonnage: trucksList[itemIndex - 1].tonnage })
                     }
-                    
+
                 }
             }
         }
-        
+
     }
 
+    openSearchModal() {
+        RNGooglePlaces.openAutocompleteModal({
+            type: 'cities'
+        })
+            .then((place) => {
+                Keyboard.dismiss()
+                if (Platform.OS === 'ios') {
+                    if (this.state.point === 'source') {
+                        console.log('place source', place)
+                        this.setState({ source: place.name, sourceState: place.addressComponents.administrative_area_level_1, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude, sourcelbl: true }, () => {
+                            console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
+                        })
+                    } else {
+                        this.setState({ destination: place.name, destinationState: place.addressComponents.administrative_area_level_1, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude, destinationlbl: true }, () => {
+                            console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
+                        })
+                    }
+                } else {
+                    let address = place.address;
+                    let addressArray = address.split(',');
+                    state = addressArray[1].replace(/[^a-zA-Z ]+/g, '');
+                    console.log('state', state);
+                    if (this.state.point === 'source') {
+
+                        this.setState({ source: place.name, sourceState: state, sourceAddress: place.address, sourceLng: place.longitude, sourceLat: place.latitude, sourcelbl: true }, () => {
+                            console.warn("source========>>>>", this.state.source, this.state.sourceAddress, this.state.sourceState, this.state.sourceLng, this.state.sourceLat)
+                        })
+                    } else {
+                        this.setState({ destination: place.name, destinationState: state, destinationAddress: place.address, destinationLng: place.longitude, destinationLat: place.latitude, destinationlbl: true }, () => {
+                            console.warn("source========>>>>", this.state.destination, this.state.destinationAddress, this.state.destinationState, this.state.destinationLng, this.state.destinationLat)
+                        })
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log(error.message);  // error is a Javascript Error object
+            });
+
+    }
+
+
     render() {
+        const sourcelabelStyle = {
+            position: 'absolute',
+            left: 20,
+            // fontFamily:'Gotham-Light',
+            top: !this.state.sourcelbl ? 20 : 0,
+            fontSize: !this.state.sourcelbl ? 16 : 14,
+            color: !this.state.sourcelbl ? '#aaa' : '#000',
+            // fontFamily:'Gotham-Light',
+            padding: 3,
+            display: !this.state.sourcelbl ? 'flex' : 'none'
+        }
+        const destlabelStyle = {
+            position: 'absolute',
+            left: 20,
+            // fontFamily:'Gotham-Light',
+            top: !this.state.destinationlbl ? 16 : 0,
+            fontSize: !this.state.destinationlbl ? 16 : 14,
+            color: !this.state.destinationlbl ? '#aaa' : '#000',
+            // fontFamily:'Gotham-Light',
+            padding: 3,
+            display: !this.state.destinationlbl ? 'flex' : 'none'
+        }
+
         return (
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', paddingTop: 20, paddingBottom: 5, backgroundColor: '#1e4495', alignItems: 'center' }}>
@@ -600,8 +674,10 @@ export default class AddTrip extends Component {
                                     placeholder="Select  Vehicle"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }),
-                                                                                this.setTonnageValue(itemValue, itemIndex)}}>
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }),
+                                            this.setTonnageValue(itemValue, itemIndex)
+                                    }}>
                                     <Picker.Item label="Select Vehicle" value="Select Vehicle" />
                                     {this.renderTrucksList()}
                                 </CPicker>
@@ -668,20 +744,57 @@ export default class AddTrip extends Component {
                                 </Picker> */}
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
-                                <CPicker
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 0, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
+                                <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3 }}>
+
+                                    <Text style={sourcelabelStyle} >
+                                        Source
+                                    </Text>
+                                    <CustomEditText
+                                        onFocus={() => {
+                                            this.setState({ point: 'source' }, () => {
+                                                this.openSearchModal()
+                                            });
+                                        }}
+                                        // keyboardType='numeric'
+                                        inputContainerStyle={CustomStyles.inputContainerStyle}
+                                        inputTextStyle={[{marginLeft:10},CustomStyles.inputStyle]}
+                                        value={this.state.source}
+                                        onChangeText={(value) => {
+                                            this.setState({ source: value })
+                                        }}
+                                    />
+                                </View>
+                                <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                                    <Text style={destlabelStyle} >
+                                        Destination
+                                    </Text>
+
+                                    <CustomEditText
+                                        onFocus={() => {
+                                            this.setState({ point: 'destination' }, () => {
+                                                this.openSearchModal()
+                                            });
+                                        }}
+                                        // keyboardType='numeric'
+                                        inputContainerStyle={CustomStyles.inputContainerStyle}
+                                        inputTextStyle={[{marginLeft:10},CustomStyles.inputStyle]}
+                                        value={this.state.destination}
+                                        onChangeText={(value) => {
+                                            this.setState({ destination: value })
+                                        }}
+                                    />
+                                </View>
+                                {/* <CPicker
                                     placeholder="Select Lane"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.laneText}
-                                    onValueChange={(itemValue, itemIndex) => { 
-                                        this.setState({ laneText: Platform.OS === 'ios' ? itemValue : itemValue, selectedlaneId: Platform.OS === 'ios' ? itemValue.split("###")[0] : itemValue/* selectedDriverId: itemValue */ })
-                                         }}>
-                                    {/* <Picker.Item label="Select Driver" value="Select Driver" /> */}
-
+                                    onValueChange={(itemValue, itemIndex) => { this.setState({ laneText: Platform.OS === 'ios' ? itemValue : itemValue, selectedlaneId: itemValue.split("###")[0] }) }}>
                                     {this.renderLaneList()}
 
                                 </CPicker>
-
+                                */}
                                 {/* <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedlaneId}

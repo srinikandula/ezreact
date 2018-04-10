@@ -214,6 +214,8 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									Erpcategory: {
 										screen: ERPCategory,
 										navigationOptions: {
+											headerTintColor: '#fff',
+
 											tabBarIcon: (<Image
 												source={require('./images/tabExpenseIcon.png')}
 												style={{ height: 30, width: 40 }}
@@ -226,12 +228,22 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									Erpsubcategory: {
 										screen: ERPSubCategory,
 										navigationOptions: {
+											headerTintColor: '#fff',
+											tabBarIcon: (<Image
+												source={require('./images/tabExpenseIcon.png')}
+												style={{ height: 30, width: 40 }}
+												resizeMode='contain'
 
+											/>)
 										}
 									},
 									ExpiryDate: {
 										screen: ExpiryDate,
 										navigationOptions: {
+											headerTitle: 'Expiry Details',
+											headerTintColor: '#fff',
+											headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+
 											tabBarIcon: (<Image
 												source={require('./images/tabExpenseIcon.png')}
 												style={{ height: 30, width: 40 }}

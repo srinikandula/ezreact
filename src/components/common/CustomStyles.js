@@ -1,6 +1,18 @@
 
 import { StyleSheet, Platform, Dimensions } from 'react-native';
 const iosStyles = {
+    inputContainerStyle: {
+        marginTop: 10,
+        marginLeft: 5,
+        marginBottom: 0
+    },
+    inputStyle: {
+        // fontFamily:'Gotham-Light',
+        fontSize: 14,
+        marginTop: 6,
+        backgroundColor: 'transparent',
+        height: 35
+    },
     settingsTabStyle: {
         width: Dimensions.get('window').width / 2,
         flexDirection: 'row',
@@ -313,7 +325,7 @@ const iosStyles = {
         justifyContent: 'flex-start',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingBottom: 10
+        // paddingBottom: 10
     },
     profileheaderStyle: {
         alignSelf: 'stretch',
@@ -884,6 +896,18 @@ cPickerStyle: { marginLeft: 20, marginRight: 20, marginVertical: 7, width: 200, 
 };
 
 const androidStyles = {
+    inputContainerStyle: {
+        marginTop: 10,
+        marginLeft: 5,
+        marginBottom: 0
+    },
+    inputStyle: {
+        // fontFamily:'Gotham-Light',
+        fontSize: 14,
+        marginTop: 6,
+        backgroundColor: 'transparent',
+        height: 35
+    },
     cPickerStyle: { marginLeft: 12, marginRight: 20, marginVertical: 7 },
     settingsTabStyle: {
         flexDirection: 'row',
@@ -1180,7 +1204,7 @@ const androidStyles = {
         justifyContent: 'flex-start',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingBottom: 10
+        // paddingBottom: 10
     },
     profileheaderStyle: {
         alignSelf: 'stretch',

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Image, Text, Picker, FlatList, NetInfo,Platform,
+    View, Image, Text, Picker, FlatList, NetInfo, Platform,
     TouchableOpacity, ScrollView, Keyboard, Dimensions, BackHandler
 } from 'react-native';
 import CheckBox from 'react-native-checkbox';
@@ -30,7 +30,7 @@ export default class AddParty extends Component {
         role: '',
         transporterBool: 'none',
         suppliereBool: 'none',
-        commissionBool:'none',
+        commissionBool: 'none',
         isMail: false,
         isSms: false,
         accountId: '',
@@ -64,13 +64,17 @@ export default class AddParty extends Component {
         if (Platform.OS === "ios") {
             let isConnected = await fetch("https://www.google.com")
                 .catch((error) => { this.setState({ netFlaf: true }); });
-            if (isConnected) {  this.setState({ netFlaf: false });
-            this.callAddPartytAPI(postData); }
+            if (isConnected) {
+                this.setState({ netFlaf: false });
+                this.callAddPartytAPI(postData);
+            }
         } else {
             NetInfo.isConnected.fetch().then(isConnected => {
                 console.log('isConnected', isConnected);
-                if (isConnected) {  this.setState({ netFlaf: false });
-                this.callAddPartytAPI(postData);}
+                if (isConnected) {
+                    this.setState({ netFlaf: false });
+                    this.callAddPartytAPI(postData);
+                }
                 else { return this.setState({ netFlaf: true }); }
             });
         }
@@ -121,15 +125,15 @@ export default class AddParty extends Component {
         });
         if (partyDetails.partyType.includes('Transporter')) {
             this.setState({
-                transporterBool: 'flex', suppliereBool: 'none',commissionBool:'none', role: 'Transporter'
+                transporterBool: 'flex', suppliereBool: 'none', commissionBool: 'none', role: 'Transporter'
             });
-        } else  if (partyDetails.partyType.includes('Supplier')) {
+        } else if (partyDetails.partyType.includes('Supplier')) {
             this.setState({
-                transporterBool: 'none', suppliereBool: 'flex',commissionBool:'none',  role: 'Supplier'
+                transporterBool: 'none', suppliereBool: 'flex', commissionBool: 'none', role: 'Supplier'
             });
-        }else {
+        } else {
             this.setState({
-                transporterBool: 'none', suppliereBool: 'none',commissionBool:'flex',  role: 'Supplier'
+                transporterBool: 'none', suppliereBool: 'none', commissionBool: 'flex', role: 'Supplier'
             });
         }
         for (let index = 0; index < 10; index++) {
@@ -392,11 +396,11 @@ export default class AddParty extends Component {
 
     changeRoleStatus(value) {
         if (value === 'T') {
-            this.setState({ transporterBool: 'flex',commissionBool:'none', suppliereBool: 'none', role: 'Transporter' });
-        } else if (value === 'S'){
-            this.setState({ transporterBool: 'none', suppliereBool: 'flex',commissionBool:'none', role: 'Supplier' });
-        }else{
-            this.setState({ transporterBool: 'none', suppliereBool: 'none',commissionBool:'flex', role: 'Commission' });
+            this.setState({ transporterBool: 'flex', commissionBool: 'none', suppliereBool: 'none', role: 'Transporter' });
+        } else if (value === 'S') {
+            this.setState({ transporterBool: 'none', suppliereBool: 'flex', commissionBool: 'none', role: 'Supplier' });
+        } else {
+            this.setState({ transporterBool: 'none', suppliereBool: 'none', commissionBool: 'flex', role: 'Commission' });
         }
     }
 
@@ -463,13 +467,21 @@ export default class AddParty extends Component {
                                     placeholder={'City'}
                                     onChangeText={(PartyCity) => { this.moveInputLabelUp(3, PartyCity), this.setState({ PartyCity: PartyCity }) }} />
                             </View>
-                            <View style={[CustomStyles.row, CustomStyles.mTop10, CustomStyles.mBottom10]}>
-                                <CRadio label='Transporter' activeStyle={{ display: this.state.transporterBool, margin: 10 }}
-                                    onPress={() => this.changeRoleStatus('T')} />
-                                <CRadio label='Supplier' activeStyle={{ display: this.state.suppliereBool, margin: 10 }}
-                                    onPress={() => this.changeRoleStatus('S')} />
-                                <CRadio label='Commission' activeStyle={{ display: this.state.commissionBool, margin: 10 }}
-                                    onPress={() => this.changeRoleStatus('C')} />
+                            <View style={[{ flexWrap: 'wrap' }, CustomStyles.row, CustomStyles.mTop10, CustomStyles.mBottom10]}>
+                                <View style={{ marginTop: 10 }}>
+
+                                    <CRadio label='Transporter' activeStyle={{ display: this.state.transporterBool, margin: 10 }}
+                                        onPress={() => this.changeRoleStatus('T')} />
+                                </View>
+                                <View style={{ marginTop: 10 }}>
+
+                                    <CRadio label='Supplier' activeStyle={{ display: this.state.suppliereBool, margin: 10 }}
+                                        onPress={() => this.changeRoleStatus('S')} />
+                                </View>
+                                <View style={{ marginTop: 10 }}>
+                                    <CRadio label='Commission' activeStyle={{ display: this.state.commissionBool, margin: 20 }}
+                                        onPress={() => this.changeRoleStatus('C')} />
+                                </View>
                             </View>
                             <View style={[CustomStyles.loginCheckForgotStyle, { marginLeft: 5, justifyContent: 'space-around' }]}>
                                 <View>

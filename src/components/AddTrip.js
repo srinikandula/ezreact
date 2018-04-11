@@ -222,7 +222,13 @@ export default class AddTrip extends Component {
             tonnage: '' + paymentDetails.tonnage,
             famount: '' + paymentDetails.freightAmount,
             remark: paymentDetails.remarks,
-            accountId: paymentDetails.accountId
+            accountId: paymentDetails.accountId,
+            destination: paymentDetails.hasOwnProperty('destination') ? paymentDetails.destination : '',
+            destinationAddress: paymentDetails.hasOwnProperty('destinationAddress') ? paymentDetails.destinationAddress : '',
+            source: paymentDetails.hasOwnProperty('source') ? paymentDetails.source : '',
+            sourceAddress: paymentDetails.hasOwnProperty('sourceAddress') ? paymentDetails.sourceAddress : '',
+            sourcelbl: paymentDetails.hasOwnProperty('source') ? true : false,
+            destinationlbl: paymentDetails.hasOwnProperty('destination') ? true : false,
         }, () => {
 
             console.log('party ID', paymentDetails.partyId, this.state.tripPartyId, this.state.selectedVehicleId, this.state.selectedDriverId);
@@ -362,13 +368,18 @@ export default class AddTrip extends Component {
                                                 'partyId': this.state.tripPartyId,
                                                 'registrationNo': this.state.selectedVehicleId,
                                                 'freightAmount': Number(this.state.famount),
-                                                'tripLane': lane[0],
+                                                'tripLane': '',
                                                 'tonnage': Number(this.state.tonnage),
                                                 'rate': Number(this.state.rate),
                                                 'remarks': this.state.remark,
                                                 'share': this.state.share,
                                                 'vechicleNo': this.state.vehicleNum,
-                                                'driverName': this.state.driverName
+                                                'driverName': this.state.driverName,
+                                                'source': this.state.source,
+                                                'sourceAddress': this.state.sourceAddress,
+                                                'destination': this.state.destination,
+                                                'destinationAddress': this.state.destinationAddress,
+
                                             };
 
                                             console.log('postdata', postData);
@@ -504,6 +515,7 @@ export default class AddTrip extends Component {
             };
         }
     }
+
     getTruckNum(itemValue) {
         if (itemValue === 'Select Vehicle') {
             return '';
@@ -512,6 +524,8 @@ export default class AddTrip extends Component {
             //console.log(this.state.trucks[index].registrationNo,' <--->registrationNo');
             //this.setState({vehicleNum : this.state.trucks[index].registrationNo})
             for (let i = 0; i < this.state.trucks.length; i++) {
+                console.log(' <--->registrationNo', this.state.trucks[i]._id, "===", itemValue);
+
                 if (this.state.trucks[i]._id === itemValue) {
                     this.setState({ vehicleNum: this.state.trucks[i].registrationNo }, () => {
                         console.log('vehicleNum', this.state.vehicleNum);
@@ -527,16 +541,19 @@ export default class AddTrip extends Component {
     updateFrieght() {
         var rateAmount = 0;
         var tonnageAmount = 0;
-        if (this.state.rate.trim().length > 0) {
-            rateAmount = this.state.rate.trim();
+        if (this.state.rate.length > 0) {
+            rateAmount = Number(this.state.rate);
         }
         if (this.state.tonnage.trim().length > 0) {
-            tonnageAmount = this.state.tonnage.trim();
+            tonnageAmount = Number(this.state.tonnage);
         }
-        if (rateAmount != 0 && tonnageAmount != 0) {
+        if (rateAmount > 0 && tonnageAmount > 0) {
             var tempAmount = rateAmount * tonnageAmount;
+            console.log(rateAmount * tonnageAmount, rateAmount + '*' + tonnageAmount, 'Famount');
             this.setState({ famount: '' + tempAmount });
             this.moveInputLabelUp(4, '' + tempAmount)
+        }else{
+            alert('enter proper value')
         }
 
     }
@@ -553,7 +570,8 @@ export default class AddTrip extends Component {
                 if (i === itemIndex - 1) {
                     console.log(itemIndex, 'itemIndex--' + i + "\n" + trucksList[i].tonnage);
                     if (trucksList[itemIndex - 1].hasOwnProperty('tonnage')) {
-                        this.setState({ tonnage: trucksList[itemIndex - 1].tonnage })
+                        this.setState({ tonnage: trucksList[itemIndex - 1].tonnage });
+                        // this.updateFrieght();
                     }
 
                 }
@@ -641,46 +659,49 @@ export default class AddTrip extends Component {
                         ADD TRIP
                         </Text>
                 </View>
-                <View>
-                    <ScrollView>
-                        <View style={{ backgroundColor: '#ffffff', margin: 10, marginBottom: 40 }}>
-                            {this.spinnerLoad()}
-                            <TouchableOpacity
-                                onPress={() => { this.onPickdate() }}
-                            >
-                                <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View style={{ flex: 5 }}>
-                                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field0]}> Trip Date</CustomText>
-                                            <CustomEditText underlineColorAndroid='transparent'
-                                                editable={false}
-                                                placeholder={'Trip Date'}
-                                                inputTextStyle={{ marginHorizontal: 16 }}
-                                                value={this.state.date} />
 
-                                        </View>
+                <ScrollView>
+                    <View style={{ backgroundColor: '#ffffff', margin: 10, marginBottom: 20, paddingBottom: 30 }}>
+                        {this.spinnerLoad()}
+                        <TouchableOpacity
+                            onPress={() => { this.onPickdate() }}
+                        >
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 5 }}>
+                                        <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field0]}> Trip Date</CustomText>
+                                        <CustomEditText underlineColorAndroid='transparent'
+                                            editable={false}
+                                            placeholder={'Trip Date'}
+                                            inputTextStyle={{ marginHorizontal: 16 }}
+                                            value={this.state.date} />
 
-                                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                            <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} source={require('../images/calanderLogo.png')} />
-                                        </View>
+                                    </View>
+
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} source={require('../images/calanderLogo.png')} />
                                     </View>
                                 </View>
-                            </TouchableOpacity>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Vehicle Number*</CustomText>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Vehicle Number*</CustomText>
 
-                                <CPicker
-                                    placeholder="Select  Vehicle"
-                                    cStyle={CustomStyles.cPickerStyle}
-                                    selectedValue={this.state.truckText}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }),
-                                            this.setTonnageValue(itemValue, itemIndex)
-                                    }}>
-                                    <Picker.Item label="Select Vehicle" value="Select Vehicle" />
-                                    {this.renderTrucksList()}
-                                </CPicker>
-                                {/*  <Picker
+                            <CPicker
+                                placeholder="Select  Vehicle"
+                                cStyle={CustomStyles.cPickerStyle}
+                                selectedValue={this.state.truckText}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.getTruckNum(itemValue.split("###")[0]);
+                                    this.setState({ truckText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedVehicleId: itemValue.split("###")[0] }, () => {
+                                        console.log('==================>>>>>>>>>', itemValue, this.state.truckText, this.state.selectedVehicleId)
+                                    }),
+                                        this.setTonnageValue(itemValue, itemIndex)
+                                }}>
+                                <Picker.Item label="Select Vehicle" value="Select Vehicle" />
+                                {this.renderTrucksList()}
+                            </CPicker>
+                            {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedVehicleId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -691,22 +712,28 @@ export default class AddTrip extends Component {
                                     {this.renderTrucksList()}
 
                                 </Picker> */}
-                            </View>
+                        </View>
 
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Driver Name*</CustomText>
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Driver Name*</CustomText>
 
-                                <CPicker
-                                    placeholder="Select  Driver"
-                                    cStyle={CustomStyles.cPickerStyle}
-                                    selectedValue={this.state.driverText}
-                                    onValueChange={(itemValue, itemIndex) => this.setState({ driverText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedDriverId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ })}>
-                                    <Picker.Item label="Select Driver" value="Select Driver" />
-                                    {this.renderDriverList()}
+                            <CPicker
+                                placeholder="Select  Driver"
+                                cStyle={CustomStyles.cPickerStyle}
+                                selectedValue={this.state.driverText}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.getDriverName(itemValue.split("###")[0]);
+                                    this.setState({ driverName: itemValue.split("###")[1], driverText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, selectedDriverId: itemValue.split("###")[0] }, () => {
+                                        console.log('==================>>>>>>>>>', itemValue, this.state.driverText, this.state.selectedDriverId)
 
-                                </CPicker>
+                                    })
+                                }}>
+                                <Picker.Item label="Select Driver" value="Select Driver" />
+                                {this.renderDriverList()}
 
-                                {/*  <Picker
+                            </CPicker>
+
+                            {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedDriverId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -717,21 +744,26 @@ export default class AddTrip extends Component {
                                     {this.renderDriverList()}
 
                                 </Picker> */}
-                            </View>
+                        </View>
 
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Party Name*</CustomText>
-                                <CPicker
-                                    placeholder="Select Party"
-                                    cStyle={CustomStyles.cPickerStyle}
-                                    selectedValue={this.state.partiesText}
-                                    onValueChange={(itemValue, itemIndex) => { this.updateLaneList(itemValue); this.setState({ partiesText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, tripPartyId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ }) }}>
-                                    {/* <Picker.Item label="Select Party" value="Select Party" /> */}
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field1]}>Party Name*</CustomText>
+                            <CPicker
+                                placeholder="Select Party"
+                                cStyle={CustomStyles.cPickerStyle}
+                                selectedValue={this.state.partiesText}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.updateLaneList(itemValue); this.setState({ partiesText: Platform.OS === 'ios' ? itemValue.split("###")[1] : itemValue, tripPartyId: itemValue.split("###")[0] }, () => {
+                                        console.log('==================>>>>>>>>>', itemValue, this.state.partiesText, this.state.tripPartyId)
 
-                                    {this.renderPartyList()}
+                                    })
+                                }}>
+                                {/* <Picker.Item label="Select Party" value="Select Party" /> */}
 
-                                </CPicker>
-                                {/*  <Picker
+                                {this.renderPartyList()}
+
+                            </CPicker>
+                            {/*  <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.tripPartyId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -741,51 +773,51 @@ export default class AddTrip extends Component {
 
                                     {this.renderPartyList()}
                                 </Picker> */}
+                        </View>
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 0, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
+                            <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3 }}>
+
+                                <Text style={sourcelabelStyle} >
+                                    Source
+                                    </Text>
+                                <CustomEditText
+                                    onFocus={() => {
+                                        this.setState({ point: 'source' }, () => {
+                                            this.openSearchModal()
+                                        });
+                                    }}
+                                    // keyboardType='numeric'
+                                    inputContainerStyle={CustomStyles.inputContainerStyle}
+                                    inputTextStyle={[{ marginLeft: 10 }, CustomStyles.inputStyle]}
+                                    value={this.state.source}
+                                    onChangeText={(value) => {
+                                        this.setState({ source: value })
+                                    }}
+                                />
                             </View>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 0, color: '#525252' }, this.state.field1]}> Lane*</CustomText>
-                                <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3 }}>
+                            <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                                    <Text style={sourcelabelStyle} >
-                                        Source
-                                    </Text>
-                                    <CustomEditText
-                                        onFocus={() => {
-                                            this.setState({ point: 'source' }, () => {
-                                                this.openSearchModal()
-                                            });
-                                        }}
-                                        // keyboardType='numeric'
-                                        inputContainerStyle={CustomStyles.inputContainerStyle}
-                                        inputTextStyle={[{marginLeft:10},CustomStyles.inputStyle]}
-                                        value={this.state.source}
-                                        onChangeText={(value) => {
-                                            this.setState({ source: value })
-                                        }}
-                                    />
-                                </View>
-                                <View style={{ justifyContent: 'flex-start', alignSelf: 'stretch', alignItems: 'flex-start', padding: 3, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                    <Text style={destlabelStyle} >
-                                        Destination
+                                <Text style={destlabelStyle} >
+                                    Destination
                                     </Text>
 
-                                    <CustomEditText
-                                        onFocus={() => {
-                                            this.setState({ point: 'destination' }, () => {
-                                                this.openSearchModal()
-                                            });
-                                        }}
-                                        // keyboardType='numeric'
-                                        inputContainerStyle={CustomStyles.inputContainerStyle}
-                                        inputTextStyle={[{marginLeft:10},CustomStyles.inputStyle]}
-                                        value={this.state.destination}
-                                        onChangeText={(value) => {
-                                            this.setState({ destination: value })
-                                        }}
-                                    />
-                                </View>
-                                {/* <CPicker
+                                <CustomEditText
+                                    onFocus={() => {
+                                        this.setState({ point: 'destination' }, () => {
+                                            this.openSearchModal()
+                                        });
+                                    }}
+                                    // keyboardType='numeric'
+                                    inputContainerStyle={CustomStyles.inputContainerStyle}
+                                    inputTextStyle={[{ marginLeft: 10 }, CustomStyles.inputStyle]}
+                                    value={this.state.destination}
+                                    onChangeText={(value) => {
+                                        this.setState({ destination: value })
+                                    }}
+                                />
+                            </View>
+                            {/* <CPicker
                                     placeholder="Select Lane"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.laneText}
@@ -794,7 +826,7 @@ export default class AddTrip extends Component {
 
                                 </CPicker>
                                 */}
-                                {/* <Picker
+                            {/* <Picker
                                     style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                     selectedValue={this.state.selectedlaneId}
                                     onValueChange={(itemValue, itemIndex) => {
@@ -802,67 +834,78 @@ export default class AddTrip extends Component {
                                     }}>
                                     {this.renderLaneList()}
                                 </Picker> */}
+                        </View>
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field2]}>Rate </CustomText>
+                            <CustomEditText underlineColorAndroid='transparent'
+                                placeholder={'Rate'}
+                                keyboardType='numeric'
+                                inputTextStyle={{ marginHorizontal: 16 }} value={this.state.rate}
+                                onChangeText={(rate) => {
+                                    this.moveInputLabelUp(2, rate); this.setState({ rate: rate }, () => {
+                                        this.updateFrieght()
+                                    });
+                                }} />
+                        </View>
+
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
+                            <CustomEditText underlineColorAndroid='transparent'
+                                editable={false}
+                                placeholder={'Tonnage'}
+                                keyboardType='numeric'
+                                inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
+                                onChangeText={(tonnage) => {
+                                    this.moveInputLabelUp(3, tonnage); this.setState({ tonnage: tonnage.trim() }, () => {
+                                        this.updateFrieght()
+                                    });
+                                }} />
+                        </View>
+
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>Freight Amount </CustomText>
+                            <CustomEditText
+                            editable={false}
+                            underlineColorAndroid='transparent'
+                                keyboardType='numeric'
+                                placeholder={'Freight Amount'}
+                                inputTextStyle={{ marginHorizontal: 16 }}
+                                value={this.state.famount}
+                                onChangeText={(famount) => { this.moveInputLabelUp(4, famount), this.setState({ famount: famount.trim() }) }} />
+                        </View>
+
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>Description</CustomText>
+                            <CustomEditText underlineColorAndroid='transparent'
+                                placeholder={'Description'}
+                                inputTextStyle={{ marginHorizontal: 16 }}
+                                value={this.state.remark}
+                                onChangeText={(remark) => { this.moveInputLabelUp(5, remark), this.setState({ remark: remark }) }} />
+                        </View>
+
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                            <View style={{ marginLeft: 15 }}>
+                                <CheckBox
+                                    checkboxStyle={{ width: 15, height: 15 }}
+
+                                    label='Share'
+                                    color={'#000000'}
+                                    checked={this.state.share}
+                                    onChange={() => this.setState({ share: !this.state.share })}
+                                />
                             </View>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field2]}>Rate </CustomText>
-                                <CustomEditText underlineColorAndroid='transparent'
-                                    placeholder={'Rate'}
-                                    keyboardType='numeric'
-                                    inputTextStyle={{ marginHorizontal: 16 }} value={this.state.rate}
-                                    onChangeText={(rate) => { this.moveInputLabelUp(2, rate); this.setState({ rate: rate.trim() }); this.updateFrieght() }} />
-                            </View>
-
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
-                                <CustomEditText underlineColorAndroid='transparent'
-                                    placeholder={'Tonnage'}
-                                    keyboardType='numeric'
-                                    inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
-                                    onChangeText={(tonnage) => { this.moveInputLabelUp(3, tonnage); this.setState({ tonnage: tonnage.trim() }); this.updateFrieght() }} />
-                            </View>
-
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>Frieght Amount </CustomText>
-                                <CustomEditText underlineColorAndroid='transparent'
-                                    keyboardType='numeric'
-                                    placeholder={'Frieght Amount'}
-                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                    value={this.state.famount}
-                                    onChangeText={(famount) => { this.moveInputLabelUp(4, famount), this.setState({ famount: famount.trim() }) }} />
-                            </View>
-
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>Description</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent'
-                                    placeholder={'Description'}
-                                    inputTextStyle={{ marginHorizontal: 16 }}
-                                    value={this.state.remark}
-                                    onChangeText={(remark) => { this.moveInputLabelUp(5, remark), this.setState({ remark: remark }) }} />
-                            </View>
-
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                <View style={{ marginLeft: 15 }}>
-                                    <CheckBox
-                                        checkboxStyle={{ width: 15, height: 15 }}
-
-                                        label='Share'
-                                        color={'#000000'}
-                                        checked={this.state.share}
-                                        onChange={() => this.setState({ share: !this.state.share })}
-                                    />
-                                </View>
-
-                            </View>
-
-
 
                         </View>
-                    </ScrollView>
-                </View>
+
+
+
+                    </View>
+                </ScrollView>
+
 
                 <View style={{ flexDirection: 'row', bottom: 0, position: 'absolute', zIndex: 1 }}>
                     <TouchableOpacity

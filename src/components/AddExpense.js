@@ -9,6 +9,7 @@ import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import CheckBox from 'react-native-checkbox';
 import { NoInternetModal } from './common';
+import Utils from './common/Utils';
 
 export default class AddExpense extends Component {
     state = {
@@ -154,6 +155,7 @@ export default class AddExpense extends Component {
         const self = this;
         let trucksList = self.state.trucks;
         let expensesList = self.state.expenses;
+        let partyList = self.state.partyList;
 
         for (let i = 0; i < trucksList.length; i++) {
             if (trucksList[i]._id === expenseDetails.vehicleNumber) {
@@ -165,6 +167,7 @@ export default class AddExpense extends Component {
                 self.setState({ expenseText: Platform.OS === 'ios' ? expensesList[i].expenseName : expensesList[i]._id + "###" + expensesList[i].expenseName })
             }
         }
+        
         var date = new Date(expenseDetails.date);
         var dateStr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
         var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
@@ -182,6 +185,11 @@ export default class AddExpense extends Component {
         });
 
         if (expenseDetails.mode === 'Credit') {
+            for (let i = 0; i < partyList.length; i++) {
+                if (partyList[i]._id === expenseDetails.partyId) {
+                    self.setState({ expenseText: Platform.OS === 'ios' ? partyList[i].name : partyList[i]._id + "###" + partyList[i].name })
+                }
+            }
             this.setState({ creditBool: 'flex', cashBool: 'none', paymentType: 'Credit', selectedPartyID: expenseDetails.partyId, paidAmount: '' + expenseDetails.paidAmount });
         } else {
             this.setState({ creditBool: 'none', cashBool: 'flex', paymentType: 'Cash', totalAmount: '' + expenseDetails.cost });
@@ -334,7 +342,7 @@ export default class AddExpense extends Component {
 
                         } else {
                             //--credit mode
-                            if (!this.state.selectedExpenseType.includes("Select Party Name")) {
+                            if (!this.state.selectedPartyID.includes("Select Party Name")) {
                                 if (this.state.totalAmount.length > 0) {
                                     if (this.state.paidAmount.length > 0) {
                                         var date = new Date(this.state.passdate);
@@ -348,6 +356,7 @@ export default class AddExpense extends Component {
                                             "partyId": this.state.selectedPartyID,
                                             "totalAmount": Number(this.state.totalAmount),
                                             "vehicleNumber": this.state.selectedVehicleId,
+                                            "cost": 0
                                         }
                                         console.log('postdata', postData);
                                         this.connectNetInfo(postData);
@@ -421,7 +430,7 @@ export default class AddExpense extends Component {
             <Picker.Item
                 key={i}
                 label={truckItem.name}
-                value={truckItem._id}
+                value={truckItem._id+ "###" +truckItem.name}
             />
         );
     }
@@ -492,7 +501,7 @@ export default class AddExpense extends Component {
                             ADD EXPENSE
                         </Text>
                     </View>
-                    <View>
+                    {/* <View> */}
                         <ScrollView>
                             <View style={{ backgroundColor: '#ffffff', margin: 10, marginBottom: 40 }}>
                                 {this.spinnerLoad()}
@@ -548,7 +557,7 @@ export default class AddExpense extends Component {
                                         placeholder="Select Expense Type"
                                         cStyle={CustomStyles.cPickerStyle}
                                         selectedValue={this.state.expenseText}
-                                        onValueChange={(itemValue, itemIndex) => { this.ShowExpenseView(itemValue); this.setState({ expenseText: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue, selectedExpenseType: itemValue.split("###")[0]}) }}>
+                                        onValueChange={(itemValue, itemIndex) => { console.log('itemValue',itemValue);this.ShowExpenseView(itemValue); this.setState({ expenseText: Platform.OS==='ios'?itemValue==='others'?itemValue:itemValue.split("###")[1]:itemValue, selectedExpenseType: itemValue.split("###")[0]}) }}>
                                         <Picker.Item label="Select Expense Type" value="Select Expense Type" />
                                         {this.renderExpensesList()}
                                         <Picker.Item label="others" value="others" />
@@ -588,7 +597,17 @@ export default class AddExpense extends Component {
 
                                 <View style={{ display: this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field3]}>Party Name*</CustomText>
-                                    <Picker
+                                    
+                                    <CPicker
+                                        placeholder="Select Party Name"
+                                        cStyle={CustomStyles.cPickerStyle}
+                                        selectedValue={this.state.partyText}
+                                        onValueChange={(itemValue, itemIndex) => { this.setState({ partyText: Platform.OS==='ios'?itemValue==='others'?itemValue:itemValue.split("###")[1]:itemValue, selectedPartyID: itemValue.split("###")[0]}) }}>
+                                        <Picker.Item label="Select Party Name" value="Select Party Name" />
+                                        {this.renderPartyList()}
+
+                                    </CPicker>
+                                   {/*  <Picker
                                         style={{ marginLeft: 12, marginRight: 20, marginVertical: 7 }}
                                         selectedValue={this.state.selectedPartyID}
                                         onValueChange={(itemValue, itemIndex) => {
@@ -596,7 +615,7 @@ export default class AddExpense extends Component {
                                         }}>
                                         <Picker.Item label="Select Party Name" value="Select Party Name" />
                                         {this.renderPartyList()}
-                                    </Picker>
+                                    </Picker> */}
                                 </View>
 
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -634,7 +653,7 @@ export default class AddExpense extends Component {
                                 </View>
                             </View>
                         </ScrollView>
-                    </View>
+                    {/* </View> */}
 
                     <View style={{ flexDirection: 'row', bottom: 0, position: 'absolute', zIndex: 1 }}>
                         <TouchableOpacity

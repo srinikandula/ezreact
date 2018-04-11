@@ -224,7 +224,12 @@ export default class GPSTruckMap extends Component {
     getParsedDate(date) {
         if (date) {
             var formattedDate = new Date(date);
-            return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+            if(this.state.view === 'mapShow'){
+                return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth()+1).toString() + "/" + formattedDate.getFullYear().toString() + " " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+            }else{
+                return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth()+1).toString() + "/" + formattedDate.getFullYear().toString() + " \n " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+            }
+            
         } else {
             return '-';
         }
@@ -235,7 +240,7 @@ export default class GPSTruckMap extends Component {
         <View
             style={{
                 backgroundColor: '#d6d6d6',
-                height: 0,
+                height: 1,
             }}
         />
     );
@@ -318,8 +323,10 @@ export default class GPSTruckMap extends Component {
     }
     markerClick(markerData) {
         console.log(markerData, 'markerData');
+        let date= new Date();
+        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
         const data = {
-            truckId: markerData.registrationNo, startDate: this.getDateISo(this.state.fromPassdate),
+            truckId: markerData.registrationNo, startDate: this.getDateISo(date),
             endDate: this.getDateISo(this.state.toPassdate)
         }
         this.setState({ passData: data });
@@ -452,7 +459,7 @@ export default class GPSTruckMap extends Component {
                                                 <Text>{'Reg.No :'}{marker.registrationNo}</Text>
                                                 <Text>{'Speed :'}{marker.speed}'-km/hr'</Text>
                                                 <Text>{'Odemeter :'}{'*****km'}</Text>
-                                                <Text>{'Date :'}{marker.date}</Text>
+                                                <Text>{'Date :'}{this.getParsedDate(marker.date)}</Text>
                                                 <Text>{'Address :'}{marker.address}</Text>
 
                                             </View>
@@ -494,9 +501,13 @@ export default class GPSTruckMap extends Component {
                                     <View style={CustomStyles.erpDriverItems}>
 
                                         <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
-                                            <Image resizeMode="contain"
-                                                source={this.truckStatus(item)}
-                                                style={CustomStyles.imageWithoutradiusViewContainer} />
+                                            <TouchableOpacity onPress={() => { this.markerClick(item) }}>
+                                               <View>
+                                                    <Image resizeMode="contain"
+                                                    source={this.truckStatus(item)}
+                                                    style={CustomStyles.imageWithoutradiusViewContainer} />
+                                                </View>   
+                                            </TouchableOpacity>        
                                         </View>
 
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
@@ -787,6 +798,15 @@ export default class GPSTruckMap extends Component {
                     </View>
                     {this.spinnerLoad()}
                     {self.getView()}
+                </View>
+
+                <View style={[CustomStyles.addGroupImageStyle,{backgroundColor:'#4c69a9',width: 50, height: 50,justifyContent:'center', alignItems:'center',borderRadius:25}]}>
+                    <TouchableOpacity
+                        onPress={() => {this.setState({ view: this.state.view === 'mapShow' ? 'listshow':'mapShow'}); }}
+                    >
+                        <Image source={ this.state.view === 'mapShow' ? require('../images/gps_truck_list_icon.png'):require('../images/gps_map_lap_icon.png')}
+                            style={{ width: 20, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }} />
+                    </TouchableOpacity>
                 </View>
 
                 <TrackModal

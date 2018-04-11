@@ -15,32 +15,31 @@ class ReportsSetting extends Component {
     state = {
         defaultDate: new Date(),
         showModal: false,
-        RData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        RData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         itemIndex: 1,
         rMaxDate: '', rMaxPassdate: '', rMinDate: '', rMinPassdate: '', rcustomBool: 'none',
 
-        PData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        PData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         PitemIndex: 1,
         pMaxDate: '', pMaxPassdate: '', pMinDate: '', pMinPassdate: '', pcustomBool: 'none',
 
-        expData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        expData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         expitemIndex: 1,
         expMaxDate: '', expMaxPassdate: '', expMinDate: '', expMinPassdate: '', expcustomBool: 'none',
 
-        tcData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        tcData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         tcitemIndex: 1,
         tcMaxDate: '', tcMaxPassdate: '', tcMinDate: '', tcMinPassdate: '', tccustomBool: 'none',
 
-        fcData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        fcData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         fcitemIndex: 1,
         fcMaxDate: '', fcMaxPassdate: '', fcMinDate: '', fcMinPassdate: '', fccustomBool: 'none',
 
-        expiryData: [{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
+        expiryData: [{ key: 'default', selectedItem: false },{ key: 'day', selectedItem: false }, { key: 'week', selectedItem: false }, { key: 'month', selectedItem: false }, { key: 'year', selectedItem: false }, { key: 'custom', selectedItem: false }],
         expiryitemIndex: 1,
         expiryMaxDate: '', expiryMaxPassdate: '', expiryMinDate: '', expiryMinPassdate: '', expirycustomBool: 'none',
         erpSettings: [],
         spinnerBool: false
-
 
     };
 

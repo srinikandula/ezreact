@@ -129,8 +129,9 @@ export default class ModulesHome extends Component {
                 <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
                     <ScrollView horizontal>
                         <TouchableOpacity onPress={() => {  
-                                this.GPSMApcheckNetwork()}} >
-                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+                                // this.GPSMApcheckNetwork()
+                            }} >
+                            <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20,opacity:0.2 }}>
                                 <Image
                                     source={require('../images/gpsIcon.png')}
                                     resizeMode='contain'
@@ -186,8 +187,7 @@ export default class ModulesHome extends Component {
                     <GPSTruckMap nav={this.props} showHeader={false}/>
 
                 </View>
-                <NoInternetModal visible={this.state.netFlaf} 
-                                            onAccept={() => {this.setState({ netFlaf: false }) }}/>
+                <NoInternetModal visible={this.state.netFlaf}  onAccept={() => {this.setState({ netFlaf: false }) }}/>
             </View>
         );
     }

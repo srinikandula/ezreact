@@ -30,6 +30,7 @@ export default class AddParty extends Component {
         role: '',
         transporterBool: 'none',
         suppliereBool: 'none',
+        commissionBool:'none',
         isMail: false,
         isSms: false,
         accountId: '',
@@ -120,11 +121,15 @@ export default class AddParty extends Component {
         });
         if (partyDetails.partyType.includes('Transporter')) {
             this.setState({
-                transporterBool: 'flex', suppliereBool: 'none', role: 'Transporter'
+                transporterBool: 'flex', suppliereBool: 'none',commissionBool:'none', role: 'Transporter'
             });
-        } else {
+        } else  if (partyDetails.partyType.includes('Supplier')) {
             this.setState({
-                transporterBool: 'none', suppliereBool: 'flex', role: 'Supplier'
+                transporterBool: 'none', suppliereBool: 'flex',commissionBool:'none',  role: 'Supplier'
+            });
+        }else {
+            this.setState({
+                transporterBool: 'none', suppliereBool: 'none',commissionBool:'flex',  role: 'Supplier'
             });
         }
         for (let index = 0; index < 10; index++) {
@@ -225,7 +230,7 @@ export default class AddParty extends Component {
             if (this.state.partyContact.length >= 10) {
                 if (this.state.role.length > 0) {
                     if (this.state.isMail || this.state.isSms) {
-                        if (this.state.role.includes('Supplier')) {
+                        if (this.state.role.includes('Supplier') || this.state.role.includes('Commission')) {
                             var postData = {
                                 'city': this.state.PartyCity,
                                 'contact': this.state.partyContact,
@@ -387,9 +392,11 @@ export default class AddParty extends Component {
 
     changeRoleStatus(value) {
         if (value === 'T') {
-            this.setState({ transporterBool: 'flex', suppliereBool: 'none', role: 'Transporter' });
-        } else {
-            this.setState({ transporterBool: 'none', suppliereBool: 'flex', role: 'Supplier' });
+            this.setState({ transporterBool: 'flex',commissionBool:'none', suppliereBool: 'none', role: 'Transporter' });
+        } else if (value === 'S'){
+            this.setState({ transporterBool: 'none', suppliereBool: 'flex',commissionBool:'none', role: 'Supplier' });
+        }else{
+            this.setState({ transporterBool: 'none', suppliereBool: 'none',commissionBool:'flex', role: 'Commission' });
         }
     }
 
@@ -461,6 +468,8 @@ export default class AddParty extends Component {
                                     onPress={() => this.changeRoleStatus('T')} />
                                 <CRadio label='Supplier' activeStyle={{ display: this.state.suppliereBool, margin: 10 }}
                                     onPress={() => this.changeRoleStatus('S')} />
+                                <CRadio label='Commission' activeStyle={{ display: this.state.commissionBool, margin: 10 }}
+                                    onPress={() => this.changeRoleStatus('C')} />
                             </View>
                             <View style={[CustomStyles.loginCheckForgotStyle, { marginLeft: 5, justifyContent: 'space-around' }]}>
                                 <View>

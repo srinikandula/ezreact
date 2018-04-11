@@ -126,7 +126,7 @@ export default class ModulesHome extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10 }}>
+                <View style={{ flexDirection: 'row', backgroundColor: '#ffffff', paddingVertical: 10, elevation: 1, borderBottomColor: '#ddd', borderBottomWidth:1 }}>
                     <ScrollView horizontal>
                         <TouchableOpacity onPress={() => {  
                                 // this.GPSMApcheckNetwork()
@@ -141,7 +141,7 @@ export default class ModulesHome extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity /* navigation={this.props.navigation} */ onPress={() => 
-                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'none'}}>
+                            this.SubModulecheckNetwork()} style={{display:this.state.erpEnabled?'flex':'flex'}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/erpTruckIcon.png')}
@@ -151,7 +151,7 @@ export default class ModulesHome extends Component {
                                 <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Erp</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{alert('Feature available soon')}}>
+                        {/* <TouchableOpacity onPress={()=>{alert('Feature available soon')}}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
                                 <Image
                                     source={require('../images/fuelCardIcon.png')}
@@ -180,7 +180,7 @@ export default class ModulesHome extends Component {
                                 />
                                 <Text style={{ fontSize: 14, fontFamily: 'Gotham-Medium', color: '#4c69a9' }}>Loads</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </ScrollView>
                 </View>
                 <View style={{flex: 1,alignSelf:'stretch'}}>

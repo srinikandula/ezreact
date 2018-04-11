@@ -10,7 +10,7 @@ import { ExpiryDateItems, TrackModal, CustomText, CSpinner, Confirm } from './co
 import Config from '../config/Config';
 import Axios from 'axios';
 import CheckBox from 'react-native-checkbox';
-import MapView, { Marker, Polyline, AnimatedRegion } from 'react-native-maps';
+import MapView, { Marker, Polyline, AnimatedRegion,Callout } from 'react-native-maps';
 import Utils from '../components/common/Utils';
 const { width, height } = Dimensions.get("window");
 
@@ -284,6 +284,14 @@ export default class GPSTrackLocation extends Component {
         }
         return travelTime;
     }
+    getSpeed(speed) {
+        var strSpeed = speed;
+        // if (strSpeed.length > 4) {
+        strSpeed = Math.round(Number(strSpeed) * 100) / 100
+        // }
+        return strSpeed;
+    }
+
     getView() {
         console.log('this.state.showDependable', this.state.showDependable);
         switch (this.state.showDependable) {
@@ -329,8 +337,19 @@ export default class GPSTrackLocation extends Component {
                                             coordinate={{
                                                 latitude: marker.coordinate.latitude,
                                                 longitude: marker.coordinate.longitude
-                                            }}
-                                        />
+                                            }}>
+                                            <MapView.Callout style={CustomStyles.mapcard}
+                                            onPress={() => { console.log(marker,'shhhharatt') }}>
+                                            <View style={CustomStyles.mapContent}>
+                                                <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+
+                                            </View>
+                                        
+                                        </MapView.Callout>
+                                        
+                                        </MapView.Marker>
                                     )
                                 } else if (index == (this.state.coordinates.length - 1)) {
                                     return (
@@ -339,8 +358,19 @@ export default class GPSTrackLocation extends Component {
                                             coordinate={{
                                                 latitude: marker.coordinate.latitude,
                                                 longitude: marker.coordinate.longitude
-                                            }}
-                                        />)
+                                            }}>
+                                            <MapView.Callout style={CustomStyles.mapcard}
+                                            onPress={() => { console.log(marker,'shhhharatt') }}>
+                                            <View style={CustomStyles.mapContent}>
+                                                <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+
+                                            </View>
+                                        
+                                        </MapView.Callout>
+                                        
+                                        </MapView.Marker>)
                                 } else {
                                     if (marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')) {
                                         if (marker.isStopped) {
@@ -351,7 +381,19 @@ export default class GPSTrackLocation extends Component {
                                                         latitude: marker.coordinate.latitude,
                                                         longitude: marker.coordinate.longitude
                                                     }}
-                                                />)
+                                                >
+                                                <MapView.Callout style={CustomStyles.mapcard}
+                                                    onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                    <View style={CustomStyles.mapContent}>
+                                                        <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                        <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                        <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+
+                                                    </View>
+                                                
+                                                </MapView.Callout>
+                                                
+                                                </MapView.Marker>)
                                         }
                                         if (marker.isIdle && !marker.isStopped) {
                                             return (
@@ -361,7 +403,19 @@ export default class GPSTrackLocation extends Component {
                                                         latitude: marker.coordinate.latitude,
                                                         longitude: marker.coordinate.longitude
                                                     }}
-                                                />)
+                                                >
+                                                 <MapView.Callout style={CustomStyles.mapcard}
+                                                    onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                    <View style={CustomStyles.mapContent}>
+                                                        <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                        <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                        <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+
+                                                    </View>
+                                                
+                                                </MapView.Callout>
+                                                
+                                                </MapView.Marker>)
                                         }
 
 
@@ -472,16 +526,19 @@ export default class GPSTrackLocation extends Component {
                                 lineJoin="round"
                                 geodesic={true} />
                             {this.state.coordinates1.map((marker, index) => {
-                                if (index = 0) {
+                                console.log('marker sharath data', marker)
+                                if (index !== 0) {
                                     return (
-                                        <MapView.Marker.Animated key={index}
-                                            ref={(mapView) => { _mapView = mapView; }}
-                                            image={require('../images/track_strat_end.png')}
-                                            coordinate={{
-                                                latitude: marker.coordinate.latitude,
-                                                longitude: marker.coordinate.longitude
-                                            }}
-                                        />
+                                        <MapView.Callout style={CustomStyles.mapcard}
+                                            onPress={() => { this.markerClick(marker) }}>
+                                            <View style={CustomStyles.mapContent}>
+                                                <Text>{'Reg.No :'}{'marker.registrationNo'}</Text>
+                                                <Text>{'Odemeter :'}{'*****km'}</Text>
+                                                <Text>{'Date :'}{'this.getParsedDate(marker.date)'}</Text>
+
+                                            </View>
+                                           
+                                        </MapView.Callout>
                                     )
                                 }
 

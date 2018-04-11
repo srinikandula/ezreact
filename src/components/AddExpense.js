@@ -160,13 +160,22 @@ export default class AddExpense extends Component {
         for (let i = 0; i < trucksList.length; i++) {
             if (trucksList[i]._id === expenseDetails.vehicleNumber) {
                 self.setState({ truckText: Platform.OS === 'ios' ? trucksList[i].registrationNo : trucksList[i]._id + "###" + trucksList[i].registrationNo })
+                break;
             }
         }
         for (let i = 0; i < expensesList.length; i++) {
             if (expensesList[i]._id === expenseDetails.expenseType) {
                 self.setState({ expenseText: Platform.OS === 'ios' ? expensesList[i].expenseName : expensesList[i]._id + "###" + expensesList[i].expenseName })
+                break;
             }
         }
+        for (let i = 0; i < partyList.length; i++) {
+            if (partyList[i]._id === expenseDetails.partyId) {
+                self.setState({ partyText: Platform.OS === 'ios' ? partyList[i].name : partyList[i]._id + "###" + partyList[i].name })
+                break;
+            }
+        }
+        // console.log('selectedPartyID: expenseDetails.partyId,',expenseDetails.partyId,)
         
         var date = new Date(expenseDetails.date);
         var dateStr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
@@ -177,6 +186,7 @@ export default class AddExpense extends Component {
             selectedVehicleId: expenseDetails.vehicleNumber,
             selectedExpenseType: expenseDetails.expenseType,
             totalAmount: '' + expenseDetails.totalAmount,
+            // selectedPartyID: expenseDetails.partyId,
             remark: expenseDetails.description,
             accountId: expenseDetails.accountId
         }, () => {
@@ -185,12 +195,17 @@ export default class AddExpense extends Component {
         });
 
         if (expenseDetails.mode === 'Credit') {
-            for (let i = 0; i < partyList.length; i++) {
+
+            /* for (let i = 0; i < partyList.length; i++) {
                 if (partyList[i]._id === expenseDetails.partyId) {
                     self.setState({ expenseText: Platform.OS === 'ios' ? partyList[i].name : partyList[i]._id + "###" + partyList[i].name })
+                    break;
                 }
-            }
-            this.setState({ creditBool: 'flex', cashBool: 'none', paymentType: 'Credit', selectedPartyID: expenseDetails.partyId, paidAmount: '' + expenseDetails.paidAmount });
+            } */
+            this.setState({ creditBool: 'flex', cashBool: 'none', paymentType: 'Credit', selectedPartyID: expenseDetails.partyId, paidAmount: '' + expenseDetails.paidAmount },()=>{
+                        console.log('selectedPartyID: expenseDetails.partyId,',this.state.selectedPartyID,)
+
+            });
         } else {
             this.setState({ creditBool: 'none', cashBool: 'flex', paymentType: 'Cash', totalAmount: '' + expenseDetails.cost });
         }
@@ -307,6 +322,8 @@ export default class AddExpense extends Component {
     }
 
     onSubmitExpenseDetails() {
+        console.log('Please Select Party on submit',this.state.selectedPartyID)
+
         if (this.state.date.includes('/')) {
             if (!this.state.selectedVehicleId.includes("Select Vehicle")) {
                 if (!this.state.selectedExpenseType.includes("Select Expense Type")) {
@@ -372,6 +389,7 @@ export default class AddExpense extends Component {
 
                                 }
                             } else {
+                                console.log('Please Select Party',this.state.selectedPartyID)
                                 Utils.ShowMessage('Please Select Party');
 
 
@@ -383,7 +401,7 @@ export default class AddExpense extends Component {
 
                     }
                 } else {
-                    Utils.ShowMessage('Please Select Driver');
+                    Utils.ShowMessage('Please Select Expense Type');
 
 
                 }

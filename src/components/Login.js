@@ -31,8 +31,8 @@ class Login extends Component {
             //userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             // userName: 'easylease', phoneNumber: '8889991234', password: '12345678', message: '', userNamelbl: false,
             // userName: 'santosh', phoneNumber: '9848750094', password: 'mqmjl4', message: '', userNamelbl: false,
-            //  userName: 'naresh2', phoneNumber: '8919658182', password: '12345', message: '', userNamelbl: false,
-              userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,
+             // userName: 'gsrtansport', phoneNumber: '9848922814', password: '9848922814', message: '', userNamelbl: false,
+              userName: '', phoneNumber: '', password: '', message: '',// userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,userNamelbl: false,
             message: '',spinnerBool: false
         };

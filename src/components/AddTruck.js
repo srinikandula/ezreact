@@ -32,6 +32,7 @@ export default class AddTruck extends Component {
         pollpassdate: '',
         insurpassdate: '',
         selectedDriverId: '',
+        selectedTruckTypeId:'',
         accountId: '',
         Amount: '',
         paymentref: '',
@@ -168,11 +169,10 @@ export default class AddTruck extends Component {
     updateViewdate(truckDetails) {
         const self = this;
         let driversList = self.state.drivers;
-        let drivrID = truckDetails.driverId;
+        let drivrID = truckDetails.hasOwnProperty('driverId') ? truckDetails.driverId:"" ;//driverId;
         let truckTypeId = truckDetails.truckTypeId;
         let truckTypesList = this.state.truckTypes;
         if (truckDetails.driverId === null) {
-
             drivrID = 'Select Driver';
         } else {
             for (let i = 0; i < driversList.length; i++) {
@@ -196,7 +196,7 @@ export default class AddTruck extends Component {
             truckNumber: truckDetails.registrationNo,
             trucktonnage: truckDetails.tonnage,
             truckmodel: truckDetails.modelAndYear,
-            trucktype: truckDetails.truckType,
+            //truckType: truckDetails.truckType,
             selectedTruckTypeId :truckTypeId,
             TaxDueDate: this.getDateDDMMYY(truckDetails.taxDueDate),
             PermitDate: this.getDateDDMMYY(truckDetails.permitExpiry),
@@ -385,7 +385,7 @@ export default class AddTruck extends Component {
 
                                             var postData = {
                                                 'registrationNo': this.state.truckNumber,
-                                                'truckType': this.state.trucktype,
+                                                'truckType': this.state.truckType.includes('###') ? this.state.truckType.split("###")[1] :this.state.truckType ,
                                                 'modelAndYear': this.state.truckmodel,
                                                 'tonnage': this.state.trucktonnage,
                                                 'fitnessExpiry': this.state.fitnesspassdate.toISOString(),
@@ -521,7 +521,12 @@ export default class AddTruck extends Component {
                                     placeholder="Select Truck Type"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckType}
-                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}}>
+                                    onValueChange={(itemValue, itemIndex) => {
+                                                this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}
+                                            
+                                        }
+                                        >
+                                    
                                     <Picker.Item label = "Select Truck Type" value = "Select Truck Type" />
                                     {this.renderTruckTypeList()}
 

@@ -248,7 +248,7 @@ export default class ExpenseList extends Component {
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
                             <TouchableOpacity
-                                        onPress={() => { this.props.navigation.navigate('AddExpense',{token:this.state.token,edit:false})}}
+                                        onPress={() => { this.props.navigation.navigate('AddExpense',{token:this.state.token,edit:false,refresh: this.refreshFunction})}}
                                     >
                             <Image source={require('../images/eg_expenes.png')} 
                             style= {CustomStyles.addImage}/>

@@ -17,9 +17,9 @@ export default class AddExpense extends Component {
         showModal: false,
         date: "",
         passdate: '',
-        selectedVehicleId: '',
+        selectedVehicleId: 'Select Vehicle',
         selectedExpenseType: '',
-        selectedPartyID: '',
+        selectedPartyID: 'Select Party Name',
         otherExpense: '',
         totalAmount: '',
         paidAmount: '',
@@ -329,12 +329,11 @@ export default class AddExpense extends Component {
                 if (!this.state.selectedExpenseType.includes("Select Expense Type")) {
                     if (this.state.selectedExpenseType.includes("other")) {
                         if (this.state.otherExpense.trim().length == 0) {
-                            return
-                            Utils.ShowMessage('Please Enter Expense Type');
+                            return  Utils.ShowMessage('Please Enter Expense Type');
                         }
                     }
 
-                    if (this.state.paymentType.length > 0) {
+                    if (this.state.paymentType === 'Credit' || this.state.paymentType === 'Cash') {
                         //--Cash mode                        
                         if (this.state.paymentType === 'Cash') {
                             if (this.state.totalAmount.length > 0) {

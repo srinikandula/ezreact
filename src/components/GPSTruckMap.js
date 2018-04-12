@@ -420,17 +420,17 @@ export default class GPSTruckMap extends Component {
     truckStatus(marker) {
         //console.log(marker,'truckStatus')
         if (marker.attrs.hasOwnProperty('latestLocation')) {
-            console.log(marker.attrs.latestLocation.isStopped, 'marker.attrs.latestLocation.isStopped');
+            //console.log(marker.attrs.latestLocation.isStopped, 'marker.attrs.latestLocation.isStopped');
             if (marker.attrs.latestLocation.isStopped) {
                 return require('../images/stoptruck.png');
             } else if (marker.attrs.latestLocation.isIdle && !marker.attrs.latestLocation.isStopped) {
-                console.log(marker.attrs.latestLocation.isIdle, 'marker.attrs.latestLocation.isIdle');
+               // console.log(marker.attrs.latestLocation.isIdle, 'marker.attrs.latestLocation.isIdle');
                 return require('../images/runningTruck.png');
             } else {
                 return require('../images/stoptruck.png');
             }
         } else {
-            console.log(marker, 'marker.attrs.latestLocation');
+           //console.log(marker, 'marker.attrs.latestLocation');
             return require('../images/stoptruck.png');
         }
 
@@ -440,7 +440,6 @@ export default class GPSTruckMap extends Component {
     getView() {
         switch (this.state.view) {
             case 'mapShow':
-                console.log(this.state.markers.length, '--99999--', 'item');
                 return (
                     <View style={CustomStyles.mapcontainer}>
                         <MapView

@@ -138,16 +138,17 @@ export default class AddDriver extends Component {
     }
 
     updateViewdate(driverDetails) {
+        //truckDetails.hasOwnProperty('driverId') ? truckDetails.driverId:"" ;//driverId;
         const self = this;
         let trucksList = self.state.trucks;
-        let truckID = driverDetails.truckId;
+        let truckID = driverDetails.hasOwnProperty('truckId') ? driverDetails.truckId:'';
         if (driverDetails.truckId === null) {
-
             truckID = 'Select Truck';
         } else {
             for (let i = 0; i < trucksList.length; i++) {
                 if (trucksList[i]._id === truckID) {
                     self.setState({ truckText: Platform.OS === 'ios' ? trucksList[i].registrationNo : trucksList[i]._id + "###" + trucksList[i].registrationNo })
+                    break;
                 }
             }
         }

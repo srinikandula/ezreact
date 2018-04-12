@@ -512,7 +512,7 @@ onLogout(){
                     </TouchableOpacity>
                 </View>
 
-                <View style={CustomStyles.profileaAddGroupImageStyle}>
+                {/* <View style={CustomStyles.profileaAddGroupImageStyle}>
                      <View style={CustomStyles.profileCircle} >
                         <TouchableOpacity
                             onPress={() => {  this.props.navigation.navigate('AddGroup',{token:this.state.token,edit:false})}}
@@ -521,7 +521,7 @@ onLogout(){
                                 style= {{height:30,width:30,resizeMode: 'contain'}}/>
                         </TouchableOpacity>
                      </View>
-                </View>
+                </View> */}
                     
              </View>   
         );

@@ -56,7 +56,9 @@ export default class GPSTrackLocation extends Component {
         truckNum: '',
         averageSpeed: '',
         distanceTravelled: '',
-        timeTravelled: ''
+        timeTravelled: '',
+        odemeter:'',
+        topSpeed:''
 
     };
 
@@ -147,7 +149,9 @@ export default class GPSTrackLocation extends Component {
 
                             this.setState({
                                 spinnerBool: false, truckNum: data.truckId, distanceTravelled: response.data.results.distanceTravelled,
-                                timeTravelled: response.data.results.timeTravelled, averageSpeed: response.data.results.averageSpeed
+                                timeTravelled: response.data.results.timeTravelled, averageSpeed: response.data.results.averageSpeed,
+                               // odemeter: response.data.results.distanceTravelled,
+                                //topSpeed:response.data.results.distanceTravelled,
                             })
 
                         } else {
@@ -372,6 +376,7 @@ export default class GPSTrackLocation extends Component {
                                         
                                         </MapView.Marker>)
                                 } else {
+                                   
                                     if (marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')) {
                                         if (marker.isStopped) {
                                             return (
@@ -417,6 +422,31 @@ export default class GPSTrackLocation extends Component {
                                                 
                                                 </MapView.Marker>)
                                         }
+                                        if(!marker.isIdle && !marker.isStopped){
+                                        //     console.log(index+'!marker.isIdle && !marker.isStopped', !marker.isIdle +"&&"+ !marker.isStopped +"marker.coordinate.latitude" +marker.coordinate.latitude +"\n"+
+                                        // marker);
+                                                return (
+                                                    <MapView.Marker key={index}
+                                                        image={require('../images/truck_running.png')}
+                                                        coordinate={{
+                                                            latitude: marker.coordinate.latitude,
+                                                            longitude: marker.coordinate.longitude
+                                                        }}
+                                                    >
+                                                     <MapView.Callout style={CustomStyles.mapcard}
+                                                        onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                        <View style={CustomStyles.mapContent}>
+                                                            <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                            <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                            <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+        
+                                                        </View>
+                                                    
+                                                    </MapView.Callout>
+                                                    
+                                                    </MapView.Marker>)
+                                            
+                                        }
 
 
                                     }
@@ -453,12 +483,12 @@ export default class GPSTrackLocation extends Component {
 
                         <FlatList style={{ marginTop: 10 }}
                             data={this.state.coordinates1}
-                            ItemSeparatorComponent={this.renderSeparator}
+                            // ItemSeparatorComponent={this.renderSeparator}
                             removeClippedSubviews={true}
                             renderItem={({ item }) => {
                                 if (item.isStopped) {
                                     return (
-                                        <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
+                                        <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#ffffff',borderBottomWidth:1,borderBottomColor: '#ddd' }]}>
                                             <View style={CustomStyles.erpDriverItems}>
                                                 <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
                                                     <Image resizeMode="contain"
@@ -486,12 +516,7 @@ export default class GPSTrackLocation extends Component {
                                             </View>
                                         </View>)
                                 }
-                                // }else{
-                                //     return(
-                                //         <View style={{height:10,backgroundColor:'orange'}}>
-                                //         </View>
-                                //     ) 
-                                // }
+                                
                             }
                             }
                             keyExtractor={item => item._id} />
@@ -561,21 +586,33 @@ export default class GPSTrackLocation extends Component {
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        Distance Travelled</Text>
+                                    Distance Travelled</Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {this.state.distanceTravelled}</Text>
+                                        {Math.floor(Number(this.state.distanceTravelled))}</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                         Time Travelled </Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {this.gettimeTravelled(this.state.timeTravelled)} hours</Text>
+                                        {Math.floor(this.gettimeTravelled(this.state.timeTravelled))} hours</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                         Average Speed </Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {this.gettimeTravelled(this.state.averageSpeed)}</Text>
+                                        {Math.floor(this.gettimeTravelled(this.state.averageSpeed))} Kmph</Text>
+                                </View>
+                                <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                    <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                        Odemeter </Text>
+                                    <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                        {Math.floor(Number(this.state.odemeter))} Km</Text>
+                                </View>
+                                <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                                    <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                    Top Speed </Text>
+                                    <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
+                                        {Math.floor(Number(this.state.topSpeed)) } Kmph</Text>
                                 </View>
 
                             </View>
@@ -688,9 +725,9 @@ export default class GPSTrackLocation extends Component {
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
                                 source={require('../images/gps_trip_stops_icon.png')} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { this.setState({ showDependable: 'Animate' }); }}>
+                        <TouchableOpacity onPress={() => { this.setState({coordinates:[]}),this.getCredentailsData(); }}>
                             <Image style={{ width: 26, height: 25, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
-                                source={require('../images/gps_dist_rports_icon.png')} />
+                                source={require('../images/reload_track.png')} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             this.state.coordinates.length == 0 ? this.setState({ showDependable: 'No Data Found' }) : this.setState({ showDependable: '' + this.state.coordinates.length });

@@ -620,7 +620,11 @@ export default class AddExpense extends Component {
                                         placeholder="Select Party Name"
                                         cStyle={CustomStyles.cPickerStyle}
                                         selectedValue={this.state.partyText}
-                                        onValueChange={(itemValue, itemIndex) => { this.setState({ partyText: Platform.OS==='ios'?itemValue==='others'?itemValue:itemValue.split("###")[1]:itemValue, selectedPartyID: itemValue.split("###")[0]}) }}>
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            if(itemValue !== 'Select Party Name'){
+                                                this.setState({ partyText: Platform.OS==='ios'?itemValue==='others'?itemValue:itemValue.split("###")[1]:itemValue, selectedPartyID: itemValue.split("###")[0]})
+                                            }
+                                         }}>
                                         <Picker.Item label="Select Party Name" value="Select Party Name" />
                                         {this.renderPartyList()}
 

@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import {
-    View, ScrollView, Animated, DatePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
+    View, ScrollView, Animated, DatePickerAndroid,TimePickerAndroid, StyleSheet, Platform, TouchableHighlight, DatePickerIOS,
     BackHandler, Dimensions, ListView, FlatList, Text, AsyncStorage, Image, TouchableOpacity, NetInfo
 } from 'react-native';
 import CustomStyles from './common/CustomStyles';
@@ -57,7 +57,8 @@ export default class GPSTruckMap extends Component {
         view: 'no',
         netFlaf: false,
         spinnerBool: false,
-
+        fromtime:'',
+        totime:''
     };
 
     componentWillMount() {
@@ -69,8 +70,12 @@ export default class GPSTruckMap extends Component {
             showHeaderBool = self.props.navigation.state.params.showHeader;
             console.log(self.props.navigation.state.params.showHeader, "GPSTruckMap-token");
         }
-        console.log(self.props.showHeader, "GPSTruckMap-token");
-        this.setState({ showHeader: showHeaderBool ? 'flex' : 'none', fromDate: currDate.toDateString(), toDate: currDate.toDateString(), fromPassdate: currDate.toDateString(), toPassdate: currDate.toDateString() });
+        console.log(self.props.showHeader, "GPSTruckMap-token"+currDate.toLocaleDateString() +"  "+currDate.toLocaleTimeString());
+        this.setState({ showHeader: showHeaderBool ? 'flex' : 'none', 
+                        fromDate: currDate.toDateString()+"  "+currDate.toLocaleTimeString(),
+                        toDate: currDate.toDateString()+"  "+currDate.toLocaleTimeString(),
+                        fromPassdate: currDate.toDateString()+" "+currDate.toLocaleTimeString(),
+                        toPassdate: currDate.toDateString()+"  "+currDate.toLocaleTimeString() });
         this.connectionInfo();
 
 
@@ -239,9 +244,14 @@ export default class GPSTruckMap extends Component {
     }
     lisDateFilter(date) {
         if (date) {
-            var formattedDate = new Date(date);
-            
-                return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth() + 1).toString() + "/" + formattedDate.getFullYear().toString() ;
+            var formattedDate = new Date(date);          
+                var hours = ""+(formattedDate.getHours());
+                hours = hours.trim().length == 1 ? '0'+hours: hours;
+                var mins = ""+formattedDate.getMinutes().toString();
+                mins = mins.trim().length == 1 ? '0'+mins:mins;
+
+                return formattedDate.getFullYear().toString()+ "/" + (formattedDate.getMonth() + 1).toString() + "/" + formattedDate.getDate().toString()  +
+                 "  "+ hours+ ":"+ mins;
             
 
         } else {
@@ -336,13 +346,13 @@ export default class GPSTruckMap extends Component {
 
     }
     markerClick(markerData) {
-        this.setState({ fromDate: this.lisDateFilter(new Date()), toDate: this.lisDateFilter(new Date()) })
+        this.setState({ fromPassdate: this.lisDateFilter(new Date()), toPassdate: this.lisDateFilter(new Date()) })
         console.log(markerData, 'markerData');
         let date = new Date();
-        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+        var passdateStr = date.toLocaleDateString() + "  "+ date.getHours()+1 +": " + date.getMinutes();
         const data = {
-            truckId: markerData.registrationNo, startDate: this.getDateISo(date),
-            endDate: this.getDateISo(this.state.toPassdate)
+            truckId: markerData.registrationNo, startDate: passdateStr,
+            endDate: passdateStr
         }
         this.setState({ passData: data });
         this.ShowModalFunction(!this.state.showTrack);
@@ -350,7 +360,7 @@ export default class GPSTruckMap extends Component {
 
     getDateISo(dateString) {
         var date = new Date(dateString);
-        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+        var passdateStr = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() ;
         console.log('passdateStr', passdateStr);
         var passdate = new Date(passdateStr);
         return passdate.toISOString();
@@ -601,18 +611,28 @@ export default class GPSTruckMap extends Component {
                 }).then((response) => {
                     if (response.action === "dateSetAction") {
                         var month = response.month + 1
-                        let date = response.day + "/" + month + "/" + response.year;
+                          console.log('onPickdate-->',this.state.fromPassdate);
+                        let dates = response.day + "/" + month + "/" + response.year;
+                        let day = response.day.toLocaleString().length == 1 ? "0"+response.day:""+response.day;
+                        month = month.toLocaleString().length == 1 ? "0"+month:month;
+
+                        let  dDate = new Date(this.state.fromPassdate); 
+                        //dDate.setHours(response.hour); 
+                        //dDate.setMinutes(response.minute);
+                        console.log('dDate---',dDate.toDateString());
                         switch (category) {
                             case "fromDate":
-                                this.setState({ fromDate: date, fromPassdate: month + "/" + response.day + "/" + response.year });
+                                this.setState({ fromDate: dDate.toDateString(), fromPassdate: response.year + "/" + day + "/" + month });
+                                this.onPicktime(category);
                                 return;
                                 break;
                             case "toDate":
-                                this.setState({ toDate: date, toPassdate: month + "/" + response.day + "/" + response.year });
+                                this.setState({ toDate: dDate.toDateString(), toPassdate: response.year + "/" + day + "/" + month });
+                                this.onPicktime(category);
                                 return;
                                 break;
                             case "forDate":
-                                this.setState({ forDate: date, forPassdate: month + "/" + response.day + "/" + response.year });
+                                this.setState({ forDate: dates, forPassdate: month + "/" + response.day + "/" + response.year });
                                 return;
                                 break;
                             default:
@@ -628,6 +648,64 @@ export default class GPSTruckMap extends Component {
             }
         }
     }
+
+    onPicktime(category) {
+        const self = this;
+        if (Platform.OS === 'ios') {
+            this.setState({ showModal: true, dispDatePicker: 'flex', showTrack: false, category: category })
+
+        } else {
+            try {
+                const { action, hour, minute } = TimePickerAndroid.open({
+                    hour: 14,
+                    minute: 0,
+                    is24Hour: true, // Will display '2 PM'
+                }).then((response) => {
+                    if (response.action === "timeSetAction") {
+                        
+                        
+                        let hour = response.hour.toLocaleString().length === 1 ? "0"+response.hour : ""+response.hour;
+                        let mins = response.minute.toLocaleString().length === 1 ? "0"+ response.minute : ""+response.minute;
+                        let time = hour +":"+ mins;    
+                        let parseDate = this.state.fromPassdate.split('/');;
+                        if(category ==='toDate'){
+                            parseDate = this.state.toPassdate.split('/');;
+                        }
+                        //parseDate = parseDate[0] +"/"+parseDate[2]+"/"+parseDate[1];
+                        let  dDate = new Date(parseDate[0],parseDate[2],parseDate[1],hour,mins); 
+                        
+
+                        console.log('onPicktime',dDate.toLocaleString());
+                        console.log('ryz--time',time);
+                        switch (category) {
+                            case "fromDate":
+                                this.setState({ fromDate: dDate.toLocaleDateString(), fromPassdate: dDate.getFullYear() + "/" + dDate.getDate() + "/" + (dDate.getMonth()+1) +" "+time.trim() });
+                                return;
+                                break;
+                            case "toDate":
+                                this.setState({ toDate: dDate.toLocaleDateString(), toPassdate: dDate.getFullYear() + "/" + dDate.getDate() + "/" + (dDate.getMonth()+1) +" "+time.trim()});
+                                return;
+                                break;
+                            case "forDate":
+                                this.setState({ forDate: date, forPassdate: (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() +" "+time.trim() });
+                                return;
+                                break;
+                            default:
+                                return;
+                                break;
+                        }
+                    }
+                    
+                }).catch((error) => {
+                    console.log(error);
+                });
+            } catch ({ code, message }) {
+                console.warn('Cannot open date picker', message);
+            }
+        }
+    }
+
+
 
     async connectNetInfo() {
         if (Platform.OS === "ios") {
@@ -736,13 +814,15 @@ export default class GPSTruckMap extends Component {
     moveToTrackScreen() {
         this.ShowModalFunction(!this.state.showTrack);
         const Data = this.state.passData
-        Data.startDate = this.getDateISo(this.state.fromPassdate);
-        Data.endDate = this.getDateISo(this.state.toPassdate);
+        Data.startDate = this.state.fromPassdate.replace('/','-');
+        Data.startDate =  Data.startDate.replace('/','-');
+        Data.endDate = this.state.toPassdate.replace('/','-');
+        Data.endDate = Data.endDate.replace('/','-');
         console.log('asd', Data.toString());
+        console.log('Data',Data.startDate+"--"+Data.startDate);
         if (this.props.showHeader === undefined || this.props.showHeader === 'undefined') {
             this.props.navigation.state.params.nav.navigation.navigate('GPSTrack', { token: this.state.token, sendingDate: JSON.stringify(Data) })
         } else {
-
             this.props.nav.navigation.navigate('GPSTrack', { token: this.state.token, sendingDate: JSON.stringify(Data) })
         }
     }
@@ -831,8 +911,8 @@ export default class GPSTruckMap extends Component {
                     onDecline={() => { this.ShowModalFunction(!this.state.showTrack) }}
                     onPickFromdate={() => { this.onPickdate('fromDate') }}
                     onPickTodate={() => { this.onPickdate('toDate') }}
-                    frmDate={this.state.fromDate}
-                    toDate={this.state.toDate} />
+                    frmDate={this.state.fromPassdate}
+                    toDate={this.state.toPassdate} />
 
                 <Confirm visible={this.state.showModal}
                     onAccept={this.onAccept.bind(this)}

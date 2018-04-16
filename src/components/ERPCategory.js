@@ -1542,7 +1542,7 @@ export default class ERPCategory extends Component {
                                     <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmExpense}</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmisc}</Text>
+                                    <Text style={[CustomStyles.erpFooterText,{padding:1}]}>{this.state.totalExpenses.totalmisc}</Text>
                                 </View>
                             </View>
                         </View>

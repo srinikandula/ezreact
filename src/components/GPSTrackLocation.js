@@ -82,12 +82,16 @@ export default class GPSTrackLocation extends Component {
                const self  = this;
                self.setState({ spinnerBool:true });
                const data = JSON.parse(self.props.navigation.state.params.sendingDate);
+               console.log(data,'eeeee');
+               //data.startDate = (new Date(data.startDate)).toLocaleString();
+               //data.endDate = (new Date(data.endDate)).toLocaleString();
                self.setState({truckNum:data.truckId});
             this.getCache((value) => {
                 if (value !== null) {
                     var egObj = {};
                     egObj = JSON.parse(value);
                     this.setState({ token: egObj.token });
+                    console.log('gpsTrackLocation-url',Config.routes.base + Config.routes.gpsTrackLocation +"/"+data.truckId+"/"+data.startDate+"/"+data.endDate);
                     Axios({
                         method: 'GET',
                         headers: { 'token': egObj.token },
@@ -155,7 +159,7 @@ export default class GPSTrackLocation extends Component {
                             })
 
                         } else {
-                            console.log('error in GPSTrackLocation ==>', response);
+                            console.log('error in GPSTrackLocation ==>', response.data.messages[0]);
                             this.setState({ coordinates: [], showDependable: 'No Data Found', spinnerBool: false }, () => {
                                 this.getView();
                             });

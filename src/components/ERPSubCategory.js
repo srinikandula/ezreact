@@ -12,6 +12,7 @@ export default class ERPSubCategory extends Component {
     state = {
         trips: [], 
         expenses:[],
+        totalExpenseAmt:'0',
         payementsResults:[],
         totalExpenses:{},
         totalPendingPayments:{},
@@ -30,7 +31,7 @@ export default class ERPSubCategory extends Component {
             .then((response) => {              
                 if (response.data.status) {
                     if(self.props.navigation.state.params.mode == 'Expense'){
-                        self.setState({expenses:response.data.expenses,totalExpenses: response.data.totalExpenses});
+                        self.setState({expenses:response.data.expenses,totalExpenseAmt: ""+response.data.total});
                     }else if(self.props.navigation.state.params.mode == 'Revenue'){
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
                     
@@ -69,6 +70,7 @@ export default class ERPSubCategory extends Component {
                 totalmExpense: 0,
                 totalmisc: 0
             },
+            totalExpenseAmt:'0',
             totalPendingPayments: {
                 totalFreight: 0,
                 totalPaid: 0
@@ -225,17 +227,15 @@ export default class ERPSubCategory extends Component {
                                     <Text style={CustomStyles.erpSubCatHeaderText}>Date</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Diesel</Text>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Expense Type</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Toll</Text>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Description</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Maint...</Text>
+                                    <Text style={CustomStyles.erpSubCatHeaderText}>Amount</Text>
                                 </View>
-                                <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpSubCatHeaderText}>Miscel..</Text>
-                                </View>
+                                
                             </View>
                             <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                                 data={this.state.expenses}
@@ -247,17 +247,15 @@ export default class ERPSubCategory extends Component {
                                                                                 }</Text>
                                         </View>
                                          <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseDieselData(item.attrs.expenseName,item.totalAmount)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{ item.attrs.expenseName}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseTollData(item.attrs.expenseName,item.totalAmount)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{ item.description}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseMaintenanceData(item.attrs.expenseName,item.totalAmount)}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{ item.cost}</Text>
                                         </View>
-                                        <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{this.getExpenseFromData(item.attrs.expenseName,item.totalAmount)}</Text>
-                                        </View> 
+                                       
                                     </View>
                                 }
                                 keyExtractor={item => item._id} />
@@ -266,15 +264,13 @@ export default class ERPSubCategory extends Component {
                                     <Text style={CustomStyles.erpFooterText}>Total</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalDieselExpense}</Text>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
                                 </View><View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totaltollExpense}</Text>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
                                 </View>
-                               <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmExpense}</Text>
-                                </View>
+                               
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenses.totalmisc}</Text>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalExpenseAmt}</Text>
                                 </View> 
                             </View>
                         </View>

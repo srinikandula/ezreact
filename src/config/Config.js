@@ -1,7 +1,7 @@
 let routes = {
    base: 'http://demoerp.easygaadi.com/v1',getProfilePic:'http://demoerp.easygaadi.com/images/profile-pics/',
    // base: 'http://erp.easygaadi.com/v1',getProfilePic:'http://erp.easygaadi.com/images/profile-pics/',
-    // base: 'http://192.168.1.70:3000/v1',getProfilePic:'http://192.168.1.70:3000/images/profile-pics/',
+    // base: 'http://192.168.1.76:3000/v1',getProfilePic:'http://192.168.1.76:3000/images/profile-pics/',
    
 
 

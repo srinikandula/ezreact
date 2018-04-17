@@ -155,7 +155,7 @@ export default class GPSTruckMap extends Component {
                                     this.setState({ trucks: dump, dummytrucks: dump });
                                 }
 
-                                console.log(catgryarr, 'vignesh == ', dump);
+                                
                                 var catgryarr1 = [];
                                 for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
                                     const truckElement = this.state.trucks[index];
@@ -611,7 +611,7 @@ export default class GPSTruckMap extends Component {
                 }).then((response) => {
                     if (response.action === "dateSetAction") {
                         var month = response.month + 1
-                          console.log('onPickdate-->',this.state.fromPassdate);
+                          console.log(response.month+1,'onPickdate-->',response.month);
                         let dates = response.day + "/" + month + "/" + response.year;
                         let day = response.day.toLocaleString().length == 1 ? "0"+response.day:""+response.day;
                         month = month.toLocaleString().length == 1 ? "0"+month:month;
@@ -662,8 +662,6 @@ export default class GPSTruckMap extends Component {
                     is24Hour: true, // Will display '2 PM'
                 }).then((response) => {
                     if (response.action === "timeSetAction") {
-                        
-                        
                         let hour = response.hour.toLocaleString().length === 1 ? "0"+response.hour : ""+response.hour;
                         let mins = response.minute.toLocaleString().length === 1 ? "0"+ response.minute : ""+response.minute;
                         let time = hour +":"+ mins;    
@@ -679,11 +677,11 @@ export default class GPSTruckMap extends Component {
                         console.log('ryz--time',time);
                         switch (category) {
                             case "fromDate":
-                                this.setState({ fromDate: dDate.toLocaleDateString(), fromPassdate: dDate.getFullYear() + "/" + dDate.getDate() + "/" + (dDate.getMonth()+1) +" "+time.trim() });
+                                this.setState({ fromDate: dDate.toLocaleDateString(), fromPassdate: dDate.getFullYear()  + "/" + (dDate.getMonth())+ "/" + dDate.getDate() +" "+time.trim() });
                                 return;
                                 break;
                             case "toDate":
-                                this.setState({ toDate: dDate.toLocaleDateString(), toPassdate: dDate.getFullYear() + "/" + dDate.getDate() + "/" + (dDate.getMonth()+1) +" "+time.trim()});
+                                this.setState({ toDate: dDate.toLocaleDateString(), toPassdate: dDate.getFullYear() + "/" + (dDate.getMonth()) + "/" + dDate.getDate()+" "+time.trim()});
                                 return;
                                 break;
                             case "forDate":

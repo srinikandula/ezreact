@@ -20,7 +20,7 @@ const screen = Dimensions.get('window')
 
 const ASPECT_RATIO = screen.width / screen.height
 
-const LATITUDE_DELTA = 12
+const LATITUDE_DELTA = 15
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
@@ -110,8 +110,8 @@ export default class GPSTrackLocation extends Component {
                                     for (let index = 0; index < arrList.length; index++) {
                                         const element = arrList[index];
                                         if(index == 2){
-                                            this.setState({initialPoint:{latitude:Number(element.location.coordinates[1]), 
-                                                longitude:Number(element.location.coordinates[0]), 
+                                            this.setState({initialPoint:{latitude: element.location.coordinates[1], 
+                                                longitude: element.location.coordinates[0], 
                                                 latitudeDelta:LATITUDE_DELTA,
                                                 longitudeDelta: LONGITUDE_DELTA}});
                                         }
@@ -335,51 +335,44 @@ export default class GPSTrackLocation extends Component {
                             style={CustomStyles.map}
                             initialRegion={this.state.initialPoint}
                             zoomEnabled={true}
-                            maxZoomLevel={16}>
-
+                            maxZoomLevel={15}>
                             {this.state.coordinates1.map((marker, index) => {
                                 if (index == 0) {
                                     return (
                                         <MapView.Marker key={index}
-                                            image={require('../images/track_strat_end.png')}
+                                            image={require('../images/trip_start.png')}
                                             coordinate={{
                                                 latitude: marker.coordinate.latitude,
                                                 longitude: marker.coordinate.longitude
                                             }}>
                                             <MapView.Callout style={CustomStyles.mapcard}
                                             onPress={() => { console.log(marker,'shhhharatt') }}>
-                                            <View style={CustomStyles.mapContent}>
-                                                <Text>{'Reg.No :'}{this.state.truckNum}</Text>
-                                                <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
-                                                <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
-
-                                            </View>
-                                        
-                                        </MapView.Callout>
-                                        
+                                                <View style={CustomStyles.mapContent}>
+                                                    <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                    <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                    <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+                                                </View>
+                                            </MapView.Callout>
                                         </MapView.Marker>
                                     )
                                 } else if (index == (this.state.coordinates.length - 1)) {
                                     return (
                                         <MapView.Marker key={index}
-                                            image={require('../images/track_strat_end.png')}
+                                            image={require('../images/trip_stop.png')}
                                             coordinate={{
                                                 latitude: marker.coordinate.latitude,
                                                 longitude: marker.coordinate.longitude
                                             }}>
                                             <MapView.Callout style={CustomStyles.mapcard}
-                                            onPress={() => { console.log(marker,'shhhharatt') }}>
-                                            <View style={CustomStyles.mapContent}>
-                                                <Text>{'Reg.No :'}{this.state.truckNum}</Text>
-                                                <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
-                                                <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
-
-                                            </View>
-                                        
-                                        </MapView.Callout>
-                                        
+                                                onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                <View style={CustomStyles.mapContent}>
+                                                    <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                    <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                    <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+                                                </View>
+                                            </MapView.Callout>
                                         </MapView.Marker>)
-                                } else {
+                                } else{
                                    
                                     if (marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')) {
                                         if (marker.isStopped) {
@@ -391,8 +384,7 @@ export default class GPSTrackLocation extends Component {
                                                         longitude: marker.coordinate.longitude
                                                     }}
                                                 >
-                                                <MapView.Callout style={CustomStyles.mapcard}
-                                                    onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                <MapView.Callout style={CustomStyles.mapcard}>
                                                     <View style={CustomStyles.mapContent}>
                                                         <Text>{'Reg.No :'}{this.state.truckNum}</Text>
                                                         <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
@@ -413,22 +405,17 @@ export default class GPSTrackLocation extends Component {
                                                         longitude: marker.coordinate.longitude
                                                     }}
                                                 >
-                                                 <MapView.Callout style={CustomStyles.mapcard}
-                                                    onPress={() => { console.log(marker,'shhhharatt') }}>
-                                                    <View style={CustomStyles.mapContent}>
-                                                        <Text>{'Reg.No :'}{this.state.truckNum}</Text>
-                                                        <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
-                                                        <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
-
-                                                    </View>
-                                                
-                                                </MapView.Callout>
-                                                
+                                                    <MapView.Callout style={CustomStyles.mapcard}
+                                                        onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                        <View style={CustomStyles.mapContent}>
+                                                            <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                            <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                            <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+                                                        </View>
+                                                    </MapView.Callout>
                                                 </MapView.Marker>)
                                         }
                                         if(!marker.isIdle && !marker.isStopped){
-                                        //     console.log(index+'!marker.isIdle && !marker.isStopped', !marker.isIdle +"&&"+ !marker.isStopped +"marker.coordinate.latitude" +marker.coordinate.latitude +"\n"+
-                                        // marker);
                                                 return (
                                                     <MapView.Marker key={index}
                                                         image={require('../images/truck_running.png')}
@@ -710,13 +697,13 @@ export default class GPSTrackLocation extends Component {
                     zIndex: 1, backgroundColor: '#1e4495', width: '100%'
                 }, { display: 'flex' }]}>
 
-                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 15 }}>
+                    <View style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'flex-start', margin: 5 }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}>
-                            <Image style={{ width: 20, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }}
+                            <Image style={{ width: 20, height: 20, resizeMode: 'contain', margin: 5, marginHorizontal: 5 }}
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
                         <Text style={[CustomStyles.erpText, { color: 'white', paddingVertical: 3, fontFamily: 'Gotham-Medium', fontSize: 12, margin: 10, marginLeft: 3 }]}>
-                            Track {this.state.truckNum}</Text>
+                            Track{(this.state.truckNum).substr(0,9)}..</Text>
                     </View>
 
 

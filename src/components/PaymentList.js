@@ -247,7 +247,7 @@ export default class PaymentList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('AddPayment', { token: this.state.token, edit: false }) }}
+                        onPress={() => { this.props.navigation.navigate('AddPayment', { token: this.state.token, edit: false, refresh: this.refreshFunction }) }}
                     >
                         <Image source={require('../images/eg_payments.png')}
                             style={CustomStyles.addImage} />

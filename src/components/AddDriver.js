@@ -142,7 +142,7 @@ export default class AddDriver extends Component {
         const self = this;
         let trucksList = self.state.trucks;
         let truckID = driverDetails.hasOwnProperty('truckId') ? driverDetails.truckId:'';
-        if (driverDetails.truckId === null) {
+        if (truckID === '') {
             truckID = 'Select Truck';
         } else {
             for (let i = 0; i < trucksList.length; i++) {
@@ -155,11 +155,11 @@ export default class AddDriver extends Component {
         this.setState({
             name: driverDetails.fullName,
             mobile: '' + driverDetails.mobile,
-            licenseNo: driverDetails.licenseNumber,
-            date: this.getDateDDMMYY(driverDetails.licenseValidity),
-            passdate: this.getDateISo(driverDetails.licenseValidity),
+            licenseNo:  driverDetails.hasOwnProperty('licenseNumber') ?  driverDetails.licenseNumber:'',
+            date: driverDetails.hasOwnProperty('licenseValidity') ? this.getDateDDMMYY(driverDetails.licenseValidity):'',
+            passdate: driverDetails.hasOwnProperty('licenseValidity') ?this.getDateISo(driverDetails.licenseValidity):'',
             selectedTruckId: truckID,
-            salaryPM: "" + driverDetails.salary,
+            salaryPM:   driverDetails.hasOwnProperty('salary') ? ""+driverDetails.salary:"",
             activeMe: driverDetails.isActive,
             accountId: driverDetails.accountId
         });

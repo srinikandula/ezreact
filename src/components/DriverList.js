@@ -229,7 +229,7 @@ export default class DriverList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('AddDriver', { token: this.state.token })}
+                        onPress={() => this.props.navigation.navigate('AddDriver', { token: this.state.token, edit: false, refresh: this.refreshFunction })}
                     >
                         <Image source={require('../images/eg_driver.png')}
                             style={CustomStyles.addImage} />

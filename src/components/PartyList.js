@@ -233,7 +233,7 @@ export default class PartyList extends Component {
                     </View>
                         <View style={CustomStyles.addGroupImageStyle}>
                             <TouchableOpacity
-                                        onPress={() => { this.props.navigation.navigate('AddParty',{token:this.state.token,edit:false})}}
+                                        onPress={() => { this.props.navigation.navigate('AddParty',{token:this.state.token, edit: false, refresh: this.refreshFunction})}}
                                     >
                                     <Image source={require('../images/eg_party.png')} 
                                     style= {CustomStyles.addImage}/>

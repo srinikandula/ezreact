@@ -318,7 +318,7 @@ export default class TripList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('AddTrip', { token: this.state.token, edit: false }) }}
+                        onPress={() => { this.props.navigation.navigate('AddTrip', { token: this.state.token, edit: false, refresh: this.refreshFunction }) }}
                     >
                         <Image source={require('../images/eg_trip.png')}
                             style={CustomStyles.addImage} />

@@ -26,7 +26,7 @@ class Login extends Component {
         this.state = {
             //userName: 'easydemo', phoneNumber: '8712828528', password: '123456', message: '', userNamelbl: false,
              //userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,                            
-             //userName: 'krishna', phoneNumber: '9676777256', password: '9676777256', message: '', userNamelbl: false,     
+             userName: 'krishna', phoneNumber: '9676777256', password: '9676777256', message: '', userNamelbl: false,     
              // userName: 'easylease', phoneNumber: '8889991234', password: '12345678', message: '', userNamelbl: false,                
             //userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
             // userName: 'easylease', phoneNumber: '8889991234', password: '12345678', message: '', userNamelbl: false,

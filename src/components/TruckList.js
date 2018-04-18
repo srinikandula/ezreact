@@ -149,11 +149,11 @@ export default class TruckList extends Component {
         />
     );
     getTonnage(item) {
-        var data = '- K';
+        var data = '- T';
         if (item.hasOwnProperty("tonnage")) {
-            data = item.tonnage + 'K';
+            data = item.tonnage + 'T';
         } else {
-            data = '- K';
+            data = '- T';
         }
         return data;
     }

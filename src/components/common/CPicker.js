@@ -8,7 +8,7 @@ class CPicker extends Component {
 
     getCourseValue(){
         console.log('this.props.selectedValue',this.props.selectedValue,"++++",this.props.placeholder)
-        if(this.props.selectedValue && this.props.selectedValue!==''){
+        if(this.props.selectedValue && this.props.selectedValue !==''){
             return this.props.selectedValue;
         } else {
             return this.props.placeholder;
@@ -27,13 +27,16 @@ class CPicker extends Component {
     renderPicker() {
         if (Platform.OS === 'ios') {
             return (
-                <TouchableOpacity onPress={() => { this.setState({ showModal: true })}} style={[styles.inputStyle,{ justifyContent: 'center', marginLeft:20}]}>
+                <TouchableOpacity onPress={() => { this.setState({ showModal: true })}} 
+                                style={[styles.inputStyle,{ justifyContent: 'center', marginLeft:20}]}>
                     <CustomText customTextStyle={{color: '#000'}}>{this.getCourseValue()} </CustomText>
                     {/* <Image style={{alignSelf: 'flex-end',resizeMode:'contain', width: 20, height: 20 }} source={require('../../images/down_arrow.png')}/>  */}
                 </TouchableOpacity>
             );
         } else {
-            return <Picker style={[styles.pickerStyle, this.props.cStyle]} selectedValue={this.props.selectedValue} onValueChange={this.props.onValueChange}>
+            return <Picker  style={[styles.pickerStyle, this.props.cStyle]} 
+                            selectedValue={this.props.selectedValue} 
+                            onValueChange={this.props.onValueChange}>
                 {this.props.children}
             </Picker>
         }
@@ -57,7 +60,9 @@ class CPicker extends Component {
                     sayNo="Cancel"
                 >
                     <View style={{ padding: 20 }}>
-                        <Picker style={[styles.pickerStyle, this.props.cStyle]} selectedValue={this.props.selectedValue} onValueChange={this.props.onValueChange}>
+                        <Picker style={[styles.pickerStyle, this.props.cStyle]} 
+                        selectedValue={this.props.selectedValue} 
+                        onValueChange={this.props.onValueChange}>
                             {this.props.children}
                         </Picker>
                     </View>

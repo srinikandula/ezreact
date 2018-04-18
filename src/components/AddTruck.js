@@ -31,14 +31,14 @@ export default class AddTruck extends Component {
         fitnesspassdate: '',
         pollpassdate: '',
         insurpassdate: '',
-        selectedDriverId: '',
+        selectedDriverId: 'Select Driver',
         selectedTruckTypeId:'',
         accountId: '',
         Amount: '',
         paymentref: '',
         remark: '',
         drivers: [],
-        truckTypes:[],
+        truckTypes:[{'_id':'Select Truck Type','title':'Select Truck Type'}],
          netFlaf: false,
         spinnerBool: false
     };
@@ -122,11 +122,13 @@ export default class AddTruck extends Component {
         .then((response) => {
             if (response.data.status) {
                 console.log('getTruckTypes from add Truck ==>', response.data);
-                this.setState({ truckTypes: response.data.data });
+                var temptruckList = response.data.data;
+                temptruckList.unshift({ _id: "Select Truck Type", title: "Select Truck Type" });
+                this.setState({ truckTypes: temptruckList });
                
             } else {
                 console.log('error in getTruckTypes from add Truck ==>', response);
-                this.setState({ truckTypes: [] });
+                //this.setState({ truckTypes: [] });
             }
 
         }).catch((error) => {
@@ -170,32 +172,32 @@ export default class AddTruck extends Component {
         const self = this;
         let driversList = self.state.drivers;
         let drivrID = truckDetails.hasOwnProperty('driverId') ? truckDetails.driverId:"" ;//driverId;
-        let truckTypeId = truckDetails.truckTypeId;
+        let truckTypeId = truckDetails.hasOwnProperty('truckTypeId') ? truckDetails.truckTypeId :"";
         let truckTypesList = this.state.truckTypes;
-        if (truckDetails.driverId === null) {
+        if (drivrID === "") {
             drivrID = 'Select Driver';
         } else {
             for (let i = 0; i < driversList.length; i++) {
                 if (driversList[i]._id === drivrID) {
-                    self.setState({ truckText: Platform.OS==='ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
+                    self.setState({ truckText: Platform.OS === 'ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
                     break;
                 }
             }
         }
-        if (truckDetails.truckTypeId === null) {
+        if (truckTypeId === "") {
             truckTypeId = 'Select Truck Type';
         } else {
             for (let i = 0; i < truckTypesList.length; i++) {
                 if (truckTypesList[i]._id === truckTypeId) {
-                    self.setState({ truckType: Platform.OS==='ios'?truckTypesList[i].title:truckTypesList[i]._id + '###' +truckTypesList[i].title  });
+                    self.setState({ truckType: Platform.OS === 'ios' ? truckTypesList[i].title:truckTypesList[i]._id + '###' +truckTypesList[i].title  });
                     break;
                 }
             }
         }
         this.setState({
             truckNumber: truckDetails.registrationNo,
-            trucktonnage: truckDetails.tonnage,
-            truckmodel: truckDetails.modelAndYear,
+            trucktonnage: truckDetails.hasOwnProperty('tonnage') ?truckDetails.tonnage:"",
+            truckmodel: truckDetails.hasOwnProperty('modelAndYear') ?truckDetails.modelAndYear :"",
             //truckType: truckDetails.truckType,
             selectedTruckTypeId :truckTypeId,
             TaxDueDate: this.getDateDDMMYY(truckDetails.taxDueDate),
@@ -394,7 +396,7 @@ export default class AddTruck extends Component {
                                                 'pollutionExpiry': this.state.pollpassdate.toISOString(),
                                                 'taxDueDate': this.state.taxpassdate.toISOString(),
                                                 'driverId': driverID,
-                                                truckTypeId:this.state.selectedTruckTypeId
+                                                'truckTypeId':this.state.selectedTruckTypeId
                                             };
 
                                             this.connectNetInfo(postData)
@@ -429,9 +431,6 @@ export default class AddTruck extends Component {
         }
     }
 
-
-
-
     spinnerLoad() {
         if (this.state.spinnerBool)
             return <CSpinner />;
@@ -446,7 +445,6 @@ export default class AddTruck extends Component {
                 value={truckItem._id + "###" + truckItem.title}
             />
         );
-
     }
 
     renderPartyList() {
@@ -518,18 +516,12 @@ export default class AddTruck extends Component {
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                                 <CPicker
-                                    placeholder="Select Truck Type"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckType}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                                this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0] /* selectedDriverId: itemValue */ });console.log('')}
-                                            
-                                        }
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0]})
+                                     } }
                                         >
-                                    
-                                    <Picker.Item label = "Select Truck Type" value = "Select Truck Type" />
                                     {this.renderTruckTypeList()}
-
                                 </CPicker>
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>

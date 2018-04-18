@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, TouchableOpacity,AsyncStorage, BackHandl
 import GPSTruckMap from '../components/GPSTruckMap';
 import { NoInternetModal } from './common';
 import SplashScreen from 'react-native-splash-screen';
+import Axios from 'axios';
 var count=0;
 export default class ModulesHome extends Component {
     state={ netFlaf: false,gpsEnabled: true,

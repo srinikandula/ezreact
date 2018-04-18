@@ -32,12 +32,12 @@ export default class AddTruck extends Component {
         pollpassdate: '',
         insurpassdate: '',
         selectedDriverId: 'Select Driver',
-        selectedTruckTypeId:'',
+        selectedTruckTypeId:'Select Truck Type',
         accountId: '',
         Amount: '',
         paymentref: '',
         remark: '',
-        drivers: [],
+        drivers: [{'_id':'Select Driver',fullName:'Select Driver'}],
         truckTypes:[{'_id':'Select Truck Type','title':'Select Truck Type'}],
          netFlaf: false,
         spinnerBool: false
@@ -97,13 +97,16 @@ export default class AddTruck extends Component {
             .then((response) => {
                 if (response.data.status) {
                     console.log('driversList from add Truck ==>', response.data);
-                    this.setState({ drivers: response.data.drivers });
+                 
+                    var tempdriverList = response.data.drivers;
+                    tempdriverList.unshift({'_id':'Select Driver',fullName:'Select Driver'});
+                    this.setState({ drivers: tempdriverList });
                     if (this.props.navigation.state.params.edit) {
                         this.getTruckDetails(this.props.navigation.state.params.id);
                     }
                 } else {
                     console.log('error in DriverList from add Truck ==>', response);
-                    this.setState({ drivers: [], expirydetails: [] });
+                    this.setState({  expirydetails: [] });
                 }
 
         }).catch((error) => {
@@ -150,7 +153,7 @@ export default class AddTruck extends Component {
             .then((response) => {
                 console.log(paymentID + '<--editPaymentAPI ==>', response.data);
                 if (response.data.status) {
-                    self.setState({ spinnerBool: false });
+                   
                     this.updateViewdate(response.data.truck);
 
                 } else {
@@ -174,22 +177,22 @@ export default class AddTruck extends Component {
         let drivrID = truckDetails.hasOwnProperty('driverId') ? truckDetails.driverId:"" ;//driverId;
         let truckTypeId = truckDetails.hasOwnProperty('truckTypeId') ? truckDetails.truckTypeId :"";
         let truckTypesList = this.state.truckTypes;
-        if (drivrID === "") {
+        if (drivrID === "" || drivrID === null ) {
             drivrID = 'Select Driver';
         } else {
             for (let i = 0; i < driversList.length; i++) {
                 if (driversList[i]._id === drivrID) {
-                    self.setState({ truckText: Platform.OS === 'ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
+                    self.setState({ truckText: Platform.OS==='ios'?driversList[i].fullName: driversList[i]._id+"###"+driversList[i].fullName })
                     break;
                 }
             }
         }
-        if (truckTypeId === "") {
+        if (truckTypeId === "" || truckTypeId === null ) {
             truckTypeId = 'Select Truck Type';
         } else {
             for (let i = 0; i < truckTypesList.length; i++) {
                 if (truckTypesList[i]._id === truckTypeId) {
-                    self.setState({ truckType: Platform.OS === 'ios' ? truckTypesList[i].title:truckTypesList[i]._id + '###' +truckTypesList[i].title  });
+                    self.setState({ selectedTruckTypeId :truckTypesList[i]._id,truckType: Platform.OS==='ios'?truckTypesList[i].title:truckTypesList[i]._id + '###' +truckTypesList[i].title  });
                     break;
                 }
             }
@@ -217,6 +220,13 @@ export default class AddTruck extends Component {
             this.moveInputLabelUp(index, "55")
 
         }
+
+
+        setTimeout(function () {
+            self.setState({ selectedTruckTypeId :truckTypeId,truckType: truckDetails.truckType,
+                selectedDriverId: drivrID,
+                 spinnerBool: false });
+        }, 1000);
     }
 
     getDateDDMMYY(dateString) {
@@ -431,6 +441,9 @@ export default class AddTruck extends Component {
         }
     }
 
+
+
+
     spinnerLoad() {
         if (this.state.spinnerBool)
             return <CSpinner />;
@@ -445,6 +458,7 @@ export default class AddTruck extends Component {
                 value={truckItem._id + "###" + truckItem.title}
             />
         );
+
     }
 
     renderPartyList() {
@@ -516,12 +530,14 @@ export default class AddTruck extends Component {
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field10]}>Driver Name*</CustomText>
                                 <CPicker
+                                    placeholder="Select Truck Type"
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckType}
-                                    onValueChange={(itemValue, itemIndex) => {this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0]})
-                                     } }
+                                    onValueChange={(itemValue, itemIndex) => { this.setState({ truckType: Platform.OS==='ios'?itemValue.split("###")[1]: itemValue, selectedTruckTypeId: itemValue.split("###")[0]  })
+                                        }}
                                         >
                                     {this.renderTruckTypeList()}
+
                                 </CPicker>
                             </View>
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
@@ -531,7 +547,7 @@ export default class AddTruck extends Component {
                                     cStyle={CustomStyles.cPickerStyle}
                                     selectedValue={this.state.truckText}
                                     onValueChange={(itemValue, itemIndex) => {this.setState({ truckText: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue, selectedDriverId: itemValue.split("###")[0] })}}>
-                                    <Picker.Item label="Select Driver" value="Select Driver" />
+                                    
                                     {this.renderPartyList()}
                                 </CPicker>}
                                 

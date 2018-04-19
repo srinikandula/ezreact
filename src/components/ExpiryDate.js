@@ -173,17 +173,20 @@ export default class ExpiryDate extends Component {
         var date = item[this.state.lookFor];
         //console.log('date-riyaz',date,item[this.state.lookFor]);
         var formattedDate = new Date(date);
-        if (true) {
+        if (true) {//this.functiona(new Date(date)) > 15
+            return (
+                <Text style={[CustomStyles.erpSubCatText, { color: 'green' }]}>
+                    {formattedDate.getDate() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear()}
+                </Text>);
+        }else if (this.functiona(new Date(date)) > 2 && this.functiona(new Date(date)) <= 15) {
+            return (
+                <Text style={[CustomStyles.erpSubCatText, { color: 'orange' }]}>
+                    {formattedDate.getDate() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear()}
+                </Text>);
+         } else {
             return (
                 <Text style={[CustomStyles.erpSubCatText, { color: 'red' }]}>
-                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString()
-                    }
-                </Text>);
-        } else {
-            return (
-                <Text style={[CustomStyles.erpSubCatText, { color: 'yellow' }]}>
-                    {formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString()
-                    }
+                    {formattedDate.getDate() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear()}
                 </Text>);
         }
     }
@@ -198,7 +201,7 @@ export default class ExpiryDate extends Component {
 
         // Calculate the difference in milliseconds
         var difference_ms = date2_ms - date1_ms;
-
+        console.log('difference_ms',Math.round(difference_ms / one_day));
         // Convert back to days and return
         return Math.round(difference_ms / one_day);
     }

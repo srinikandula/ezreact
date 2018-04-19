@@ -94,7 +94,7 @@ export default class ERPSubCategory extends Component {
 
     getParsedDate(date){
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
+        return formattedDate.getDate().toString() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear().toString();
       }
 
       getExpenseFromData(expenseType,expenseCost,num){

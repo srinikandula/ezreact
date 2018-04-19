@@ -118,7 +118,8 @@ export default class DriverList extends Component {
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
-        return "Licence Valid till  " + formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
+        console.log('Licence Valid till-->',formattedDate)
+        return "Licence Valid till  " + formattedDate.getDate() + "/" + (formattedDate.getMonth()+1)  + "/" + formattedDate.getFullYear() ;
     }
 
     renderSeparator = () => (

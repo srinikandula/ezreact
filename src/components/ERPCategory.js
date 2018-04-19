@@ -1157,7 +1157,7 @@ export default class ERPCategory extends Component {
         const android = RNFetchBlob.android;
         var currdate = new Date();
         RNFetchBlob.config({
-            path: '/data/user/0/com.easygaadi/files/' + self.props.navigation.state.params.mode + currdate.getDay() + 'easyGaadi.xlsx',
+            path: '/data/user/0/com.easygaadi/files/' + self.props.navigation.state.params.mode + currdate.getDate() + 'easyGaadi.xlsx',
             // add this option that makes response data to be stored as a file,
             // this is much more performant.
             fileCache: true,

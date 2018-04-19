@@ -70,7 +70,6 @@ export default class PaymentList extends Component {
                             console.log('error in PaymentList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
                         }
-
                     }).catch((error) => {
                         console.log('error in PaymentList ==>', error);
                     })
@@ -105,7 +104,7 @@ export default class PaymentList extends Component {
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
-        return "Date : " + formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString();
+        return "Date : " + formattedDate.getDate() + "/" + (formattedDate.getMonth() +1) + "/" + formattedDate.getFullYear();
     }
 
     renderSeparator = () => (

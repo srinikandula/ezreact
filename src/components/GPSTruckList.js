@@ -175,7 +175,7 @@ export default class GPSTruckList extends Component {
 
     getParsedDate(date) {
         var formattedDate = new Date(date);
-        return formattedDate.getDay().toString() + "/" + formattedDate.getMonth().toString() + "/" + formattedDate.getFullYear().toString() + "  " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
+        return formattedDate.getDate() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear() + "  " + formattedDate.getHours() + ' : ' + formattedDate.getMinutes();
     }
 
     renderSeparator = () => (

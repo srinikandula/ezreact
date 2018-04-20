@@ -43,6 +43,14 @@ let routes = {
     //partyList : '/party/get/all',
     partyList : '/party/get/accountParties',
     trucksList : '/trucks/groupTrucks',
+
+    ///receipts/addReceipts
+    addReceipts:'/receipts/addReceipts',
+    editReceipts:'/receipts/getReceiptRecord/',
+    updateReceipts:'/receipts/updateReceipts',
+    receiptsList:'/receipts/getReceipts',
+
+
     paymentList : '/payments/getPayments',
     ExpensesList : '/expense/getAllExpenses',
     tripsList : '/trips/getAllAccountTrips',
@@ -52,9 +60,10 @@ let routes = {
     OtpVerfication:'/group/verify-otp',
 
     //Payments api
-    addPayment:'/payments/addPayments',
+    addPayment:'/payments/addPayment',
+    getPaymentDetails:'/payments/getPaymentDetails?_id=',
     editPayment:'/payments/getPaymentsRecord/',
-    updatePayment:'/payments/updatePayments/',
+    updatePayment:'/payments/updatePayment',
     getpartyTrip:'/trips/getPartiesByTrips',
 
     //trucks api--add ,edit(GET--trucks/id)

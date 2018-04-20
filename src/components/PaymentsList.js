@@ -10,7 +10,7 @@ import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import { NoInternetModal } from './common';
 
 
-export default class PaymentList extends Component {
+export default class PaymentsList extends Component {
     state = {
         categoryBgColor: false, token: '', paymentsList: [], dummyPaymentsList: [], partyName: '', netFlaf: false
     };
@@ -65,7 +65,7 @@ export default class PaymentList extends Component {
                     .then((response) => {
                         if (response.data.status) {
                             console.log('PaymentList ==>', response.data);
-                            this.setState({ paymentsList: response.data.paymentsCosts, dummyPaymentsList: response.data.paymentsCosts })
+                            this.setState({ paymentsList: response.data.payments, dummyPaymentsList: response.data.payments })
                         } else {
                             console.log('error in PaymentList ==>', response);
                             this.setState({ erpDashBroadData: [], expirydetails: [] });
@@ -118,8 +118,8 @@ export default class PaymentList extends Component {
 
     getName(item) {
         var data = '-';
-        if (item.hasOwnProperty("attrs")) {
-            data = item.attrs.partyName;
+        if (item.hasOwnProperty("partyId")) {
+            data = item.partyId.name;
         } else {
             data = '-';
         }
@@ -193,7 +193,7 @@ export default class PaymentList extends Component {
                             onChangeText={(truckNumber) => { this.FilterList(truckNumber) }}
                         />
                     </View>
-                    <View style={[{ display: self.state.paymentsList.length === 0 ? 'flex' : 'none' }, CustomStyles.noResultView]}>
+                    <View style={[CustomStyles.noResultView,{ display: self.state.paymentsList.length === 0 ? 'flex' : 'none' }]}>
                         <Text style={[CustomStyles.erpText, {
                             color: '#1e4495', fontWeight: 'bold',
                             textDecorationLine: 'underline', alignSelf: 'stretch', alignItems: 'center',
@@ -205,11 +205,7 @@ export default class PaymentList extends Component {
                         extraData={this.state.paymentsList}
                         ItemSeparatorComponent={this.renderSeparator}
                         renderItem={({ item }) =>
-                            // <TouchableOpacity
-                            // onPress={() => { this.setState({
-                            //                     categoryBgColor: !this.state.categoryBgColor
-                            //                      });}}
-                            // >
+                           
                             <View style={[CustomStyles.erpCategoryCardItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#f6f6f6' }]}>
                                 <View style={CustomStyles.erpDriverItems}>
                                     <View style={[CustomStyles.erpTextView, { flex: 0.4, borderBottomWidth: 0 }]}>
@@ -229,7 +225,7 @@ export default class PaymentList extends Component {
 
                                     </View>
                                     <View style={[CustomStyles.erpTextView, { flex: 0.2, alignItems: 'flex-end', borderBottomWidth: 0, paddingBottom: 5 }]}>
-                                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddPayment', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) }}>
+                                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddPayments', { token: this.state.token, id: item._id, edit: true, refresh: this.refreshFunction }) }}>
                                             <Image resizeMode="contain"
                                                 source={require('../images/form_edit.png')}
                                                 style={CustomStyles.drivervEditIcons} />
@@ -246,7 +242,7 @@ export default class PaymentList extends Component {
                 </View>
                 <View style={CustomStyles.addGroupImageStyle}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('AddPayment', { token: this.state.token, edit: false, refresh: this.refreshFunction }) }}
+                        onPress={() => { this.props.navigation.navigate('AddPayments', { token: this.state.token, edit: false, refresh: this.refreshFunction }) }}
                     >
                         <Image source={require('../images/eg_payments.png')}
                             style={CustomStyles.addImage} />
@@ -258,6 +254,4 @@ export default class PaymentList extends Component {
 
         );
     }
-
 }
-

@@ -894,13 +894,23 @@ export default class GPSTruckMap extends Component {
                     {self.getView()}
                 </View>
 
-                <View style={[CustomStyles.addGroupImageStyle, { backgroundColor: '#4c69a9', width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 25 }]}>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ view: this.state.view === 'mapShow' ? 'listshow' : 'mapShow' }); }}
-                    >
-                        <Image source={this.state.view === 'mapShow' ? require('../images/gps_truck_list_icon.png') : require('../images/gps_map_lap_icon.png')}
-                            style={{ width: 20, height: 20, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }} />
-                    </TouchableOpacity>
+                <View style={[CustomStyles.addGroupImageStyle, {  justifyContent: 'center', alignItems: 'center'  }]}>
+                    <View style={ { marginBottom:5, backgroundColor: '#4c69a9', width: 30, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 25 }}>
+                        <TouchableOpacity
+                                onPress={() => { this.connectionInfo();; }}
+                            >
+                            <Image source={  require('../images/reload_track.png')  }
+                                style={{ width: 15, height: 15, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={ { backgroundColor: '#4c69a9', width: 30, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 25 }}>
+                        <TouchableOpacity
+                            onPress={() => { this.setState({ view: this.state.view === 'mapShow' ? 'listshow' : 'mapShow' }); }}
+                        >
+                            <Image source={this.state.view === 'mapShow' ? require('../images/gps_truck_list_icon.png') : require('../images/gps_map_lap_icon.png')}
+                                style={{ width: 15, height: 15, resizeMode: 'contain', margin: 10, marginHorizontal: 5 }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 <TrackModal
@@ -979,7 +989,6 @@ export default class GPSTruckMap extends Component {
                                                 placeholder={'Select Date'}
                                                 value={this.state.forDate}
                                                 inputTextStyle={{ alignSelf: 'stretch' }}
-
                                             />
                                         </View>
                                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

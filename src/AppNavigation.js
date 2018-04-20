@@ -15,9 +15,11 @@ import ErpHome from './components/ErpHome';
 import DriverList from './components/DriverList';
 import PartyList from './components/PartyList';
 import TruckList from './components/TruckList';
-import PaymentList from './components/PaymentList';
+import PaymentsList from './components/PaymentsList';
 import ExpenseList from './components/ExpenseList';
 import TripList from './components/TripList';
+import ReceiptsList from './components/ReceiptsList';
+
 //BOTTOM navigation
 import GpsSetting from './components/GpsSetting';
 import ReportsSetting from './components/ReportsSetting';
@@ -27,10 +29,11 @@ import Notifications from './components/Notifications';
 //adding Element
 import AddDriver from './components/AddDriver';
 import AddParty from './components/AddParty';
-import AddPayment from './components/AddPayment';
+import AddPayments from './components/AddPayments';
 import AddTruck from './components/AddTruck';
 import AddTrip from './components/AddTrip';
 import AddExpense from './components/AddExpense';
+import AddReceipts from './components/AddReceipts';
 
 import ERPCategory from './components/ERPCategory';
 import ERPSubCategory from './components/ERPSubCategory';
@@ -88,8 +91,17 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 			headerTintColor: '#fff'
 		}
 	},
-	AddPayment: {
-		screen: AddPayment,
+	AddReceipts:{
+		screen: AddReceipts,
+		navigationOptions: {
+			headerTitle: 'Add Receipt',
+			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+			headerStyle: { backgroundColor: '#1e4495' },
+			headerTintColor: '#fff'
+		}
+	},
+	AddPayments: {
+		screen: AddPayments,
 		navigationOptions: {
 			headerTitle: 'Add Payment',
 			headerTitleStyle: { fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
@@ -300,8 +312,22 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									/>)
 								}
 							},
+							Receipts:{
+								screen: ReceiptsList, navigationOptions: {
+									headerTitle: 'RECEIPTS  DETAILS',
+									headerTintColor: '#fff',
+
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerStyle: { backgroundColor: '#1e4495' },
+									tabBarIcon: (<Image
+										source={require('./images/tabReceiptIcon.png')}
+										style={{ height: 30, width: 40 }}
+										resizeMode='contain'
+									/>)
+								}
+							},
 							Payments: {
-								screen: PaymentList, navigationOptions: {
+								screen: PaymentsList, navigationOptions: {
 									headerTitle: 'PAYMENT DETAILS',
 									headerTintColor: '#fff',
 

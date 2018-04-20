@@ -175,7 +175,7 @@ export default class ExpiryDate extends Component {
         var formattedDate = new Date(date);
         if (true) {//this.functiona(new Date(date)) > 15
             return (
-                <Text style={[CustomStyles.erpSubCatText, { color: 'green' }]}>
+                <Text style={[CustomStyles.erpSubCatText, { color: 'red' }]}>
                     {formattedDate.getDate() + "/" + (formattedDate.getMonth()+1) + "/" + formattedDate.getFullYear()}
                 </Text>);
         }else if (this.functiona(new Date(date)) > 2 && this.functiona(new Date(date)) <= 15) {

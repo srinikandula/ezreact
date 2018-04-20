@@ -9,7 +9,7 @@ import Axios from 'axios';
 import CustomStyles from './common/CustomStyles';
 import Utils from './common/Utils';
 import { NoInternetModal } from './common';
-export default class AddPayment extends Component {
+export default class AddPayments extends Component {
     //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
     state = {
         defaultDate: new Date(),
@@ -31,8 +31,6 @@ export default class AddPayment extends Component {
     componentWillMount() {
         // console.log("payment token",this.props.navigation.state.params.token);
         this.connectionInfo();
-
-
     }
 
     async connectionInfo() {
@@ -112,14 +110,14 @@ export default class AddPayment extends Component {
         Axios({
             method: 'get',
             headers: { 'token': self.props.navigation.state.params.token },
-            url: Config.routes.base + Config.routes.editPayment + paymentID,
+            url: Config.routes.base + Config.routes.getPaymentDetails + paymentID,
 
         })
             .then((response) => {
                 console.log(paymentID + '<--editPaymentAPI ==>', response.data);
                 if (response.data.status) {
                     self.setState({ spinnerBool: false });
-                    this.updateViewdate(response.data.paymentsDetails);
+                    this.updateViewdate(response.data.data);
 
                 } else {
                     // console.log('fail in forgotPassword ==>', response);
@@ -141,7 +139,7 @@ export default class AddPayment extends Component {
         let partyList = self.state.partyList;
 
         for (let i = 0; i < partyList.length; i++) {
-            if (partyList[i]._id === paymentDetails.partyId) {
+            if (partyList[i]._id === paymentDetails.partyId._id) {
                 self.setState({ truckText: Platform.OS === 'ios' ? partyList[i].name : partyList[i]._id + "###" + partyList[i].name })
             }
         }
@@ -153,11 +151,9 @@ export default class AddPayment extends Component {
         this.setState({
             Amount: amt, remark: paymentDetails.description,
             date: dateStr,
-            selectedPartyId: paymentDetails.partyId,
+            selectedPartyId: paymentDetails.partyId._id,
             passdate: passdateStr,
-            paymentType: paymentDetails.paymentType,
             accountId: paymentDetails.accountId,
-            paymentref: paymentDetails.paymentRefNo
         }, () => {
             console.log(this.state.selectedPartyId);
         });
@@ -185,7 +181,7 @@ export default class AddPayment extends Component {
             data: postdata
         })
             .then((response) => {
-                console.log(postdata, '<--callAddPaymentAPI ==>', response.data);
+                console.log(postdata, '<--callAddPaymentAPI ==>'+url, response.data);
                 if (response.data.status) {
 
                     self.setState({ spinnerBool: false });
@@ -272,37 +268,17 @@ export default class AddPayment extends Component {
         if (this.state.date.includes('/')) {
             if (!this.state.selectedPartyId.includes('Select Party')) {
                 if (this.state.Amount.length > 0) {
-                    if (!this.state.paymentType.includes("paymenttype")) {
+                    if (true) {
                         var date = new Date(this.state.passdate);
                         console.log(date.toISOString());
-                        if (this.state.paymentType.includes("cash")) {
+                       
                             var postData = {
                                 'amount': this.state.Amount,
                                 'date': date.toISOString(),
                                 'description': this.state.remark,
                                 'partyId': this.state.selectedPartyId,
-                                'paymentRefNo': this.state.paymentref,
-                                'paymentType': this.state.paymentType
                             };
                             this.connectNetInfo(postData);
-
-                        } else {
-                            if (this.state.paymentref.length > 0) {
-                                var postData = {
-                                    amount: this.state.Amount,
-                                    'date': date.toISOString(),
-                                    description: this.state.remark,
-                                    partyId: this.state.selectedPartyId,
-                                    paymentRefNo: this.state.paymentref,
-                                    paymentType: this.state.paymentType
-                                };
-
-                                this.connectNetInfo(postData);
-
-                            } else {
-                                Utils.ShowMessage('Please Enter Reference Number to ' + this.state.paymentType);
-                            }
-                        }
                     } else {
                         Utils.ShowMessage('Please Select Payment Type ');
                     }
@@ -317,25 +293,7 @@ export default class AddPayment extends Component {
         }
     }
 
-    getPaymentreferenceView() {
-        let placeholderstr = 'References no  ' + this.state.paymentType;
-        if (this.state.paymentType.includes('cash')) {
-            return;
-        } else if (!this.state.paymentType.includes('paymenttype')) {
-            return <View style={{
-                backgroundColor: '#ffffff', margin: 10, marginHorizontal: 5, borderWidth: 1,
-                borderColor: '#000'
-            }}>
-                <CustomEditText underlineColorAndroid='transparent'
-                    inputTextStyle={{ marginHorizontal: 16 }}
-                    placeholder={placeholderstr}
-                    value={this.state.paymentref}
-                    onChangeText={(paymentref) => { this.moveInputLabelUp(10, paymentref), this.setState({ paymentref: paymentref }) }} />
-            </View>
-        } else {
-            return;
-        }
-    }
+    
 
     spinnerLoad() {
         if (this.state.spinnerBool)
@@ -423,20 +381,7 @@ export default class AddPayment extends Component {
                                         value={this.state.Amount}
                                         onChangeText={(Amount) => { this.moveInputLabelUp(2, Amount), this.setState({ Amount: Amount }) }} />
                                 </View>
-                                <View style={{ backgroundColor: '#ffffff', marginTop: 15, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-                                    <CustomText customTextStyle={[{ position: 'absolute', left: 20, bottom: 40, color: '#525252' }, this.state.field10]}>Payment mode</CustomText>
-                                    <CPicker
-                                        placeholder="Payment Type"
-                                        cStyle={CustomStyles.cPickerStyle}
-                                        selectedValue={this.state.paymentType}
-                                        onValueChange={(itemValue, itemIndex) => this.setState({ paymentType: itemValue })}>
-                                        <Picker.Item label="Payment Type" value="paymenttype" />
-                                        <Picker.Item label="NEFT" value="neft" />
-                                        <Picker.Item label="CHECK" value="check" />
-                                        <Picker.Item label="CASH" value="cash" />
-                                    </CPicker>
-                                </View>
-                                {this.getPaymentreferenceView()}
+                                
                                 <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>Description</CustomText>

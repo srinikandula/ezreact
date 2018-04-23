@@ -360,7 +360,7 @@ export default class AddExpense extends Component {
                             //--credit mode
                             if (!this.state.selectedPartyID.includes("Select Party Name")) {
                                 if (this.state.totalAmount.length > 0) {
-                                    if (this.state.paidAmount.length > 0) {
+                                    if (true) {//this.state.paidAmount.length > 0
                                         var date = new Date(this.state.passdate);
                                         var postData = {
                                             "date": date.toISOString(),
@@ -368,7 +368,7 @@ export default class AddExpense extends Component {
                                             "expenseName": this.state.otherExpense,
                                             "expenseType": this.state.selectedExpenseType,//for other type 
                                             "mode": this.state.paymentType,
-                                            "paidAmount": Number(this.state.paidAmount),// if mode is credit is mandatory
+                                            "paidAmount": this.state.paidAmount.length > 0 ? Number(this.state.paidAmount) : 0,// if mode is credit is mandatory
                                             "partyId": this.state.selectedPartyID,
                                             "totalAmount": Number(this.state.totalAmount),
                                             "vehicleNumber": this.state.selectedVehicleId,
@@ -651,7 +651,7 @@ export default class AddExpense extends Component {
                                         onChangeText={(totalAmount) => { this.moveInputLabelUp(5, totalAmount); this.setState({ totalAmount: totalAmount.trim() }); }} />
                                 </View>
 
-                                <View style={{ display: this.state.creditBool, backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <View style={{ display: 'none', backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                                     <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field6]}>
                                         Paid Amount* </CustomText>

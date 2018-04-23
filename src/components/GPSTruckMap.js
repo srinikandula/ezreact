@@ -65,6 +65,9 @@ export default class GPSTruckMap extends Component {
         const self = this;
         console.log('this.props gpstractlocation', self.props);
         let currDate = new Date();
+        currDate.setMinutes(0);
+        currDate.setHours(0);
+        currDate.setSeconds(0);
         let showHeaderBool = self.props.showHeader;
         if (self.props.showHeader === undefined || self.props.showHeader === 'undefined') {
             showHeaderBool = self.props.navigation.state.params.showHeader;
@@ -346,7 +349,12 @@ export default class GPSTruckMap extends Component {
 
     }
     markerClick(markerData) {
-        this.setState({ fromPassdate: this.lisDateFilter(new Date()), toPassdate: this.lisDateFilter(new Date()) })
+        let currDate = new Date();
+        currDate.setMinutes(0);
+        currDate.setHours(0);
+        currDate.setSeconds(0);
+
+        this.setState({ fromPassdate: this.lisDateFilter(new Date(currDate)), toPassdate: this.lisDateFilter(new Date()) })
         console.log(markerData, 'markerData');
         let date = new Date();
         var passdateStr = date.toLocaleDateString() + "  "+ date.getHours()+1 +": " + date.getMinutes();

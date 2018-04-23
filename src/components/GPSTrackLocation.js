@@ -340,6 +340,7 @@ export default class GPSTrackLocation extends Component {
                                 if (index == 0) {
                                     return (
                                         <MapView.Marker key={index}
+                                        
                                             image={require('../images/trip_start.png')}
                                             coordinate={{
                                                 latitude: marker.coordinate.latitude,
@@ -418,7 +419,8 @@ export default class GPSTrackLocation extends Component {
                                         if(!marker.isIdle && !marker.isStopped){
                                                 return (
                                                     <MapView.Marker key={index}
-                                                        image={require('../images/truck_running.png')}
+                                                        rotation={Math.floor(marker.course)}
+                                                        image={require('../images/map_direc.png')}
                                                         coordinate={{
                                                             latitude: marker.coordinate.latitude,
                                                             longitude: marker.coordinate.longitude
@@ -427,6 +429,7 @@ export default class GPSTrackLocation extends Component {
                                                      <MapView.Callout style={CustomStyles.mapcard}
                                                         onPress={() => { console.log(marker,'shhhharatt') }}>
                                                         <View style={CustomStyles.mapContent}>
+                                                            <Text>{'rotation :'}{marker.course}</Text>
                                                             <Text>{'Reg.No :'}{this.state.truckNum}</Text>
                                                             <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
                                                             <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
@@ -458,7 +461,7 @@ export default class GPSTrackLocation extends Component {
                                 coordinates={this.state.coordinates}
                                 strokeWidth={1}
                                 fillColor="rgba(255,0,0,0.5)"
-                                strokeColor="green"
+                                strokeColor="red"
                                 lineCap="round"
                                 lineJoin="round"
                                 geodesic={true}

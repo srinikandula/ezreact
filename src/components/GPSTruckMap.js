@@ -54,7 +54,7 @@ export default class GPSTruckMap extends Component {
         }],
         forDate: '',
         forPassdate: '',
-        view: 'no',
+        view: 'mapShow',
         netFlaf: false,
         spinnerBool: false,
         fromtime:'',
@@ -140,7 +140,7 @@ export default class GPSTruckMap extends Component {
                             if (response.data.data.length == 0) {
                                 this.setState({ spinnerBool: false, view: 'no' });
                             } else {
-                                this.setState({ spinnerBool: false, view: 'mapShow' });
+                                this.setState({ spinnerBool: false });
                                 var catgryarr = response.data.data;
                                 catgryarr = catgryarr.filter(function (item, index) {
                                     if (item.hasOwnProperty('attrs'))
@@ -171,6 +171,7 @@ export default class GPSTruckMap extends Component {
                                             registrationNo: catgryarr[index].registrationNo,
                                             speed: catgryarr[index].attrs.latestLocation.speed,
                                             address: catgryarr[index].attrs.latestLocation.address,
+                                            odemeter:catgryarr[index].attrs.latestLocation.totalDistance,
                                             date: catgryarr[index].updatedAt,
                                             isStopped: catgryarr[index].attrs.latestLocation.isStopped,
                                             isIdle: catgryarr[index].attrs.latestLocation.isIdle
@@ -408,7 +409,7 @@ export default class GPSTruckMap extends Component {
 
     //this.getParsedDate(item.updatedAt)
     getupdateDate(item) {
-        console.log(item.updatedAt, 'updatedAt');
+       // console.log(item.updatedAt, 'updatedAt');
         var data = 'Date : \n' + '';
         if (item.hasOwnProperty("updatedAt")) {
             data = 'Date : \n' + this.getParsedDate(item.updatedAt);
@@ -489,8 +490,8 @@ export default class GPSTruckMap extends Component {
                                             onPress={() => { this.markerClick(marker) }}>
                                             <View style={CustomStyles.mapContent}>
                                                 <Text>{'Reg.No :'}{marker.registrationNo}</Text>
-                                                <Text>{'Speed :'}{marker.speed}'-km/hr'</Text>
-                                                <Text>{'Odemeter :'}{'*****km'}</Text>
+                                                <Text>{'Speed :'}{Math.round(marker.speed)}'-km/hr'</Text>
+                                                <Text>{'Odoemeter :'}{Math.round(marker.odemeter)} '-km'</Text>
                                                 <Text>{'Date :'}{this.getParsedDate(marker.date)}</Text>
                                                 <Text>{'Address :'}{marker.address}</Text>
 

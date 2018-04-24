@@ -130,6 +130,7 @@ export default class GPSTrackLocation extends Component {
                                 //         longitude: Number(element.location.coordinates[0])
                                 //     };
                                 //     coordinateArr1.push(element);
+                                console.log(element.isStopped, ' index==>>>'+index)
                                  }
 
                                 this.setState({ coordinates: coordinateArr, coordinates1: coordinateArr1, showDependable: '' + coordinateArr.length, spinnerBool: false }, () => {
@@ -480,6 +481,7 @@ export default class GPSTrackLocation extends Component {
                             // ItemSeparatorComponent={this.renderSeparator}
                             removeClippedSubviews={true}
                             renderItem={({ item }) => {
+                                console.log(item.isStopped,'isstopped index'+ this.state.coordinates1.indexOf(item));
                                 if (item.isStopped) {
                                     return (
                                         <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#ffffff',borderBottomWidth:1,borderBottomColor: '#ddd' }]}>
@@ -706,7 +708,7 @@ export default class GPSTrackLocation extends Component {
                                 source={require('../images/back_icon.png')} />
                         </TouchableOpacity>
                         <Text style={[CustomStyles.erpText, { color: 'white', paddingVertical: 3, fontFamily: 'Gotham-Medium', fontSize: 12, margin: 10, marginLeft: 3 }]}>
-                            Track{(this.state.truckNum).substr(0,9)}..</Text>
+                            Track{(this.state.truckNum).substr(0,7)}..</Text>
                     </View>
 
 

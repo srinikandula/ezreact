@@ -4,9 +4,9 @@ import CustomStyles from './common/CustomStyles';
 import { NoInternetModal } from './common';
 import Config from '../config/Config';
 import Axios from 'axios';
-
+import Utils from '../components/common/Utils';
 export default class Notifications extends Component {
-    state = {notifyData: [],message:'', showMail: false};
+    state = {notifyData: [],message:'',noData:'', showMail: false};
 
     componentWillMount() {
                 this.getCredentailsData();
@@ -62,7 +62,14 @@ export default class Notifications extends Component {
                         this.setState({ spinnerBool: false });
                     } else {
                         console.log('no  Notification ==>', response);
-                    // this.setState({ trucks: [] });
+                        
+                        let message = "";
+                    if (response.data)
+                        response.data.messages.forEach(function (current_value) {
+                            message = message + current_value;
+                        });
+                    Utils.ShowMessage(message);
+                    this.setState({noData:message});
                     }
                     this.setState({ spinnerBool:false });
                 }).catch((error) => {
@@ -154,12 +161,12 @@ export default class Notifications extends Component {
                         NOTIFICATIONS
                         </Text>
                 </View>
+                
                 <View style={CustomStyles.noResultView}>
                             <Text style={[CustomStyles.erpText,{color:'#1e4495',fontWeight:'bold',
                                 textDecorationLine:'underline',alignSelf:'stretch',alignItems:'center',}]}>
                                 {this.state.noData}</Text>
                         </View>
-
                 <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
                             data={this.state.notifyData}
                             ItemSeparatorComponent={this.renderSeparator}

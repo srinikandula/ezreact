@@ -490,8 +490,8 @@ export default class GPSTruckMap extends Component {
                                             onPress={() => { this.markerClick(marker) }}>
                                             <View style={CustomStyles.mapContent}>
                                                 <Text>{'Reg.No :'}{marker.registrationNo}</Text>
-                                                <Text>{'Speed :'}{Math.round(marker.speed)}'-km/hr'</Text>
-                                                <Text>{'Odoemeter :'}{Math.round(marker.odemeter)} '-km'</Text>
+                                                <Text>{'Speed :'}{Math.round(marker.speed)}'km/hr'</Text>
+                                                <Text>{'Odoemeter :'}{Math.round(marker.odemeter)} 'km'</Text>
                                                 <Text>{'Date :'}{this.getParsedDate(marker.date)}</Text>
                                                 <Text>{'Address :'}{marker.address}</Text>
 

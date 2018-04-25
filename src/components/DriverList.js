@@ -99,7 +99,7 @@ export default class DriverList extends Component {
 
 
     callSubCategoryScreen(item) {
-        if (this.getmobile(item).legth > 1) {
+        if (this.getmobile(item).length > 1) {
             RNImmediatePhoneCall.immediatePhoneCall('' + item.mobile);
         } else {
             Utils.ShowMessage('Mobile Number is Invalid');

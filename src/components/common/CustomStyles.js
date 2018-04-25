@@ -1403,7 +1403,7 @@ const androidStyles = {
         //color: 'black',
         //backgroundColor: 'red',
         //fontSize: 16,
-        padding: 5,
+        padding: 2,
         borderWidth: 0,
         borderBottomWidth: 1,
         borderBottomColor: 'black'

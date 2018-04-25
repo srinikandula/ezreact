@@ -237,7 +237,8 @@ export default class ERPCategory extends Component {
         } else {
             NetInfo.isConnected.fetch().then(isConnected => {
                 console.log('isConnected', isConnected);
-                if (isConnected) { this.onNetSuccess(truckNum, truckAmount, truckID); }
+                if (isConnected) {
+                     this.onNetSuccess(truckNum, truckAmount, truckID); }
                 else { return this.setState({ netFlaf: true }); }
             });
         }
@@ -310,7 +311,7 @@ export default class ERPCategory extends Component {
             self.props.navigation.state.params.mode = 'Receivables';
             this.setState({ payablesBool: '#ffffff', receiveablesBool: '#1e4495', role: 'Supplier' });
             this.setState({ paymentsParties: [] });
-            this.paymentRoleData('Receivables', Config.routes.base + Config.routes.totalPaymentFromParty);
+            this.paymentRoleData('Receivables', Config.routes.base + Config.routes.receiptsReportsList);//totalPaymentFromParty
         }
     }
 
@@ -322,11 +323,13 @@ export default class ERPCategory extends Component {
         if (Platform.OS === "ios") {
             let isConnected = await fetch("https://www.google.com")
                 .catch((error) => { this.setState({ netFlaf: true }); });
-            if (isConnected) { this.onNetSuccessTwo(str, url); }
+            if (isConnected) { 
+                this.onNetSuccessTwo(str, url); }
         } else {
             NetInfo.isConnected.fetch().then(isConnected => {
                 console.log('isConnected', isConnected);
-                if (isConnected) { this.onNetSuccessTwo(str, url); }
+                if (isConnected) { 
+                    this.onNetSuccessTwo(str, url); }
                 else { return this.setState({ netFlaf: true }); }
             });
         }
@@ -348,26 +351,26 @@ export default class ERPCategory extends Component {
                         if (response.data.paybleAmounts.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
-                        Actions.refresh({
+                        /*Actions.refresh({
                             token: self.props.navigation.state.params.token,
                             Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                             //Url: Config.routes.base + Config.routes.totalPayeblesPayment,
                             mode: 'Payments',
                             label: 'Total Payments Details'
-                        });
+                        });*/
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     } else {
                         self.setState({ paymentsParties: response.data.parties, paymentsGrossAmounts: response.data.grossAmounts });
                         if (response.data.parties.length == 0) {
                             Utils.ShowMessage('No Records Found');
                         }
-                        Actions.refresh({
+                       /* Actions.refresh({
                             token: self.props.navigation.state.params.token,
                             //Url: Config.routes.base + Config.routes.totalPaymentFromParty,
                             Url: Config.routes.base + Config.routes.totalPaymentFromParty,
                             mode: 'Receivables',
                             label: 'Total Payments Details'
-                        });
+                        });*/
                         this.callDependenciesList(Config.routes.base + Config.routes.partyList);
                     }
                 } else {

@@ -155,8 +155,8 @@ export default class GPSTrackLocation extends Component {
                             this.setState({
                                 spinnerBool: false, truckNum: data.truckId, distanceTravelled: response.data.results.distanceTravelled,
                                 timeTravelled: response.data.results.timeTravelled, averageSpeed: response.data.results.averageSpeed,
-                               // odemeter: response.data.results.distanceTravelled,
-                                //topSpeed:response.data.results.distanceTravelled,
+                                odemeter: response.data.results.distanceTravelled,
+                                topSpeed:response.data.results.topSpeed,
                             })
 
                         } else {
@@ -336,7 +336,7 @@ export default class GPSTrackLocation extends Component {
                             style={CustomStyles.map}
                             initialRegion={this.state.initialPoint}
                             zoomEnabled={true}
-                            maxZoomLevel={15}>
+                           >
                             {this.state.coordinates1.map((marker, index) => {
                                 if (index == 0) {
                                     return (
@@ -430,7 +430,6 @@ export default class GPSTrackLocation extends Component {
                                                      <MapView.Callout style={CustomStyles.mapcard}
                                                         onPress={() => { console.log(marker,'shhhharatt') }}>
                                                         <View style={CustomStyles.mapContent}>
-                                                            <Text>{'rotation :'}{marker.course}</Text>
                                                             <Text>{'Reg.No :'}{this.state.truckNum}</Text>
                                                             <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
                                                             <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
@@ -554,7 +553,7 @@ export default class GPSTrackLocation extends Component {
                                             onPress={() => { this.markerClick(marker) }}>
                                             <View style={CustomStyles.mapContent}>
                                                 <Text>{'Reg.No :'}{'marker.registrationNo'}</Text>
-                                                <Text>{'Odemeter :'}{'*****km'}</Text>
+                                                <Text>{'Odoemeter :'}{'*****km'}</Text>
                                                 <Text>{'Date :'}{'this.getParsedDate(marker.date)'}</Text>
 
                                             </View>
@@ -584,7 +583,7 @@ export default class GPSTrackLocation extends Component {
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                     Distance Travelled</Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {Math.floor(Number(this.state.distanceTravelled))}</Text>
+                                        {/*Math.floor(Number(this.state.distanceTravelled))*/}</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
@@ -600,7 +599,7 @@ export default class GPSTrackLocation extends Component {
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        Odemeter </Text>
+                                        Odoemeter </Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                         {Math.floor(Number(this.state.odemeter))} Km</Text>
                                 </View>

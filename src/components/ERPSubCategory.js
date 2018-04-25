@@ -36,7 +36,7 @@ export default class ERPSubCategory extends Component {
                         self.setState({trips:response.data.trips,totalRevenue: response.data.totalRevenue});
                     
                     }else if(self.props.navigation.state.params.mode == 'Payments'){
-                        self.setState({payementsResults:response.data.partyData,totalPayablePayments: response.data.grossAmounts});
+                        self.setState({payementsResults:response.data.partyData,totalPayablePayments:{totalAmount:response.data.totalAmount,totalPaid:response.data.totalPaid,payableAmount:response.data.hasOwnProperty('payableAmount')?response.data.payableAmount:0 }});
                     }else if(self.props.navigation.state.params.mode == 'Receivables'){
                         self.setState({payementsResults:response.data.results,totalPendingPayments: response.data.totalPendingPayments});
                     }                       
@@ -290,13 +290,13 @@ export default class ERPSubCategory extends Component {
                                         <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Expense</Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Total Amt. </Text>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Paid Amt. </Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Paid Amt.</Text>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}> Type </Text>
                                     </View>
                                     <View style={CustomStyles.erpTextView}>
-                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Payable</Text>
+                                        <Text style={[CustomStyles.erpSubCatHeaderText,{fontSize:13}]}>Descript..</Text>
                                     </View>
                             </View>
                             <FlatList style={{ alignSelf: 'stretch', flex: 1 }}
@@ -309,16 +309,16 @@ export default class ERPSubCategory extends Component {
                                                                                 }</Text>
                                         </View>
                                          <View style={CustomStyles.erpTextView}>
-                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.expenseType.expenseName}</Text>
+                                            <Text style={[CustomStyles.erpText,{fontWeight:'bold'}]}>{item.hasOwnProperty('expenseType')?item.totalAmount:'--'}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{item.totalAmount}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.hasOwnProperty('expenseType')?'-':item.amount}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={CustomStyles.erpSubCatText}>{item.paidAmount}</Text>
+                                            <Text style={CustomStyles.erpSubCatText}>{item.hasOwnProperty('expenseType')?item.expenseType.expenseName:'--'}</Text>
                                         </View>
                                         <View style={CustomStyles.erpTextView}>
-                                            <Text style={[CustomStyles.erpSubCatText,{}]}>{item.payableAmount}</Text>
+                                            <Text style={[CustomStyles.erpSubCatText,{}]}>{item.description}</Text>
                                         </View> 
                                     </View>
                                 }
@@ -328,15 +328,17 @@ export default class ERPSubCategory extends Component {
                                     <Text style={CustomStyles.erpFooterText}>Total</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}></Text>
-                                </View><View style={CustomStyles.erpTextView}>
                                     <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.totalAmount}</Text>
                                 </View>
-                               <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.paidAmount}</Text>
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.totalPaid}</Text>
                                 </View>
                                 <View style={CustomStyles.erpTextView}>
-                                    <Text style={CustomStyles.erpFooterText}>{this.state.totalPayablePayments.payableAmount}</Text>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
+                               </View>
+                              
+                                <View style={CustomStyles.erpTextView}>
+                                    <Text style={CustomStyles.erpFooterText}></Text>
                                 </View> 
                             </View>
                         </View>

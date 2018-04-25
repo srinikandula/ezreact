@@ -50,7 +50,13 @@ class OtpVerification extends Component{
                 if (response.data.status) {
                     
                     self.setState({ spinnerBool:false });
-                    //Actions.pop({ refresh: { close: true }})
+                    const { navigation } = this.props;
+                    const { state } = navigation;
+                    let refreshFunc = state.params.refresh;
+                    if (typeof refreshFunc === 'function') {
+                        refreshFunc({ refresh: true });
+                    }
+                    this.props.navigation.goBack();
                     let message ="";
                     response.data.messages.forEach(function(current_value) {
                         message = message+current_value;

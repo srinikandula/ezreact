@@ -17,6 +17,9 @@ let routes = {
     totalPaymentFromParty: '/payments/getDuesByParty?fromDate=&page=&regNumber=&size=&sort={"createdAt":-1}&toDate=',
     totalPaymentByParty: '/party/tripsPayments/',
 
+    //receivables
+    receiptsReportsList:'/receipts/getDuesByParty/?fromDate=&page=&partyId=&size=&sort={"createdAt":-1}&toDate=',
+
     //filter with date,vechile
     filterTotalRevenueByVechicle:'/trips/find/revenueByVehicle?',
     filterTotalExpensesForAllVehicles:'/expense/groupByVehicle?',
@@ -65,6 +68,7 @@ let routes = {
     editPayment:'/payments/getPaymentsRecord/',
     updatePayment:'/payments/updatePayment',
     getpartyTrip:'/trips/getPartiesByTrips',
+    getPartiesFromExpense:'/expense/getPartiesFromExpense',
 
     //trucks api--add ,edit(GET--trucks/id)
     addtrucksList : '/trucks/',

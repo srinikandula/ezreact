@@ -78,7 +78,7 @@ export default class AddPayments extends Component {
         Axios({
             method: 'get',
             headers: { 'token': this.props.navigation.state.params.token },
-            url: Config.routes.base + Config.routes.getpartyTrip
+            url: Config.routes.base + Config.routes.getPartiesFromExpense
         })
             .then((response) => {
                 if (response.data.status) {

@@ -311,6 +311,19 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 										resizeMode='contain'
 									/>)
 								}
+							},Trips: {
+								screen: TripList, navigationOptions: {
+									headerTitle: 'TRIPS',
+									headerTintColor: '#fff',
+
+									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
+									headerStyle: { backgroundColor: '#1e4495' },
+									tabBarIcon: (<Image
+										source={require('./images/tabTripIcon.png')}
+										style={{ height: 30, width: 40 }}
+										resizeMode='contain'
+									/>)
+								}
 							},
 							Receipts:{
 								screen: ReceiptsList, navigationOptions: {
@@ -354,20 +367,7 @@ export default AppNavigation = (loginStatus) => StackNavigator({
 									/>)
 								}
 							},
-							Trips: {
-								screen: TripList, navigationOptions: {
-									headerTitle: 'TRIPS',
-									headerTintColor: '#fff',
-
-									headerTitleStyle: { /* alignSelf: 'center', */ fontWeight: '300', fontSize: 14, color: '#fff', fontFamily: 'Gotham-Light' },
-									headerStyle: { backgroundColor: '#1e4495' },
-									tabBarIcon: (<Image
-										source={require('./images/tabTripIcon.png')}
-										style={{ height: 30, width: 40 }}
-										resizeMode='contain'
-									/>)
-								}
-							},
+							
 						},
 							{
 								tabBarPosition: 'top',

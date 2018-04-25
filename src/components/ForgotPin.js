@@ -38,7 +38,7 @@ class ForgotPin extends Component{
                 if (response.data.status) {
                     
                     self.setState({ spinnerBool:false });
-                    this.props.navigation.navigate('Otpverification',{mobile:this.state.phoneNumber});
+                    this.props.navigation.navigate('otpverification',{mobile:this.state.phoneNumber,refresh: this.refreshFunction});
                     let message ="";
                     if(response.data)
                     {
@@ -115,6 +115,13 @@ class ForgotPin extends Component{
             //Actions.pop();
         }
     } */
+
+    refreshFunction = (nextProps) => {
+        if (nextProps.refresh) {
+            console.log('hurra=refresh', nextProps.refresh);
+            this.props.navigation.goBack();
+        }
+    }
  render() {
         
          const phonelabelStyle = {

@@ -31,6 +31,7 @@ export default class AddTruck extends Component {
         fitnesspassdate: '',
         pollpassdate: '',
         insurpassdate: '',
+        vehicleType:'',
         selectedDriverId: 'Select Driver',
         selectedTruckTypeId:'Select Truck Type',
         accountId: '',
@@ -203,23 +204,26 @@ export default class AddTruck extends Component {
             truckmodel: truckDetails.hasOwnProperty('modelAndYear') ?truckDetails.modelAndYear :"",
             //truckType: truckDetails.truckType,
             selectedTruckTypeId :truckTypeId,
-            TaxDueDate: this.getDateDDMMYY(truckDetails.taxDueDate),
-            PermitDate: this.getDateDDMMYY(truckDetails.permitExpiry),
-            FitnessDate: this.getDateDDMMYY(truckDetails.fitnessExpiry),
-            PollutionDate: this.getDateDDMMYY(truckDetails.pollutionExpiry),
-            InsuranceDate: this.getDateDDMMYY(truckDetails.insuranceExpiry),
-            taxpassdate: this.getDateISo(truckDetails.taxDueDate),
-            permitpassdate: this.getDateISo(truckDetails.permitExpiry),
-            fitnesspassdate: this.getDateISo(truckDetails.fitnessExpiry),
-            pollpassdate: this.getDateISo(truckDetails.pollutionExpiry),
-            insurpassdate: this.getDateISo(truckDetails.insuranceExpiry),
+            TaxDueDate: truckDetails.hasOwnProperty('taxDueDate')?this.getDateDDMMYY(truckDetails.taxDueDate):'',
+            PermitDate: truckDetails.hasOwnProperty('permitExpiry')?this.getDateDDMMYY(truckDetails.permitExpiry):'',
+            FitnessDate: truckDetails.hasOwnProperty('fitnessExpiry')?this.getDateDDMMYY(truckDetails.fitnessExpiry):'',
+            PollutionDate: truckDetails.hasOwnProperty('pollutionExpiry')?this.getDateDDMMYY(truckDetails.pollutionExpiry):'',
+            InsuranceDate: truckDetails.hasOwnProperty('insuranceExpiry')?this.getDateDDMMYY(truckDetails.insuranceExpiry):'',
+            taxpassdate: truckDetails.hasOwnProperty('taxDueDate')?this.getDateISo(truckDetails.taxDueDate):'',
+            permitpassdate: truckDetails.hasOwnProperty('permitExpiry')?this.getDateISo(truckDetails.permitExpiry):'',
+            fitnesspassdate: truckDetails.hasOwnProperty('fitnessExpiry')?this.getDateISo(truckDetails.fitnessExpiry):'',
+            pollpassdate: truckDetails.hasOwnProperty('pollutionExpiry')?this.getDateISo(truckDetails.pollutionExpiry):'',
+            insurpassdate: truckDetails.hasOwnProperty('insuranceExpiry')?this.getDateISo(truckDetails.insuranceExpiry):'',
             selectedDriverId: drivrID,
-            accountId: truckDetails.accountId
+            accountId: truckDetails.accountId,
+            vehicleType:truckDetails.hasOwnProperty('vehicleType')? truckDetails.vehicleType:'Select Vechile type'
         });
         for (let index = 0; index < 10; index++) {
             this.moveInputLabelUp(index, "55")
 
         }
+
+        
 
 
         setTimeout(function () {
@@ -382,14 +386,15 @@ export default class AddTruck extends Component {
     onSubmitTruckDetails() {
         //if(this.state.date.includes('/')){
         if (this.state.truckNumber.length > 0) {
-            if (this.state.trucktonnage.length > 0) {
-                if (this.state.truckmodel.length > 0) {
+            if (true) {
+                if (true) {
                     if (!this.state.selectedTruckTypeId.includes('Select Truck Type')) {
-                        if (this.state.TaxDueDate.includes('/')) {
-                            if (this.state.PermitDate.includes('/')) {
-                                if (this.state.FitnessDate.includes('/')) {
-                                    if (this.state.PollutionDate.includes('/')) {
-                                        if (this.state.InsuranceDate.includes('/')) {
+                        if (true) {
+                            if (true) {
+                                if (true) {
+                                    if (true) {
+                                        if (true) {//this.state.InsuranceDate.includes('/')
+                                        if(!this.state.vehicleType.includes('Select Vechile type')){
                                             let driverID = this.state.selectedDriverId;
                                             if (this.state.selectedDriverId.includes('Select Driver')) {
                                                 driverID = "";
@@ -399,19 +404,21 @@ export default class AddTruck extends Component {
                                                 'registrationNo': this.state.truckNumber,
                                                 'truckType': this.state.truckType.includes('###') ? this.state.truckType.split("###")[1] :this.state.truckType ,
                                                 'modelAndYear': this.state.truckmodel,
-                                                'tonnage': this.state.trucktonnage,
-                                                'fitnessExpiry': this.state.fitnesspassdate.toISOString(),
-                                                'insuranceExpiry': this.state.insurpassdate.toISOString(),
-                                                'permitExpiry': this.state.permitpassdate.toISOString(),
-                                                'pollutionExpiry': this.state.pollpassdate.toISOString(),
-                                                'taxDueDate': this.state.taxpassdate.toISOString(),
+                                                //'tonnage': this.state.trucktonnage,
+                                                'fitnessExpiry': this.state.fitnesspassdate.length ===0 ?'':this.state.fitnesspassdate.toISOString(),
+                                                'insuranceExpiry': this.state.insurpassdate.length ===0 ?'':this.state.insurpassdate.toISOString(),
+                                                'permitExpiry': this.state.permitpassdate.length ===0 ?'':this.state.permitpassdate.toISOString(),
+                                                'pollutionExpiry': this.state.pollpassdate.length ===0 ?'':this.state.pollpassdate.toISOString(),
+                                                'taxDueDate': this.state.taxpassdate.length ===0 ?'':this.state.taxpassdate.toISOString(),
                                                 'driverId': driverID,
-                                                'truckTypeId':this.state.selectedTruckTypeId
+                                                'truckTypeId':this.state.selectedTruckTypeId,
+                                                'vehicleType':this.state.vehicleType
                                             };
 
                                             this.connectNetInfo(postData)
-
-
+                                        }else{ 
+                                            Utils.ShowMessage('Please Select Vechile type ');
+                                        }
                                         } else {
                                             Utils.ShowMessage('Please Enter Insurance Date');
                                         }
@@ -505,25 +512,14 @@ export default class AddTruck extends Component {
                                             this.setState({ truckNumber: truckNumber })
                                     }} />
                             </View>
-                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
-
-                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field1]}>
-                                    Tonnage*</CustomText>
-                                <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
-                                    value={this.state.trucktonnage}
-                                    placeholder={'Tonnage*'}
-                                    onChangeText={(trucktonnage) => {
-                                        this.moveInputLabelUp(1, trucktonnage),
-                                            this.setState({ trucktonnage: trucktonnage })
-                                    }} />
-                            </View>
+                            
                             <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
                                 <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field2]}>
-                                    Model*</CustomText>
+                                    Model</CustomText>
                                 <CustomEditText underlineColorAndroid='transparent' inputTextStyle={{ marginHorizontal: 16 }}
                                     value={this.state.truckmodel}
-                                    placeholder={'Model*'}
+                                    placeholder={'Model'}
                                     onChangeText={(truckmodel) => { this.moveInputLabelUp(2, truckmodel), this.setState({ truckmodel: truckmodel }) }} />
                             </View>
                             
@@ -552,6 +548,21 @@ export default class AddTruck extends Component {
                                 </CPicker>}
                                 
                             </View>
+                            <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+                                <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field22]}>VehicleType*</CustomText>
+                                {<CPicker
+                                    placeholder="Select  Vehicle Type"
+                                    cStyle={CustomStyles.cPickerStyle}
+                                    selectedValue={this.state.vehicleType}
+                                    onValueChange={(itemValue, itemIndex) => {this.setState({ vehicleType: Platform.OS==='ios'?itemValue.split("###")[1]:itemValue })}}>
+                                    
+                                    <Picker.Item label="Select Vechile type" value="Select Vechile type" />
+                                    <Picker.Item label="Car" value="Car" /> 
+                                    <Picker.Item label="Truck" value="Truck" /> 
+                                    <Picker.Item label="Non-Truck" value="Non-Truck" />
+                                </CPicker>}
+                                
+                            </View>
                             <TouchableOpacity
                                 onPress={() => { this.onPickdate('TaxDue') }}
                             >
@@ -559,10 +570,10 @@ export default class AddTruck extends Component {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
                                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>
-                                                Tax Due Expiry Date* </CustomText>
+                                                Tax Due Expiry Date </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
-                                                placeholder={'Tax Due Expiry Date*'}
+                                                placeholder={'Tax Due Expiry Date'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.TaxDueDate} >
                                                 {this.state.TaxDueDate}
@@ -583,10 +594,10 @@ export default class AddTruck extends Component {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
                                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>
-                                                Permit Expiry Date* </CustomText>
+                                                Permit Expiry Date </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
-                                                placeholder={'Permit Expiry Date*'}
+                                                placeholder={'Permit Expiry Date'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.PermitDate} >
                                                 {this.state.PermitDate}
@@ -607,10 +618,10 @@ export default class AddTruck extends Component {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
                                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field6]}>
-                                                Fitness Expiry Date* </CustomText>
+                                                Fitness Expiry Date </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
-                                                placeholder={'Fitness Expiry Date*'}
+                                                placeholder={'Fitness Expiry Date'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.FitnessDate}
                                             >{this.state.FitnessDate}
@@ -631,10 +642,10 @@ export default class AddTruck extends Component {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
                                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field7]}>
-                                                Pollution Expiry Date* </CustomText>
+                                                Pollution Expiry Date </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
-                                                placeholder={'Pollution Expiry Date*'}
+                                                placeholder={'Pollution Expiry Date'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.PollutionDate} >
                                                 {this.state.PollutionDate}
@@ -655,10 +666,10 @@ export default class AddTruck extends Component {
                                     <View style={{ flexDirection: 'row' }}>
                                         <View style={{ flex: 5 }}>
                                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field8]}>
-                                                Insurance Expiry Date* </CustomText>
+                                                Insurance Expiry Date </CustomText>
                                             <CustomEditText underlineColorAndroid='transparent'
                                                 editable={false}
-                                                placeholder={'Insurance Expiry Date*'}
+                                                placeholder={'Insurance Expiry Date'}
                                                 inputTextStyle={{ marginHorizontal: 16 }}
                                                 value={this.state.InsuranceDate} >
                                                 {this.state.InsuranceDate}

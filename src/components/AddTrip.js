@@ -34,6 +34,7 @@ export default class AddTrip extends Component {
         lanesList: [{ name: 'Select Lane' }],
         share: true,
         rate: '',
+        deduct:'',
         tonnage: '',
         famount: '',
         spinnerBool: false,
@@ -219,7 +220,7 @@ export default class AddTrip extends Component {
             tempLaneID: paymentDetails.tripLane,
             share: paymentDetails.share,
             rate: '' + paymentDetails.rate,
-            tonnage: '' + paymentDetails.tonnage,
+            tonnage : paymentDetails.hasOwnProperty('tonnage') ?'' + paymentDetails.tonnage:'',
             famount: '' + paymentDetails.freightAmount,
             remark: paymentDetails.remarks,
             accountId: paymentDetails.accountId,
@@ -229,10 +230,18 @@ export default class AddTrip extends Component {
             sourceAddress: paymentDetails.hasOwnProperty('sourceAddress') ? paymentDetails.sourceAddress : '',
             sourcelbl: paymentDetails.hasOwnProperty('source') ? true : false,
             destinationlbl: paymentDetails.hasOwnProperty('destination') ? true : false,
+            deduct: paymentDetails.hasOwnProperty('deductAmount') ? ''+paymentDetails.deductAmount:''
         }, () => {
-
             console.log('party ID', paymentDetails.partyId, this.state.tripPartyId, this.state.selectedVehicleId, this.state.selectedDriverId);
         });
+
+        if(paymentDetails.hasOwnProperty('tonnage'))
+        {
+            if(paymentDetails.tonnage === null){
+                this.setState({tonnage:''})
+            }
+        }
+
         this.updateLaneList(paymentDetails.partyId);
         this.getTruckNum(paymentDetails.registrationNo);
         this.getDriverName(paymentDetails.driverId);
@@ -379,7 +388,7 @@ export default class AddTrip extends Component {
                                                 'sourceAddress': this.state.sourceAddress,
                                                 'destination': this.state.destination,
                                                 'destinationAddress': this.state.destinationAddress,
-
+                                                'deductAmount':Number(this.state.deduct)
                                             };
 
                                             console.log('postdata', postData);
@@ -542,19 +551,24 @@ export default class AddTrip extends Component {
     updateFrieght() {
         var rateAmount = 0;
         var tonnageAmount = 0;
+        var deductAmount =0;
         if (this.state.rate.length > 0) {
             rateAmount = Number(this.state.rate);
         }
         if (this.state.tonnage.trim().length > 0) {
             tonnageAmount = Number(this.state.tonnage);
         }
+        if (this.state.deduct.trim().length > 0) {
+            deductAmount = Number(this.state.deduct);
+        }
+
         if (rateAmount > 0 && tonnageAmount > 0) {
-            var tempAmount = rateAmount * tonnageAmount;
-            console.log(rateAmount * tonnageAmount, rateAmount + '*' + tonnageAmount, 'Famount');
+            var tempAmount = (rateAmount * tonnageAmount) - deductAmount;
+            console.log((rateAmount * tonnageAmount)-deductAmount, rateAmount + '*' + tonnageAmount+'-'+deductAmount, 'Famount');
             this.setState({ famount: '' + tempAmount });
-            this.moveInputLabelUp(4, '' + tempAmount)
+            this.moveInputLabelUp(5, '' + tempAmount)
         }else{
-            alert('enter proper value')
+            //alert('enter proper value')
         }
 
     }
@@ -573,6 +587,8 @@ export default class AddTrip extends Component {
                     if (trucksList[itemIndex - 1].hasOwnProperty('tonnage')) {
                         this.setState({ tonnage: trucksList[itemIndex - 1].tonnage });
                         // this.updateFrieght();
+                    }else{
+
                     }
 
                 }
@@ -854,7 +870,7 @@ export default class AddTrip extends Component {
 
                             <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field3]}>Tonnage </CustomText>
                             <CustomEditText underlineColorAndroid='transparent'
-                                editable={false}
+                                editable={true}
                                 placeholder={'Tonnage'}
                                 keyboardType='numeric'
                                 inputTextStyle={{ marginHorizontal: 16 }} value={this.state.tonnage}
@@ -864,28 +880,41 @@ export default class AddTrip extends Component {
                                     });
                                 }} />
                         </View>
+                        <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>Deductions </CustomText>
+                            <CustomEditText underlineColorAndroid='transparent'
+                                placeholder={'Deductions'}
+                                keyboardType='numeric'
+                                inputTextStyle={{ marginHorizontal: 16 }} value={this.state.deduct}
+                                onChangeText={(deduct) => {
+                                    this.moveInputLabelUp(4, deduct); this.setState({ deduct: deduct.length === 0? '0' : deduct}, () => {
+                                        this.updateFrieght()
+                                    });
+                                }} />
+                        </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field4]}>Freight Amount </CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>Freight Amount </CustomText>
                             <CustomEditText
-                            editable={false}
+                            editable={true}
                             underlineColorAndroid='transparent'
                                 keyboardType='numeric'
                                 placeholder={'Freight Amount'}
                                 inputTextStyle={{ marginHorizontal: 16 }}
                                 value={this.state.famount}
-                                onChangeText={(famount) => { this.moveInputLabelUp(4, famount), this.setState({ famount: famount.trim() }) }} />
+                                onChangeText={(famount) => { this.moveInputLabelUp(5, famount), this.setState({ famount: famount.trim() }) }} />
                         </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
 
-                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field5]}>Description</CustomText>
+                            <CustomText customTextStyle={[{ position: 'absolute', left: 20, top: 2, display: 'none', color: '#525252' }, this.state.field6]}>Description</CustomText>
                             <CustomEditText underlineColorAndroid='transparent'
                                 placeholder={'Description'}
                                 inputTextStyle={{ marginHorizontal: 16 }}
                                 value={this.state.remark}
-                                onChangeText={(remark) => { this.moveInputLabelUp(5, remark), this.setState({ remark: remark }) }} />
+                                onChangeText={(remark) => { this.moveInputLabelUp(6, remark), this.setState({ remark: remark }) }} />
                         </View>
 
                         <View style={{ backgroundColor: '#ffffff', marginTop: 5, marginBottom: 5, marginHorizontal: 5, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>

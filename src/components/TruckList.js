@@ -148,12 +148,12 @@ export default class TruckList extends Component {
             }}
         />
     );
-    getTonnage(item) {
+    gettruckType(item) {
         var data = '- T';
-        if (item.hasOwnProperty("tonnage")) {
-            data = item.tonnage + 'T';
+        if (item.hasOwnProperty("truckType")) {
+            data = item.truckType  ;
         } else {
-            data = '- T';
+            data = '- ';
         }
         return data;
     }
@@ -301,7 +301,7 @@ export default class TruckList extends Component {
                                         }]}>
                                             {item.registrationNo}</Text>
                                         <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold', }]}>
-                                            {this.getTonnage(item)}  {item.modelAndYear}</Text>
+                                            {this.gettruckType(item)}  {item.modelAndYear}</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
                                         <View style={{ flexDirection: 'row', padding: 10 }}>

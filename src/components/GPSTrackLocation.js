@@ -155,7 +155,7 @@ export default class GPSTrackLocation extends Component {
                             this.setState({
                                 spinnerBool: false, truckNum: data.truckId, distanceTravelled: response.data.results.distanceTravelled,
                                 timeTravelled: response.data.results.timeTravelled, averageSpeed: response.data.results.averageSpeed,
-                                odemeter: response.data.results.distanceTravelled,
+                               // odemeter: response.data.results.distanceTravelled,
                                 topSpeed:response.data.results.topSpeed,
                             })
 
@@ -536,7 +536,6 @@ export default class GPSTrackLocation extends Component {
                                         latitude: 17.46247,
                                         longitude: 78.3100319,
                                     }, 1000)
-
                                 }}
                                 coordinates={this.state.coordinates}
                                 strokeWidth={1}
@@ -561,7 +560,6 @@ export default class GPSTrackLocation extends Component {
                                         </MapView.Callout>
                                     )
                                 }
-
                             })
                             }
                         </MapView>
@@ -583,7 +581,7 @@ export default class GPSTrackLocation extends Component {
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                     Distance Travelled</Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {/*Math.floor(Number(this.state.distanceTravelled))*/}</Text>
+                                        {Math.floor(Number(this.state.distanceTravelled))}</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>

@@ -128,7 +128,6 @@ export default class GPSTruckMap extends Component {
                 egObj = JSON.parse(value);
                 this.setState({ token: egObj.token });
 
-
                 Axios({
                     method: 'get',
                     headers: { 'token': egObj.token },
@@ -157,7 +156,6 @@ export default class GPSTruckMap extends Component {
                                     dump.push(element);
                                     this.setState({ trucks: dump, dummytrucks: dump });
                                 }
-
                                 
                                 var catgryarr1 = [];
                                 for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length

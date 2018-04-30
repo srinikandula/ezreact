@@ -29,16 +29,16 @@ export default class App extends Component {
               console.log('APP ==>', response.data);
             } else {
               console.log('error in APP ==>', response);
-              AsyncStorage.clear();// AsyncStorage.clear();
+             // AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
             }
           }).catch((error) => {
             if (error.response.status === 401 || error.response.status === 502) {
-              AsyncStorage.clear();// AsyncStorage.clear();
+              //AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
             }
             if (error.response.status === 504) {
-              AsyncStorage.clear();// AsyncStorage.clear();
+             // AsyncStorage.clear();// AsyncStorage.clear();
               this.setState({ signed: false, check: true });
               alert("Something went Wrong.Please try after some time");
             }
@@ -46,7 +46,7 @@ export default class App extends Component {
           })
         });
     }).catch((error) => {
-      AsyncStorage.clear();// AsyncStorage.clear();
+      //AsyncStorage.clear();// AsyncStorage.clear();
       this.setState({ signed: false, check: true });
     });
   }

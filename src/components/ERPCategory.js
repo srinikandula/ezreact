@@ -676,10 +676,6 @@ export default class ERPCategory extends Component {
             case "receivables":
                 if (this.state.selectedTruckId.includes('Select Parties') && this.state.recMinPassdate === '' && this.state.recMaxPassdate === '') {
                     Utils.ShowMessage("Please Select Dates or Vechicle");
-
-
-
-
                 } else {
                     var partyID = '';
                     if (this.state.selectedTruckId.includes('Select Parties')) {
@@ -693,19 +689,14 @@ export default class ERPCategory extends Component {
 
                             this.state.erpSettings.revenue = "fromDate=" + this.getISODate(this.state.recMinPassdate) + "&page=&partyId=" + partyID +
                                 "&size=&sort=" + JSON.stringify(sort) + "&toDate=" + this.getISODate(this.state.recMaxPassdate);
-                            this.searchReportsData(Config.routes.base + Config.routes.filterTotalPaymentFromParty + this.state.erpSettings.revenue);
-
-
+                            this.searchReportsData(Config.routes.base + Config.routes.filterTotalReceiptsPaymentFromParty + this.state.erpSettings.revenue);
                         } else {
                             Utils.ShowMessage("Invalid Date Selection");
-
-
-
                         }
                     } else {
                         this.state.erpSettings.revenue = "fromDate=&page=&regNumber=" + this.state.selectedTruckId +
                             "&size=&sort=" + JSON.stringify(sort) + "&toDate=";
-                        this.searchReportsData(Config.routes.base + Config.routes.filterTotalPaymentFromParty + this.state.erpSettings.revenue);
+                        this.searchReportsData(Config.routes.base + Config.routes.filterTotalReceiptsPaymentFromParty + this.state.erpSettings.revenue);
                     }
                 }
                 return;

@@ -28,6 +28,9 @@ let routes = {
     totalPayablesPaymentByParty: '/expense/getPaybleAmountByPartyId?partyId=',
     filterTotalPayeblesPayment:'/expense/getPaybleAmountByParty?',
 
+    //receipts
+    filterTotalReceiptsPaymentFromParty: '/receipts/getDuesByParty?',
+    
     //downloadReports
     downloadRevenue:'/trips/downloadRevenueDetailsByVechicle?',
 

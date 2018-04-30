@@ -30,7 +30,8 @@ class Profile extends Component{
            phoneNumberlbl:false,isFocused: false,passwordlbl:false,cpasswordlbl:false,rememberme:false,
            accountGroupsCount:'',accountTrucksCount:'',oldpassword:'',currentpassword:'',
            authPassword:true,profilePic:'',userImage:'../images/eg_user.png',accountId:'',
-           spinnerBool: false,addPostImgUrl:''
+           spinnerBool: false,addPostImgUrl:'',
+           userinfo:{}
           };
 
     componentWillMount() {
@@ -43,6 +44,7 @@ class Profile extends Component{
             if (value !== null) {
                 var egObj = {};
                 egObj = JSON.parse(value);
+                this.state.userinfo = egObj;
                 this.setState({token:egObj.token});
                 if(egObj.hasOwnProperty('profilePic')){
                     this.setState({token:egObj.token,profilePic:Config.routes.getProfilePic+egObj.profilePic},()=>{console.log(this.state.profilePic,'dinesshhhh')});
@@ -336,7 +338,20 @@ onPickImage() {
         })
   }
 onLogout(){
-    AsyncStorage.clear();
+    //AsyncStorage.clear();//credientails-userinfo
+    var easyGaadi = {
+        token: "",
+        userName: this.state.userinfo.userName,
+        gpsEnabled:"",
+        erpEnabled: "",
+        loadEnabled: "",
+        editAccounts: "",
+        profilePic: "",
+        rememberme:this.state.userinfo.rememberme
+    };
+    AsyncStorage.setItem('credientails', JSON.stringify(easyGaadi),function(status){
+        console.log(status,'status');
+    });
     this.props.navigation.navigate('login');
 }
 

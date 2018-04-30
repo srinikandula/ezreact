@@ -120,6 +120,7 @@ export default class GPSTrackLocation extends Component {
                                         element.coordinate = { strokeColor: "#00ff00",latitude:  element.location.coordinates[1] , 
                                             longitude:element.location.coordinates[0]  };
                                         coordinateArr1.push(element);
+                                        this.setState({odemeter:element.totalDistance});
                                 //     }
                                 //     coordinateArr.push({
                                 //         strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
@@ -587,13 +588,13 @@ export default class GPSTrackLocation extends Component {
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                         Time Travelled </Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {Math.floor(this.gettimeTravelled(this.state.timeTravelled))} hours</Text>
+                                        {Math.floor(Number(this.state.timeTravelled))} hours</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
                                         Average Speed </Text>
                                     <Text style={[CustomStyles.erpText, { textAlign: 'center', alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>
-                                        {Math.floor(this.gettimeTravelled(this.state.averageSpeed))} Kmph</Text>
+                                        {Math.floor(Number(this.state.averageSpeed))} Kmph</Text>
                                 </View>
                                 <View style={{ alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
                                     <Text style={[CustomStyles.erpText, { alignSelf: 'stretch', fontFamily: 'Gotham-Medium', fontSize: 16, }]}>

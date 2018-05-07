@@ -47,7 +47,7 @@ export default class Notifications extends Component {
                 })
                 .then((response) => {
                     if (response.data.status) {
-                        console.log('getNotification ==>', response.data);
+                       // console.log('getNotification ==>', response.data);
                         if(response.data.data.length > 0){
                             this.setState({notifyData:response.data.data})
                         }else{
@@ -57,7 +57,7 @@ export default class Notifications extends Component {
                             response.data.messages.forEach(function (current_value) {
                                 message = message + current_value;
                             });
-                        Utils.ShowMessage(message);                        
+                        //Utils.ShowMessage(message);                        
                         }
                         this.setState({ spinnerBool: false });
                     } else {

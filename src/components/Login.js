@@ -28,12 +28,12 @@ class Login extends Component {
              //userName: 's.rlogistics@yahoo.com', phoneNumber: '9346137100', password: '9346137100', message: '', userNamelbl: false,                            
             // userName: 'krishna', phoneNumber: '9676777256', password: 'krishna123', message: '', userNamelbl: false,     
              //userName: 'kalyani', phoneNumber: '7799024455', password: '123456', message: '', userNamelbl: false,     
-              userName: 'easylease', phoneNumber: '8889991234', password: 'easygaadi', message: '', userNamelbl: false,                
-            //userName: '', phoneNumber: '', password: '', message: '', userNamelbl: false,
+              //userName: 'easylease', phoneNumber: '8889991234', password: 'easygaadi', message: '', userNamelbl: false,                
+            //userName: 'shabbir', phoneNumber: '9949272192', password: '9949272192', message: '', userNamelbl: false,
             // userName: 'easylease', phoneNumber: '8889991234', password: '12345678', message: '', userNamelbl: false,
             // userName: 'santosh', phoneNumber: '9848750094', password: 'mqmjl4', message: '', userNamelbl: false,
              // userName: 'gsrtansport', phoneNumber: '9848922814', password: '9848922814', message: '', userNamelbl: false,
-             //userName: '', phoneNumber: '', password: '', //message: '', userNamelbl: false,
+             userName: '', phoneNumber: '', password: '', //message: '', userNamelbl: false,
             phoneNumberlbl: false, isFocused: false, passwordlbl: false, rememberme: false, showMail: false,userNamelbl: false,
             message: '',spinnerBool: false
         };

@@ -437,18 +437,13 @@ export default class GPSTruckMap extends Component {
     truckStatus(marker) {
         //console.log(marker,'truckStatus')
         if (marker.attrs.hasOwnProperty('latestLocation')) {
-            //console.log(marker.attrs.latestLocation.isStopped, 'marker.attrs.latestLocation.isStopped');
-            if (marker.attrs.latestLocation.isStopped) {
-                return require('../images/stoptruck.png');
-            } else if (marker.attrs.latestLocation.isIdle && !marker.attrs.latestLocation.isStopped) {
-               // console.log(marker.attrs.latestLocation.isIdle, 'marker.attrs.latestLocation.isIdle');
-                return require('../images/runningTruck.png');
+            if (marker.attrs.latestLocation.isStopped || marker.attrs.latestLocation.isIdle) {
+                return require('../images/redTruck.png');
             } else {
-                return require('../images/stoptruck.png');
+                return require('../images/greenTruck.png');
             }
         } else {
-           //console.log(marker, 'marker.attrs.latestLocation');
-            return require('../images/stoptruck.png');
+            return require('../images/greenTruck.png');
         }
 
 
@@ -472,11 +467,11 @@ export default class GPSTruckMap extends Component {
                         >
                             {this.state.markers.map((marker, index) => {
                                 var imgsrc = require('../images/truck_running.png');
-                                if (marker.isStopped) {
+                                if (marker.isStopped || marker.isIdle) {
                                     imgsrc = require('../images/truck_stopped.png');
                                 }
-                                if (marker.isIdle && !marker.isStopped) {
-                                    imgsrc = require('../images/truck_idle.png');
+                                if (!marker.isIdle && !marker.isStopped) {
+                                    imgsrc = require('../images/truck_running.png');
                                 }
 
                                 return (

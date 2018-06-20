@@ -164,6 +164,7 @@ class Login extends Component {
             loadEnabled: data.loadEnabled,
             editAccounts: data.editAccounts,
             profilePic: data.profilePic,
+            topSpeed:'60',
             rememberme:this.state.rememberme?this.state.rememberme:false
         }
         try {

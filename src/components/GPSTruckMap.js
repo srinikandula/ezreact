@@ -161,24 +161,29 @@ export default class GPSTruckMap extends Component {
                                 for (let index = 0; index < catgryarr.length; index++) {//catgryarr.length
                                     const truckElement = this.state.trucks[index];
                                     if (catgryarr[index].attrs.hasOwnProperty('latestLocation')) {
-                                        const element = catgryarr[index].attrs.latestLocation.location.coordinates;
-                                        //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
-                                        //latitude:0,longitude:0
-                                        var obj = {
-                                            coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
-                                            registrationNo: catgryarr[index].registrationNo,
-                                            speed: catgryarr[index].attrs.latestLocation.speed,
-                                            address: catgryarr[index].attrs.latestLocation.address,
-                                            odemeter:catgryarr[index].attrs.latestLocation.totalDistance,
-                                            date: catgryarr[index].updatedAt,
-                                            isStopped: catgryarr[index].attrs.latestLocation.isStopped,
-                                            isIdle: catgryarr[index].attrs.latestLocation.isIdle
-                                        };
-                                        catgryarr1.push(obj);
-                                        //truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
-                                        truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
-                                        this.setState({ latitude: element[1], longitude: element[0] });
-                                        this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                        if (!catgryarr[index].attrs.latestLocation.hasOwnProperty('location')) {
+                                            
+                                        }else{
+                                            const element = catgryarr[index].attrs.latestLocation.location.coordinates;
+                                            //console.log(element,'attrs.latestLocation.location.coordinates',element[0],element[1]);
+                                            //latitude:0,longitude:0
+                                            var obj = {
+                                                coordinate: { latitude: Number(element[1]), longitude: Number(element[0]), image: 'https://i.imgur.com/sNam9iJ.jpg' },
+                                                registrationNo: catgryarr[index].registrationNo,
+                                                speed: catgryarr[index].attrs.latestLocation.speed,
+                                                address: catgryarr[index].attrs.latestLocation.address,
+                                                odemeter:catgryarr[index].attrs.latestLocation.totalDistance,
+                                                date: catgryarr[index].attrs.latestLocation.updatedAt,
+                                                isStopped: catgryarr[index].attrs.latestLocation.isStopped,
+                                                isIdle: catgryarr[index].attrs.latestLocation.isIdle
+                                            };
+                                            catgryarr1.push(obj);
+                                            //truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                            truckElement.speed = catgryarr[index].attrs.latestLocation.speed;
+											truckElement.updatedAt = catgryarr[index].attrs.latestLocation.updatedAt;
+                                            this.setState({ latitude: element[1], longitude: element[0] });
+                                            this.setState({ markers: catgryarr1 }, () => { console.log(this.state.markers, 'markers'); });
+                                        }
                                     }
                                     this.state.trucks[index] = truckElement;
 
@@ -376,14 +381,42 @@ export default class GPSTruckMap extends Component {
         this.setState({ showTrack: visible });
     }
 
-    getSpeed(speed) {
-        var strSpeed = speed;
-        // if (strSpeed.length > 4) {
-        strSpeed = Math.round(Number(strSpeed) * 100) / 100
-        // }
-        return strSpeed;
+    getSpeed(item) {
+        //speed
+        var data = '-';
+        if (item.hasOwnProperty("attrs")) {
+            if (item.attrs.hasOwnProperty('latestLocation')) {
+                var strSpeed='0';
+                if (item.attrs.latestLocation.hasOwnProperty('speed')) {
+                    strSpeed = item.attrs.latestLocation.speed;
+                }
+                data = Math.round(Number(strSpeed) * 100) / 100;
+            } else {
+                data = '-'
+            }
+        } else {
+            data = '-';
+        }
+        return data;
     }
-
+ getOdometer(item){
+    //totalDistance
+    var data = '-';
+        if (item.hasOwnProperty("attrs")) {
+            if (item.attrs.hasOwnProperty('latestLocation')) {
+                var address = '';
+                if (item.attrs.latestLocation.hasOwnProperty('totalDistance')) {
+                    totalDistance = item.attrs.latestLocation.totalDistance;
+                }
+                data = totalDistance;
+            } else {
+                data = '-'
+            }
+        } else {
+            data = '-';
+        }
+        return data;
+ }
     getAddress(item) {
         var data = '-';
         if (item.hasOwnProperty("attrs")) {
@@ -391,10 +424,9 @@ export default class GPSTruckMap extends Component {
                 var address = '';
                 if (item.attrs.latestLocation.hasOwnProperty('address')) {
                     address = item.attrs.latestLocation.address;
-                }
-                if (address.length > 30) {
-                    address = address.substring(0, 30) + "..."
-                }
+                }else{
+					address = '-'
+				}
                 data = address;
             } else {
                 data = '-'
@@ -437,9 +469,11 @@ export default class GPSTruckMap extends Component {
     truckStatus(marker) {
         //console.log(marker,'truckStatus')
         if (marker.attrs.hasOwnProperty('latestLocation')) {
-            if (marker.attrs.latestLocation.isStopped || marker.attrs.latestLocation.isIdle) {
+            if (marker.attrs.latestLocation.isStopped ) {
                 return require('../images/redTruck.png');
-            } else {
+            } else if(marker.attrs.latestLocation.isIdle){                
+                return require('../images/truck_idle.png');
+            }else {
                 return require('../images/greenTruck.png');
             }
         } else {
@@ -467,7 +501,7 @@ export default class GPSTruckMap extends Component {
                         >
                             {this.state.markers.map((marker, index) => {
                                 var imgsrc = require('../images/truck_running.png');
-                                if (marker.isStopped || marker.isIdle) {
+                                if (marker.isStopped) {
                                     imgsrc = require('../images/truck_stopped.png');
                                 }
                                 if (!marker.isIdle && !marker.isStopped) {
@@ -475,11 +509,14 @@ export default class GPSTruckMap extends Component {
                                 }
 
                                 return (
-                                    <MapView.Marker key={index}
+                                    <Marker key={index}
                                         image={imgsrc}
                                         coordinate={marker.coordinate}
                                     >
-                                        <MapView.Callout style={CustomStyles.mapcard}
+                                    
+                                        <Text style={{fontSize:12,marginTop:10,marginRight:10, color:'#000000'}}>{marker.registrationNo}</Text>
+                                   
+                                        <MapView.Callout style={[CustomStyles.mapcard,{width:170}]}
                                             onPress={() => { this.markerClick(marker) }}>
                                             <View style={CustomStyles.mapContent}>
                                                 <Text>{'Reg.No :'}{marker.registrationNo}</Text>
@@ -496,7 +533,7 @@ export default class GPSTruckMap extends Component {
                                                 </View>
                                             </TouchableHighlight>
                                         </MapView.Callout>
-                                    </MapView.Marker>
+                                    </Marker>
                                 );
                             })}
                         </MapView>
@@ -541,8 +578,10 @@ export default class GPSTruckMap extends Component {
                                         <View style={{ flex: 1, flexDirection: 'column', padding: 2 }}>
                                             <Text style={[CustomStyles.erpText, { color: '#1e4495', fontWeight: 'bold' }]}>
                                                 {item.registrationNo}</Text>
-                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontSize: 10 }]}>
+                                            <Text numberOfLines={3} style={[CustomStyles.erpText, { color: '#1e4495', fontSize: 14, }]}>
                                                 Location :{this.getAddress(item)}</Text>
+                                            <Text style={[CustomStyles.erpText, { color: '#1e4495', fontSize: 10 }]}>
+                                            Odoemeter :{Math.floor(Number(this.getOdometer(item)))} Km</Text>
 
                                         </View>
                                     </View>
@@ -550,7 +589,7 @@ export default class GPSTruckMap extends Component {
                                         <Text style={[CustomStyles.erpText, { textAlign: 'center', color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
                                             {this.getupdateDate(item)}</Text>
                                         <Text style={[CustomStyles.erpText, { textAlign: 'center', color: '#1e4495', fontWeight: 'bold', fontSize: 12 }]}>
-                                            {'speed \n' + `${this.getSpeed(item.speed)} kmph`}</Text>
+                                            {'speed \n' + `${this.getSpeed(item)} kmph`}</Text>
                                         <CheckBox style={{ width: 10, height: 10, fontSize: 12 }}
                                             label='Looking For Load'
                                             color={'#000000'}

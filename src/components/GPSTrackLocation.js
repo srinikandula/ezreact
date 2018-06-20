@@ -20,7 +20,7 @@ const screen = Dimensions.get('window')
 
 const ASPECT_RATIO = screen.width / screen.height
 
-const LATITUDE_DELTA = 15
+const LATITUDE_DELTA = 0.5
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class GPSTrackLocation extends Component {
@@ -58,7 +58,8 @@ export default class GPSTrackLocation extends Component {
         distanceTravelled: '',
         timeTravelled: '',
         odemeter:'',
-        topSpeed:''
+        topSpeed:'',
+        avgTopSpeed:0
 
     };
 
@@ -90,7 +91,11 @@ export default class GPSTrackLocation extends Component {
                 if (value !== null) {
                     var egObj = {};
                     egObj = JSON.parse(value);
-                    this.setState({ token: egObj.token });
+                    var speed = 0;
+                    if(egObj.hasOwnProperty('topSpeed')){
+                        speed = egObj.topSpeed;
+                    }
+                    this.setState({ token: egObj.token,avgTopSpeed:Number(speed) });
                     console.log('gpsTrackLocation-url',Config.routes.base + Config.routes.gpsTrackLocation +"/"+data.truckId+"/"+data.startDate+"/"+data.endDate);
                     Axios({
                         method: 'GET',
@@ -121,17 +126,8 @@ export default class GPSTrackLocation extends Component {
                                             longitude:element.location.coordinates[0]  };
                                         coordinateArr1.push(element);
                                         this.setState({odemeter:element.totalDistance});
-                                //     }
-                                //     coordinateArr.push({
-                                //         strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
-                                //         longitude: Number(element.location.coordinates[0])
-                                //     });
-                                //     element.coordinate = {
-                                //         strokeColor: "#00ff00", latitude: Number(element.location.coordinates[1]),
-                                //         longitude: Number(element.location.coordinates[0])
-                                //     };
-                                //     coordinateArr1.push(element);
-                                console.log(element.isStopped, ' index==>>>'+index)
+                        
+                                    console.log(element.isStopped, ' index==>>>'+index)
                                  }
 
                                 this.setState({ coordinates: coordinateArr, coordinates1: coordinateArr1, showDependable: '' + coordinateArr.length, spinnerBool: false }, () => {
@@ -302,6 +298,17 @@ export default class GPSTrackLocation extends Component {
         return strSpeed;
     }
 
+    truckImage(item) {
+        if (item.isStopped ) {
+            return require('../images/redTruck.png');
+        } else if(item.isIdle){                
+            return require('../images/truck_idle.png');
+        }else {
+            return require('../images/redTruck.png');
+        }
+    }
+
+
     getView() {
         console.log('this.state.showDependable', this.state.showDependable);
         switch (this.state.showDependable) {
@@ -339,6 +346,8 @@ export default class GPSTrackLocation extends Component {
                             zoomEnabled={true}
                            >
                             {this.state.coordinates1.map((marker, index) => {
+                                console.log(Math.round(this.getSpeed(marker.speed)) >= Math.round(this.state.avgTopSpeed),
+                                Math.round(this.getSpeed(marker.speed))+ ">="+ Math.round(this.state.avgTopSpeed));
                                 if (index == 0) {
                                     return (
                                         <MapView.Marker key={index}
@@ -376,8 +385,9 @@ export default class GPSTrackLocation extends Component {
                                             </MapView.Callout>
                                         </MapView.Marker>)
                                 } else{
-                                   
+                                    
                                     if (marker.hasOwnProperty("isIdle") && marker.hasOwnProperty('isStopped')) {
+                                        console.log(marker.isStopped+'<-this.state.coordinates->',marker.isIdle);
                                         if (marker.isStopped) {
                                             return (
                                                 <MapView.Marker key={index}
@@ -392,16 +402,12 @@ export default class GPSTrackLocation extends Component {
                                                         <Text>{'Reg.No :'}{this.state.truckNum}</Text>
                                                         <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
                                                         <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
-
-                                                    </View>
-                                                
+                                                    </View>                                                
                                                 </MapView.Callout>
-                                                
                                                 </MapView.Marker>)
-                                        }
-                                        if (marker.isIdle && !marker.isStopped) {
+                                        }else if(marker.isIdle) {
                                             return (
-                                                <MapView.Marker key={index}
+                                                <MapView.Marker key={index}                                                
                                                     image={require('../images/track_idle.png')}
                                                     coordinate={{
                                                         latitude: marker.coordinate.latitude,
@@ -417,8 +423,25 @@ export default class GPSTrackLocation extends Component {
                                                         </View>
                                                     </MapView.Callout>
                                                 </MapView.Marker>)
-                                        }
-                                        if(!marker.isIdle && !marker.isStopped){
+                                        }else if(Math.round(this.getSpeed(marker.speed)) >= Math.round(this.state.avgTopSpeed)) {
+                                            return (
+                                                <MapView.Marker key={index}                                                
+                                                    image={require('../images/track_overspeed.png')}
+                                                    coordinate={{
+                                                        latitude: marker.coordinate.latitude,
+                                                        longitude: marker.coordinate.longitude
+                                                    }}
+                                                >
+                                                    <MapView.Callout style={CustomStyles.mapcard}
+                                                        onPress={() => { console.log(marker,'shhhharatt') }}>
+                                                        <View style={CustomStyles.mapContent}>
+                                                            <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                                            <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                                            <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+                                                        </View>
+                                                    </MapView.Callout>
+                                                </MapView.Marker>)
+                                        }else{
                                                 return (
                                                     <MapView.Marker key={index}
                                                         rotation={Math.floor(marker.course)}
@@ -438,17 +461,34 @@ export default class GPSTrackLocation extends Component {
                                                         </View>
                                                     
                                                     </MapView.Callout>
-                                                    
                                                     </MapView.Marker>)
-                                            
+                                                     
                                         }
+                                        // console.log(this.getSpeed(marker.speed),'Riyaz');
+                                        // console.log(Math.round(this.getSpeed(marker.speed)) >= Math.round(5),'Condition');
+                                        // if(Math.round(this.getSpeed(marker.speed)) >= Math.round(5)){
+                                            
+                                        //     return (
+                                        //         <MapView.Marker key={index}
+                                        //     image={require('../images/track_overspeed.png')}
+                                        //     coordinate={{
+                                        //         latitude: marker.coordinate.latitude,
+                                        //         longitude: marker.coordinate.longitude
+                                        //     }}>
+                                        //     <MapView.Callout style={CustomStyles.mapcard}
+                                        //         onPress={() => { console.log(marker,'shhhharatt') }}>
+                                        //         <View style={CustomStyles.mapContent}>
+                                        //             <Text>{'Reg.No :'}{this.state.truckNum}</Text>
+                                        //             <Text>{'Speed :'}{`${this.getSpeed(marker.speed)} kmph`}</Text>
+                                        //             <Text>{'Date :'}{`${this.getParsedDate(marker.updatedAt)} ${this.getParsedtime(marker.updatedAt)}`}</Text>
+                                        //         </View>
+                                        //     </MapView.Callout>
+                                        // </MapView.Marker>)
+                                        // }
 
 
                                     }
                                 }//close
-
-
-
                             })
                             }
                             <MapView.Polyline
@@ -481,14 +521,14 @@ export default class GPSTrackLocation extends Component {
                             // ItemSeparatorComponent={this.renderSeparator}
                             removeClippedSubviews={true}
                             renderItem={({ item }) => {
-                                console.log(item.isStopped,'isstopped index'+ this.state.coordinates1.indexOf(item));
-                                if (item.isStopped) {
+                                console.log(item.isStopped+""+item.isIdle,'isstopped index'+ this.state.coordinates1.indexOf(item));
+                                if (item.isStopped || item.isIdle) {
                                     return (
                                         <View style={[CustomStyles.erpCategoryItems, { backgroundColor: !this.state.categoryBgColor ? '#ffffff' : '#ffffff',borderBottomWidth:1,borderBottomColor: '#ddd' }]}>
                                             <View style={CustomStyles.erpDriverItems}>
                                                 <View style={[CustomStyles.erpTextView, { flex: 0.6, borderBottomWidth: 0 }]}>
                                                     <Image resizeMode="contain"
-                                                        source={require('../images/truck_stops.png')}
+                                                        source={this.truckImage(item)}
                                                         style={CustomStyles.imageViewContainer} />
 
                                                 </View>
@@ -693,7 +733,7 @@ export default class GPSTrackLocation extends Component {
         const { region } = this.props;
         const { width, height } = Dimensions.get('window');
         return (
-            <View style={CustomStyles.viewStyle}>
+            <View style={[CustomStyles.viewStyle,{paddingBottom:25}]}>
                 <View style={[{
                     alignSelf: 'stretch', flexDirection: 'row', paddingTop: 5, position: 'absolute',
                     top: 0, justifyContent: 'space-between',
